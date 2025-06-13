@@ -40,7 +40,7 @@ INSERT INTO worker_names (worker_id, language_code, worker_name, worker_descript
   ((SELECT worker_id FROM workers WHERE worker_alias = 'lil'), 'US',
     'Little Brother', 'Little Brother, focused on his own world, usually plays around on the track by spinning or gymnastically flipping around.'),
   ((SELECT worker_id FROM workers WHERE worker_alias = 'cm'), 'US',
-    'Candy Mama', 'Candy Mama is the feminine powerhouse behind lots of the action; she knows what''s going on and what each worker is up to.'),
+    'Candy Mama', 'Candy Mama is the feminine powerhouse behind lots of the action; she knows what''s going on and what each worker should be up to.'),
   ((SELECT worker_id FROM workers WHERE worker_alias = 'rg'), 'US',
     'Reversible Guy', 'Reversible Guy''s head looks the same coming.  He can reverse his direction of travel in an instant and likes to do this when collecting things from off the set.  He can walk through tracks as needed.'),
   ((SELECT worker_id FROM workers WHERE worker_alias = 'big'), 'US',
