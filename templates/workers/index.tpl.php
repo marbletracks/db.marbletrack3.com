@@ -4,6 +4,9 @@
     <?php foreach ($workers as $worker): ?>
         <div class="worker-card">
             <h2><?= htmlspecialchars($worker->getName()) ?></h2>
+            <?php if ($worker->getPhotoCode()): ?>
+                <img src="https://d2f8m59m4mubfx.cloudfront.net/<?= htmlspecialchars($worker->getPhotoCode()) ?>.jpg" alt="<?= htmlspecialchars($worker->getName()) ?>" style="max-width: 100%; height: auto;">
+            <?php endif; // worker->getPhotoCode ?>
             <p><?= nl2br(htmlspecialchars($worker->getDescription())) ?></p>
         </div>
     <?php endforeach; ?>

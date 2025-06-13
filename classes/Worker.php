@@ -6,6 +6,7 @@ class Worker
     private string $worker_alias;
     private string $worker_name;
     private string $worker_description;
+    private string $photo_code = "";
 
     public function __construct(
         private $di_dbase,
@@ -17,7 +18,7 @@ class Worker
         $query = "
             SELECT w.worker_id, w.worker_alias, wn.worker_name, wn.worker_description
             FROM `workers` w
-            JOIN `worker_names` wn ON w.worker_id = wn.worker_id
+            JOIN `worker_names` wn using (worker_id)
             WHERE w.worker_id = " . intval($id) . "
               AND wn.language_code = 'US'
         ";
@@ -35,6 +36,7 @@ class Worker
         $this->worker_alias = $record['worker_alias'];
         $this->worker_name = $record['worker_name'];
         $this->worker_description = $record['worker_description'];
+        $this->photo_code = $record['photo_code'] ?? "";
     }
 
     public function getId(): int
@@ -53,14 +55,19 @@ class Worker
     {
         return $this->worker_description;
     }
+    public function getPhotoCode(): string
+    {
+        return $this->photo_code;
+    }
 
     public static function loadAllWorkers($di_dbase): array
     {
         // worker_id is sorted by their order of appearance in the movie
         $query = "
-            SELECT w.worker_id, w.worker_alias, wn.worker_name, wn.worker_description
+            SELECT w.worker_id, w.worker_alias, wn.worker_name, wn.worker_description, wp.photo_code
             FROM `workers` w
-            JOIN `worker_names` wn ON w.worker_id = wn.worker_id
+            JOIN `worker_names` wn USING (worker_id)
+            LEFT JOIN workers_photos wp ON w.worker_id = wp.worker_id AND wp.is_primary = TRUE
             WHERE wn.language_code = 'US'
             ORDER BY wn.worker_id
         ";
