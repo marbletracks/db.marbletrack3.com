@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "We have migrations!";
+const SENTIMENTAL_VERSION = "BEGIN db.mt3 dev woooo!";
 
 # write errors to screen
 ini_set('display_errors', 1);
