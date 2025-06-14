@@ -273,63 +273,6 @@ https://chatgpt.com/c/6847ecd2-3c70-8003-b9b2-c2a4d4cac8dc
 
 ### 🧩 `parts`
 
-```sql
-CREATE TABLE parts (
-  part_id INT AUTO_INCREMENT PRIMARY KEY,
-  part_alias VARCHAR(20) NOT NULL UNIQUE,
-  part_name VARCHAR(255) NOT NULL,
-  part_description TEXT,
-  start_frame_id INT,
-  installed_frame_id INT,
-  FOREIGN KEY (start_frame_id) REFERENCES frames(frame_id)
-    ON DELETE SET NULL,
-  FOREIGN KEY (installed_frame_id) REFERENCES frames(frame_id)
-    ON DELETE SET NULL
-) COMMENT='Some parts are multiple pieces, while other parts are individual pieces; not all pieces have names.';
-```
-
----
-
-### 🕰 `part_histories`
-
-```sql
-CREATE TABLE part_histories (
-  part_history_id INT AUTO_INCREMENT PRIMARY KEY,
-  part_id INT NOT NULL,
-  event_date DATE,
-  FOREIGN KEY (part_id) REFERENCES parts(part_id)
-    ON DELETE CASCADE
-);
-```
-
-### 🌐 `part_history_translations`
-
-```sql
-CREATE TABLE part_history_translations (
-  part_history_translation_id INT AUTO_INCREMENT PRIMARY KEY,
-  part_history_id INT NOT NULL,
-  language_code CHAR(2) NOT NULL,
-  history_title VARCHAR(255),
-  history_description TEXT,
-  FOREIGN KEY (part_history_id) REFERENCES part_histories(part_history_id)
-    ON DELETE CASCADE
-);
-```
-
----
-
-### 🌐 `part_history_photos`
-
-```sql
-CREATE TABLE part_history_photos (
-  part_history_photo_id INT AUTO_INCREMENT PRIMARY KEY,
-  part_history_id INT NOT NULL,
-  photo_sort TINYINT NOT NULL,
-  history_photo VARCHAR(255),
-  FOREIGN KEY (part_history_id) REFERENCES part_histories(part_history_id)
-    ON DELETE CASCADE
-);
-```
 
 ---
 
@@ -381,6 +324,18 @@ CREATE TABLE snippets_2_frames (
 );
 ```
 
+
+```sql
+-- Links between parts and the snippets they appear in
+CREATE TABLE parts_2_snippets (
+  part_id INT NOT NULL,
+  snippet_id INT NOT NULL,
+  relationship ENUM('installed', 'tested', 'modified', 'removed') NOT NULL,
+  PRIMARY KEY (part_id, snippet_id, relationship),
+  FOREIGN KEY (part_id) REFERENCES parts(part_id) ON DELETE CASCADE,
+  FOREIGN KEY (snippet_id) REFERENCES snippets(snippet_id) ON DELETE CASCADE
+);
+```
 ---
 
 ### 🎭 `actions`
@@ -406,22 +361,6 @@ CREATE TABLE actions (
 ```
 
 ---
-
-### 🔗 `part_connections`
-
-```sql
-CREATE TABLE part_connections (
-  connection_id INT AUTO_INCREMENT PRIMARY KEY,
-  from_part_id INT NOT NULL,
-  to_part_id INT NOT NULL,
-  marble_sizes SET('small', 'medium', 'large') NOT NULL,
-  connection_description TEXT,
-  FOREIGN KEY (from_part_id) REFERENCES parts(part_id)
-    ON DELETE CASCADE,
-  FOREIGN KEY (to_part_id) REFERENCES parts(part_id)
-    ON DELETE CASCADE
-) COMMENT='from -> to flows with gravity; marble_sizes can be small, medium, large, or any combo';
-```
 
 ---
 
