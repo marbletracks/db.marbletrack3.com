@@ -102,7 +102,7 @@ foreach ($allItems as $item) {
     $ls->setDescription($description);
     $ls->setPublishedAt($publishedAt);
 
-    if (true) {
+    if ($ls->saveToDatabase()) {
         echo "✅ Saved: $publishedAt $title ($videoId)<br>";
     } else {
         echo "❌ Failed to save: $title ($videoId)<br>";
