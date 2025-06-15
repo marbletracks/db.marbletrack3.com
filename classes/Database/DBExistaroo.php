@@ -167,22 +167,22 @@ class DBExistaroo {
             return strcmp(basename($a), basename($b));
         });
 
-            foreach ($schema_dirs as $schema_dir) {
+        foreach ($schema_dirs as $schema_dir) {
 
-                $version = basename($schema_dir);   // directory name in $base_dir, e.g. "02_workers"
-                // print_rob($version, false);
-                $create_files = glob("$schema_dir/create_*.sql");
+            $version = basename($schema_dir);   // directory name in $base_dir, e.g. "02_workers"
+            // print_rob($version, false);
+            $create_files = glob("$schema_dir/create_*.sql");
 
-                foreach ($create_files as $file) {
-                    $key = "$version/" . basename($file);
-                    if (!in_array($key, $applied)) {
-                        $pending[] = $key;
-                        // echo "Pending migration found: $key<br>";
-                    } else {
-                        // echo "Skipping already applied migration: $key<br>";
-                    }
+            foreach ($create_files as $file) {
+                $key = "$version/" . basename($file);
+                if (!in_array($key, $applied)) {
+                    $pending[] = $key;
+                    // echo "Pending migration found: $key<br>";
+                } else {
+                    // echo "Skipping already applied migration: $key<br>";
                 }
             }
+        }
 
         return $pending;
     }
