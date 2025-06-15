@@ -210,8 +210,17 @@ class Database implements DbInterface {
         }
     }
 
-    public function insertFromRecord($tablename, $paramtypes, $record) {
-        return $this->insertRecord($tablename, false, $paramtypes, $record);
+    public function insertFromRecord(
+        string $tablename,
+        string $paramtypes,
+        $record
+    ) {
+        return $this->insertRecord(
+            tablename: $tablename,
+            ignore_duplicate_keys: false,
+            paramtypes: $paramtypes,
+            record: $record
+        );
     }
 
     public function insertRecord($tablename, $ignore_duplicate_keys, $paramtypes, $record) {
