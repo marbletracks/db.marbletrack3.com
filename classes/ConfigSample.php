@@ -11,4 +11,6 @@ class Config {
     public $dbUser = "";
     public $dbPass = "";
     public $dbName = "";
+    public $youtube_key = ""; // YouTube API key loads livestream meta data
+    public $mt3_channel_id = ""; // https://www.youtube.com/account_advanced
 }
