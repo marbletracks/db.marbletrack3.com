@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "BEGIN polling livestream data from YouTube API";
+const SENTIMENTAL_VERSION = "BEGIN Store all livestreams in the database.";
 
 # write errors to screen
 ini_set('display_errors', 1);

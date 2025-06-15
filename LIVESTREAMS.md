@@ -10,11 +10,11 @@ This module tracks YouTube livestreams from the MT3 YouTube channel, correlates 
 
 - [x] Get Google API credentials for YouTube Data API access.
 - [x] ($config->youtube_key)
-- [ ] Authenticate site for reading livestream metadata and captions.
+- [x] Authenticate site for reading livestream metadata and captions.
 
 ### 🔄 Livestream Polling & Viewing
 
-- [ ] Write `admin/youtube/poll_livestreams.php` to:
+- [x] Write `admin/youtube/poll_livestreams.php` to:
   - Poll MT3 YouTube livestreams via API.
   - Store new livestreams in the database.
 - [ ] Display livestreams at `/admin/livestreams/index.php` with:
