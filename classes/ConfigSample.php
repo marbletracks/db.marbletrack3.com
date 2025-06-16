@@ -11,4 +11,7 @@ class Config {
     public $dbUser = "";
     public $dbPass = "";
     public $dbName = "";
+    // https://console.cloud.google.com/apis/credentials
+    public $youtube_key = ""; // YouTube API key loads livestream meta data
+    public $mt3_channel_id = ""; // https://www.youtube.com/account_advanced
 }
