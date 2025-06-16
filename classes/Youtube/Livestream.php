@@ -42,15 +42,15 @@ class Livestream
         return true;  // Maybe add a Transaction and try-catch here?
     }
 
-    public function existsInDatabase(string $youtube_video_id) {
+    public function existsInDatabase(string $youtube_video_id): bool {
         $query = "SELECT `livestream_id` FROM `livestreams` WHERE `youtube_video_id` = ?";
         $result = $this->di_dbase->fetchResults($query, 's', $youtube_video_id);
 
-        if ($result->valid()) {
-            $row = $result->current();
-            $this->livestream_id = $row['livestream_id'];
+        if ($result->toArray()) {
+            echo "Found livestream in database: " . $youtube_video_id . "<br>";
             return true;
         }
+        echo "Livestream " . $youtube_video_id . " not found in database<br>";
         return false;
     }
 

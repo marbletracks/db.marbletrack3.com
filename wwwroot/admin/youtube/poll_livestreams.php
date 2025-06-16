@@ -14,6 +14,8 @@ if (empty($apiKey)) {
     die("YouTube API key is not set in the configuration.");
 }
 
+use Youtube\Livestream;
+
 function fetch_url($url)
 {
     $ch = curl_init($url);
@@ -41,10 +43,11 @@ function fetch_url($url)
 
 
 $allItems = [];
+$requirePagination = true; // continue pagination until we find a video already in the database
+
 $pageToken = null;
 $count = 0;
 do {
-    $count++;
     $url = "https://www.googleapis.com/youtube/v3/search?" . http_build_query([
         'key' => $apiKey,
         'channelId' => $channelId,
@@ -57,31 +60,35 @@ do {
     ]);
 
     $response = fetch_url($url);
+
+    if (empty($response)) {
+        die("No response from YouTube API or empty response.");
+    }
     $data = json_decode($response, true);
 
     foreach ($data['items'] as $item) {
         $title = $item['snippet']['title'];
         $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
-
-        // print_rob("Processing video: ($publishedAt) $title", false);
+        $videoId = $item['id']['videoId'];
+        $ls = new Livestream($mla_database);
+        if ($ls->existsInDatabase($videoId)) {
+            $requirePagination = false;
+            echo "😊 Already in database: $title ($videoId)<br>";
+            break;  // YT API returns most recent first, so we can stop if it's already in the database
+        }
+        $allItems[] = $item;
     }
-
 
     if (!isset($data['items'])) {
         die("No livestream data found or API error.");
     }
-
-    $allItems = array_merge($allItems, $data['items']);
-
-    // print_rob(count($allItems), false);
-    // print_rob("--------{$count}-----------------------{$count}-----------", false);
 
     $pageToken = $data['nextPageToken'] ?? null;
 
     // Optional: short delay to avoid API rate limits
     usleep(250000);
 
-} while ($pageToken);
+} while ($requirePagination && $pageToken);
 
 usort($allItems, function ($a, $b) {
     // sort by oldest first
@@ -89,7 +96,6 @@ usort($allItems, function ($a, $b) {
     return $a['snippet']['publishedAt'] <=> $b['snippet']['publishedAt'];
 });
 
-use Youtube\Livestream;
 
 foreach ($allItems as $item) {
     $videoId = $item['id']['videoId'];
@@ -97,12 +103,13 @@ foreach ($allItems as $item) {
     $description = $item['snippet']['description'];
     $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
 
-    // print_rob("Processing $publishedAt video: $title ($videoId)", false);
     $ls = new Livestream($mla_database);
     $ls->setYoutubeVideoId($videoId);
     if ($ls->existsInDatabase($videoId)) {
-        echo "😊 Already in database: $title ($videoId)<br>";
+        echo "😊 Already in database: $title ($videoId) so it should not have been added to allItems wtf.<br>";
         continue;
+    } else {
+        echo "🆕 New livestream: $title ($videoId)<br>";
     }
 
     $ls->setTitle($title);
@@ -115,3 +122,12 @@ foreach ($allItems as $item) {
         echo "❌ Failed to save: $title ($videoId)<br>";
     }
 }
+
+echo "<br>Done processing livestreams<br>";
+if (count($allItems) == 0) {
+    echo "No new livestreams found.<br>";
+} else {
+    echo "Total livestreams processed: " . count($allItems) . "<br>";
+}
+echo "TODO make a template for this file.<br>";
+echo "Until then, go to <a href='/admin/index.php'>main menu</a>.<br>";
