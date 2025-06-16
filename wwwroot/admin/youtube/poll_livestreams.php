@@ -24,6 +24,7 @@ function fetch_url($url)
     ]);
     $response = curl_exec($ch);
 
+    // print_rob("Response: " . substr($response, 0, 2000) . "...", false);
     if (curl_errno($ch)) {
         throw new Exception('Curl error: ' . curl_error($ch));
     }
@@ -72,6 +73,9 @@ do {
 
     $allItems = array_merge($allItems, $data['items']);
 
+    // print_rob(count($allItems), false);
+    // print_rob("--------{$count}-----------------------{$count}-----------", false);
+
     $pageToken = $data['nextPageToken'] ?? null;
 
     // Optional: short delay to avoid API rate limits
@@ -80,6 +84,8 @@ do {
 } while ($pageToken);
 
 usort($allItems, function ($a, $b) {
+    // sort by oldest first
+    // echo "Comparing {$a['snippet']['publishedAt']} with {$b['snippet']['publishedAt']}<br>";
     return $a['snippet']['publishedAt'] <=> $b['snippet']['publishedAt'];
 });
 
@@ -91,6 +97,7 @@ foreach ($allItems as $item) {
     $description = $item['snippet']['description'];
     $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
 
+    // print_rob("Processing $publishedAt video: $title ($videoId)", false);
     $ls = new Livestream($mla_database);
     $ls->setYoutubeVideoId($videoId);
     if ($ls->existsInDatabase($videoId)) {
