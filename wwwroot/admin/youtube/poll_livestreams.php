@@ -24,6 +24,7 @@ function fetch_url($url)
     ]);
     $response = curl_exec($ch);
 
+    // print_rob("Response: " . substr($response, 0, 2000) . "...", false);
     if (curl_errno($ch)) {
         throw new Exception('Curl error: ' . curl_error($ch));
     }
@@ -39,33 +40,64 @@ function fetch_url($url)
 }
 
 
-$url = "https://www.googleapis.com/youtube/v3/search?" . http_build_query([
-    'key' => $apiKey,
-    'channelId' => $channelId,
-    'part' => 'snippet',
-    'type' => 'video',
-    'eventType' => 'completed',
-    'maxResults' => 50,
-    'order' => 'date'
-]);
+$allItems = [];
+$pageToken = null;
+$count = 0;
+do {
+    $count++;
+    $url = "https://www.googleapis.com/youtube/v3/search?" . http_build_query([
+        'key' => $apiKey,
+        'channelId' => $channelId,
+        'part' => 'snippet',
+        'type' => 'video',
+        'eventType' => 'completed',
+        'maxResults' => 50,
+        'order' => 'date',
+        'pageToken' => $pageToken
+    ]);
 
-$response = fetch_url($url);
+    $response = fetch_url($url);
+    $data = json_decode($response, true);
 
-$data = json_decode($response, true);
+    foreach ($data['items'] as $item) {
+        $title = $item['snippet']['title'];
+        $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
 
-if (!isset($data['items'])) {
-    die("No livestream data found or API error.");
-}
+        // print_rob("Processing video: ($publishedAt) $title", false);
+    }
+
+
+    if (!isset($data['items'])) {
+        die("No livestream data found or API error.");
+    }
+
+    $allItems = array_merge($allItems, $data['items']);
+
+    // print_rob(count($allItems), false);
+    // print_rob("--------{$count}-----------------------{$count}-----------", false);
+
+    $pageToken = $data['nextPageToken'] ?? null;
+
+    // Optional: short delay to avoid API rate limits
+    usleep(250000);
+
+} while ($pageToken);
+
+usort($allItems, function ($a, $b) {
+    // sort by oldest first
+    // echo "Comparing {$a['snippet']['publishedAt']} with {$b['snippet']['publishedAt']}<br>";
+    return $a['snippet']['publishedAt'] <=> $b['snippet']['publishedAt'];
+});
 
 use Youtube\Livestream;
 
-foreach ($data['items'] as $item) {
+foreach ($allItems as $item) {
     $videoId = $item['id']['videoId'];
     $title = $item['snippet']['title'];
     $description = $item['snippet']['description'];
     $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
 
-    print_rob("Processing video: $title ($videoId)", false);
+    // print_rob("Processing $publishedAt video: $title ($videoId)", false);
     $ls = new Livestream($mla_database);
     $ls->setYoutubeVideoId($videoId);
     if ($ls->existsInDatabase($videoId)) {
@@ -78,10 +110,8 @@ foreach ($data['items'] as $item) {
     $ls->setPublishedAt($publishedAt);
 
     if ($ls->saveToDatabase()) {
-        echo "✅ Saved: $title ($videoId)<br>";
+        echo "✅ Saved: $publishedAt $title ($videoId)<br>";
     } else {
         echo "❌ Failed to save: $title ($videoId)<br>";
     }
 }
-
-
