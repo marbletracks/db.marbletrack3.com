@@ -3,7 +3,6 @@ namespace Database;
 
 use Database\DbInterface;
 use Physical\Part;
-use Database\EDatabaseException;
 
 class PartsRepository
 {
@@ -65,7 +64,8 @@ SQL,
             <<<SQL
 SELECT p.part_id, p.part_alias, t.part_name, t.part_description
 FROM parts p
-LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
+-- don't LEFT JOIN because some are missing translations (e.g. outer spiral)
+JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
 ORDER BY p.part_id ASC
 SQL,
             's',
