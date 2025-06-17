@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Store only new livestreams in the database.";
+const SENTIMENTAL_VERSION = "Create episodes based on livestreams";
 
 # write errors to screen
 ini_set('display_errors', 1);
