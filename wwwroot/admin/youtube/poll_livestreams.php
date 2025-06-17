@@ -149,6 +149,9 @@ foreach ($allItems as $item) {
 
     if ($ls->saveToDatabase()) {
         echo "✅ Saved: $publishedAt $title ($videoId)<br>";
+        // Link to a page to create an episode for this livestream:
+        // blank target because might be more than one new livestream in this list
+        echo "<a class='btn' target='_blank' href='/admin/episodes/create.php?livestream_id={$ls->getLivestreamId()}'>🎥 Create Episode</a><br>";
     } else {
         echo "❌ Failed to save: $title ($videoId)<br>";
     }
