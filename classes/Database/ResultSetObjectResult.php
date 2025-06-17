@@ -44,7 +44,7 @@ class ResultSetObjectResult extends ResultSetObject {
     }
 
     public function fieldList($var) {
-        return $this->result->fetch_fields;
+        return $this->result->fetch_fields();
     }
 
     public function close() {

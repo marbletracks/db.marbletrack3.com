@@ -5,27 +5,23 @@ namespace Database;
 require_once __DIR__ . "/EDatabaseExceptions.php";
 class Database implements DbInterface {
 
-    private $charEncoding = "UTF8";
     private $dbObj;
-    private $host;
-    private $username;
-    private $passwd;
-    private $dbname;
     private $tz_offset = false;
     private $affected_rows;
 
-    public function __construct($host, $username, $passwd, $dbname = '', $charEncoding = 'UTF8') {
-        $this->host = $host;
-        $this->username = $username;
-        $this->passwd = $passwd;
-        $this->dbname = $dbname;
-        $this->charEncoding = $charEncoding;
+    public function __construct(
+        private readonly string $host,
+        private readonly string $username,
+        private readonly string $passwd,
+        private readonly string $dbname,
+        private readonly string $charEncoding,
+    ) {
     }
 
 // end __construct
 
     public function connect() {
-//If we're already connected return true;
+        //If we're already connected return true;
         if (!is_object($this->dbObj) || !$this->dbObj->ping()) {
 
             $this->dbObj = new \mysqli($this->host, $this->username, $this->passwd, $this->dbname);
@@ -35,11 +31,7 @@ class Database implements DbInterface {
                 $this->dbObj = new \mysqli($this->host, $this->username, $this->passwd, $this->dbname);
                 if (!is_object($this->dbObj) || $this->dbObj->connect_error) {
                     throw new \Database\EDatabaseException("Could not connect to server after trying with 1s sleep (" . $this->dbObj->errno . ") " . $this->dbObj->error);
-                } else {
-                    $this->setEncoding($this->charEncoding);
                 }
-            } else {
-                $this->setEncoding($this->charEncoding);
             }
         }
         $this->setTimezone();
@@ -180,13 +172,11 @@ class Database implements DbInterface {
     }
 
     private function refValues($arr) {
-        if (strnatcmp(phpversion(), '5.3') >= 0) { //Reference is required for PHP 5.3+
-            $refs = array();
-            foreach ($arr as $key => $value)
-                $refs[$key] = &$arr[$key];
-            return $refs;
+        $refs = [];
+        foreach ($arr as $key => $value){
+            $refs[$key] = &$arr[$key];
         }
-        return $arr;
+        return $refs;
     }
 
     public function fetchResults($sql, $paramtypes = null, $var1 = null) {

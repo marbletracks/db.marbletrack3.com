@@ -19,7 +19,7 @@ class ResultSetObjectStmt extends ResultSetObject {
 
     public function numRows() {
         if (is_object($this->stmt)) {
-            return $this->stmt->num_rows();
+            return $this->stmt->num_rows;
         }
     }
 
@@ -27,7 +27,7 @@ class ResultSetObjectStmt extends ResultSetObject {
         if (is_object($this->stmt) && $this->numRows() > $rowNum) {
             $this->stmt->data_seek($rowNum);
             $this->currentRowNum = $rowNum;
-            $vars = array();
+            $vars = [];
 
             foreach ($this->fields as $field) {
                 $fieldname = $field->name;
