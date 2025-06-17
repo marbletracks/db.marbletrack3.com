@@ -37,4 +37,18 @@ SQL
 
         return $episodes;
     }
+
+    public function insert(string $title, string $desc, ?int $livestreamId = null): int
+    {
+        return $this->db->insertFromRecord(
+            'episodes',
+            'ssi',
+            [
+                'title' => $title,
+                'episode_english_description' => $desc,
+                'livestream_id' => $livestreamId
+            ]
+        );
+    }
+
 }

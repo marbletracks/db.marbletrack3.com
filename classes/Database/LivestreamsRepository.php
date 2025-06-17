@@ -39,4 +39,34 @@ SQL
 
         return $livestreams;
     }
+
+    public function findById(int $livestream_id): ?Livestream
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT livestream_id, youtube_video_id, title, description, published_at, status, created_at
+FROM livestreams
+WHERE livestream_id = ?
+SQL,
+            'i',
+            [$livestream_id]
+        );
+
+        if ($results->numRows() === 0) {
+            return null;
+        }
+
+        $results->setRow(0);
+        return new Livestream(
+            livestream_id: (int) $results->data['livestream_id'],
+            youtube_video_id: $results->data['youtube_video_id'],
+            title: $results->data['title'] ?? '',
+            description: $results->data['description'] ?? '',
+            published_at: $results->data['published_at'],
+            status: $results->data['status'],
+            created_at: $results->data['created_at']
+        );
+    }
+
+
 }
