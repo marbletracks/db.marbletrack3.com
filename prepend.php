@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Create episodes based on livestreams";
+const SENTIMENTAL_VERSION = "Tryna augment episode editor";
 
 # write errors to screen
 ini_set('display_errors', 1);
