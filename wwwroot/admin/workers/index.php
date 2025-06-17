@@ -11,12 +11,21 @@ if (!$is_logged_in->isLoggedIn()) {
     exit;
 }
 
-$page = new \Template($config);
-$page->setTemplate("admin/workers/index.tpl.php");
+// Repository knows how to connect to the database
+$repo = new \Database\WorkersRepository(
+    db: $mla_database,
+    langCode: 'en',
+);
+
+// Fetch workers
+$workers = $repo->findAll();
+$page = new \Template(config: $config);
+$page->setTemplate(template_file: "admin/workers/index.tpl.php");
+$page->set(name: "workers", value: $workers);
 $inner = $page->grabTheGoods();
 
-$layout = new \Template($config);
-$layout->setTemplate("layout/admin_base.tpl.php");
-$layout->set("page_title", "Workers");
-$layout->set("page_content", $inner);
+$layout = new \Template(config: $config);
+$layout->setTemplate(template_file: "layout/admin_base.tpl.php");
+$layout->set(name: "page_title", value: "Workers");
+$layout->set(name: "page_content", value: $inner);
 $layout->echoToScreen();
