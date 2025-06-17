@@ -10,8 +10,11 @@
 <body>
     <div class="NavBar">
         <a href="/">View Site</a> |
-        <a href="/admin/">Admin Site</a> |
-        <a href="/admin/workers">Workers</a>
+        <a href="/admin/">Dashboard</a> |
+        <a href="/admin/livestreams">Livestreams</a> |
+        <a href="/admin/episodes">Episodes</a> |
+        <a href="/admin/workers">Workers</a> |
+        <a href="/admin/parts">Parts</a> |
         <a href="/admin/youtube/poll_livestreams.php">Gimme Livestreams</a>
     </div>
     <div class="PageWrapper">

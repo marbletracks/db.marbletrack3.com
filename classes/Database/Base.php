@@ -8,14 +8,16 @@ class Base{
 
     // One day \Database\Base should be replaced with a dependency injection wrapper, but not today.
     // e.g. https://github.com/mlaphp/mlaphp/blob/master/src/Mlaphp/Di.php
-    private static function initDB(\Config $config){
+    private static function initDB(\Config $config): void{
         /** START - Database **/
         if(empty(self::$db)){
-            self::$db = new \Database\Database($config->dbHost,
-                                            $config->dbUser,
-                                            $config->dbPass,
-                                            $config->dbName,
-                                            CONFIG_DATABASE_OUTPUT_ENCODING);
+            self::$db = new \Database\Database(
+                host: $config->dbHost,
+                username: $config->dbUser,
+                passwd: $config->dbPass,
+                dbname: $config->dbName,
+                charEncoding: CONFIG_DATABASE_OUTPUT_ENCODING
+            );
         }
         /** END - Database **/
     }

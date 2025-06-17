@@ -1,5 +1,12 @@
 <div class="PagePanel">
-    <h1>Worker: Candy Mama</h1>
-    <p>Candy Mama is the queen of the fluff crew. She ensures everyone is hydrated and humming while they build.</p>
-    <p>She is the one who makes sure that the workers are well taken care of, and that they have everything they need to do their jobs.</p>
+    <h1>All Workers</h1>
+    <ul>
+        <?php foreach ($workers as $worker): ?>
+            <li>
+                <strong><?= htmlspecialchars($worker->name) ?></strong><br>
+                <?= nl2br(htmlspecialchars($worker->description)) ?><br>
+                <em>Alias:</em> <?= htmlspecialchars($worker->worker_alias) ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
 </div>
