@@ -27,6 +27,7 @@ if ($submitted) {
 
     if (empty($errors)) {
         if ($part) {
+            // this should be encapsulated like the insert method
             $mla_database->executeSQL(
                 "UPDATE parts SET part_alias = ? WHERE part_id = ?",
                 'si',
@@ -34,22 +35,20 @@ if ($submitted) {
                 $part->part_id]
             );
 
-            // $mla_database->executeSQL(
-            //     "REPLACE INTO part_translations (part_id, language_code, part_name, part_description)
-            //      VALUES (?, 'en', ?, ?)",
-            //     'iss',
-            //     [$part->part_id,
-            //     $name,
-            //     $description]
-            // );
             $mla_database->executeSQL(
-                "INSERT INTO part_translations (part_id, language_code, part_name, part_description)
-                 VALUES (?, ?, ?, ?)
-                 ON DUPLICATE KEY UPDATE part_name = VALUES(part_name), part_description = VALUES(part_description)",
-                'isss',
-                [$part->part_id, 'en', $name, $description]
+                "REPLACE INTO part_translations (
+                    part_id,
+                    language_code,
+                    part_name,
+                    part_description
+                ) VALUES (?, 'en', ?, ?)",
+                'iss',
+                [
+                    $part->part_id,
+                    $name,
+                    $description,
+                ]
             );
-
 
         } else {
             $repo->insert($alias, $name, $description);
