@@ -6,7 +6,7 @@
                         <strong><?= htmlspecialchars($part->name) ?></strong><br>
                         <?= nl2br(htmlspecialchars($part->description)) ?><br>
                         <em>Alias:</em> <?= htmlspecialchars($part->part_alias) ?>
-                        <em>Alias:</em> <?= htmlspecialchars($part->name) ?>
+                        <a href="/admin/parts/part.php?id=<?= (int) $part->part_id ?>">Edit</a>
                     </li>
         <?php endforeach; ?>
     </ul>
