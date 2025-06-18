@@ -15,6 +15,7 @@
         <a href="/admin/episodes">Episodes</a> |
         <a href="/admin/workers">Workers</a> |
         <a href="/admin/parts">Parts</a> |
+        <a href="/admin/parts/oss">Outer Spiral Supports</a> |
         <a href="/admin/youtube/poll_livestreams.php">Gimme Livestreams</a>
     </div>
     <div class="PageWrapper">

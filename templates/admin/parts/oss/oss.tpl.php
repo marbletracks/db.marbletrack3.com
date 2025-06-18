@@ -1,0 +1,55 @@
+<?php
+// File: templates/admin/parts/oss/oss.tpl.php
+?>
+<div class="PagePanel">
+    <h1><?= $status ? 'Edit OSS Support' : 'Create OSS Support' ?></h1>
+
+    <?php if (!empty($errors)): ?>
+            <div class="Errors">
+                <?php foreach ($errors as $err): ?>
+                        <p class="error"><?= htmlspecialchars($err) ?></p>
+                <?php endforeach; ?>
+            </div>
+    <?php endif; ?>
+
+    <form action="" method="post">
+<?php if (isset($status)): ?>
+    <label>
+        OSS Status ID: <br>
+        <input type="text" name="parts_oss_status_id" value="<?= htmlspecialchars($status->parts_oss_status_id) ?>" readonly>
+    </label>
+<?php endif; ?>
+
+        <label>
+            Part ID: <br>
+            <input type="number" name="part_id" value="<?= htmlspecialchars($status->part_id ?? '') ?>">
+        </label><br><br>
+
+        <label>
+            SSOP Label: <br>
+            <input type="text" name="ssop_label" value="<?= htmlspecialchars($status->ssop_label ?? '') ?>">
+        </label><br><br>
+
+        <label>
+            SSOP (mm): <br>
+            <input type="text" name="ssop_mm" value="<?= htmlspecialchars($status->ssop_mm ?? '') ?>">
+        </label><br><br>
+
+        <label>
+            Height (original): <br>
+            <input type="text" name="height_orig" value="<?= htmlspecialchars($status->height_orig ?? '') ?>">
+        </label><br><br>
+
+        <label>
+            Height (best-fit): <br>
+            <input type="text" name="height_best" value="<?= htmlspecialchars($status->height_best ?? '') ?>">
+        </label><br><br>
+
+        <label>
+            Height (now): <br>
+            <input type="text" name="height_now" value="<?= htmlspecialchars($status->height_now ?? '') ?>">
+        </label><br><br>
+
+        <button type="submit">Save</button>
+    </form>
+</div>
