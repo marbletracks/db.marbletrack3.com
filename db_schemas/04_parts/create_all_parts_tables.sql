@@ -166,6 +166,11 @@ CREATE TABLE part_translations (
   FOREIGN KEY (part_id) REFERENCES parts(part_id) ON DELETE CASCADE
 );
 
+-- Ensure unique part translations per language 18 June 2025 ROB
+-- Allows me to edit part translations
+ALTER TABLE part_translations
+ADD UNIQUE KEY part_language_unique (part_id, language_code);
+
 -- General photos for parts
 CREATE TABLE parts_photos (
   part_photo_id INT AUTO_INCREMENT PRIMARY KEY,
