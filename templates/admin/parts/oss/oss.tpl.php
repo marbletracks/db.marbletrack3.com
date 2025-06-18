@@ -1,6 +1,3 @@
-<?php
-// File: templates/admin/parts/oss/oss.tpl.php
-?>
 <div class="PagePanel">
     <h1><?= $status ? 'Edit Spiral Support Outer Placement' : 'Create Spiral Support Outer Placement' ?></h1>
 
@@ -23,7 +20,14 @@
 
         <label>
             Part ID: <br>
-            <input type="number" name="part_id" value="<?= htmlspecialchars($status->part_id ?? '') ?>">
+            <select name="part_id">
+                <option value="">-- Select a Part --</option>
+<?php foreach ($possParts as $part): ?>
+                <option value="<?= $part->part_id ?>" <?= ($status->part_id ?? '') == $part->part_id ? 'selected' : '' ?>>
+                    <?= htmlspecialchars("{$part->part_alias} - {$part->name}") ?>
+                </option>
+<?php endforeach; ?>
+            </select>
         </label><br><br>
 
         <label>

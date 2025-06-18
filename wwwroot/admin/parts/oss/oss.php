@@ -50,6 +50,9 @@ $prefill_ssop_mm = $_GET['ssop_mm'] ?? "null";
 $prefill_height_best = $_GET['height_best'] ?? "null";
 $page->set("prefill_ssop_mm", $prefill_ssop_mm);
 $page->set("prefill_height_best", $prefill_height_best);
+$partsRepository = new \Database\PartsRepository($mla_database, "en");
+$possParts = $partsRepository->findPossParts();
+$page->set("possParts", $possParts);
 
 $page->set("errors", $errors);
 $inner = $page->grabTheGoods();
