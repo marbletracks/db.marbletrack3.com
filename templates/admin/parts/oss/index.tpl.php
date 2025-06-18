@@ -40,7 +40,6 @@ document.getElementById('height_input').addEventListener('input', function () {
 });
 </script>
 
-
     <h1>Outer Spiral Supports</h1>
     <p><a href="/admin/parts/oss/oss.php">Add New Support</a></p>
     <p>SSOP = Spiral Support Offset Position</p>
@@ -69,3 +68,17 @@ document.getElementById('height_input').addEventListener('input', function () {
         <?php endforeach; ?>
     </table>
 </div>
+<script>
+document.querySelector('a[href="/admin/parts/oss/oss.php"]').addEventListener('click', function (e) {
+    e.preventDefault();
+    const ssop = document.getElementById('ssop_input').value;
+    const height = document.getElementById('height_input').value;
+
+    if (ssop && height) {
+        const url = `/admin/parts/oss/oss.php?ssop_mm=${encodeURIComponent(ssop)}&height_best=${encodeURIComponent(height)}`;
+        window.location.href = url;
+    } else {
+        alert("Please enter both SSOP and height first.");
+    }
+});
+</script>

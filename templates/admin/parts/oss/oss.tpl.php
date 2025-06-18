@@ -2,7 +2,7 @@
 // File: templates/admin/parts/oss/oss.tpl.php
 ?>
 <div class="PagePanel">
-    <h1><?= $status ? 'Edit OSS Support' : 'Create OSS Support' ?></h1>
+    <h1><?= $status ? 'Edit Spiral Support Outer Placement' : 'Create Spiral Support Outer Placement' ?></h1>
 
     <?php if (!empty($errors)): ?>
             <div class="Errors">
@@ -28,27 +28,27 @@
 
         <label>
             SSOP Label: <?= $readonly_if_edit ?><br>
-            <input type="text" name="ssop_label" value="<?= htmlspecialchars($status->ssop_label ?? '') ?>" <?= $readonly_if_edit ?>>
+            <input type="text" name="ssop_label" value="<?= htmlspecialchars($status->ssop_label ?? 'SSOP' . $prefill_ssop_mm) ?>" <?= $readonly_if_edit ?>>
         </label><br><br>
 
         <label>
             SSOP (mm): <?= $readonly_if_edit ?><br>
-            <input type="text" name="ssop_mm" value="<?= htmlspecialchars($status->ssop_mm ?? '') ?>"  <?= $readonly_if_edit ?>>
+            <input type="text" name="ssop_mm" value="<?= htmlspecialchars($status->ssop_mm ?? $prefill_ssop_mm) ?>"  <?= $readonly_if_edit ?>>
         </label><br><br>
 
         <label>
             Height (original): <?= $readonly_if_edit ?><br>
-            <input type="text" name="height_orig" value="<?= htmlspecialchars($status->height_orig ?? '') ?>"  <?= $readonly_if_edit ?>>
+            <input type="text" name="height_orig" value="<?= htmlspecialchars($status->height_orig ?? $prefill_height_best ?? '') ?>"  <?= $readonly_if_edit ?>>
         </label><br><br>
 
         <label>
             Height (best-fit): <?= $readonly_if_edit ?><br>
-            <input type="text" name="height_best" value="<?= htmlspecialchars($status->height_best ?? '') ?>"  <?= $readonly_if_edit ?>>
+            <input type="text" name="height_best" value="<?= htmlspecialchars($status->height_best ?? $prefill_height_best ?? '') ?>"  <?= $readonly_if_edit ?>>
         </label><br><br>
 
         <label>
             Height (now): <br>
-            <input type="text" name="height_now" value="<?= htmlspecialchars($status->height_now ?? '') ?>">
+            <input type="text" name="height_now" value="<?= htmlspecialchars($status->height_now ?? $prefill_height_best ?? '') ?>">
         </label><br><br>
 
         <button type="submit">Save</button>
