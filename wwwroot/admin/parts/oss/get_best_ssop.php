@@ -17,5 +17,5 @@ if (!isset($_GET['height_mm'])) {
 }
 
 $height_mm = (float) $_GET['height_mm'];
-$ssop = PartsOSSCalculator::getBestFitSSOP($height_mm);
+$ssop = round(PartsOSSCalculator::getBestFitSSOP($height_mm));
 echo json_encode(['ssop_mm' => $ssop]);
