@@ -40,9 +40,9 @@ document.getElementById('height_input').addEventListener('input', function () {
 });
 </script>
 
-    <h1>Outer Spiral Supports</h1>
+    <h1>Spiral Support Outer Placements</h1>
     <p><a href="/admin/parts/oss/oss.php">Add New Spiral Support Outer Placement</a></p>
-    <p>SSOP = Spiral Support Offset Position</p>
+    <p>SSOP = Spiral Support Outer Placement</p>
     <table border="1" cellpadding="6">
         <tr>
             <th>ID</th>

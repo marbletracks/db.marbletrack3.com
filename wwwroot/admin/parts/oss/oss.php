@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $page = new Template(config: $config);
 $page->setTemplate("admin/parts/oss/oss.tpl.php");
 $page->set("status", $status);
-// For prefilling when creating a new spiral support outer placement
+// For prefilling when creating a new Spiral Support Outer Placement
 $prefill_ssop_mm = $_GET['ssop_mm'] ?? "null";
 $prefill_height_best = $_GET['height_best'] ?? "null";
 $page->set("prefill_ssop_mm", $prefill_ssop_mm);
