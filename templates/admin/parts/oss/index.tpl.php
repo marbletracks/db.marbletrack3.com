@@ -4,6 +4,7 @@
 <div class="PagePanel">
     <h1>Outer Spiral Supports</h1>
     <p><a href="/admin/parts/oss/oss.php">Add New Support</a></p>
+    <p>SSOP = Spiral Support Offset Position</p>
     <table border="1" cellpadding="6">
         <tr>
             <th>ID</th>
