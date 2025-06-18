@@ -35,13 +35,15 @@ if ($submitted) {
 }
 
 $defaultTitle = $stream->title;
-$defaultDesc = $stream->description; // cropped; see note below
+$defaultDesc = $stream->description;
+$streamCode = $stream->youtube_video_id;
 
 $page = new \Template(config: $config);
 $page->setTemplate("admin/episodes/create.tpl.php");
 $page->set("errors", $errors);
 $page->set("defaultTitle", $defaultTitle);
 $page->set("defaultDesc", $defaultDesc);
+$page->set("streamCode", $streamCode);
 $page->set("livestream", $stream);
 
 $inner = $page->grabTheGoods();

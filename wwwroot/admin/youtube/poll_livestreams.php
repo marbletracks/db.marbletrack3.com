@@ -104,7 +104,7 @@ do {
         $ls = new Livestream($mla_database);
         if ($ls->existsInDatabase($videoId)) {
             $requirePagination = false;
-            echo "😊 Already in database: $title ($videoId)<br>";
+            echo "😊 Already in database: $title (<a href=https://www.youtube.com/watch?v=$videoId>$videoId</a>)<br>";
             break;  // YT API returns most recent first, so we can stop if it's already in the database
         }
         $allItems[] = $item;
@@ -137,10 +137,9 @@ foreach ($allItems as $item) {
     $ls = new Livestream($mla_database);
     $ls->setYoutubeVideoId($videoId);
     if ($ls->existsInDatabase($videoId)) {
-        echo "😊 Already in database: $title ($videoId) so it should not have been added to allItems wtf.<br>";
         continue;
     } else {
-        echo "🆕 New livestream: $title ($videoId)<br>";
+        echo "🆕 New livestream: $title (<a href=https://www.youtube.com/watch?v=$videoId>$videoId</a>)<br>";
     }
 
     $ls->setTitle($title);

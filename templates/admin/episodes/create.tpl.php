@@ -17,6 +17,7 @@
             Description: <br>
             <textarea name="description" rows="6" cols="60"><?= htmlspecialchars($defaultDesc) ?></textarea>
         </label><br><br>
+        <em>YT Link:</em> <a href="https://www.youtube.com/watch?v=<?= htmlspecialchars($streamCode) ?>" target="_blank">Watch</a><br>
 
         <button type="submit">Create Episode</button>
     </form>
