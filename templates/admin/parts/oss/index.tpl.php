@@ -41,7 +41,7 @@ document.getElementById('height_input').addEventListener('input', function () {
 </script>
 
     <h1>Outer Spiral Supports</h1>
-    <p><a href="/admin/parts/oss/oss.php">Add New Support</a></p>
+    <p><a href="/admin/parts/oss/oss.php">Add New Spiral Support Outer Placement</a></p>
     <p>SSOP = Spiral Support Offset Position</p>
     <table border="1" cellpadding="6">
         <tr>
