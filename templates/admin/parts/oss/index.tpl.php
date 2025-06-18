@@ -6,7 +6,7 @@
 <div class="PagePanel">
     <h1>Best-Fit Tool</h1>
     <label>
-        SSOP (mm): <input type="number" id="ssop_input" step="0.1">
+        SSOP (mm): <input type="number" id="ssop_input" step="1">
     </label>
     <br>
     <label>
