@@ -10,7 +10,7 @@
     </label>
     <br>
     <label>
-        Height (mm): <input type="number" id="height_input" step="0.1">
+        Height (best) (mm): <input type="number" id="height_input" step="0.1">
     </label>
 </div>
 
