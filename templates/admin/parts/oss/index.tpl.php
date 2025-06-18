@@ -2,6 +2,45 @@
 // File: templates/admin/parts/oss/index.tpl.php
 ?>
 <div class="PagePanel">
+
+<div class="PagePanel">
+    <h1>Best-Fit Tool</h1>
+    <label>
+        SSOP (mm): <input type="number" id="ssop_input" step="0.1">
+    </label>
+    <br>
+    <label>
+        Height (mm): <input type="number" id="height_input" step="0.1">
+    </label>
+</div>
+
+<script>
+document.getElementById('ssop_input').addEventListener('input', function () {
+    const ssop = parseFloat(this.value);
+    if (isNaN(ssop)) return;
+    fetch(`/admin/parts/oss/get_best_height.php?ssop_mm=${ssop}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.height_mm !== undefined) {
+                document.getElementById('height_input').value = data.height_mm;
+            }
+        });
+});
+
+document.getElementById('height_input').addEventListener('input', function () {
+    const height = parseFloat(this.value);
+    if (isNaN(height)) return;
+    fetch(`/admin/parts/oss/get_best_ssop.php?height_mm=${height}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.ssop_mm !== undefined) {
+                document.getElementById('ssop_input').value = data.ssop_mm;
+            }
+        });
+});
+</script>
+
+
     <h1>Outer Spiral Supports</h1>
     <p><a href="/admin/parts/oss/oss.php">Add New Support</a></p>
     <p>SSOP = Spiral Support Offset Position</p>
