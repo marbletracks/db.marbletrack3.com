@@ -26,26 +26,20 @@ CREATE TABLE parts_oss_status (
 -- `height_now`** can be adjusted over time by your tools or admin.
 -- `last_updated`** helps you track progress.
 
--- 18 June 2025 ROB: THIS FIRST DRAFT DOES THEM IN THE WRONG ORDER!
--- FUTURE ROB MUST DETERMINE THE nPOSS FOR EACH
-
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP40', 40.0, 26.0, 25.95, 26.0 FROM parts WHERE part_alias = '0poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP70', 70.0, 27.0, 26.51, 27.0 FROM parts WHERE part_alias = '1poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP130', 130.0, 27.5, 27.63, 27.5 FROM parts WHERE part_alias = '2poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP180', 180.0, 27.0, 28.56, 27.0 FROM parts WHERE part_alias = '3poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP260', 260.0, 31.0, 30.05, 31.0 FROM parts WHERE part_alias = '4poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP320', 320.0, 31.5, 31.17, 31.5 FROM parts WHERE part_alias = '5poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP550', 550.0, 35.0, 35.46, 35.0 FROM parts WHERE part_alias = '6poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP615', 615.0, 37.0, 36.67, 37.0 FROM parts WHERE part_alias = '7poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP670', 670.0, 38.0, 37.69, 38.0 FROM parts WHERE part_alias = '8poss';
-INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now)
-SELECT part_id, 'SSOP810', 810.0, 40.0, 40.3, 40.0 FROM parts WHERE part_alias = '9poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP000', 0, 22.0, 25.21, 22.0 FROM parts WHERE part_alias = '0poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP420', 420, 33.0, 33.03, 33.0 FROM parts WHERE part_alias = '1poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP550', 550, 35.0, 35.46, 35.0 FROM parts WHERE part_alias = '2poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP060', 60, 24.0, 26.32, 24.0 FROM parts WHERE part_alias = '3poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP180', 180, 27.0, 28.56, 27.0 FROM parts WHERE part_alias = '4poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP320', 320, 31.5, 31.17, 31.5 FROM parts WHERE part_alias = '5poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP260', 260, 31.0, 30.05, 31.0 FROM parts WHERE part_alias = '6poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP615', 615, 37.0, 36.67, 37.0 FROM parts WHERE part_alias = '7poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP070', 70, 27.0, 26.51, 27.0 FROM parts WHERE part_alias = '8poss'; -- is 9poss on old site
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP130', 130, 27.5, 27.63, 27.5 FROM parts WHERE part_alias = '9poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP830', 830, 40.0, 40.68, 40.0 FROM parts WHERE part_alias = '11poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP810', 810, 40.0, 40.3, 40.0 FROM parts WHERE part_alias = '12poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP670', 670, 38.0, 37.69, 38.0 FROM parts WHERE part_alias = '13poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP039', 39, 26.0, 25.95, 26.0 FROM parts WHERE part_alias = '14poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP001', 1, 25.0, 25.21, 25.0 FROM parts WHERE part_alias = '15poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP040', 40, 26.0, 25.95, 26.0 FROM parts WHERE part_alias = '16poss';
+INSERT INTO parts_oss_status (part_id, ssop_label, ssop_mm, height_orig, height_best, height_now) SELECT part_id, 'SSOP370', 370, 32.1, 32.1, 32.1 FROM parts WHERE part_alias = '17poss';
