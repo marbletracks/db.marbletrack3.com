@@ -139,4 +139,36 @@ SQL,
             description: $row['part_description'] ?? ''
         );
     }
+
+    public function getImageUrls(int $part_id): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT image_url FROM part_image_urls WHERE part_id = ?",
+            'i',
+            [$part_id]
+        );
+
+        $urls = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $urls[] = $results->data['image_url'];
+        }
+
+        return $urls;
+    }
+
+    public function updateImageUrls(int $part_id, array $urls): void
+    {
+        // Delete existing
+        $this->db->executeSQL("DELETE FROM part_image_urls WHERE part_id = ?", 'i', [$part_id]);
+
+        // Insert new
+        foreach ($urls as $url) {
+            $this->db->insertFromRecord('part_image_urls', 'is', [
+                'part_id' => $part_id,
+                'image_url' => $url
+            ]);
+        }
+    }
+
 }

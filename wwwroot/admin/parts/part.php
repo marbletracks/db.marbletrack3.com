@@ -20,6 +20,7 @@ if ($submitted) {
     $alias = trim($_POST['part_alias'] ?? '');
     $name = trim($_POST['part_name'] ?? '');
     $description = trim($_POST['part_description'] ?? '');
+    $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
 
     if ($alias === '') {
         $errors[] = "Alias is required.";
@@ -49,9 +50,10 @@ if ($submitted) {
                     $description,
                 ]
             );
-
+            $repo->updateImageUrls($part->part_id, $image_urls);
         } else {
             $repo->insert($alias, $name, $description);
+            $repo->updateImageUrls($part->part_id, $image_urls);
         }
 
         header("Location: /admin/parts/index.php");
@@ -63,6 +65,7 @@ $page = new \Template($config);
 $page->setTemplate("admin/parts/part.tpl.php");
 $page->set("errors", $errors);
 $page->set("part", $part);
+$page->set("image_urls", $part ? $repo->getImageUrls($part->part_id) : ['']);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);

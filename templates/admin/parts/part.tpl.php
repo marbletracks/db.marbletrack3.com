@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/../../lib/thumbnail_for_string.php';
+?>
+
 <div class="PagePanel">
     <h1><?= $part ? 'Edit Part' : 'Create Part' ?></h1>
 
@@ -24,6 +28,27 @@
             Description:<br>
             <textarea name="part_description" rows="5" cols="60"><?= htmlspecialchars($part->description ?? '') ?></textarea>
         </label><br><br>
+        <label>
+            Image URLs:<br>
+            <div id="image-url-fields">
+<?php foreach ($image_urls ?? [''] as $url): ?>
+    <img src="<?= thumbnail_for_string($url, 100, 100) ?>" alt="Image preview" style="max-width: 100px; max-height: 100px;"><br>
+                <input type="text" name="image_urls[]" value="<?= htmlspecialchars($url) ?>"><br>
+<?php endforeach; ?>
+            </div>
+            <button type="button" onclick="addImageUrlField()">Add another</button>
+        </label>
+
+        <script>
+            function addImageUrlField() {
+                const div = document.getElementById('image-url-fields');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'image_urls[]';
+                div.appendChild(input);
+                div.appendChild(document.createElement('br'));
+            }
+        </script>
 
         <button type="submit">Save</button>
     </form>
