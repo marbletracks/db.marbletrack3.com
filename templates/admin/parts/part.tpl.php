@@ -35,6 +35,8 @@ require_once __DIR__ . '/../../lib/thumbnail_for_string.php';
     <img src="<?= thumbnail_for_string($url, 100, 100) ?>" alt="Image preview" style="max-width: 100px; max-height: 100px;"><br>
                 <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($url) ?>"><br>
 <?php endforeach; ?>
+                <!-- add empty row so we always have space -->
+                <input type="text" size=130 name="image_urls[]" value=""><br>
             </div>
             <button type="button" onclick="addImageUrlField()">Add another</button>
         </label>
