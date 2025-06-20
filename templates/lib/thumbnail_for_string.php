@@ -21,15 +21,5 @@ function thumbnail_for_string(string $url, int $maxWidth = 200): string
                 $parts['extension'];
     }
 
-    // Example 1: If using a CDN like Imgix or Cloudinary
-    // return $url . "?w=" . $maxWidth;
-
-    // Example 2: If using your own image proxy script
-    // return "/thumb.php?src=" . urlencode($url) . "&w=" . $maxWidth;
-
-    // Example 3: If thumbnails are pre-generated in a known location
-    // return preg_replace('#/images/#', '/images/thumbs/', $url);
-
-    // For now, return same URL as placeholder fallback
     return $url;
 }
