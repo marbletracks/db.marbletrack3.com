@@ -68,7 +68,7 @@ class Worker
             FROM `workers` w
             JOIN `worker_names` wn USING (worker_id)
             LEFT JOIN workers_photos wp ON w.worker_id = wp.worker_id AND wp.is_primary = TRUE
-            WHERE wn.language_code = 'US'
+            WHERE wn.language_code = 'en'
             ORDER BY wn.worker_id
         ";
         $result_set = $di_dbase->fetchResults($query);
