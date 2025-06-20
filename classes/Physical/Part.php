@@ -1,8 +1,10 @@
 <?php
 namespace Physical;
 
+use Domain\PartHasRoles;
 final readonly class Part
 {
+    use PartHasRoles;
     /**
      * Represents a physical part of the track itself.
      *
@@ -16,6 +18,9 @@ final readonly class Part
         public string $part_alias,
         public string $name = "",
         public string $description = "",
+        public bool $is_rail = false,
+        public bool $is_support = false,
+        public bool $is_track = false,
     ) {
     }
 }

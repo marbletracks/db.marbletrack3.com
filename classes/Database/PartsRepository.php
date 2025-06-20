@@ -62,7 +62,13 @@ SQL,
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT p.part_id, p.part_alias, t.part_name, t.part_description
+SELECT p.part_id,
+       p.part_alias,
+       p.is_rail,
+       p.is_support,
+       p.is_track,
+       t.part_name,
+       t.part_description
 FROM parts p
 -- don't LEFT JOIN because some are missing translations (e.g. outer spiral)
 JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
@@ -136,7 +142,10 @@ SQL,
             part_id: (int) $row['part_id'],
             part_alias: $row['part_alias'],
             name: $row['part_name'] ?? '',
-            description: $row['part_description'] ?? ''
+            description: $row['part_description'] ?? '',
+            is_rail: $row['is_rail'] ?? false,
+            is_support: $row['is_support'] ?? false,
+            is_track: $row['is_track'] ?? false,
         );
     }
 
