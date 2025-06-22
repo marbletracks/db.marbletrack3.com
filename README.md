@@ -32,246 +32,22 @@ G Choppy: cut triple splitter: 1080 - 1308
 
 ## ✅ **Planned Work for `db.marbletrack3.com` (Next Development Goals)**
 
-### 1. **Create Subdomain and Project Base**
-
-* ✅ **Subdomain**: `https://db.marbletrack3.com`
-* **Purpose**: A database-driven mirror of `www.marbletrack3.com`, focusing on structured data access.
-* ✅ **Hosting**: Dreamhost shared hosting
-* **Stack**: PHP + MySQL (InnoDB engine recommended)
-
-### 2. **Local Project Setup**
-
-* Create a basic loginable site based on Quick, possibly with 2FA built in
-
-** check DB exists with DBExistaroo.php
-*** Look for config username
-*** Look for DB TABLE users
-*** If users table DNE:
-
-## ✅ Admin Setup Flow Checklist
-
-* A **personal starter framework**
-* Intended for spinning up **many small sites**
-* Not housing government secrets™
-* And the setup password is **not reused anywhere**
-
-…it's perfectly reasonable to:
-
-### ✅ **Hardcode the bcrypt hash directly into the repo**
-
-…in a class or config file like:
-
-```php
-class SetupPassword {
-    public const HASH = '$2y$10$TtO6K3...Wc4zU3rO'; // bcrypt for 'letmein123'
-}
-```
-
-Then check with:
-
-```php
-if (password_verify($_POST['setup_password'], \SetupPassword::HASH)) {
-    $_SESSION['setup_verified'] = true;
-}
-```
-
----
-
-## 🧩 Bonus Thought
-
-If you ever do want to add a *tiny* bit of plausible deniability without making your life harder, just put the hash in a file like `config/setup-password.php` with a comment:
-
-```php
-<?php
-// This is a per-site bcrypt hash for first-time admin setup.
-// Safe to keep in repo. Never reused elsewhere.
-
-return '$2y$10$TtO6K3...Wc4zU3rO';
-```
-
-Minimal indirection, but you can still include it like:
-
-```php
-$hash = require __DIR__ . '/../config/setup-password.php';
-```
-
----
-
-## 🧠 TL;DR
-
-Your decision is **rational, secure enough, and aligned with your workflow**. Ignore the purists. Ship your code. Build your kingdoms. 👑
-
----
-
-### 2️⃣ **Make Sure the Password Check Works**
-
-* In `/create/index.php`, load the secret and validate user input:
-
-```php
-$secret = require __DIR__ . '/../.setup_secret.php';
-
-if (isset($_POST['setup_password'])) {
-    if (password_verify($_POST['setup_password'], $secret['setup_password_hash'])) {
-        $_SESSION['setup_verified'] = true;
-        // Continue to admin creation form
-    } else {
-        echo "❌ Incorrect setup password.";
-    }
-}
-```
-
-* Manually test this by entering correct and incorrect values.
-
----
-
-### 3️⃣ **Add the “New Password” Field for Admin**
-
-* After setup password is validated, show a form with:
-
-```html
-<form method="post">
-  <label>Admin Username:</label>
-  <input type="text" name="username" required><br>
-
-  <label>New Admin Password:</label>
-  <input type="password" name="new_password" required><br>
-
-  <button type="submit">Create Admin</button>
-</form>
-```
-
----
-
-### 4️⃣ **Debug: Print the Received Password**
-
-> (Only for testing — remove this afterward.)
-
-```php
-if (isset($_POST['new_password'])) {
-    echo "<pre>New password: " . htmlspecialchars($_POST['new_password']) . "</pre>";
-}
-```
-
-Check:
-
-* Password is being submitted properly
-* Nothing is missing or truncated
-
----
-
-### 5️⃣ **Encrypt the Password and Write to DB**
-
-* Use `password_hash()` before inserting:
-
-```php
-$password_hash = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-
-$db = \Database\Base::getDB($config);
-$db->insertFromRecord('users', 'ss', [
-    'username' => $_POST['username'],
-    'password_hash' => $password_hash
-]);
-```
-
-* Catch errors if username already exists.
-
----
-
-### 6️⃣ **Confirm You Cannot Visit `/create/` Again**
-
-* Once admin exists, `prepend.php` should detect it:
-
-```php
-$testaroo = new \Database\DBTestaroo($config);
-if (empty($testaroo->checkaroo())) {
-    header("Location: /login.php");
-    exit;
-}
-```
-
-* Visiting `/create/` should now redirect you to `/login.php`
-
----
-
-### 7️⃣ **Confirm You Can Log In With the New Password**
-
-* Go to your login form
-* Use `password_verify($input, $stored_hash)` to authenticate:
-
-```php
-// Login logic
-$stored_hash = $row['password_hash'];
-if (password_verify($_POST['password'], $stored_hash)) {
-    echo "✅ Login successful";
-} else {
-    echo "❌ Incorrect password";
-}
-```
-
-* Test with both correct and incorrect credentials
-
----
-
-### 🚀 Optional Clean-Up
-
-* Delete `.setup_secret.php` after first use
-* Unset `$_SESSION['setup_verified']` once admin is created
-* Log IP or time of successful setup if you want traceability
-
-
-/end If users tables DNE ^^
-
-**
-** login page
-** login
-** 2FA ???
-** admin page
-** Lemur: scp_to_example.sh
-
-* Move README.md somewhere safe
-* Rewrite README.md to minimal biz
-* Save that new repo next to new-DH-whatsit repo
-
-* Keep going:
-* Restore README
-
-* Create a **local Git repository**
-* Initialize directory structure:
-
-e.g.
-
-  ```
-  /public_html/
-    index.php
-    /workers/
-    /parts/
-    /snippets/
-    /admin/
-  ```
-* Add `.gitignore`, `.htaccess`, and setup URL routing if desired (e.g., route through `index.php`)
-
----
 
 Consider a blog post about not using passwords
 https://chatgpt.com/c/6847ecd2-3c70-8003-b9b2-c2a4d4cac8dc
 
 ---
 
-### 4. **Create Migrations**
-
-* Start with the full SQL schema we finalized
-* Include:
-
-  * `workers`, `worker_names`
-  * `parts`, `part_histories`, `part_history_translations`
-  * `frames`, `snippets`, `frames_2_snippets`
-  * `actions`, `part_connections`
-* Use raw `.sql` or a PHP-based migration tool
-
-## 🗃️ SQL Database Schema Ideas
-
 
 ### 🧩 `parts`
+
+1. (22June2025) activate issues on this repo
+1. (22June2025) make parts_photos (sp) and worker_photos(sp) have FS code and ("temporarily") b.rn URL
+4. (22June2025) Refactor photo Trait to handle FS codes and b.rn URLs in same table
+5. send table name if needed (or get from class somehow $this->images_table
+2. (22June2025) add JS to episode edit page to wrap b.rn frame URLs in `img` HTML tags
+3. (22June2025) add JS to episode edit page to convert short codes to `a` HTML links 
+
 
 
 ---
@@ -377,7 +153,7 @@ CREATE TABLE actions (
 * Create URLs like:
 
   ```
-  https://db.marbletrack3.com/workers/US/g_choppy
+  https://db.marbletrack3.com/workers/en/g_choppy
   ```
 * Page should show:
 
@@ -392,8 +168,8 @@ CREATE TABLE actions (
 * Allow alias-based shortcuts:
 
   ```
-  /workers/US/gc  →  /workers/US/g_choppy
-  /workers/JA/cm  →  /workers/JA/candy_mama
+  /workers/en/gc  →  /workers/en/g_choppy
+  /workers/ja/cm  →  /workers/ja/candy_mama
   ```
 * Implement using `.htaccess` or internal PHP mapping
 
