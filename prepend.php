@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Tryna augment episode editor";
+const SENTIMENTAL_VERSION = "Tryna Get Photos Right First";
 
 # write errors to screen
 ini_set('display_errors', 1);
