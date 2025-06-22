@@ -3,6 +3,20 @@ namespace Domain;
 
 trait HasPhotos
 {
+    public function getURLForCode(string $code): string
+    {
+        if (empty($code)) {
+            return '';
+        }
+
+        // If the code is a URL, return it directly
+        if (filter_var($code, FILTER_VALIDATE_URL)) {
+            return $code;
+        }
+
+        // Otherwise, assume it's a local file path and construct the URL
+        return "https://d2f8m59m4mubfx.cloudfront.net/W240/{$code}.jpg";
+    }
     public function thumbnailFor(string $url, int $maxWidth = 200): string
     {
         if (strpos($url, 'thumb') !== false || strpos($url, 'thumbnail') !== false) {
