@@ -12,11 +12,9 @@ $repo = new \Database\PhotoRepository(db: $mla_database);
 $allPhotos = $mla_database->fetchResults(
     sql: "SELECT photo_id FROM photos ORDER BY photo_id DESC"
 );
+$allPhotos->toArray();
 $photos = $repo->findByIds(
-    photoIds: array_column(
-        array: $allPhotos->data ?? [],
-        column_key: 'photo_id'
-    )
+    photoIds: $allPhotos->data ?? [],
 );
 
 $page = new \Template(config: $config);

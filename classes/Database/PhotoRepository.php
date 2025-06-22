@@ -33,12 +33,23 @@ class PhotoRepository
 
         $placeholders = implode(',', array_fill(0, count($photoIds), '?'));
         $types = str_repeat('i', count($photoIds));
-        $r = $this->db->fetchResults("SELECT photo_id, code, url FROM photos WHERE photo_id IN ($placeholders)", $types, $photoIds);
+        $results = $this->db->fetchResults("SELECT photo_id, code, url FROM photos WHERE photo_id IN ($placeholders)", $types, [$photoIds]);
 
+        $results->toArray();
         $photos = [];
-        foreach ($r->data as $row) {
-            $photos[(int) $row['photo_id']] = new Photo((int) $row['photo_id'], $row['code'], $row['url']);
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $photos[] = $this->hydrate($results->data);
         }
         return $photos;
+    }
+
+    private function hydrate(array $data): Photo
+    {
+        return new Photo(
+            photo_id: (int) $data['photo_id'],
+            code: $data['code'] ?? null,
+            url: $data['url'] ?? null
+        );
     }
 }
