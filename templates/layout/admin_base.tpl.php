@@ -11,6 +11,7 @@
     <div class="NavBar">
         <a href="/">View Site</a> |
         <a href="/admin/">Dashboard</a> |
+        <a href="/admin/photos">Photos</a> |
         <a href="/admin/livestreams">Livestreams</a> |
         <a href="/admin/episodes">Episodes</a> |
         <a href="/admin/workers">Workers</a> |
