@@ -62,7 +62,13 @@ SQL,
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT p.part_id, p.part_alias, t.part_name, t.part_description
+SELECT p.part_id,
+       p.part_alias,
+       p.is_rail,
+       p.is_support,
+       p.is_track,
+       t.part_name,
+       t.part_description
 FROM parts p
 -- don't LEFT JOIN because some are missing translations (e.g. outer spiral)
 JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
@@ -132,13 +138,54 @@ SQL,
     private function hydrate(array $row): Part
     {
         // print_rob("Hydrating Part with data: " . print_r($row, true), false);
+        $image_url = $this->getPrimaryPhotoUrl((int) $row['part_id']);
+
         return new Part(
             part_id: (int) $row['part_id'],
             part_alias: $row['part_alias'],
             name: $row['part_name'] ?? '',
-            description: $row['part_description'] ?? ''
+            description: $row['part_description'] ?? '',
+            primary_image_url: $image_url,
+            is_rail: $row['is_rail'] ?? false,
+            is_support: $row['is_support'] ?? false,
+            is_track: $row['is_track'] ?? false,
         );
     }
+
+    public function getPrimaryPhotoUrl(int $part_id): ?string
+    {
+        // Prefer photo_code-based image if it exists and is primary
+        $result = $this->db->fetchResults(
+            <<<SQL
+SELECT photo_code
+FROM parts_photos
+WHERE part_id = ? AND is_primary = TRUE
+LIMIT 1
+SQL,
+            'i',
+            [$part_id]
+        );
+
+        if ($result && !empty($result->data['photo_code'])) {
+            return "https://d2f8m59m4mubfx.cloudfront.net/{$result->data['photo_code']}.jpg";
+        }
+
+        // Fallback: use first image URL
+        $result = $this->db->fetchResults(
+            <<<SQL
+SELECT image_url
+FROM part_image_urls
+WHERE part_id = ?
+ORDER BY image_url_id ASC
+LIMIT 1
+SQL,
+            'i',
+            [$part_id]
+        );
+
+        return $result->data['image_url'] ?? null;
+    }
+
 
     public function getImageUrls(int $part_id): array
     {
@@ -170,5 +217,4 @@ SQL,
             ]);
         }
     }
-
 }

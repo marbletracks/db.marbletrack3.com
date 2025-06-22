@@ -61,7 +61,10 @@ SQL,
     {
         $results = $this->db->fetchResults(
             sql: <<<SQL
-SELECT w.worker_id, w.worker_alias, n.worker_name, n.worker_description
+SELECT w.worker_id,
+       w.worker_alias,
+       n.worker_name,
+       n.worker_description
 FROM workers w
 JOIN worker_names n ON w.worker_id = n.worker_id AND n.language_code = ?
 ORDER BY w.worker_id ASC

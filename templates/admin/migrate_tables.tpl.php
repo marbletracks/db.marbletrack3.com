@@ -1,4 +1,6 @@
 <h1>MarbleTrack3 Table Migration Dashboard</h1>
+
+<a href="https://west1-phpmyadmin.dreamhost.com/signon.php?pma_servername=eich.robnugen.com" _target="_blank">Eich</a>
 <script>
     function applyMigration(migration) {
         if (confirm("Are you sure you want to apply this migration?\n\n" + migration)) {
