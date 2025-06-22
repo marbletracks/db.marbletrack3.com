@@ -11,4 +11,7 @@
             </li>
         <?php endforeach; ?>
     </ul>
+    <p>
+        <a href="/admin/photos/photo.php">Add New Photo</a>
+    </p>
 </div>
