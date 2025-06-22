@@ -31,6 +31,7 @@ class PhotoRepository
         if (empty($photoIds))
             return [];
 
+        print_rob("Finding photos by IDs: " . implode(',', $photoIds) . "\n");
         $placeholders = implode(',', array_fill(0, count($photoIds), '?'));
         $types = str_repeat('i', count($photoIds));
         $results = $this->db->fetchResults("SELECT photo_id, code, url FROM photos WHERE photo_id IN ($placeholders)", $types, [$photoIds]);
@@ -44,6 +45,17 @@ class PhotoRepository
         return $photos;
     }
 
+    public function findAll(): array
+    {
+        $results = $this->db->fetchResults("SELECT photo_id, code, url FROM photos ORDER BY photo_id DESC");
+        $results->toArray();
+        $photos = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $photos[] = $this->hydrate($results->data);
+        }
+        return $photos;
+    }
     private function hydrate(array $data): Photo
     {
         return new Photo(

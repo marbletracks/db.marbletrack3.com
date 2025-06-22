@@ -9,13 +9,7 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 $repo = new \Database\PhotoRepository(db: $mla_database);
-$allPhotos = $mla_database->fetchResults(
-    sql: "SELECT photo_id FROM photos ORDER BY photo_id DESC"
-);
-$allPhotos->toArray();
-$photos = $repo->findByIds(
-    photoIds: $allPhotos->data ?? [],
-);
+$photos = $repo->findAll();
 
 $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/photos/index.tpl.php");
