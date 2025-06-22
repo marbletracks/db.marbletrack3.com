@@ -41,15 +41,6 @@ https://chatgpt.com/c/6847ecd2-3c70-8003-b9b2-c2a4d4cac8dc
 
 ### 🧩 `parts`
 
-1. (22June2025) activate issues on this repo
-1. (22June2025) make parts_photos (sp) and worker_photos(sp) have FS code and ("temporarily") b.rn URL
-4. (22June2025) Refactor photo Trait to handle FS codes and b.rn URLs in same table
-5. send table name if needed (or get from class somehow $this->images_table
-2. (22June2025) add JS to episode edit page to wrap b.rn frame URLs in `img` HTML tags
-3. (22June2025) add JS to episode edit page to convert short codes to `a` HTML links 
-
-
-
 ---
 
 ### 🎞️ `frames`
