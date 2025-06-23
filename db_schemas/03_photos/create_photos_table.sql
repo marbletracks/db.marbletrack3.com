@@ -4,12 +4,34 @@ CREATE TABLE IF NOT EXISTS photos (
     url VARCHAR(255)          -- fallback or legacy URL
 );
 
-DROP TABLE IF EXISTS notebooks_2_photos;
-
 CREATE TABLE IF NOT EXISTS notebooks_2_photos (
     notebook_id INT NOT NULL,
     photo_id INT NOT NULL,
     photo_sort INT NOT NULL DEFAULT 0,
     is_primary BOOLEAN DEFAULT NULL,
     PRIMARY KEY (notebook_id, photo_id)
+);
+
+CREATE TABLE IF NOT EXISTS pages_2_photos (
+    page_id INT NOT NULL,
+    photo_id INT NOT NULL,
+    photo_sort INT NOT NULL DEFAULT 0,
+    is_primary BOOLEAN DEFAULT NULL,
+    PRIMARY KEY (page_id, photo_id)
+);
+
+CREATE TABLE IF NOT EXISTS workers_2_photos (
+    worker_id INT NOT NULL,
+    photo_id INT NOT NULL,
+    photo_sort INT NOT NULL DEFAULT 0,
+    is_primary BOOLEAN DEFAULT NULL,
+    PRIMARY KEY (worker_id, photo_id)
+);
+
+CREATE TABLE IF NOT EXISTS parts_2_photos (
+    part_id INT NOT NULL,
+    photo_id INT NOT NULL,
+    photo_sort INT NOT NULL DEFAULT 0,
+    is_primary BOOLEAN DEFAULT NULL,
+    PRIMARY KEY (part_id, photo_id)
 );
