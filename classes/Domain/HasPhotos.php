@@ -1,4 +1,8 @@
 <?php
+
+
+
+/*   OLD not used since 23 June 2025:
 namespace Domain;
 
 trait HasPhotos
@@ -47,3 +51,4 @@ trait HasPhotos
         return $url; // fallback
     }
 }
+    */
