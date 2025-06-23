@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Fix photos for Workers like Notebook";
+const SENTIMENTAL_VERSION = "Can now edit Workers with photos like Notebook";
 
 # write errors to screen
 ini_set('display_errors', 1);

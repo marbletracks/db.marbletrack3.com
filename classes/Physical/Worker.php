@@ -1,11 +1,11 @@
 <?php
 namespace Physical;
 
-use Domain\HasPhotos;
-
-final readonly class Worker
+/**
+ * Not readonly because photos are added by the Repo
+ */
+class Worker
 {
-    use HasPhotos;
     public function __construct(
         public int $worker_id,
         public string $worker_alias,
