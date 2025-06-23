@@ -37,23 +37,46 @@ trait HasPhotos
         $key = $this->getPrimaryKeyColumn();
         $id = $this->getId();
 
-        $r = $this->getDb()->fetchResults(
+        $results = $this->getDb()->fetchResults(
             "SELECT photo_id, is_primary FROM {$table} WHERE {$key} = ? ORDER BY photo_sort ASC, photo_id ASC",
             'i',
             [$id]
         );
+        $results->toArray();
+        $photoIds = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $photoIds[] = $results->data['photo_id'];
+        }
 
-        $photoIds = array_column($r->data, 'photo_id');
+        // $photoIds = array_column($r->data, 'photo_id');
         $photos = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
 
-        foreach ($r->data as $row) {
-            $pid = (int)$row['photo_id'];
-            $photo = $photos[$pid] ?? null;
+        foreach ($photos as $photo) {
+            // $pid = (int)$row['photo_id'];
+            // $photo = $photos[$pid] ?? null;
             if ($photo) {
-                $this->addPhoto($photo, !empty($row['is_primary']));
+                $this->addPhoto($photo); // , !empty($row['is_primary']));
             }
         }
     }
+
+////
+
+    // public function findAll(): array
+    // {
+    //     $results = $this->db->fetchResults("SELECT photo_id, code, url FROM photos ORDER BY photo_id DESC");
+    //     $results->toArray();
+    //     $photos = [];
+    //     for ($i = 0; $i < $results->numRows(); $i++) {
+    //         $results->setRow($i);
+    //         $photos[] = $this->hydrate($results->data);
+    //     }
+    //     return $photos;
+    // }
+
+    ////
+
 
     /**
      * @param Photo[] $photos
