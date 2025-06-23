@@ -61,27 +61,18 @@ trait HasPhotos
         }
     }
 
-////
-
-    // public function findAll(): array
-    // {
-    //     $results = $this->db->fetchResults("SELECT photo_id, code, url FROM photos ORDER BY photo_id DESC");
-    //     $results->toArray();
-    //     $photos = [];
-    //     for ($i = 0; $i < $results->numRows(); $i++) {
-    //         $results->setRow($i);
-    //         $photos[] = $this->hydrate($results->data);
-    //     }
-    //     return $photos;
-    // }
-
-    ////
-
+    public function savePhotosFromUrls(array $urls): void
+    {
+        $photoRepo = new PhotoRepository($this->getDb());
+        $photos = $photoRepo->findOrCreateByUrls($urls);
+        $this->savePhotos($photos);
+    }
 
     /**
      * @param Photo[] $photos
      */
     public function savePhotos(array $photos): void {
+        // echo "<pre>";
         $table = $this->getPhotoLinkingTable();
         $key = $this->getPrimaryKeyColumn();
         $id = $this->getId();
@@ -89,7 +80,9 @@ trait HasPhotos
         $this->getDb()->executeSQL("DELETE FROM {$table} WHERE {$key} = ?", 'i', [$id]);
 
         $sort = 0;
+        // print_rob($photos,false);
         foreach ($photos as $photo) {
+            // print_rob([$id, $photo->photo_id, $sort, ($photo === $this->primaryPhoto ? 1 : 0)],false);
             $this->getDb()->executeSQL(
                 "INSERT INTO {$table} ({$key}, photo_id, photo_sort, is_primary) VALUES (?, ?, ?, ?)",
                 'iiii',
