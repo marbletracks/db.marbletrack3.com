@@ -22,13 +22,9 @@
         </label><br><br>
         <label>
             Image URLs:<br>
-            <?php if ($notebook->photos[0]): ?>
-    <img src="<?= htmlspecialchars($notebook->photos[0]->getUrl()) ?>" alt="Notebook photo"
-        style="max-width: 100px; max-height: 100px;"><br>
-<?php endif; ?>
             <div id="image-url-fields">
 <?php foreach ($notebook->photos ?? [''] as $photo): ?>
-    <img src="?= $part->thumbnailFor(url: $photo, maxWidth: 100) ?>" alt="Image preview" style="max-width: 100px; max-height: 100px;"><br>
+    <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"><br>
                 <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
 <?php endforeach; ?>
                 <!-- add empty row so we always have space -->
