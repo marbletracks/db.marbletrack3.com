@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Tryna Get Photos Right First";
+const SENTIMENTAL_VERSION = "Fix photos for Workers like Notebook";
 
 # write errors to screen
 ini_set('display_errors', 1);
