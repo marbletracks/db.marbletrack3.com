@@ -20,6 +20,12 @@ class NotebookRepository
     {
         return $this->notebook_id;
     }
+    // must do this before saving photos
+    // so that HasPhotos knows which notebook to save photos for
+    public function setNotebookId(int $notebook_id): void
+    {
+        $this->notebook_id = $notebook_id;
+    }
     public function getDb(): DbInterface
     {
         return $this->db;
