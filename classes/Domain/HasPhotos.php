@@ -33,6 +33,8 @@ trait HasPhotos
     }
 
     public function loadPhotos(): void {
+        $this->photos = [];            // 💡 Clear previously loaded photos
+        $this->primaryPhoto = null;    // 💡 Reset primary photo too
         $table = $this->getPhotoLinkingTable();
         $key = $this->getPrimaryKeyColumn();
         $id = $this->getId();
