@@ -1,5 +1,84 @@
 <?php
 
+namespace Domain;
+
+use Database\DbInterface;
+use Database\PhotoRepository;
+use Media\Photo;
+
+trait HasPhotos
+{
+    private array $photos = []; // array of Photo
+    private ?Photo $primaryPhoto = null;
+
+    abstract public function getId(): int;
+    abstract public function getDb(): DbInterface;
+    abstract public function getPhotoLinkingTable(): string;
+    abstract public function getPrimaryKeyColumn(): string;
+
+    public function addPhoto(Photo $photo, bool $isPrimary = false): void {
+        $this->photos[] = $photo;
+        if ($isPrimary || $this->primaryPhoto === null) {
+            $this->primaryPhoto = $photo;
+        }
+    }
+
+    /** @return Photo[] */
+    public function getPhotos(): array {
+        return $this->photos;
+    }
+
+    public function getPrimaryPhoto(): ?Photo {
+        return $this->primaryPhoto;
+    }
+
+    public function loadPhotos(): void {
+        $table = $this->getPhotoLinkingTable();
+        $key = $this->getPrimaryKeyColumn();
+        $id = $this->getId();
+
+        $r = $this->getDb()->fetchResults(
+            "SELECT photo_id, is_primary FROM {$table} WHERE {$key} = ? ORDER BY photo_sort ASC, photo_id ASC",
+            'i',
+            [$id]
+        );
+
+        $photoIds = array_column($r->data, 'photo_id');
+        $photos = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
+
+        foreach ($r->data as $row) {
+            $pid = (int)$row['photo_id'];
+            $photo = $photos[$pid] ?? null;
+            if ($photo) {
+                $this->addPhoto($photo, !empty($row['is_primary']));
+            }
+        }
+    }
+
+    /**
+     * @param Photo[] $photos
+     */
+    public function savePhotos(array $photos): void {
+        $table = $this->getPhotoLinkingTable();
+        $key = $this->getPrimaryKeyColumn();
+        $id = $this->getId();
+
+        $this->getDb()->executeSQL("DELETE FROM {$table} WHERE {$key} = ?", 'i', [$id]);
+
+        $sort = 0;
+        foreach ($photos as $photo) {
+            $this->getDb()->executeSQL(
+                "INSERT INTO {$table} ({$key}, photo_id, photo_sort, is_primary) VALUES (?, ?, ?, ?)",
+                'iiii',
+                [$id, $photo->photo_id, $sort, ($photo === $this->primaryPhoto ? 1 : 0)]
+            );
+            $sort++;
+        }
+
+        $this->photos = $photos;
+    }
+}
+
 
 
 /*   OLD not used since 23 June 2025:
