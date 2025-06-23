@@ -2,12 +2,19 @@
 namespace Database;
 
 use Database\DbInterface;
+use Domain\HasPhotos;
 use Physical\Worker;
 
 class WorkersRepository
 {
+    use HasPhotos;
     private DbInterface $db;
     private string $langCode;
+
+    private string $photoLinkingTable = 'workers_2_photos';
+    private string $primaryKeyColumn = 'worker_id';
+    private int $worker_id;  // Must be set when the Worker is loaded
+
 
     public function __construct(DbInterface $db, string $langCode)
     {
@@ -15,6 +22,28 @@ class WorkersRepository
         $this->langCode = $langCode;
     }
 
+    public function getDb(): DbInterface
+    {
+        return $this->db;
+    }
+    public function getPhotoLinkingTable(): string
+    {
+        return $this->photoLinkingTable;
+    }
+    public function getPrimaryKeyColumn(): string
+    {
+        return $this->primaryKeyColumn;
+    }
+    public function getId(): int
+    {
+        return $this->worker_id;
+    }
+    // must do this before saving photos
+    // so that HasPhotos knows which worker to save photos for
+    public function setWorkerId(int $worker_id): void
+    {
+        $this->worker_id = $worker_id;
+    }
     public function findById(int $worker_id): ?Worker
     {
         $results = $this->db->fetchResults(
@@ -31,6 +60,7 @@ SQL,
         if ($results->numRows() === 0) {
             return null;
         }
+        $this->worker_id = $worker_id; // Set the worker_id for HasPhotos
 
         $results->setRow(0);
         return $this->hydrate($results->data);
@@ -54,6 +84,7 @@ SQL,
         }
 
         $results->setRow(0);
+        $this->worker_id = (int)$results->data['worker_id']; // Set the worker_id for HasPhotos
         return $this->hydrate($results->data);
     }
 
@@ -76,41 +107,11 @@ SQL,
         $workers = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
+            $this->worker_id = (int)$results->data['worker_id']; // Set the worker_id for HasPhotos
             $workers[] = $this->hydrate($results->data);
         }
 
         return $workers;
-    }
-
-    public function getPhotosForWorker(int $worker_id, bool $primaryOnly = false): array
-    {
-        $sql = <<<SQL
-    SELECT photo_id, photo_code, friendly_name, caption, is_primary, created_at
-    FROM workers_photos
-    WHERE worker_id = ?
-    SQL;
-
-        if ($primaryOnly) {
-            $sql .= " AND is_primary = 1";
-        }
-
-        $sql .= " ORDER BY is_primary DESC, created_at ASC";
-
-        $results = $this->db->fetchResults($sql, 'i', [$worker_id]);
-
-        $photos = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $photos[] = [
-                'photo_id' => (int)$results->data['photo_id'],
-                'photo_code' => $results->data['photo_code'],
-                'friendly_name' => $results->data['friendly_name'],
-                'caption' => $results->data['caption'],
-                'is_primary' => (bool)$results->data['is_primary'],
-                'created_at' => $results->data['created_at'],
-            ];
-        }
-        return $photos;
     }
 
     public function insert(string $alias, string $name = '', string $description = ''): int
@@ -139,11 +140,14 @@ SQL,
 
     private function hydrate(array $row): Worker
     {
-        return new Worker(
+        $worker = new Worker(
             worker_id: (int) $row['worker_id'],
             worker_alias: $row['worker_alias'],
             name: $row['worker_name'] ?? '',
             description: $row['worker_description'] ?? ''
         );
+        $this->loadPhotos();  // defined in HasPhotos trait
+        $worker->photos = $this->getPhotos(); // Get photos from HasPhotos trait
+        return $worker;
     }
 }
