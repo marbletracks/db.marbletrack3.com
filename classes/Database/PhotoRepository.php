@@ -33,7 +33,7 @@ class PhotoRepository
 
         // make sure photoIds are all integers
         $photoIds = array_map(callback: 'intval', array: $photoIds);
-        // get photo
+        // get photo ids as a comma-separated string
         $photoIds = implode(separator: ',', array: $photoIds);
         $results = $this->db->fetchResults(
             sql: "SELECT photo_id, code, url FROM photos WHERE photo_id IN ($photoIds)"

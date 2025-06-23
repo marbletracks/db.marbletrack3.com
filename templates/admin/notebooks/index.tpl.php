@@ -1,7 +1,7 @@
 <div class="PagePanel">
     <h1>All Notebooks</h1>
     <ul>
-        <?php foreach ($notebooks as $notebook): /* print_rob($notebook); */ ?>
+        <?php foreach ($notebooks as $notebook): ?>
             <li>
                 <strong>ID <?= htmlspecialchars($notebook->notebook_id) ?>:</strong>
 <?php if ($notebook->photos[0]): ?>

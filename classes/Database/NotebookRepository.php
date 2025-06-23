@@ -94,7 +94,7 @@ class NotebookRepository
             created_at: $row['created_at'] ?? null
         );
         $this->loadPhotos();  // defined in HasPhotos trait
-        $notebook->photos = $this->getPhotos();  // Will this work?
+        $notebook->photos = $this->getPhotos();  // return an array of photos
         return $notebook;
     }
 }
