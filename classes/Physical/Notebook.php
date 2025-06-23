@@ -1,6 +1,10 @@
 <?php
 
 namespace Physical;
+
+/**
+ * Not readonly because photos are added by the Repo
+ */
 class Notebook
 {
     public function __construct(
