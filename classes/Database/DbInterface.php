@@ -7,4 +7,5 @@ interface DbInterface {
     public function insertFromRecord(string $tablename, string $paramtypes, $record);
     public function fetchResults($sql, $paramtypes = null, $var1 = null);
     public function executeSQL($sql, $paramtypes = null, $var1 = null);
+    public function insertId(): ?int;
 }

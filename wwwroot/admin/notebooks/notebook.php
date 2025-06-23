@@ -19,6 +19,7 @@ $notebook = $notebook_id > 0 ? $repo->findById($notebook_id) : null;
 if ($submitted) {
     $title = trim($_POST['title'] ?? '');
     $created_at = trim($_POST['created_at'] ?? '');
+    $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
 
     if ($title === '') {
         $errors[] = "Title is required.";
@@ -31,12 +32,16 @@ if ($submitted) {
                 'ssi',
                 [$title, $created_at, $notebook_id]
             );
+            $repo->setNotebookId(notebook_id: $notebook_id);
+            $repo->savePhotosFromUrls(urls: $image_urls);
         } else {
             $mla_database->executeSQL(
                 "INSERT INTO notebooks (title, created_at) VALUES (?, ?)",
                 'ss',
                 [$title, $created_at]
             );
+            $repo->setNotebookId(notebook_id: $mla_database->insertId());
+            $repo->savePhotosFromUrls(urls: $image_urls);
         }
 
         header("Location: /admin/notebooks/index.php");
