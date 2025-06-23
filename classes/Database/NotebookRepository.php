@@ -61,6 +61,7 @@ class NotebookRepository
         $notebooks = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
+            $this->notebook_id = (int) $results->data['notebook_id']; // Set the notebook_id for HasPhotos
             $notebooks[] = $this->hydrate($results->data);
         }
 
