@@ -57,7 +57,6 @@ function fetch_url($url)
     ]);
     $response = curl_exec($ch);
 
-    // print_rob("Response: " . substr($response, 0, 2000) . "...", false);
     if (curl_errno($ch)) {
         throw new Exception('Curl error: ' . curl_error($ch));
     }
@@ -66,7 +65,9 @@ function fetch_url($url)
     curl_close($ch);
 
     if ($http_code !== 200) {
-        throw new Exception("Non-200 response: $http_code");
+        print_rob(object: "Response: " . substr($response, 0, 2000) . "...", exit: false);
+        print_rob("https://console.cloud.google.com/apis/credentials/key/59d4845a-0851-48f6-82a4-4d33b75ebcf1?inv=1&invt=Ab011A&project=db-mt3-com-15-june-2025");
+        throw new Exception("Non-200 response (see above)");
     }
 
     return $response;
