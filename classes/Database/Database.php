@@ -83,6 +83,11 @@ class Database implements DbInterface {
         return $result;
     }
 
+    public function insertId(): ?int
+    {
+        return $this->dbObj->insert_id ?: null;
+    }
+
     /*
      * Executes an UPDATE, INSERT or DELETE statement on the database.
      * Returns the insert_id or affected_rows, where relevant, or null.
