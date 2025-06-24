@@ -100,4 +100,8 @@ class Livestream
     {
         return $this->platform;
     }
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 }
