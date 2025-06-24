@@ -24,7 +24,7 @@ class LivestreamFactory
             $ls->setExternalId($apiItem['id']); // this will eventually be set as external_id
             $ls->setTitle($apiItem['title'] ?? '');
             $ls->setDescription($apiItem['description'] ?? '');
-            $ls->setPublishedAt(date('Y-m-d H:i:s', strtotime($apiItem['started_at'])));
+            $ls->setPublishedAt(date('Y-m-d H:i:s', strtotime($apiItem['published_at'])));
         } else {
             throw new \InvalidArgumentException("Unknown platform: $platform");
         }
