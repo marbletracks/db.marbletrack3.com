@@ -17,7 +17,7 @@ class LivestreamsRepository
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT livestream_id, youtube_video_id, title, description, published_at, status, created_at
+SELECT livestream_id, external_id, title, description, published_at, status, created_at
 FROM livestreams
 ORDER BY published_at DESC, livestream_id DESC
 SQL
@@ -28,7 +28,7 @@ SQL
             $results->setRow($i);
             $livestreams[] = new Livestream(
                 livestream_id: (int) $results->data['livestream_id'],
-                youtube_video_id: $results->data['youtube_video_id'],
+                external_id: $results->data['external_id'],
                 title: $results->data['title'] ?? '',
                 description: $results->data['description'] ?? '',
                 published_at: $results->data['published_at'],
@@ -44,7 +44,7 @@ SQL
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT livestream_id, youtube_video_id, title, description, published_at, status, created_at
+SELECT livestream_id, external_id, title, description, published_at, status, created_at
 FROM livestreams
 WHERE livestream_id = ?
 SQL,
@@ -59,7 +59,7 @@ SQL,
         $results->setRow(0);
         return new Livestream(
             livestream_id: (int) $results->data['livestream_id'],
-            youtube_video_id: $results->data['youtube_video_id'],
+            external_id: $results->data['external_id'],
             title: $results->data['title'] ?? '',
             description: $results->data['description'] ?? '',
             published_at: $results->data['published_at'],
