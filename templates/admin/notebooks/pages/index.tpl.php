@@ -3,8 +3,8 @@
 ?>
 <div class="PagePanel">
     <h1>All Pages</h1>
-    <ul>
     <p><a href="/admin/notebooks/pages/page.php">Create New Page</a></p>
+    <ul>
         <?php foreach ($pages as $page): ?>
             <li>
                 <strong>ID <?= htmlspecialchars($page->page_id) ?>:</strong>
