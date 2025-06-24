@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Can now edit Workers with photos like Notebook";
+const SENTIMENTAL_VERSION = "Import Twitch Livestreams";
 
 # write errors to screen
 ini_set('display_errors', 1);
