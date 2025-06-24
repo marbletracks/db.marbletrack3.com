@@ -55,10 +55,8 @@ class Livestream
         $result = $this->di_dbase->fetchResults($query, 's', $external_id);
 
         if ($result->toArray()) {
-            echo "Found livestream in database: " . $external_id . "<br>";
             return true;
         }
-        echo "Livestream " . $external_id . " not found in database<br>";
         return false;
     }
 
