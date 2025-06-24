@@ -96,4 +96,8 @@ class Livestream
     {
         return $this->livestream_id;
     }
+    public function getPlatform(): string
+    {
+        return $this->platform;
+    }
 }
