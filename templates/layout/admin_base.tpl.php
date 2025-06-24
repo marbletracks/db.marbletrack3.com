@@ -18,6 +18,7 @@
         <a href="/admin/parts">Parts</a> |
         <a href="/admin/parts/oss">Outer Spiral Supports</a> |
         <a href="/admin/notebooks">Notebooks</a> |
+        <a href="/admin/notebooks/pages">Pages</a> |
         <a href="/admin/youtube/poll_livestreams.php">Gimme Livestreams</a>
     </div>
     <div class="PageWrapper">
