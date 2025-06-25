@@ -26,22 +26,19 @@ class RemoteLivestream
 
         $params = [];
         $types = "";
-        $types .= "s";
         $params['external_id'] = $this->external_id;
-        $types .= "s";
         $params['platform'] = $this->platform;
-        $types .= "s";
         $params['title'] = $this->title;
-        $types .= "s";
         $params['description'] = $this->description;
-        $types .= "s";
         $params['thumbnail'] = $this->thumbnail_url;
-        $types .= "s";
-        $params['duration'] = $this->duration; // Duration can be null
-        $types .= "s";
+        $params['duration'] = $this->duration;
         $params['published_at'] = $this->published_at;
-        $types .= "s";
         $params['status'] = $this->status;
+        // Make types be s for each param.
+        // If future Rob inserts a non-string value above
+        // see the commit after 4576b0408226c43e610f4b4b2cfc8fce2ace291e
+        // You might be able to just revert this commit.
+        $types = str_repeat(string: "s", times: count(value: $params));
 
         if (empty($this->livestream_id)) {
             $this->livestream_id = $this->di_dbase->insertFromRecord("`livestreams`", $types, $params);
