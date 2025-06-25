@@ -18,7 +18,8 @@
             <a href="/admin/livestreams">Livestreams ▾</a>
             <div class="dropdown-menu">
                 <a href="/admin/episodes">Episodes</a>
-                <a href="/admin/youtube/poll_livestreams.php">Gimme Livestreams</a>
+                <a href="/admin/youtube/poll_livestreams.php">Get YT Livestreams</a>
+                <a href="/admin/poll/twitch_livestreams.php">Get Twitch Livestreams</a>
             </div>
         </div> |
         <a href="/admin/workers">Workers</a> |

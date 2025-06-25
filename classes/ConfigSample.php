@@ -14,4 +14,9 @@ class Config {
     // https://console.cloud.google.com/apis/credentials
     public $youtube_key = ""; // YouTube API key loads livestream meta data
     public $mt3_channel_id = ""; // https://www.youtube.com/account_advanced
+
+
+    public $twitch_client_id = ""; // https://dev.twitch.tv/console/apps
+    public $twitch_client_secret = "";
+    public $twitch_user_name = "marble_track_construction"; // twitch_livestreams.php will use this to determine the channel ID
 }

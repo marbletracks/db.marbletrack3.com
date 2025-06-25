@@ -4,18 +4,7 @@
 // a static data class and then a repository class for database operations
 // https://chatgpt.com/g/g-6846e912716c8191892a98da6d093dec-marble-track-3-support/c/684ed9ae-368c-8003-a094-a18c5a9b8f41
 
-
 /**
-    ### Optionally Extract a `LivestreamFactory` or Data Wrapper
-
-    Consider isolating the transformation of `$item` into a
-    `Livestream` object into a small helper or class, such as:
-
-    `$ls = LivestreamFactory::fromApiItem($item);`
-
-    This improves modularity and makes testing or
-    extending the behavior easier.
-
 
     ### Template Suggestion Placeholder
 
@@ -45,7 +34,7 @@ if (empty($apiKey)) {
     die("YouTube API key is not set in the configuration.");
 }
 
-use Youtube\Livestream;
+use Database\LivestreamFactory;
 
 function fetch_url($url)
 {
@@ -102,7 +91,7 @@ do {
         $title = $item['snippet']['title'];
         $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
         $videoId = $item['id']['videoId'];
-        $ls = new Livestream($mla_database);
+        $ls = LivestreamFactory::fromApiItem(apiItem: $item, db: $mla_database, platform: 'youtube');
         if ($ls->existsInDatabase($videoId)) {
             $requirePagination = false;
             echo "😊 Already in database: $title (<a href=https://www.youtube.com/watch?v=$videoId>$videoId</a>)<br>";
@@ -135,8 +124,7 @@ foreach ($allItems as $item) {
     $description = $item['snippet']['description'];
     $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
 
-    $ls = new Livestream($mla_database);
-    $ls->setYoutubeVideoId($videoId);
+    $ls = LivestreamFactory::fromApiItem(apiItem: $item, db: $mla_database, platform: 'youtube');
     if ($ls->existsInDatabase($videoId)) {
         continue;
     } else {
