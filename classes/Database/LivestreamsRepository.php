@@ -2,7 +2,7 @@
 namespace Database;
 
 use Database\DbInterface;
-use Media\Livestream;
+use Media\LocalLivestream;
 
 class LivestreamsRepository
 {
@@ -17,7 +17,7 @@ class LivestreamsRepository
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT livestream_id, external_id, title, description, published_at, status, created_at
+SELECT livestream_id, external_id, platform, title, description, duration, thumbnail, published_at, status, created_at
 FROM livestreams
 ORDER BY published_at DESC, livestream_id DESC
 SQL
@@ -26,12 +26,15 @@ SQL
         $livestreams = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
-            $livestreams[] = new Livestream(
+            $livestreams[] = new LocalLivestream(
                 livestream_id: (int) $results->data['livestream_id'],
                 external_id: $results->data['external_id'],
+                platform: $results->data['platform'] ?? '',
                 title: $results->data['title'] ?? '',
                 description: $results->data['description'] ?? '',
+                thumbnail: $results->data['thumbnail'] ?? null,
                 published_at: $results->data['published_at'],
+                duration: $results->data['duration'] ?? null,
                 status: $results->data['status'],
                 created_at: $results->data['created_at']
             );
@@ -40,11 +43,11 @@ SQL
         return $livestreams;
     }
 
-    public function findById(int $livestream_id): ?Livestream
+    public function findById(int $livestream_id): ?LocalLivestream
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT livestream_id, external_id, title, description, published_at, status, created_at
+SELECT livestream_id, external_id, platform, title, description, thumbnail,published_at, status, created_at
 FROM livestreams
 WHERE livestream_id = ?
 SQL,
@@ -57,11 +60,14 @@ SQL,
         }
 
         $results->setRow(0);
-        return new Livestream(
+        return new LocalLivestream(
             livestream_id: (int) $results->data['livestream_id'],
             external_id: $results->data['external_id'],
+            platform: $results->data['platform'] ?? '',
             title: $results->data['title'] ?? '',
             description: $results->data['description'] ?? '',
+            thumbnail: $results->data['thumbnail'] ?? null,
+            duration: $results->data['duration'] ?? null,
             published_at: $results->data['published_at'],
             status: $results->data['status'],
             created_at: $results->data['created_at']

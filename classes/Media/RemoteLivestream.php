@@ -1,13 +1,15 @@
 <?php
-namespace Youtube;
+namespace Media;
 
-class Livestream
+class RemoteLivestream
 {
     protected $livestream_id;
     protected $external_id;
     protected $platform; // e.g., 'youtube', 'twitch'
     protected $title;
     protected $description;
+    protected $thumbnail_url;
+    protected $duration; // Duration can be null for livestreams
     protected $published_at;
     protected $status = 'not';
 
@@ -32,6 +34,10 @@ class Livestream
         $params['title'] = $this->title;
         $types .= "s";
         $params['description'] = $this->description;
+        $types .= "s";
+        $params['thumbnail'] = $this->thumbnail_url;
+        $types .= "s";
+        $params['duration'] = $this->duration; // Duration can be null
         $types .= "s";
         $params['published_at'] = $this->published_at;
         $types .= "s";
@@ -77,6 +83,14 @@ class Livestream
     public function setDescription($val)
     {
         $this->description = $val;
+    }
+    public function setThumbnailUrl($val)
+    {
+        $this->thumbnail_url = $val;
+    }
+    public function setDuration($val)
+    {
+        $this->duration = $val;
     }
     public function setPublishedAt($val)
     {

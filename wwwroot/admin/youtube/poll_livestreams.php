@@ -34,7 +34,6 @@ if (empty($apiKey)) {
     die("YouTube API key is not set in the configuration.");
 }
 
-use Youtube\Livestream;
 use Database\LivestreamFactory;
 
 function fetch_url($url)

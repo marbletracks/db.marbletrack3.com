@@ -115,15 +115,22 @@ foreach ($data['data'] as $item) {
     // print_rob($item);
     $ls = LivestreamFactory::fromApiItem($item, $mla_database, 'twitch');
     if (!$ls->existsInDatabase($ls->getExternalId())) {
+        // print_rob($ls);
         $ls->saveToDatabase();
         $results[] = [
             'title' => $ls->getTitle(),
-            'status' => '✅ Saved',
+            'status' => '✅ Saved  (and be sure to save this stuff in DB)',
+            'url' => 'https://www.twitch.tv/videos/' . $item['id'],
+            'thumbnail_url' => str_replace('%{width}x%{height}', '320x180', $item['thumbnail_url']),
+            'duration' => $item['duration'],
         ];
     } else {
         $results[] = [
             'title' => $ls->getTitle(),
-            'status' => '😊 Already in database',
+            'status' => '😊 Already in database BUT THIS IS NOT IN DATABASE need thumbnail 149 characters',
+            'url' => 'https://www.twitch.tv/videos/' . $item['id'],
+            'thumbnail_url' => str_replace('%{width}x%{height}', '320x180', $item['thumbnail_url']),
+            'duration' => $item['duration'],
         ];
     }
 }
