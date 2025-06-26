@@ -1,5 +1,5 @@
 <div class="PagePanel">
-    <h1>Twitch Livestream Poll Results</h1>
+    <h1><?= $platform ?> Livestream Poll Results</h1>
     <?php if (empty($results)): ?>
         <p>No livestreams found or saved.</p>
     <?php else: ?>

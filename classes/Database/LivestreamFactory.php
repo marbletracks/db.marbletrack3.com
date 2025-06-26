@@ -13,14 +13,15 @@ class LivestreamFactory
      */
     public static function fromApiItem(array $apiItem, Database $db, string $platform = 'youtube'): \Media\RemoteLivestream
     {
-        $ls = new \Media\RemoteLivestream($db);
+        $ls = new \Media\RemoteLivestream(di_dbase: $db);
+        $ls->setPlatform(platform: $platform);
 
         if ($platform === 'youtube') {
             $ls->setExternalId($apiItem['id']['videoId']);
             $ls->setTitle($apiItem['snippet']['title'] ?? '');
             $ls->setDescription($apiItem['snippet']['description'] ?? '');
-            $ls->setThumbnailUrl($apiItem['snippet']['thumbnails']['high']['url'] ?? '');
-            $ls->setDuration($apiItem['contentDetails']['duration'] ?? null); //
+            $ls->setThumbnailUrl($apiItem['snippet']['thumbnails']['medium']['url'] ?? '');
+            // $ls->setDuration($apiItem['contentDetails']['duration'] ?? null); // must get YT duration separately via YouTube API
             $ls->setPublishedAt(date('Y-m-d H:i:s', strtotime($apiItem['snippet']['publishedAt'])));
         } elseif ($platform === 'twitch') {
             $ls->setExternalId($apiItem['id']); // this will eventually be set as external_id

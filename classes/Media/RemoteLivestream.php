@@ -6,6 +6,7 @@ class RemoteLivestream
     protected $livestream_id;
     protected $external_id;
     protected $platform; // e.g., 'youtube', 'twitch'
+    protected $watch_url;
     protected $title;
     protected $description;
     protected $thumbnail_url;
@@ -30,7 +31,7 @@ class RemoteLivestream
         $params['platform'] = $this->platform;
         $params['title'] = $this->title;
         $params['description'] = $this->description;
-        $params['thumbnail'] = $this->thumbnail_url;
+        $params['thumbnail_url'] = $this->thumbnail_url;
         $params['duration'] = $this->duration;
         $params['published_at'] = $this->published_at;
         $params['status'] = $this->status;
@@ -58,20 +59,46 @@ class RemoteLivestream
         $result = $this->di_dbase->fetchResults($query, 's', $external_id);
 
         if ($result->toArray()) {
+            $this->livestream_id = $result->toArray()[0]['livestream_id'];
             return true;
         }
         return false;
     }
 
+    public function durationSavedInDatabaseBool(string $external_id): bool
+    {
+        if (empty($external_id)) {
+            echo "No external_id provided to check in database<br>";
+            return false;
+        }
+        $query = "SELECT `livestream_id` FROM `livestreams` WHERE `external_id` = ? AND `duration` IS NOT NULL";
+        $result = $this->di_dbase->fetchResults($query, 's', $external_id);
+
+        if ($result->toArray()) {
+            return true;
+        }
+        return false;
+    }
 
     // Setters
     public function setExternalId($val)
     {
         $this->external_id = $val;
+        $this->determineWatchUrl();  // Set watch_url based on platform and external_id
     }
     public function setPlatform(string $platform)
     {
         $this->platform = $platform;
+    }
+    private function determineWatchUrl()
+    {
+        if ($this->platform === 'youtube') {
+            $this->watch_url = "https://www.youtube.com/watch?v={$this->external_id}";
+        } elseif ($this->platform === 'twitch') {
+            $this->watch_url = "https://www.twitch.tv/videos/{$this->external_id}";
+        } else {
+            throw new \InvalidArgumentException("Unknown platform: {$this->platform}");
+        }
     }
     public function setTitle($val)
     {
@@ -107,9 +134,13 @@ class RemoteLivestream
     {
         return $this->livestream_id;
     }
-    public function getPlatform(): string
+    public function getWatchUrl(): string
     {
-        return $this->platform;
+        return $this->watch_url;
+    }
+    public function getThumbnailUrl(): string
+    {
+        return $this->thumbnail_url;
     }
     public function getTitle(): string
     {
