@@ -38,7 +38,7 @@ if ($submitted) {
                 livestream_id: $livestreamId,
                 status: 'has'
             );
-            // Redirect to the new episode page
+            // Redirect to the edit page for the new episode
             header("Location: /admin/episodes/edit.php?episode_id={$newId}");
             exit;
         }
