@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Import Twitch Livestreams";
+const SENTIMENTAL_VERSION = "Edit episodes";
 
 # write errors to screen
 ini_set('display_errors', 1);
