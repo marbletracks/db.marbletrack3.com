@@ -3,10 +3,8 @@
 
 declare(strict_types=1);
 
+# Must include here because DH runs FastCGI https://www.phind.com/search?cache=zfj8o8igbqvaj8cm91wp1b7k
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
-
-use Database\LivestreamFactory;
-// use Youtube\Livestream;    VS code claims we don't need this
 
 if (!$is_logged_in->isLoggedIn()) {
     header("Location: /login/");
@@ -21,6 +19,8 @@ $twitchUserName = $config->twitch_user_name ?? null;
 if (!$twitchClientId || !$twitchClientSecret || !$twitchUserName) {
     die("Twitch credentials missing from config.");
 }
+
+use Database\LivestreamFactory;
 
 /**
  * Exchange client credentials for an app access token.
