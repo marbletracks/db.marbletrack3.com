@@ -74,7 +74,7 @@ if ($submitted) {
 }
 
 $page = new \Template(config: $config);
-$page->setTemplate("admin/episodes/edit.tpl.php");
+$page->setTemplate("admin/episodes/episode.tpl.php");
 $page->set("errors", $errors);
 $page->set("episode", $episode);
 $page->set("defaultTitle", $episode ? $episode->title : $defaultTitle);
