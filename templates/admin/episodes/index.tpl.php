@@ -1,6 +1,6 @@
 <div class="PagePanel">
     <h1>All Episodes</h1>
-    <p><a href="/admin/episodes/edit.php">Create New Episode</a></p>
+    <p><a href="/admin/episodes/episode.php">Create New Episode</a></p>
     <ul>
         <?php foreach ($episodes as $episode): ?>
                 <li>
@@ -12,7 +12,7 @@
                     <?php else: ?>
                             <em>No livestream linked</em>
                     <?php endif; ?><br>
-                    <a href="/admin/episodes/edit.php?episode_id=<?= $episode->episode_id ?>">Edit</a>
+                    <a href="/admin/episodes/episode.php?episode_id=<?= $episode->episode_id ?>">Edit</a>
                 </li>
         <?php endforeach; ?>
     </ul>
