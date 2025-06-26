@@ -20,6 +20,7 @@
 */
 
 declare(strict_types=1);
+use Database\LivestreamsRepository;
 
 # Must include here because DH runs FastCGI https://www.phind.com/search?cache=zfj8o8igbqvaj8cm91wp1b7k
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
@@ -68,6 +69,7 @@ function fetchYouTube($url)
 
 
 $allItems = [];
+$need_duration_for_external_ids = []; // will be used to fetch durations for livestreams that are already in the database
 // change to true when we need to get all durations and thumbnails
 $requirePagination = false; // continue pagination until we find a video already in the database
 
@@ -94,26 +96,30 @@ do {
 
     $results = [];   // will be sent to the template
     foreach ($data['items'] as $item) {
+        // print_rob(object: $item, exit: false);
         $ls = LivestreamFactory::fromApiItem(apiItem: $item, db: $mla_database, platform: 'youtube');
         if (!$ls->existsInDatabase(external_id: $ls->getExternalId())) {
             $ls->saveToDatabase();
             $results[] = [
                 'title' => $ls->getTitle(),
-                'status' => '✅ Saved  (and be sure to save this stuff in DB)',
-                'url' => 'https://www.youtube.com/watch?v=' . $item['id']['videoId'],
-                'thumbnail_url' => 'https://i.ytimg.com/vi/' . $item['id']['videoId'] . '/hqdefault.jpg',
+                'status' => '✅ Saved to database',
+                'url' => $ls->getWatchUrl(),
+                'thumbnail_url' => $ls->getThumbnailUrl(),
                 'duration' => $item['duration'],
             ];
-            break;  // YT API returns most recent first, so we can stop if it's already in the database
+        } elseif (!$ls->durationSavedInDatabaseBool(external_id: $ls->getExternalId())) {
+            $need_duration_for_external_ids[] = $ls->getExternalId();
+            $requirePagination = false; // test first before going to the next page
         } else {
             $requirePagination = false;
             $results[] = [
                 'title' => $ls->getTitle(),
-                'status' => '😊 Already in database BUT THIS IS NOT IN DATABASE need thumbnail 149 characters',
-                'url' => 'https://www.youtube.com/watch?v=' . $item['id']['videoId'],
-                'thumbnail_url' => 'https://i.ytimg.com/vi/' . $item['id']['videoId'] . '/hqdefault.jpg',
+                'status' => '😊 Already in database including thumbnail',
+                'url' => $ls->getWatchUrl(),
+                'thumbnail_url' => 'https://i.ytimg.com/vi/' . $item['id']['videoId'] . '/mqdefault.jpg',
                 'duration' => $item['duration'],
             ];
+            break;  // YT API returns most recent first, so we can stop if it's already in the database
         }
     }
 
@@ -121,55 +127,56 @@ do {
         die("No livestream data found or API error.");
     }
 
-    $pageToken = $data['nextPageToken'] ?? null;
+    if(count($need_duration_for_external_ids) > 0) {
+        // We need to fetch the duration for these livestreams
+        $need_duration_for_external_ids = array_unique($need_duration_for_external_ids);
+        $need_duration_for_external_ids = implode(',', $need_duration_for_external_ids);
+        $durationUrl = "https://www.googleapis.com/youtube/v3/videos?" . http_build_query([
+            'key' => $apiKey,
+            'part' => 'contentDetails',
+            'id' => $need_duration_for_external_ids
+        ]);
+        $durationResponse = fetchYouTube($durationUrl);
+        $durationData = json_decode($durationResponse, true);
 
-    // Optional: short delay to avoid API rate limits
-    usleep(250000);
+        if (empty($durationData['items'])) {
+            die("No duration data found or API error.");
+        }
+        print_rob(object: "Fetched duration for " . count($durationData['items']) . " livestreams", exit: false);
+        print_rob($durationData, exit: false);
+        $lr = new LivestreamsRepository(db: $mla_database);
+        foreach ($durationData['items'] as $item) {
+            $ls = $lr->findByExternalId(external_id: $item['id']);
+            if (!$ls) {
+                print_rob(object: "Livestream with ID {$item['id']} not found in database", exit: false);
+                continue;
+            }
+            $duration = $item['contentDetails']['duration'] ?? null;
+            if (!$duration) {
+                print_rob(object: "No duration found for livestream ID {$item['id']}", exit: false);
+                continue;
+            }
+            $ls->duration = $duration;
+            $lr->saveDurationToDatabase(livestream: $ls);
+        }
+    }
+
+    $pageToken = $data['nextPageToken'] ?? null;
 
 } while ($requirePagination && $pageToken);
 
 // print_rob(object: $results, exit: false);
 
+$platform = "YouTube";
+$page = new \Template(config: $config);
+$page->setTemplate(template_file: "admin/poll/twitch_livestreams.tpl.php");
+$page->set(name: "results", value: $results);
+$page->set(name: "platform", value: $platform);
+$inner = $page->grabTheGoods();
 
-usort($allItems, function ($a, $b) {
-    // sort by oldest first
-    // echo "Comparing {$a['snippet']['publishedAt']} with {$b['snippet']['publishedAt']}<br>";
-    return $a['snippet']['publishedAt'] <=> $b['snippet']['publishedAt'];
-});
+$layout = new \Template(config: $config);
+$layout->setTemplate(template_file: "layout/admin_base.tpl.php");
+$layout->set(name: "page_title", value: "$platform Livestream Poll");
+$layout->set(name: "page_content", value: $inner);
+$layout->echoToScreen();
 
-
-foreach ($allItems as $item) {
-    $videoId = $item['id']['videoId'];
-    $title = $item['snippet']['title'];
-    $description = $item['snippet']['description'];
-    $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
-
-    $ls = LivestreamFactory::fromApiItem(apiItem: $item, db: $mla_database, platform: 'youtube');
-    if ($ls->existsInDatabase($videoId)) {
-        continue;
-    } else {
-        echo "🆕 New livestream: $title (<a href=https://www.youtube.com/watch?v=$videoId>$videoId</a>)<br>";
-    }
-
-    $ls->setTitle($title);
-    $ls->setDescription($description);
-    $ls->setPublishedAt($publishedAt);
-
-    if ($ls->saveToDatabase()) {
-        echo "✅ Saved: $publishedAt $title ($videoId)<br>";
-        // Link to a page to create an episode for this livestream:
-        // blank target because might be more than one new livestream in this list
-        echo "<a class='btn' target='_blank' href='/admin/episodes/create.php?livestream_id={$ls->getLivestreamId()}'>🎥 Create Episode</a><br>";
-    } else {
-        echo "❌ Failed to save: $title ($videoId)<br>";
-    }
-}
-
-echo "<br>Done processing livestreams<br>";
-if (count($allItems) == 0) {
-    echo "No new livestreams found.<br>";
-} else {
-    echo "Total livestreams processed: " . count($allItems) . "<br>";
-}
-echo "TODO make a template for this file.<br>";
-echo "Until then, go to <a href='/admin/index.php'>main menu</a>.<br>";
