@@ -1,5 +1,5 @@
 <?php
-
+// File: admin/poll/youtube_livestreams.php
 // consider using two classes:
 // a static data class and then a repository class for database operations
 // https://chatgpt.com/g/g-6846e912716c8191892a98da6d093dec-marble-track-3-support/c/684ed9ae-368c-8003-a094-a18c5a9b8f41
@@ -19,11 +19,15 @@
 
 */
 
+declare(strict_types=1);
+
 # Must include here because DH runs FastCGI https://www.phind.com/search?cache=zfj8o8igbqvaj8cm91wp1b7k
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 if (!$is_logged_in->isLoggedIn()) {
-    die("You must be logged in to run this script.");
+    header("Location: /login/");
+    exit;
 }
+
 $config = new Config();
 $channelId = $config->mt3_channel_id;
 if (empty($channelId)) {
@@ -36,7 +40,7 @@ if (empty($apiKey)) {
 
 use Database\LivestreamFactory;
 
-function fetch_url($url)
+function fetchYouTube($url)
 {
     $ch = curl_init($url);
     curl_setopt_array($ch, [
@@ -64,7 +68,8 @@ function fetch_url($url)
 
 
 $allItems = [];
-$requirePagination = true; // continue pagination until we find a video already in the database
+// change to true when we need to get all durations and thumbnails
+$requirePagination = false; // continue pagination until we find a video already in the database
 
 $pageToken = null;
 $count = 0;
@@ -75,29 +80,41 @@ do {
         'part' => 'snippet',
         'type' => 'video',
         'eventType' => 'completed',
-        'maxResults' => 50,
+        'maxResults' => $requirePagination ? 50 : 5,
         'order' => 'date',
         'pageToken' => $pageToken
     ]);
 
-    $response = fetch_url($url);
+    $response = fetchYouTube($url);
 
     if (empty($response)) {
         die("No response from YouTube API or empty response.");
     }
     $data = json_decode($response, true);
 
+    $results = [];   // will be sent to the template
     foreach ($data['items'] as $item) {
-        $title = $item['snippet']['title'];
-        $publishedAt = date('Y-m-d H:i:s', strtotime($item['snippet']['publishedAt']));
-        $videoId = $item['id']['videoId'];
         $ls = LivestreamFactory::fromApiItem(apiItem: $item, db: $mla_database, platform: 'youtube');
-        if ($ls->existsInDatabase($videoId)) {
-            $requirePagination = false;
-            echo "😊 Already in database: $title (<a href=https://www.youtube.com/watch?v=$videoId>$videoId</a>)<br>";
+        if (!$ls->existsInDatabase(external_id: $ls->getExternalId())) {
+            $ls->saveToDatabase();
+            $results[] = [
+                'title' => $ls->getTitle(),
+                'status' => '✅ Saved  (and be sure to save this stuff in DB)',
+                'url' => 'https://www.youtube.com/watch?v=' . $item['id']['videoId'],
+                'thumbnail_url' => 'https://i.ytimg.com/vi/' . $item['id']['videoId'] . '/hqdefault.jpg',
+                'duration' => $item['duration'],
+            ];
             break;  // YT API returns most recent first, so we can stop if it's already in the database
+        } else {
+            $requirePagination = false;
+            $results[] = [
+                'title' => $ls->getTitle(),
+                'status' => '😊 Already in database BUT THIS IS NOT IN DATABASE need thumbnail 149 characters',
+                'url' => 'https://www.youtube.com/watch?v=' . $item['id']['videoId'],
+                'thumbnail_url' => 'https://i.ytimg.com/vi/' . $item['id']['videoId'] . '/hqdefault.jpg',
+                'duration' => $item['duration'],
+            ];
         }
-        $allItems[] = $item;
     }
 
     if (!isset($data['items'])) {
@@ -110,6 +127,9 @@ do {
     usleep(250000);
 
 } while ($requirePagination && $pageToken);
+
+// print_rob(object: $results, exit: false);
+
 
 usort($allItems, function ($a, $b) {
     // sort by oldest first
