@@ -8,13 +8,31 @@ if($debugLevel > 0) {
     echo "<pre>Debug Level: $debugLevel</pre>";
 }
 
-if($is_logged_in->isLoggedIn()){
+// Create the content template
+$page = new \Template(config: $config);
+$page->setTemplate("frontend/index.tpl.php");
+$page->set(name: "site_version", value: SENTIMENTAL_VERSION);
 
-    echo "<h1>You're logged in</h1>";
-    echo "<p><a href='/admin/'>Click here to admire admin page</a></p>";
-    exit;
+// Set username if logged in, otherwise empty
+if ($is_logged_in->isLoggedIn()) {
+    $page->set(name: "username", value: $is_logged_in->getLoggedInUsername());
 } else {
-    echo "<h1>Welcome to This Here Brand New Web Site</h1>";
-    echo "<p><a href='/login/'>Click here to log in</a></p>";
-    exit;
+    $page->set(name: "username", value: "");
 }
+
+$inner = $page->grabTheGoods();
+
+// Create the layout template
+$layout = new \Template(config: $config);
+$layout->setTemplate("layout/frontend_base.tpl.php");
+$layout->set("page_title", "MarbleTrack3 - Home");
+$layout->set("page_content", $inner);
+
+// Set username for navigation 
+if ($is_logged_in->isLoggedIn()) {
+    $layout->set(name: "username", value: $is_logged_in->getLoggedInUsername());
+} else {
+    $layout->set(name: "username", value: "");
+}
+
+$layout->echoToScreen();
