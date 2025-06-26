@@ -72,6 +72,25 @@ class PageRepository
         return $this->hydrate($results->data);
     }
 
+    public function insert(int $notebook_id, string $number, string $created_at): int
+    {
+        $this->db->executeSQL(
+            "INSERT INTO pages (notebook_id, number, created_at) VALUES (?, ?, ?)",
+            'iss',
+            [$notebook_id, $number, $created_at]
+        );
+        return $this->db->insertId();
+    }
+
+    public function update(int $page_id, int $notebook_id, string $number, string $created_at): void
+    {
+        $this->db->executeSQL(
+            "UPDATE pages SET notebook_id = ?, number = ?, created_at = ? WHERE page_id = ?",
+            'issi',
+            [$notebook_id, $number, $created_at, $page_id]
+        );
+    }
+
     private function hydrate(array $row): Page
     {
         $page = new Page(

@@ -35,20 +35,12 @@ if ($submitted) {
 
     if (empty($errors)) {
         if ($page) {
-            $mla_database->executeSQL(
-                "UPDATE pages SET notebook_id = ?, number = ?, created_at = ? WHERE page_id = ?",
-                'issi',
-                [$notebook_id, $number, $created_at, $page_id]
-            );
+            $repo->update($page_id, $notebook_id, $number, $created_at);
             $repo->setPageId($page_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
         } else {
-            $mla_database->executeSQL(
-                "INSERT INTO pages (notebook_id, number, created_at) VALUES (?, ?, ?)",
-                'iss',
-                [$notebook_id, $number, $created_at]
-            );
-            $repo->setPageId($mla_database->insertId());
+            $new_page_id = $repo->insert($notebook_id, $number, $created_at);
+            $repo->setPageId($new_page_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
         }
 
