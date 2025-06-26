@@ -9,7 +9,7 @@ final class LocalLivestream
         public string $platform,
         public string $title,
         public string $description,
-        public ?string $thumbnail = null,
+        public ?string $thumbnail_url = null,
         public ?string $duration = null,
         public ?string $published_at,
         public string $status,
@@ -21,7 +21,7 @@ final class LocalLivestream
         switch ($this->platform) {
             case 'youtube':
                 $this->watch_url = "https://www.youtube.com/watch?v={$this->external_id}";
-                $this->thumbnail_url = "https://i.ytimg.com/vi/{$this->external_id}/hqdefault.jpg";
+                $this->thumbnail_url = "https://i.ytimg.com/vi/{$this->external_id}/mqdefault.jpg";
                 $this->duration = null; // YouTube livestreams do not have a fixed duration
                 break;
             case 'twitch':

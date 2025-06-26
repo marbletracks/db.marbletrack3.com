@@ -29,6 +29,19 @@ if ($submitted) {
     if (empty($errors)) {
         $epRepo = new \Database\EpisodeRepository($mla_database);
         $newId = $epRepo->insert($title, $description, $livestreamId);
+
+        if ($newId === false) {
+            $errors[] = 'Failed to create episode. Please try again.';
+        } else {
+            $lr = new \Database\LivestreamsRepository($mla_database);
+            $lr->setLivestreamStatus(
+                livestream_id: $livestreamId,
+                status: 'has'
+            );
+            // Redirect to the new episode page
+            header("Location: /admin/episodes/edit.php?episode_id={$newId}");
+            exit;
+        }
         header("Location: /admin/episodes/");
         exit;
     }
@@ -36,7 +49,7 @@ if ($submitted) {
 
 $defaultTitle = $stream->title;
 $defaultDesc = $stream->description;
-$streamCode = $stream->youtube_video_id;
+$streamCode = $stream->external_id;
 
 $page = new \Template(config: $config);
 $page->setTemplate("admin/episodes/create.tpl.php");
