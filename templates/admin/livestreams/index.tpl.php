@@ -10,7 +10,7 @@
                     <em>Watch on</em> <a href="<?= htmlspecialchars($stream->watch_url) ?>" target="_blank"><?= $stream->platform ?></a><br>
                     <?php if ($stream->status === 'not'): ?>
                         &nbsp;
-                        <a class="btn" href="/admin/episodes/create.php?livestream_id=<?= $stream->livestream_id ?>">
+                        <a class="btn" href="/admin/episodes/episode.php?livestream_id=<?= $stream->livestream_id ?>">
                             🎥 Create Episode
                         </a>
                     <?php endif; ?>
