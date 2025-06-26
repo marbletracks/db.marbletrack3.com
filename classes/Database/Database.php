@@ -240,6 +240,26 @@ class Database implements DbInterface {
         }
     }
 
+    public function updateFromRecord(
+        string $tablename,
+        string $paramtypes,
+        $record,
+        string $where
+    ) {
+        $vars = NULL;
+        if (strlen($paramtypes) != (is_countable($record) ? count($record) : 0)) {
+            throw new \Database\EDatabaseException(__FUNCTION__ . ": Num elements in paramtype string != num of bind variables in record array. " . strlen($paramtypes) . " != " . (is_countable($record) ? count($record) : 0));
+        }
+
+        foreach ($record as $key => $val) {
+            $vars .= "`" . $key . "` = ?, ";
+        }
+        $vars = rtrim($vars, ", ");
+
+        return $this->executeSQL("UPDATE `" . trim($tablename, " `") . "` SET {$vars} WHERE {$where}", $paramtypes, $record);
+    }
+
+
     /**
      * 11 June 2025 help Rob create new domains on DH
      * @throws \Database\EDatabaseException
