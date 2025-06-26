@@ -71,7 +71,7 @@ function fetchYouTube($url)
 $allItems = [];
 $need_duration_for_external_ids = []; // will be used to fetch durations for livestreams that are already in the database
 // change to true when we need to get all durations and thumbnails
-$requirePagination = false; // continue pagination until we find a video already in the database
+$requirePagination = true; // continue pagination until we find a video already in the database
 
 $pageToken = null;
 $count = 0;
@@ -107,11 +107,12 @@ do {
                 'thumbnail_url' => $ls->getThumbnailUrl(),
                 'duration' => $item['duration'],
             ];
+            $requirePagination = true;
         } elseif (!$ls->durationSavedInDatabaseBool(external_id: $ls->getExternalId())) {
             $need_duration_for_external_ids[] = $ls->getExternalId();
-            $requirePagination = false; // test first before going to the next page
+            $requirePagination = true;
         } else {
-            $requirePagination = false;
+            $requirePagination = true;
             $results[] = [
                 'title' => $ls->getTitle(),
                 'status' => '😊 Already in database including thumbnail',
@@ -119,7 +120,7 @@ do {
                 'thumbnail_url' => 'https://i.ytimg.com/vi/' . $item['id']['videoId'] . '/mqdefault.jpg',
                 'duration' => $item['duration'],
             ];
-            break;  // YT API returns most recent first, so we can stop if it's already in the database
+            // break;  // YT API returns most recent first, so we can stop if it's already in the database
         }
     }
 
@@ -130,11 +131,11 @@ do {
     if(count($need_duration_for_external_ids) > 0) {
         // We need to fetch the duration for these livestreams
         $need_duration_for_external_ids = array_unique($need_duration_for_external_ids);
-        $need_duration_for_external_ids = implode(',', $need_duration_for_external_ids);
+        $need_duration_for_external_ids_string = implode(',', $need_duration_for_external_ids);
         $durationUrl = "https://www.googleapis.com/youtube/v3/videos?" . http_build_query([
             'key' => $apiKey,
             'part' => 'contentDetails',
-            'id' => $need_duration_for_external_ids
+            'id' => $need_duration_for_external_ids_string
         ]);
         $durationResponse = fetchYouTube($durationUrl);
         $durationData = json_decode($durationResponse, true);
@@ -142,8 +143,8 @@ do {
         if (empty($durationData['items'])) {
             die("No duration data found or API error.");
         }
-        print_rob(object: "Fetched duration for " . count($durationData['items']) . " livestreams", exit: false);
-        print_rob($durationData, exit: false);
+        // print_rob(object: "Fetched duration for " . count($durationData['items']) . " livestreams", exit: false);
+        // print_rob($durationData, exit: false);
         $lr = new LivestreamsRepository(db: $mla_database);
         foreach ($durationData['items'] as $item) {
             $ls = $lr->findByExternalId(external_id: $item['id']);
