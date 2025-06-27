@@ -71,7 +71,7 @@ function fetchYouTube($url)
 $allItems = [];
 $need_duration_for_external_ids = []; // will be used to fetch durations for livestreams that are already in the database
 // change to true when we need to get all durations and thumbnails
-$requirePagination = true; // continue pagination until we find a video already in the database
+$requirePagination = false; // continue pagination until we find a video already in the database
 
 $pageToken = null;
 $count = 0;
@@ -82,7 +82,7 @@ do {
         'part' => 'snippet',
         'type' => 'video',
         'eventType' => 'completed',
-        'maxResults' => $requirePagination ? 50 : 5,
+        'maxResults' => 50,
         'order' => 'date',
         'pageToken' => $pageToken
     ]);
@@ -107,12 +107,12 @@ do {
                 'thumbnail_url' => $ls->getThumbnailUrl(),
                 'duration' => $item['duration'],
             ];
-            $requirePagination = true;
+            $requirePagination = false;
         } elseif (!$ls->durationSavedInDatabaseBool(external_id: $ls->getExternalId())) {
             $need_duration_for_external_ids[] = $ls->getExternalId();
-            $requirePagination = true;
+            $requirePagination = false;
         } else {
-            $requirePagination = true;
+            $requirePagination = false;
             $results[] = [
                 'title' => $ls->getTitle(),
                 'status' => '😊 Already in database including thumbnail',
