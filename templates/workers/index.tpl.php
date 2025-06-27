@@ -3,11 +3,11 @@
 <div class="worker-grid">
     <?php foreach ($workers as $worker): ?>
         <div class="worker-card">
-            <h2><?= htmlspecialchars($worker->getName()) ?></h2>
-            <?php if ($worker->getPhotoCode()): ?>
-                <img src="https://d2f8m59m4mubfx.cloudfront.net/<?= htmlspecialchars($worker->getPhotoCode()) ?>.jpg" alt="<?= htmlspecialchars($worker->getName()) ?>" style="max-width: 100%; height: auto;">
-            <?php endif; // worker->getPhotoCode ?>
-            <p><?= nl2br(htmlspecialchars($worker->getDescription())) ?></p>
+            <h2><?= htmlspecialchars($worker->name) ?></h2>
+            <?php if (!empty($worker->photos) && $worker->photos[0]): ?>
+                <img src="<?= htmlspecialchars($worker->photos[0]->getUrl()) ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="max-width: 100%; height: auto;">
+            <?php endif; ?>
+            <p><?= nl2br(htmlspecialchars($worker->description)) ?></p>
         </div>
     <?php endforeach; ?>
 </div>
