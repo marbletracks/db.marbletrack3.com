@@ -5,7 +5,7 @@
         <div class="worker-card">
             <h2><?= htmlspecialchars($worker->name) ?></h2>
             <?php if (!empty($worker->photos) && $worker->photos[0]): ?>
-                <img src="<?= htmlspecialchars($worker->photos[0]->getUrl()) ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="max-width: 100%; height: auto;">
+                <img src="<?= $worker->photos[0]->getThumbnailUrl() ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="max-width: 100%; height: auto;">
             <?php endif; ?>
             <p><?= nl2br(htmlspecialchars($worker->description)) ?></p>
         </div>
