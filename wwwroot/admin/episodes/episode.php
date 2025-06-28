@@ -37,6 +37,7 @@ if ($submitted) {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $postLivestreamId = (int) ($_POST['livestream_id'] ?? 0);
+    $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
 
     if ($title === '') {
         $errors[] = 'Title is required.';
@@ -46,6 +47,9 @@ if ($submitted) {
         if ($episode) {
             // Update existing episode
             $success = $epRepo->update($episode_id, $title, $description, $postLivestreamId ?: null);
+            $epRepo->setEpisodeId($episode_id);
+            $epRepo->savePhotosFromUrls(urls: $image_urls);
+
             if (!$success) {
                 $errors[] = 'Failed to update episode. Please try again.';
             } else {
@@ -55,6 +59,8 @@ if ($submitted) {
         } else {
             // Create new episode
             $newId = $epRepo->insert($title, $description, $postLivestreamId ?: null);
+            $epRepo->setEpisodeId($newId);
+            $epRepo->savePhotosFromUrls(urls: $image_urls);
             if ($newId === false) {
                 $errors[] = 'Failed to create episode. Please try again.';
             } else {

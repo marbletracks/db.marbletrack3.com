@@ -259,6 +259,10 @@ class Database implements DbInterface {
         return $this->executeSQL("UPDATE `" . trim($tablename, " `") . "` SET {$vars} WHERE {$where}", $paramtypes, $record);
     }
 
+    public function getAffectedRows(): int
+    {
+        return $this->affected_rows ?? 0;
+    }
 
     /**
      * 11 June 2025 help Rob create new domains on DH

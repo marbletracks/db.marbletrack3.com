@@ -2,17 +2,46 @@
 namespace Database;
 
 use Database\DbInterface;
+use Domain\HasPhotos;
 use Media\Episode;
 
 class EpisodeRepository
 {
+    use HasPhotos;
     private DbInterface $db;
+
+    private string $photoLinkingTable = 'episodes_2_photos';
+    private string $primaryKeyColumn = 'episode_id';
+    private int $episode_id;
 
     public function __construct(DbInterface $db)
     {
         $this->db = $db;
     }
 
+    public function getId(): int
+    {
+        return $this->episode_id;
+    }
+    public function setEpisodeId(int $episode_id): void
+    {
+        $this->episode_id = $episode_id;
+    }
+
+    public function getDb(): DbInterface
+    {
+        return $this->db;
+    }
+
+    public function getPhotoLinkingTable(): string
+    {
+        return $this->photoLinkingTable;
+    }
+
+    public function getPrimaryKeyColumn(): string
+    {
+        return $this->primaryKeyColumn;
+    }
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -26,13 +55,8 @@ SQL
         $episodes = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
-            $episodes[] = new Episode(
-                episode_id: (int) $results->data['episode_id'],
-                title: $results->data['title'] ?? '',
-                episode_english_description: $results->data['episode_english_description'] ?? '',
-                livestream_id: $results->data['livestream_id'] !== null ? (int) $results->data['livestream_id'] : null,
-                created_at: $results->data['created_at']
-            );
+            $this->episode_id = (int) $results->data['episode_id'];
+            $episodes[] = $this->hydrate($results->data);
         }
 
         return $episodes;
@@ -50,14 +74,9 @@ SQL
             return null;
         }
 
+        $this->episode_id = $episode_id;
         $results->setRow(0);
-        return new Episode(
-            episode_id: (int) $results->data['episode_id'],
-            title: $results->data['title'] ?? '',
-            episode_english_description: $results->data['episode_english_description'] ?? '',
-            livestream_id: $results->data['livestream_id'] !== null ? (int) $results->data['livestream_id'] : null,
-            created_at: $results->data['created_at']
-        );
+        return $this->hydrate(row: $results->data);
     }
 
     public function update(int $episode_id, string $title, string $desc, ?int $livestreamId = null): bool
@@ -67,7 +86,7 @@ SQL
             'ssii',
             [$title, $desc, $livestreamId, $episode_id]
         );
-        return $rowsAffected > 0;
+        return $this->db->getAffectedRows() > 0;
     }
 
     public function insert(string $title, string $desc, ?int $livestreamId = null): int
@@ -83,4 +102,17 @@ SQL
         );
     }
 
+    private function hydrate(array $row): Episode
+    {
+        $episode = new Episode(
+            episode_id: (int) $row['episode_id'],
+            title: $row['title'] ?? '',
+            episode_english_description: $row['episode_english_description'] ?? '',
+            livestream_id: isset($row['livestream_id']) ? (int) $row['livestream_id'] : null,
+            created_at: $row['created_at']
+        );
+        $this->loadPhotos();
+        $episode->photos = $this->getPhotos();
+        return $episode;
+    }
 }
