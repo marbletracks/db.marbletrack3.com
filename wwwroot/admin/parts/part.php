@@ -50,10 +50,14 @@ if ($submitted) {
                     $description,
                 ]
             );
-            $repo->updateImageUrls($part->part_id, $image_urls);
+            // save photos via HasPhotos
+            $repo->setPartId(part_id: $part->part_id);
+            $repo->savePhotosFromUrls(urls: $image_urls);
         } else {
-            $repo->insert($alias, $name, $description);
-            $repo->updateImageUrls($part->part_id, $image_urls);
+            $newId = $repo->insert($alias, $name, $description);
+            // now save photos
+            $repo->setPartId($newId);
+            $repo->savePhotosFromUrls($image_urls);
         }
 
         header("Location: /admin/parts/index.php");
@@ -65,7 +69,6 @@ $page = new \Template($config);
 $page->setTemplate("admin/parts/part.tpl.php");
 $page->set("errors", $errors);
 $page->set("part", $part);
-$page->set("image_urls", $part ? $repo->getImageUrls($part->part_id) : ['']);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);

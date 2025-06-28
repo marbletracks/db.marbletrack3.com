@@ -27,10 +27,11 @@
         <label>
             Image URLs:<br>
             <div id="image-url-fields">
-<?php foreach ($image_urls ?? [''] as $url): ?>
-    <img src="<?= $part->thumbnailFor(url: $url, maxWidth: 100) ?>" alt="Image preview" style="max-width: 100px; max-height: 100px;"><br>
-                <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($url) ?>"><br>
+<?php if (!empty($part->photos)):foreach ($part->photos ?? [''] as $photo): ?>
+    <img src="<?= $photo->getThumbnailUrl() ?>" alt="Image preview"><br>
+    <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
 <?php endforeach; ?>
+<?php endif; ?>
                 <!-- add empty row so we always have space -->
                 <input type="text" size=130 name="image_urls[]" value=""><br>
             </div>
