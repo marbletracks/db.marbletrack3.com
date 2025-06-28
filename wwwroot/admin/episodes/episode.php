@@ -36,6 +36,7 @@ if (!$episode && $livestreamId > 0) {
 if ($submitted) {
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
+    $episode_frames = trim($_POST['episode_frames'] ?? '');
     $postLivestreamId = (int) ($_POST['livestream_id'] ?? 0);
     $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
 
@@ -46,7 +47,13 @@ if ($submitted) {
     if (empty($errors)) {
         if ($episode) {
             // Update existing episode
-            $success = $epRepo->update($episode_id, $title, $description, $postLivestreamId ?: null);
+            $success = $epRepo->update(
+                episode_id: $episode_id,
+                title: $title,
+                desc: $description,
+                episode_frames: $episode_frames,
+                livestreamId: $postLivestreamId ?: null
+            );
             $epRepo->setEpisodeId($episode_id);
             $epRepo->savePhotosFromUrls(urls: $image_urls);
 
@@ -58,7 +65,12 @@ if ($submitted) {
             }
         } else {
             // Create new episode
-            $newId = $epRepo->insert($title, $description, $postLivestreamId ?: null);
+            $newId = $epRepo->insert(
+                title: $title,
+                desc: $description,
+                episode_frames: $episode_frames,
+                livestreamId: $postLivestreamId ?: null
+            );
             $epRepo->setEpisodeId($newId);
             $epRepo->savePhotosFromUrls(urls: $image_urls);
             if ($newId === false) {

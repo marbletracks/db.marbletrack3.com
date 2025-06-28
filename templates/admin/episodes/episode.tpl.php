@@ -15,9 +15,13 @@
 
         <label>
             Description: <br>
-            <textarea name="description" rows="6" cols="60"><?= htmlspecialchars($defaultDesc) ?></textarea>
+            <textarea name="description" rows="16" cols="140"><?= htmlspecialchars($defaultDesc) ?></textarea>
         </label><br><br>
 
+        <label>
+            Frames Description: <br>
+            <textarea name="episode_frames" rows="16" cols="90"><?= htmlspecialchars($episode_frames) ?></textarea>
+        </label><br><br>
         <label>
             Livestream ID (optional): <br>
             <input type="number" name="livestream_id" value="<?= $defaultLivestreamId ?: '' ?>" min="0">
