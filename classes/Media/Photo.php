@@ -2,6 +2,9 @@
 namespace Media;
 
 /**
+ * Photos are for Worker pictures, Episode images, etc.
+ * Photos are NOT Frames
+ *
  * code is a FS code (preferred (for thumbnailing magic))
  * url is b.robnugen.com URL with manual thumbnails (99.9% usage now)
  * maybe can user fewer urls in future
