@@ -9,4 +9,5 @@ interface DbInterface {
     public function fetchResults($sql, $paramtypes = null, $var1 = null);
     public function executeSQL($sql, $paramtypes = null, $var1 = null);
     public function insertId(): ?int;
+    public function getAffectedRows(): int;
 }

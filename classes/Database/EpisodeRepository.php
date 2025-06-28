@@ -86,7 +86,7 @@ SQL
             'ssii',
             [$title, $desc, $livestreamId, $episode_id]
         );
-        return $rowsAffected > 0;
+        return $this->db->getAffectedRows() > 0;
     }
 
     public function insert(string $title, string $desc, ?int $livestreamId = null): int
