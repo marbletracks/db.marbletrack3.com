@@ -137,6 +137,30 @@ SQL,
         return $parts;
     }
 
+    public function findPossParts(): array
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT p.part_id, p.part_alias, t.part_name, t.part_description
+FROM parts p
+JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
+WHERE p.part_alias REGEXP '^[0-9]{1,2}POSS$'
+ORDER BY p.part_id DESC
+SQL,
+            's',
+            [$this->langCode]
+        );
+
+        $parts = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $this->setPartId(part_id: (int) $results->data['part_id']);
+            $parts[] = $this->hydrate($results->data);
+        }
+
+        return $parts;
+    }
+
     public function insert(string $alias, string $name = '', string $description = ''): int
     {
         $part_id = $this->db->insertFromRecord(
