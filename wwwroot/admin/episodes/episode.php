@@ -97,6 +97,7 @@ $page->set("errors", $errors);
 $page->set("episode", $episode);
 $page->set("defaultTitle", $episode ? $episode->title : $defaultTitle);
 $page->set("defaultDesc", $episode ? $episode->episode_english_description : $defaultDesc);
+$page->set("episode_frames", $episode->episode_frames ?: "Here are the frames taken today:\n\n");
 $page->set("defaultLivestreamId", $episode ? $episode->livestream_id : $livestreamId);
 $page->set("streamCode", $streamCode);
 
