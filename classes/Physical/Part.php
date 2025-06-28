@@ -1,11 +1,9 @@
 <?php
 namespace Physical;
 
-use Domain\HasPhotos;
 use Domain\PartHasRoles;
-final readonly class Part
+final class Part
 {
-    use HasPhotos;
     use PartHasRoles;
     /**
      * Represents a physical part of the track itself.

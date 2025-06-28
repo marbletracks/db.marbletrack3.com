@@ -2,12 +2,20 @@
 namespace Database;
 
 use Database\DbInterface;
+use Domain\HasPhotos;
 use Physical\Part;
 
 class PartsRepository
 {
+    use HasPhotos;
+
     private DbInterface $db;
     private string $langCode;
+
+    // Configuration for HasPhotos trait
+    private string $photoLinkingTable = 'parts_2_photos';
+    private string $primaryKeyColumn = 'part_id';
+    private int $part_id;  // Must be set before loading/saving photos
 
     public function __construct(DbInterface $db, string $langCode)
     {
@@ -15,11 +23,42 @@ class PartsRepository
         $this->langCode = $langCode;
     }
 
+    public function getDb(): DbInterface
+    {
+        return $this->db;
+    }
+
+    public function getPhotoLinkingTable(): string
+    {
+        return $this->photoLinkingTable;
+    }
+
+    public function getPrimaryKeyColumn(): string
+    {
+        return $this->primaryKeyColumn;
+    }
+
+    public function getId(): int
+    {
+        return $this->part_id;
+    }
+
+    public function setPartId(int $part_id): void
+    {
+        $this->part_id = $part_id;
+    }
+
     public function findById(int $part_id): ?Part
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT p.part_id, p.part_alias, t.part_name, t.part_description
+SELECT p.part_id,
+       p.part_alias,
+       t.part_name,
+       t.part_description,
+       p.is_rail,
+       p.is_support,
+       p.is_track
 FROM parts p
 LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
 WHERE p.part_id = ?
@@ -32,7 +71,9 @@ SQL,
             return null;
         }
 
+        $this->setPartId($part_id);
         $results->setRow(0);
+
         return $this->hydrate($results->data);
     }
 
@@ -40,14 +81,19 @@ SQL,
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT p.part_id, p.part_alias, t.part_name, t.part_description
+SELECT p.part_id,
+       p.part_alias,
+       t.part_name,
+       t.part_description,
+       p.is_rail,
+       p.is_support,
+       p.is_track
 FROM parts p
 LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
 WHERE p.part_alias = ?
 SQL,
             'ss',
-            [$this->langCode,
-            $alias]
+            [$this->langCode, $alias]
         );
 
         if ($results->numRows() === 0) {
@@ -55,13 +101,16 @@ SQL,
         }
 
         $results->setRow(0);
+        $part_id = (int) $results->data['part_id'];
+        $this->setPartId($part_id);
+
         return $this->hydrate($results->data);
     }
 
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
-            <<<SQL
+            sql: <<<SQL
 SELECT p.part_id,
        p.part_alias,
        p.is_rail,
@@ -74,42 +123,19 @@ FROM parts p
 JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
 ORDER BY p.part_id ASC
 SQL,
-            's',
-            [$this->langCode]
+            paramtypes: 's',
+            var1: [$this->langCode]
         );
 
         $parts = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
+            $this->setPartId((int) $results->data['part_id']);
             $parts[] = $this->hydrate($results->data);
         }
 
         return $parts;
     }
-
-    public function findPossParts(): array
-    {
-        $results = $this->db->fetchResults(
-            <<<SQL
-SELECT p.part_id, p.part_alias, t.part_name, t.part_description
-FROM parts p
-JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
-WHERE p.part_alias REGEXP '^[0-9]{1,2}POSS$'
-ORDER BY p.part_id DESC
-SQL,
-            's',
-            [$this->langCode]
-        );
-
-        $parts = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $parts[] = $this->hydrate($results->data);
-        }
-
-        return $parts;
-    }
-
 
     public function insert(string $alias, string $name = '', string $description = ''): int
     {
@@ -137,84 +163,20 @@ SQL,
 
     private function hydrate(array $row): Part
     {
-        // print_rob("Hydrating Part with data: " . print_r($row, true), false);
-        $image_url = $this->getPrimaryPhotoUrl((int) $row['part_id']);
-
-        return new Part(
+        $part = new Part(
             part_id: (int) $row['part_id'],
             part_alias: $row['part_alias'],
             name: $row['part_name'] ?? '',
             description: $row['part_description'] ?? '',
-            primary_image_url: $image_url,
-            is_rail: $row['is_rail'] ?? false,
-            is_support: $row['is_support'] ?? false,
-            is_track: $row['is_track'] ?? false,
-        );
-    }
-
-    public function getPrimaryPhotoUrl(int $part_id): ?string
-    {
-        // Prefer photo_code-based image if it exists and is primary
-        $result = $this->db->fetchResults(
-            <<<SQL
-SELECT photo_code
-FROM parts_photos
-WHERE part_id = ? AND is_primary = TRUE
-LIMIT 1
-SQL,
-            'i',
-            [$part_id]
+            is_rail: (bool) ($row['is_rail'] ?? false),
+            is_support: (bool) ($row['is_support'] ?? false),
+            is_track: (bool) ($row['is_track'] ?? false)
         );
 
-        if ($result && !empty($result->data['photo_code'])) {
-            return "https://d2f8m59m4mubfx.cloudfront.net/{$result->data['photo_code']}.jpg";
-        }
+        // Load and attach photos via HasPhotos trait
+        $this->loadPhotos();
+        $part->photos = $this->getPhotos();
 
-        // Fallback: use first image URL
-        $result = $this->db->fetchResults(
-            <<<SQL
-SELECT image_url
-FROM part_image_urls
-WHERE part_id = ?
-ORDER BY image_url_id ASC
-LIMIT 1
-SQL,
-            'i',
-            [$part_id]
-        );
-
-        return $result->data['image_url'] ?? null;
-    }
-
-
-    public function getImageUrls(int $part_id): array
-    {
-        $results = $this->db->fetchResults(
-            "SELECT image_url FROM part_image_urls WHERE part_id = ?",
-            'i',
-            [$part_id]
-        );
-
-        $urls = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $urls[] = $results->data['image_url'];
-        }
-
-        return $urls;
-    }
-
-    public function updateImageUrls(int $part_id, array $urls): void
-    {
-        // Delete existing
-        $this->db->executeSQL("DELETE FROM part_image_urls WHERE part_id = ?", 'i', [$part_id]);
-
-        // Insert new
-        foreach ($urls as $url) {
-            $this->db->insertFromRecord('part_image_urls', 'is', [
-                'part_id' => $part_id,
-                'image_url' => $url
-            ]);
-        }
+        return $part;
     }
 }
