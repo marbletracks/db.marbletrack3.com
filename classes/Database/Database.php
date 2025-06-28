@@ -252,7 +252,7 @@ class Database implements DbInterface {
         }
 
         foreach ($record as $key => $val) {
-            $vars .= "`" . $key . "` = ?, ";
+            $vars .= "`$key` = ?, ";
         }
         $vars = rtrim($vars, ", ");
 
