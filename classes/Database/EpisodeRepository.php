@@ -46,7 +46,12 @@ class EpisodeRepository
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT episode_id, title, episode_english_description, livestream_id, created_at
+SELECT episode_id,
+title,
+episode_english_description,
+episode_frames,
+livestream_id,
+created_at
 FROM episodes
 ORDER BY created_at DESC
 SQL
@@ -65,7 +70,15 @@ SQL
     public function findById(int $episode_id): ?Episode
     {
         $results = $this->db->fetchResults(
-            "SELECT episode_id, title, episode_english_description, livestream_id, created_at FROM episodes WHERE episode_id = ?",
+            "SELECT
+                    episode_id,
+                    title,
+                    episode_english_description,
+                    episode_frames,
+                    livestream_id,
+                    created_at
+                  FROM episodes
+                  WHERE episode_id = ?",
             'i',
             [$episode_id]
         );
@@ -79,17 +92,33 @@ SQL
         return $this->hydrate(row: $results->data);
     }
 
-    public function update(int $episode_id, string $title, string $desc, ?int $livestreamId = null): bool
+    public function update(
+        int $episode_id,
+        string $title,
+        string $desc,
+        string $episode_frames,
+        ?int $livestreamId = null
+    ): bool
     {
         $this->db->executeSQL(
-            "UPDATE episodes SET title = ?, episode_english_description = ?, livestream_id = ? WHERE episode_id = ?",
-            'ssii',
-            [$title, $desc, $livestreamId, $episode_id]
+            "UPDATE episodes SET
+                    title = ?,
+                    episode_english_description = ?,
+                    episode_frames = ?,
+                    livestream_id = ?
+                    WHERE episode_id = ?",
+            'sssii',
+            [$title, $desc, $episode_frames, $livestreamId, $episode_id]
         );
         return $this->db->getAffectedRows() > 0;
     }
 
-    public function insert(string $title, string $desc, ?int $livestreamId = null): int
+    public function insert(
+        string $title,
+        string $desc,
+        string $episode_frames,
+        ?int $livestreamId = null
+    ): int
     {
         return $this->db->insertFromRecord(
             'episodes',
@@ -97,6 +126,7 @@ SQL
             [
                 'title' => $title,
                 'episode_english_description' => $desc,
+                'episode_frames' => $episode_frames,
                 'livestream_id' => $livestreamId
             ]
         );
@@ -108,6 +138,7 @@ SQL
             episode_id: (int) $row['episode_id'],
             title: $row['title'] ?? '',
             episode_english_description: $row['episode_english_description'] ?? '',
+            episode_frames: $row['episode_frames'] ?? '',
             livestream_id: isset($row['livestream_id']) ? (int) $row['livestream_id'] : null,
             created_at: $row['created_at']
         );
