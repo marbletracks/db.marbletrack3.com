@@ -27,9 +27,36 @@
             <em>YT Link:</em> <a href="https://www.youtube.com/watch?v=<?= htmlspecialchars($streamCode) ?>" target="_blank">Watch</a><br><br>
         <?php endif; ?>
 
+        <label>
+            Image URLs:<br>
+            <div id="image-url-fields">
+                <?php if(!empty($episode->photos)):foreach ($episode->photos ?? [''] as $photo): ?>
+                    <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"><br>
+                    <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
+                <?php endforeach; ?>
+                <?php endif; ?>
+                <!-- add empty row so we always have space -->
+                <input type="text" size=130 name="image_urls[]" value=""><br>
+            </div>
+            <button type="button" onclick="addImageUrlField()">Add another</button>
+        </label>
+
+        <script>
+            function addImageUrlField() {
+                const div = document.getElementById('image-url-fields');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'image_urls[]';
+                div.appendChild(input);
+                div.appendChild(document.createElement('br'));
+            }
+        </script>
+
+
         <button type="submit"><?= $episode ? 'Update Episode' : 'Create Episode' ?></button>
         <?php if ($episode): ?>
             <a href="/admin/episodes/" style="margin-left: 10px;">Cancel</a>
         <?php endif; ?>
+
     </form>
 </div>

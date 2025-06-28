@@ -1,7 +1,7 @@
 <?php
 namespace Media;
 
-final readonly class Episode
+final class Episode
 {
     public function __construct(
         public int $episode_id,
