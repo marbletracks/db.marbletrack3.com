@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Edit episodes";
+const SENTIMENTAL_VERSION = "Create Frames";
 
 # write errors to screen
 ini_set('display_errors', 1);
