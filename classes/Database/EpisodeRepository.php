@@ -81,7 +81,7 @@ SQL
 
     public function update(int $episode_id, string $title, string $desc, ?int $livestreamId = null): bool
     {
-        $rowsAffected = $this->db->executeSQL(
+        $this->db->executeSQL(
             "UPDATE episodes SET title = ?, episode_english_description = ?, livestream_id = ? WHERE episode_id = ?",
             'ssii',
             [$title, $desc, $livestreamId, $episode_id]
