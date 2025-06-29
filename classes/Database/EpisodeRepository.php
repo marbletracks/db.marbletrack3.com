@@ -122,7 +122,7 @@ SQL
     {
         return $this->db->insertFromRecord(
             'episodes',
-            'ssi',
+            'sssi',
             [
                 'title' => $title,
                 'episode_english_description' => $desc,
