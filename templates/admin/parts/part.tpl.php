@@ -96,13 +96,14 @@
             aliasField.value = initials;
 
             // Check for duplicates via AJAX
-            fetch(`/admin/ajax/shortcode_filter.php?q=${encodeURIComponent(initials)}`)
+            fetch(`/admin/ajax/shortcode_filter.php?q=${encodeURIComponent(initials)}&exact=true`)
                 .then(response => response.json())
                 .then(data => {
                     // console.log(data);
                     const duplicate = data.some(item => item.alias === initials);
                     if (duplicate) {
-                        aliasError.textContent = 'Alias "' + initials + '" is already in use for ' + item.name;
+                        aliasError.textContent = 'Alias "' + initials + '" is already in use by ' +
+                            data.find(item => item.alias === initials).name;
                         aliasError.style.display = 'block';
                         saveButton.disabled = true;
                     } else {
