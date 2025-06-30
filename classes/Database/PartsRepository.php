@@ -3,11 +3,13 @@ namespace Database;
 
 use Database\DbInterface;
 use Domain\HasPhotos;
+use Domain\HasShortcodes;
 use Physical\Part;
 
 class PartsRepository
 {
     use HasPhotos;
+    use HasShortcodes;
 
     private DbInterface $db;
     private string $langCode;
@@ -21,6 +23,25 @@ class PartsRepository
     {
         $this->db = $db;
         $this->langCode = $langCode;
+    }
+
+    public function getSelectPrefix(): string
+    {
+        return <<<SQL
+SELECT
+    p.part_id AS id,
+    p.part_alias AS alias,
+    pt.part_name AS name
+FROM parts p
+LEFT JOIN part_translations pt
+  ON p.part_id = pt.part_id
+  AND pt.language_code = ?
+SQL;
+    }
+
+    public function getTableAlias(): string
+    {
+        return 'p';
     }
 
     public function getDb(): DbInterface
