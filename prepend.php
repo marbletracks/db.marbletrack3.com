@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Create Frames";
+const SENTIMENTAL_VERSION = "Shortcodes for Parts";
 
 # write errors to screen
 ini_set('display_errors', 1);
