@@ -12,12 +12,14 @@
     <form action="" method="post">
         <label>
             Alias:<br>
-            <input type="text" name="part_alias" value="<?= htmlspecialchars($part->part_alias ?? '') ?>">
+            <input type="text" id="part_alias" name="part_alias"
+                   value="<?= htmlspecialchars($part->part_alias ?? '') ?>">
+            <div id="alias-error" style="color:red; margin-top:4px;">ss</div>
         </label><br><br>
 
         <label>
             Name:<br>
-            <input type="text" name="part_name" value="<?= htmlspecialchars($part->name ?? '') ?>">
+            <input type="text" size="100" id="part_name" name="part_name" value="<?= htmlspecialchars($part->name ?? '') ?>">
         </label><br><br>
 
         <label>
@@ -49,6 +51,74 @@
             }
         </script>
 
-        <button type="submit">Save</button>
+        <button id="save-button" type="submit">Save</button>
     </form>
 </div>
+
+<script>
+    // Auto-fill alias from part name (lowercase initials)
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameField = document.getElementById('part_name');
+        const aliasField = document.getElementById('part_alias');
+        const aliasError = document.getElementById('alias-error');
+        const saveButton = document.getElementById('save-button');
+
+        function updateAlias() {
+            const value = nameField.value.trim();
+            if (!value) {
+                aliasField.value = '';
+                return;
+            }
+            const initials = value
+                .split(/\s+/)
+                .map(word => word.charAt(0).toLowerCase())
+                .join('');
+            aliasField.value = initials;
+        }
+
+        nameField.addEventListener('input', updateAlias);
+
+        // Initialize on page load if editing
+        updateAlias();
+
+        function updateAlias() {
+            const value = nameField.value.trim();
+            if (!value) {
+                aliasField.value = '';
+                aliasError.style.display = 'none';
+                saveButton.disabled = false;
+                return;
+            }
+            const initials = value
+                .split(/\s+/)
+                .map(word => word.charAt(0).toLowerCase())
+                .join('');
+            aliasField.value = initials;
+
+            // Check for duplicates via AJAX
+            fetch(`/admin/ajax/shortcode_filter.php?q=${encodeURIComponent(initials)}&exact=true`)
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(data);
+                    const duplicate = data.some(item => item.alias === initials);
+                    if (duplicate) {
+                        aliasError.textContent = 'Alias "' + initials + '" is already in use by ' +
+                            data.find(item => item.alias === initials).name;
+                        aliasError.style.display = 'block';
+                        saveButton.disabled = true;
+                    } else {
+                        aliasError.textContent = '';
+                        aliasError.style.display = 'none';
+                        saveButton.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking alias:', error);
+                    // On error, allow save but log
+                    aliasError.textContent = '';
+                    aliasError.style.display = 'none';
+                    saveButton.disabled = false;
+                });
+        }
+    });
+</script>

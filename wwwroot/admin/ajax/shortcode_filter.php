@@ -9,6 +9,7 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 $q = $_GET['q'] ?? '';
+$exact = isset($_GET['exact']) && $_GET['exact'] === 'true';
 $res = [];
 
 if ($q !== '') {
@@ -17,6 +18,7 @@ if ($q !== '') {
     $res = $partsRepo->searchByShortcodeOrName(
         like: $q,
         lang: "en",
+        exact: $exact,
         limit: 10
     );
 }
