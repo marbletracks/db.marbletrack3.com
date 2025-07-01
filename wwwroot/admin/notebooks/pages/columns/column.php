@@ -13,10 +13,12 @@ if (!$is_logged_in->isLoggedIn()) {
 use Database\ColumnsRepository;
 use Database\WorkersRepository;
 use Database\PageRepository;
+use Database\TokensRepository;
 
 $columnsRepo = new ColumnsRepository($mla_database);
 $workersRepo = new WorkersRepository($mla_database, "en");
 $pageRepo = new PageRepository($mla_database);
+$tokensRepo = new TokensRepository($mla_database);
 $errors = [];
 $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
@@ -42,6 +44,12 @@ if (!$page_id) {
 
 // Get all workers for the dropdown
 $workers = $workersRepo->findAll();
+
+// Get tokens for this column if it exists
+$tokens = [];
+if ($column) {
+    $tokens = $tokensRepo->findByColumnId($column->column_id);
+}
 
 if ($submitted) {
     $worker_id = (int) ($_POST['worker_id'] ?? 0);
@@ -72,6 +80,7 @@ $tpl->setTemplate(template_file: "admin/notebooks/pages/columns/column.tpl.php")
 $tpl->set(name: "column", value: $column);
 $tpl->set(name: "page", value: $page);
 $tpl->set(name: "workers", value: $workers);
+$tpl->set(name: "tokens", value: $tokens);
 $tpl->set(name: "errors", value: $errors);
 $tpl->set(name: "page_title", value: $column ? "Edit Column" : "Create Column");
 $inner = $tpl->grabTheGoods();
