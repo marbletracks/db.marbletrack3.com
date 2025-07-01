@@ -30,6 +30,29 @@
         </label><br><br>
 
         <label>
+            Columns:<br>
+            <div id="columns-section">
+                <?php if (!empty($columns)): ?>
+                    <?php foreach ($columns as $column): ?>
+                        <div class="column-item" data-column-id="<?= $column->column_id ?>">
+                            <div class="drag-handle">⋮⋮</div>
+                            <div class="column-content">
+                                <strong><?= htmlspecialchars($column->col_name) ?></strong>
+                                <span class="column-sort">(Sort: <?= $column->col_sort ?>)</span>
+                                <a href="/admin/notebooks/pages/columns/column.php?id=<?= $column->column_id ?>" class="edit-column">Edit</a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No columns created yet.</p>
+                <?php endif; ?>
+                <?php if ($page): ?>
+                    <p><a href="/admin/notebooks/pages/columns/column.php?page_id=<?= $page->page_id ?>" class="create-column-link">Create Column</a></p>
+                <?php endif; ?>
+            </div>
+        </label><br><br>
+
+        <label>
             Image URLs:<br>
             <div id="image-url-fields">
                 <?php if(!empty($page->photos)): foreach ($page->photos ?? [] as $index => $photo): ?>
@@ -107,6 +130,47 @@
                 border-radius: 3px;
                 font-size: 11px;
                 margin-left: 5px;
+            }
+            .column-item {
+                display: flex;
+                align-items: center;
+                margin: 5px 0;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background: #f5f5f5;
+            }
+            .column-content {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                gap: 10px;
+            }
+            .column-sort {
+                color: #666;
+                font-size: 11px;
+            }
+            .edit-column {
+                background: #0073aa;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 3px;
+                text-decoration: none;
+                font-size: 11px;
+            }
+            .edit-column:hover {
+                background: #005a87;
+            }
+            .create-column-link {
+                background: #00a32a;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 3px;
+                text-decoration: none;
+                font-size: 12px;
+            }
+            .create-column-link:hover {
+                background: #007a20;
             }
         </style>
 

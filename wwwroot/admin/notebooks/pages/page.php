@@ -11,13 +11,16 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 use Database\PageRepository;
+use Database\ColumnsRepository;
 
 $repo = new PageRepository($mla_database);
+$columnsRepo = new ColumnsRepository($mla_database);
 $errors = [];
 $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 $page_id = (int) ($_GET['id'] ?? 0);
 $page = $page_id > 0 ? $repo->findById($page_id) : null;
+$columns = $page_id > 0 ? $columnsRepo->findByPageId($page_id) : [];
 
 if ($submitted) {
     $notebook_id = (int) ($_POST['notebook_id'] ?? 0);
@@ -52,6 +55,7 @@ if ($submitted) {
 $tpl = new \Template(config: $config);
 $tpl->setTemplate(template_file: "admin/notebooks/pages/page.tpl.php");
 $tpl->set(name: "page", value: $page);
+$tpl->set(name: "columns", value: $columns);
 $tpl->set(name: "errors", value: $errors);
 $tpl->set(name: "page_title", value: $page ? "Edit Page {$page->number}" : "New Page");
 $inner = $tpl->grabTheGoods();
