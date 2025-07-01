@@ -54,12 +54,20 @@ trait HasPhotos
             $primaryMap[$photoId] = !empty($results->data['is_primary']);
         }
 
-        // $photoIds = array_column($r->data, 'photo_id');
-        $photos = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
+        // Get photos from repository (order not guaranteed)
+        $photosFromRepo = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
+        
+        // Create a map to preserve the sort order
+        $photoMap = [];
+        foreach ($photosFromRepo as $photo) {
+            $photoMap[$photo->photo_id] = $photo;
+        }
 
-        foreach ($photos as $photo) {
+        // Add photos in the correct sort order
+        foreach ($photoIds as $photoId) {
+            $photo = $photoMap[$photoId] ?? null;
             if ($photo) {
-                $isPrimary = $primaryMap[$photo->photo_id] ?? false;
+                $isPrimary = $primaryMap[$photoId] ?? false;
                 $this->addPhoto($photo, $isPrimary);
             }
         }
@@ -82,9 +90,6 @@ trait HasPhotos
         $id = $this->getId();
 
         $this->getDb()->executeSQL("DELETE FROM {$table} WHERE {$key} = ?", 'i', [$id]);
-
-        // Set the first photo as primary
-        $this->primaryPhoto = !empty($photos) ? $photos[0] : null;
 
         $sort = 0;
         // print_rob($photos,false);
