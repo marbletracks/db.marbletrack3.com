@@ -64,7 +64,9 @@
                     <div class="photo-item" draggable="true" data-index="<?= $index ?>">
                         <div class="drag-handle">⋮⋮</div>
                         <div class="photo-content">
-                            <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview">
+                            <a href="<?= htmlspecialchars($photo->getUrl()) ?>" target="_blank">
+                                <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview">
+                            </a>
                             <input type="text" size="120" name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>">
                             <button type="button" class="remove-photo" onclick="removePhoto(this)">×</button>
                         </div>
@@ -204,11 +206,11 @@
                         <button type="button" class="remove-photo" onclick="removePhoto(this)">×</button>
                     </div>
                 `;
-                
+
                 // Insert before the last item (which should be the empty one)
                 const lastItem = container.lastElementChild;
                 container.insertBefore(newItem, lastItem);
-                
+
                 // Focus the new input
                 newItem.querySelector('input').focus();
             }
@@ -239,7 +241,7 @@
             // Set up drag and drop
             document.addEventListener('DOMContentLoaded', function() {
                 const container = document.getElementById('image-url-fields');
-                
+
                 container.addEventListener('dragstart', function(e) {
                     if (e.target.classList.contains('photo-item')) {
                         draggedElement = e.target;
@@ -297,11 +299,11 @@
 
             function getDragAfterElement(container, y) {
                 const draggableElements = [...container.querySelectorAll('.photo-item:not(.dragging)')];
-                
+
                 return draggableElements.reduce((closest, child) => {
                     const box = child.getBoundingClientRect();
                     const offset = y - box.top - box.height / 2;
-                    
+
                     if (offset < 0 && offset > closest.offset) {
                         return { offset: offset, element: child };
                     } else {
@@ -314,7 +316,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const columnsContainer = document.getElementById('columns-section');
                 if (!columnsContainer) return;
-                
+
                 columnsContainer.addEventListener('dragstart', function(e) {
                     if (e.target.classList.contains('column-item')) {
                         draggedElement = e.target;
@@ -345,11 +347,11 @@
 
             function getColumnDragAfterElement(container, y) {
                 const draggableElements = [...container.querySelectorAll('.column-item:not(.dragging)')];
-                
+
                 return draggableElements.reduce((closest, child) => {
                     const box = child.getBoundingClientRect();
                     const offset = y - box.top - box.height / 2;
-                    
+
                     if (offset < 0 && offset > closest.offset) {
                         return { offset: offset, element: child };
                     } else {
