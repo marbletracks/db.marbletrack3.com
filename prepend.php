@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Columns on Pages";
+const SENTIMENTAL_VERSION = "Tokens in Columns";
 
 # write errors to screen
 ini_set('display_errors', 1);
