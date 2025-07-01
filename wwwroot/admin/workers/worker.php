@@ -31,29 +31,20 @@ if ($submitted) {
 
     if (empty($errors)) {
         if ($worker) {
-            $mla_database->executeSQL(
-                "UPDATE workers SET worker_alias = ? WHERE worker_id = ?",
-                'si',
-                [$worker_alias, $worker_id]
+            $repo->update(
+                worker_id: $worker_id,
+                alias: $worker_alias,
+                name: $name,
+                description: $description
             );
-            $mla_database->executeSQL(
-                "UPDATE worker_names SET worker_name = ?, worker_description = ? WHERE worker_id = ? AND language_code = 'en'",
-                'ssi',
-                [$name, $description, $worker_id]
-            );
+            // should probably be in WorkersRepository
             $repo->setWorkerId($worker_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
         } else {
-            $mla_database->executeSQL(
-                "INSERT INTO workers (worker_alias) VALUES (?)",
-                's',
-                [$worker_alias]
-            );
-            $worker_id = $mla_database->insertId();
-            $mla_database->executeSQL(
-                "INSERT INTO worker_names (worker_id, language_code, worker_name, worker_description) VALUES (?, 'en', ?, ?)",
-                'iss',
-                [$worker_id, $name, $description]
+            $worker_id = $repo->insert(
+                alias: $worker_alias,
+                name: $name,
+                description: $description
             );
             $repo->setWorkerId($worker_id);
             $repo->savePhotosFromUrls(urls: $image_urls);

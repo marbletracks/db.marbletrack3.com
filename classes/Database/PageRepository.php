@@ -101,6 +101,7 @@ class PageRepository
         );
         $this->loadPhotos();
         $page->photos = $this->getPhotos();
+        $page->primaryPhoto = $this->getPrimaryPhoto();
         return $page;
     }
 }
