@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Unique Shortcodes for Parts";
+const SENTIMENTAL_VERSION = "Columns on Pages";
 
 # write errors to screen
 ini_set('display_errors', 1);
