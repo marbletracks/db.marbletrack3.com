@@ -7,7 +7,7 @@ namespace Media;
  *
  * code is a FS code (preferred (for thumbnailing magic))
  * url is b.robnugen.com URL with manual thumbnails (99.9% usage now)
- * maybe can user fewer urls in future
+ * maybe can use fewer urls in future
  */
 class Photo
 {
