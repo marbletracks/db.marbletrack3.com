@@ -1,5 +1,5 @@
 <?php
-// File: /templates/admin/pages/page.tpl.php
+// File: /templates/admin/notebooks/pages/page.tpl.php
 ?>
 <div class="PagePanel">
     <h1><?= $page ? 'Edit Page' : 'Create Page' ?></h1>

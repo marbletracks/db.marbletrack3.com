@@ -36,7 +36,6 @@ CREATE TABLE IF NOT EXISTS parts_2_photos (
     FOREIGN KEY (photo_id) REFERENCES photos(photo_id) ON DELETE CASCADE
 );
 
--- do this one after the pages table is created
 CREATE TABLE IF NOT EXISTS pages_2_photos (
     page_id INT NOT NULL,
     photo_id INT NOT NULL,
