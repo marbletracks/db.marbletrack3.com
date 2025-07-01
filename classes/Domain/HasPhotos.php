@@ -46,19 +46,21 @@ trait HasPhotos
         );
         $results->toArray();
         $photoIds = [];
+        $primaryMap = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
-            $photoIds[] = $results->data['photo_id'];
+            $photoId = $results->data['photo_id'];
+            $photoIds[] = $photoId;
+            $primaryMap[$photoId] = !empty($results->data['is_primary']);
         }
 
         // $photoIds = array_column($r->data, 'photo_id');
         $photos = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
 
         foreach ($photos as $photo) {
-            // $pid = (int)$row['photo_id'];
-            // $photo = $photos[$pid] ?? null;
             if ($photo) {
-                $this->addPhoto($photo); // , !empty($row['is_primary']));
+                $isPrimary = $primaryMap[$photo->photo_id] ?? false;
+                $this->addPhoto($photo, $isPrimary);
             }
         }
     }
@@ -80,6 +82,9 @@ trait HasPhotos
         $id = $this->getId();
 
         $this->getDb()->executeSQL("DELETE FROM {$table} WHERE {$key} = ?", 'i', [$id]);
+
+        // Set the first photo as primary
+        $this->primaryPhoto = !empty($photos) ? $photos[0] : null;
 
         $sort = 0;
         // print_rob($photos,false);

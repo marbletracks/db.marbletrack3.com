@@ -7,7 +7,11 @@
     <ul style="list-style: none; padding: 0;">
         <?php foreach ($pages as $page): ?>
             <li style="display: flex; align-items: flex-start; margin-bottom: 20px;">
-                <?php if (!empty($page->photos[0])): ?>
+                <?php if ($page->primaryPhoto): ?>
+                    <a href="<?= $page->primaryPhoto->getUrl() ?>" style="margin-right: 15px;">
+                        <img src="<?= $page->primaryPhoto->getThumbnailUrl() ?>" alt="Page photo">
+                    </a>
+                <?php elseif (!empty($page->photos[0])): ?>
                     <a href="<?= $page->photos[0]->getUrl() ?>" style="margin-right: 15px;">
                         <img src="<?= $page->photos[0]->getThumbnailUrl() ?>" alt="Page photo">
                     </a>
