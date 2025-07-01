@@ -32,7 +32,14 @@ class ColumnsRepository
     public function findByPageId(int $page_id): array
     {
         $results = $this->db->fetchResults(
-            "SELECT * FROM columns WHERE page_id = ? ORDER BY col_sort ASC, created_at ASC",
+            <<<SQL
+SELECT c.*, w.worker_alias, wn.worker_name
+FROM columns c
+LEFT JOIN workers w ON c.worker_id = w.worker_id
+LEFT JOIN worker_names wn ON w.worker_id = wn.worker_id AND wn.language_code = 'en'
+WHERE c.page_id = ?
+ORDER BY c.col_sort ASC, c.created_at ASC
+SQL,
             'i',
             [$page_id]
         );
@@ -40,7 +47,11 @@ class ColumnsRepository
         $columns = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
-            $columns[] = $this->hydrate($results->data);
+            $column = $this->hydrate($results->data);
+            // Add worker info to column object
+            $column->worker_alias = $results->data['worker_alias'] ?? '';
+            $column->worker_name = $results->data['worker_name'] ?? '';
+            $columns[] = $column;
         }
 
         return $columns;

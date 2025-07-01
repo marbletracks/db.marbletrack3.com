@@ -34,10 +34,15 @@
             <div id="columns-section">
                 <?php if (!empty($columns)): ?>
                     <?php foreach ($columns as $column): ?>
-                        <div class="column-item" data-column-id="<?= $column->column_id ?>">
+                        <div class="column-item" draggable="true" data-column-id="<?= $column->column_id ?>">
                             <div class="drag-handle">⋮⋮</div>
                             <div class="column-content">
                                 <strong><?= htmlspecialchars($column->col_name) ?></strong>
+                                <?php if (!empty($column->worker_name)): ?>
+                                    <span class="column-worker">(<?= htmlspecialchars($column->worker_name) ?>)</span>
+                                <?php elseif (!empty($column->worker_alias)): ?>
+                                    <span class="column-worker">(<?= htmlspecialchars($column->worker_alias) ?>)</span>
+                                <?php endif; ?>
                                 <span class="column-sort">(Sort: <?= $column->col_sort ?>)</span>
                                 <a href="/admin/notebooks/pages/columns/column.php?id=<?= $column->column_id ?>" class="edit-column">Edit</a>
                             </div>
@@ -140,6 +145,13 @@
                 border-radius: 4px;
                 background: #f5f5f5;
             }
+            .column-item.dragging {
+                opacity: 0.5;
+            }
+            .column-item.drag-over {
+                border-color: #007cba;
+                background: #e6f3ff;
+            }
             .column-content {
                 display: flex;
                 align-items: center;
@@ -149,6 +161,11 @@
             .column-sort {
                 color: #666;
                 font-size: 11px;
+            }
+            .column-worker {
+                color: #0073aa;
+                font-size: 11px;
+                font-style: italic;
             }
             .edit-column {
                 background: #0073aa;
@@ -291,6 +308,64 @@
                         return closest;
                     }
                 }, { offset: Number.NEGATIVE_INFINITY }).element;
+            }
+
+            // Column drag and drop functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const columnsContainer = document.getElementById('columns-section');
+                if (!columnsContainer) return;
+                
+                columnsContainer.addEventListener('dragstart', function(e) {
+                    if (e.target.classList.contains('column-item')) {
+                        draggedElement = e.target;
+                        e.target.classList.add('dragging');
+                    }
+                });
+
+                columnsContainer.addEventListener('dragend', function(e) {
+                    if (e.target.classList.contains('column-item')) {
+                        e.target.classList.remove('dragging');
+                        draggedElement = null;
+                        updateColumnSort();
+                    }
+                });
+
+                columnsContainer.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    if (draggedElement && draggedElement.classList.contains('column-item')) {
+                        const afterElement = getColumnDragAfterElement(columnsContainer, e.clientY);
+                        if (afterElement == null) {
+                            columnsContainer.appendChild(draggedElement);
+                        } else {
+                            columnsContainer.insertBefore(draggedElement, afterElement);
+                        }
+                    }
+                });
+            });
+
+            function getColumnDragAfterElement(container, y) {
+                const draggableElements = [...container.querySelectorAll('.column-item:not(.dragging)')];
+                
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+            }
+
+            function updateColumnSort() {
+                const columnItems = document.querySelectorAll('.column-item');
+                columnItems.forEach((item, index) => {
+                    const sortSpan = item.querySelector('.column-sort');
+                    if (sortSpan) {
+                        sortSpan.textContent = `(Sort: ${index})`;
+                    }
+                });
             }
         </script>
 

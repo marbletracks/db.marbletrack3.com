@@ -21,11 +21,15 @@
             Worker:<br>
             <select name="worker_id">
                 <option value="">-- Select a Worker --</option>
-                <?php foreach ($workers as $worker): ?>
-                    <option value="<?= $worker->worker_id ?>" <?= ($column->worker_id ?? '') == $worker->worker_id ? 'selected' : '' ?>>
-                        <?= htmlspecialchars("{$worker->worker_alias} - {$worker->name}") ?>
-                    </option>
-                <?php endforeach; ?>
+                <?php if (!empty($workers)): ?>
+                    <?php foreach ($workers as $worker): ?>
+                        <option value="<?= $worker->worker_id ?>" <?= ($column->worker_id ?? '') == $worker->worker_id ? 'selected' : '' ?>>
+                            <?= htmlspecialchars("{$worker->worker_alias} - {$worker->name}") ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <option value="" disabled>No workers available</option>
+                <?php endif; ?>
             </select>
         </label><br><br>
 
