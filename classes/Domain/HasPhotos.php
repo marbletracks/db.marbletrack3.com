@@ -17,6 +17,9 @@ trait HasPhotos
     abstract public function getPrimaryKeyColumn(): string;
 
     public function addPhoto(Photo $photo, bool $isPrimary = false): void {
+        if ($isPrimary) {
+            $photo->isPrimary = true; // Set the primary flag on the photo
+        }
         $this->photos[] = $photo;
         if ($isPrimary || $this->primaryPhoto === null) {
             $this->primaryPhoto = $photo;
@@ -63,7 +66,7 @@ trait HasPhotos
             $photoMap[$photo->photo_id] = $photo;
         }
 
-        // Add photos in the correct sort order
+        // Add photos in the correct sort order and pass through is_primary flag
         foreach ($photoIds as $photoId) {
             $photo = $photoMap[$photoId] ?? null;
             if ($photo) {
@@ -94,11 +97,11 @@ trait HasPhotos
         $sort = 0;
         // print_rob($photos,false);
         foreach ($photos as $photo) {
-            // print_rob([$id, $photo->photo_id, $sort, ($photo === $this->primaryPhoto ? 1 : 0)],false);
+            // print_rob([$id, $photo->photo_id, $sort, ($photo->isPrimary ? 1 : 0)],false);
             $this->getDb()->executeSQL(
                 "INSERT INTO {$table} ({$key}, photo_id, photo_sort, is_primary) VALUES (?, ?, ?, ?)",
                 'iiii',
-                [$id, $photo->photo_id, $sort, ($photo === $this->primaryPhoto ? 1 : 0)]
+                [$id, $photo->photo_id, $sort, ($photo->isPrimary ? 1 : 0)]
             );
             $sort++;
         }
