@@ -33,11 +33,14 @@ class ColumnsRepository
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT c.*, w.worker_alias, wn.worker_name
+SELECT c.*, w.worker_alias, wn.worker_name,
+       COUNT(DISTINCT t.token_id) AS token_count
 FROM columns c
 LEFT JOIN workers w ON c.worker_id = w.worker_id
 LEFT JOIN worker_names wn ON w.worker_id = wn.worker_id AND wn.language_code = 'en'
+LEFT JOIN tokens t ON c.column_id = t.column_id
 WHERE c.page_id = ?
+GROUP BY c.column_id
 ORDER BY c.col_sort ASC, c.created_at ASC
 SQL,
             'i',
@@ -51,6 +54,7 @@ SQL,
             // Add worker info to column object
             $column->worker_alias = $results->data['worker_alias'] ?? '';
             $column->worker_name = $results->data['worker_name'] ?? '';
+            $column->token_count = (int) ($results->data['token_count'] ?? 0);
             $columns[] = $column;
         }
 

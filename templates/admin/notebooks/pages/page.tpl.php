@@ -43,6 +43,7 @@
                                 <?php elseif (!empty($column->worker_alias)): ?>
                                     <span class="column-worker">(<?= htmlspecialchars($column->worker_alias) ?>)</span>
                                 <?php endif; ?>
+                                <span class="token-count">(<?= $column->token_count ?> tokens)</span>
                                 <span class="column-sort">(Sort: <?= $column->col_sort ?>)</span>
                                 <a href="/admin/notebooks/pages/columns/column.php?id=<?= $column->column_id ?>" class="edit-column">Edit</a>
                             </div>
@@ -163,6 +164,11 @@
             .column-sort {
                 color: #666;
                 font-size: 11px;
+            }
+            .token-count {
+                color: #333;
+                font-size: 11px;
+                margin-left: 10px;
             }
             .column-worker {
                 color: #0073aa;
