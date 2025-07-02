@@ -186,13 +186,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('new-token-color').value = 'Black';
     }
 
-    // Make tokens draggable
+    // Make tokens draggable and resizable
     canvas.addEventListener('mousedown', function(e) {
         const token = e.target.closest('.token-item');
         if (!token || isEditing) return;
 
+        // --- Only drag if NOT clicking the resize handle (bottom-right 16x16px) ---
+        const rect = token.getBoundingClientRect();
+        // Adjust 16 to match effective resize handle area for your UI/UX preference
+        if (e.clientX > rect.right - 16 && e.clientY > rect.bottom - 16) {
+            // Let the browser handle the native resize!
+            return;
+        }
+
         draggedToken = token;
-        const rect = canvas.getBoundingClientRect();
         startX = e.clientX;
         startY = e.clientY;
         startLeft = parseInt(token.style.left);
