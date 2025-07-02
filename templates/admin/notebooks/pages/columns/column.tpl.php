@@ -97,7 +97,7 @@
                     <div class="token-content">
                         <?= htmlspecialchars($token->token_string) ?>
                         <?php if ($token->token_date): ?>
-                            <br><small class="token-date" style="color: #666;"><?= htmlspecialchars($token->token_date) ?></small>
+                            <br><small class="token-date" style="color: red;"><?= htmlspecialchars($token->token_date) ?></small>
                         <?php endif; ?>
                     </div>
                     <div class="token-controls" style="position: absolute; top: 2px; right: 2px; display: none;">
