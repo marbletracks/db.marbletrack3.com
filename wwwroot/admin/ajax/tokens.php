@@ -27,8 +27,8 @@ try {
             $token_date = trim($_POST['token_date'] ?? '');
             $token_x_pos = (int) ($_POST['token_x_pos'] ?? 10);
             $token_y_pos = (int) ($_POST['token_y_pos'] ?? 10);
-            $token_width = (int) ($_POST['token_width'] ?? 150);
-            $token_height = (int) ($_POST['token_height'] ?? 80);
+            $token_width = (int) ($_POST['token_width'] ?? 100);
+            $token_height = (int) ($_POST['token_height'] ?? 30);
             $token_color = trim($_POST['token_color'] ?? 'Black');
 
             if ($column_id <= 0 || $token_string === '') {

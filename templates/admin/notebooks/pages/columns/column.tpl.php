@@ -240,8 +240,8 @@
             if (action === 'create') {
                 tokenData.token_x_pos = tokenXPosInput.value;
                 tokenData.token_y_pos = tokenYPosInput.value;
-                tokenData.token_width = 150; // Default width
-                tokenData.token_height = 80; // Default height
+                tokenData.token_width = 100; // Default width
+                tokenData.token_height = 30; // Default height
             }
 
             for (const key in tokenData) {
