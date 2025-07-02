@@ -68,7 +68,7 @@
                             <a href="<?= htmlspecialchars($photo->getUrl()) ?>" target="_blank">
                                 <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview">
                             </a>
-                            <input type="text" size="120" name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>">
+                            <input type="text" size="85" name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>">
                             <button type="button" class="remove-photo" onclick="removePhoto(this)">×</button>
                         </div>
                     </div>
@@ -132,11 +132,9 @@
                 background: #a00;
             }
             .primary-indicator {
-                background: #0073aa;
-                color: white;
                 padding: 2px 6px;
                 border-radius: 3px;
-                font-size: 11px;
+                font-size: 21px;
                 margin-left: 5px;
             }
             .column-item {
@@ -235,7 +233,7 @@
                         if (!indicator) {
                             const newIndicator = document.createElement('span');
                             newIndicator.className = 'primary-indicator';
-                            newIndicator.textContent = 'PRIMARY';
+                            newIndicator.textContent = '⭐';
                             item.querySelector('.photo-content').appendChild(newIndicator);
                         }
                     } else if (indicator) {
