@@ -2,7 +2,7 @@
 
 namespace Physical;
 
-class Token
+class Token implements \JsonSerializable
 {
     /**
      * Tokens are the individual pieces of content that are written on a Column.
@@ -33,5 +33,10 @@ class Token
         public string $token_color,
         public string $created_at,
     ) {
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 }

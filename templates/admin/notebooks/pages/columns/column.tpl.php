@@ -47,360 +47,399 @@
     </form>
 
     <?php if ($column): ?>
-        <div class="tokens-section">
-            <h2>Tokens</h2>
-            <div class="tokens-controls">
-                <button type="button" id="add-token-btn">Add Token</button>
-                <div id="token-form" style="display: none; margin-top: 10px; padding: 10px; border: 1px solid #ccc;">
-                    <h3>Create New Token</h3>
-                    <label>
-                        Token Text:<br>
-                        <textarea id="new-token-string" rows="3" cols="40"></textarea>
-                    </label><br><br>
-                    <label>
-                        Date (optional):<br>
-                        <input type="text" id="new-token-date" placeholder="e.g., 2024-01-15">
-                    </label><br><br>
-                    <label>
-                        Color:<br>
-                        <select id="new-token-color">
-                            <option value="Black">Black</option>
-                            <option value="Red">Red</option>
-                            <option value="Blue">Blue</option>
-                        </select>
-                    </label><br><br>
-                    <button type="button" id="save-token-btn">Save Token</button>
-                    <button type="button" id="cancel-token-btn">Cancel</button>
-                </div>
-            </div>
+    <div class="tokens-section">
+        <h2>Tokens</h2>
 
-            <div id="tokens-canvas" style="position: relative; width: 800px; height: 1600px; border: 2px solid #ddd; margin-top: 20px; background: #f9f9f9;">
-                <?php foreach ($tokens as $token): ?>
-                    <div class="token-item"
-                         data-token-id="<?= $token->token_id ?>"
-                         style="position: absolute;
-                                left: <?= $token->token_x_pos ?>px;
-                                top: <?= $token->token_y_pos ?>px;
-                                width: <?= $token->token_width ?>px;
-                                height: <?= $token->token_height ?>px;
-                                background: <?= strtolower($token->token_color) === 'red' ? '#ffeeee' : (strtolower($token->token_color) === 'blue' ? '#eeeeff' : '#ffffff') ?>;
-                                border: 2px solid <?= strtolower($token->token_color) === 'red' ? '#ff0000' : (strtolower($token->token_color) === 'blue' ? '#0000ff' : '#000000') ?>;
-                                cursor: move;
-                                padding: 5px;
-                                font-size: 12px;
-                                overflow: hidden;
-                                resize: both;
-                                min-width: 50px;
-                                min-height: 30px;">
-                        <div class="token-content" ondblclick="editToken(<?= $token->token_id ?>)">
-                            <?= htmlspecialchars($token->token_string) ?>
-                            <?php if ($token->token_date): ?>
-                                <br><small style="color: #666;"><?= htmlspecialchars($token->token_date) ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="token-controls" style="position: absolute; top: 2px; right: 2px; display: none;">
-                            <button onclick="editToken(<?= $token->token_id ?>)" style="font-size: 10px; padding: 1px 3px;">✏️</button>
-                            <button onclick="deleteToken(<?= $token->token_id ?>)" style="font-size: 10px; padding: 1px 3px;">❌</button>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+        <div id="token-form" style="display: none; position: absolute; z-index: 10; background: #f0f0f0; border: 1px solid #ccc; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <h3 id="token-form-title">Create Token</h3>
+            <input type="hidden" id="token-id" value="">
+            <input type="hidden" id="token-x-pos" value="">
+            <input type="hidden" id="token-y-pos" value="">
+            <label>
+                Token Text:<br>
+                <textarea id="token-string" rows="3" cols="40"></textarea>
+            </label><br><br>
+            <label>
+                Date (optional):<br>
+                <input type="text" id="token-date" placeholder="e.g., 2024-01-15">
+            </label><br><br>
+            <label>
+                Color:<br>
+                <select id="token-color">
+                    <option value="Black">Black</option>
+                    <option value="Red">Red</option>
+                    <option value="Blue">Blue</option>
+                </select>
+            </label><br><br>
+            <button type="button" id="save-token-btn">Save</button>
+            <button type="button" id="cancel-token-btn">Cancel</button>
         </div>
-    <?php endif; // ($column): ?>
-</div>
 
-<?php if ($column): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const canvas = document.getElementById('tokens-canvas');
-    const addTokenBtn = document.getElementById('add-token-btn');
-    const tokenForm = document.getElementById('token-form');
-    const saveTokenBtn = document.getElementById('save-token-btn');
-    const cancelTokenBtn = document.getElementById('cancel-token-btn');
+        <div id="tokens-canvas" style="position: relative; width: 800px; height: 1600px; border: 2px solid #ddd; margin-top: 20px; background: #f9f9f9;">
+            <?php foreach ($tokens as $token): ?>
+                <div class="token-item"
+                     data-token-id="<?= $token->token_id ?>"
+                     data-token-color="<?= htmlspecialchars($token->token_color) ?>"
+                     style="position: absolute;
+                            left: <?= $token->token_x_pos ?>px;
+                            top: <?= $token->token_y_pos ?>px;
+                            width: <?= $token->token_width ?>px;
+                            height: <?= $token->token_height ?>px;
+                            background: <?= strtolower($token->token_color) === 'red' ? '#ffeeee' : (strtolower($token->token_color) === 'blue' ? '#eeeeff' : '#ffffff') ?>;
+                            border: 2px solid <?= strtolower($token->token_color) === 'red' ? '#ff0000' : (strtolower($token->token_color) === 'blue' ? '#0000ff' : '#000000') ?>;
+                            cursor: move;
+                            padding: 5px;
+                            font-size: 12px;
+                            overflow: hidden;
+                            resize: both;
+                            min-width: 50px;
+                            min-height: 30px;">
+                    <div class="token-content">
+                        <?= htmlspecialchars($token->token_string) ?>
+                        <?php if ($token->token_date): ?>
+                            <br><small class="token-date" style="color: #666;"><?= htmlspecialchars($token->token_date) ?></small>
+                        <?php endif; ?>
+                    </div>
+                    <div class="token-controls" style="position: absolute; top: 2px; right: 2px; display: none;">
+                        <button class="edit-token-btn" style="font-size: 10px; padding: 1px 3px;">✏️</button>
+                        <button class="delete-token-btn" style="font-size: 10px; padding: 1px 3px;">❌</button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
-    let draggedToken = null;
-    let startX = 0;
-    let startY = 0;
-    let startLeft = 0;
-    let startTop = 0;
-    let isEditing = false;
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas = document.getElementById('tokens-canvas');
+        const tokenForm = document.getElementById('token-form');
+        const saveTokenBtn = document.getElementById('save-token-btn');
+        const cancelTokenBtn = document.getElementById('cancel-token-btn');
+        const tokenFormTitle = document.getElementById('token-form-title');
+        const tokenIdInput = document.getElementById('token-id');
+        const tokenXPosInput = document.getElementById('token-x-pos');
+        const tokenYPosInput = document.getElementById('token-y-pos');
+        const tokenStringInput = document.getElementById('token-string');
+        const tokenDateInput = document.getElementById('token-date');
+        const tokenColorInput = document.getElementById('token-color');
 
-    // Show/hide token form
-    addTokenBtn.addEventListener('click', function() {
-        tokenForm.style.display = tokenForm.style.display === 'none' ? 'block' : 'none';
-        // Set the date field if there is a saved value
-        if (tokenForm.style.display === 'block' && localStorage.getItem('lastTokenDate')) {
-            document.getElementById('new-token-date').value = localStorage.getItem('lastTokenDate');
-        }
-    });
+        let draggedToken = null;
+        let startX, startY, startLeft, startTop;
 
-    cancelTokenBtn.addEventListener('click', function() {
-        tokenForm.style.display = 'none';
-        clearTokenForm();
-    });
+        // --- Event Listeners ---
 
-    // Save new token
-    saveTokenBtn.addEventListener('click', function() {
-        const tokenString = document.getElementById('new-token-string').value.trim();
-        const tokenDate = document.getElementById('new-token-date').value.trim();
-        const tokenColor = document.getElementById('new-token-color').value;
+        canvas.addEventListener('dblclick', handleCanvasDblClick);
+        saveTokenBtn.addEventListener('click', saveToken);
+        cancelTokenBtn.addEventListener('click', hideTokenForm);
+        canvas.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+        canvas.addEventListener('mouseover', (e) => showElement(e.target.closest('.token-item')?.querySelector('.token-controls')));
+        canvas.addEventListener('mouseout', (e) => hideElement(e.target.closest('.token-item')?.querySelector('.token-controls')));
+        canvas.addEventListener('click', handleCanvasClick);
 
-        if (!tokenString) {
-            alert('Token text is required');
-            return;
-        }
 
-        // Store the date to localStorage so it's remembered for subsequent tokens
-        if (tokenDate) {
-            localStorage.setItem('lastTokenDate', tokenDate);
-        }
+        // --- Main Functions ---
 
-        createToken(tokenString, tokenDate, tokenColor);
-    });
-
-    function createToken(tokenString, tokenDate, tokenColor) {
-        const formData = new FormData();
-        formData.append('action', 'create');
-        formData.append('column_id', '<?= $column->column_id ?>');
-        formData.append('token_string', tokenString);
-        formData.append('token_date', tokenDate);
-        formData.append('token_x_pos', '10');
-        formData.append('token_y_pos', '10');
-        formData.append('token_width', '100');
-        formData.append('token_height', '50');
-        formData.append('token_color', tokenColor);
-
-        fetch('/admin/ajax/tokens.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Reload the page to show the new token
-                location.reload();
-            } else {
-                alert('Error creating token: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error creating token');
-        });
-    }
-
-    function clearTokenForm() {
-        document.getElementById('new-token-string').value = '';
-        document.getElementById('new-token-date').value = '';
-        document.getElementById('new-token-color').value = 'Black';
-    }
-
-    // Make tokens draggable and resizable
-    canvas.addEventListener('mousedown', function(e) {
-        const token = e.target.closest('.token-item');
-        if (!token || isEditing) return;
-
-        // --- Only drag if NOT clicking the resize handle (bottom-right 16x16px) ---
-        const rect = token.getBoundingClientRect();
-        // Adjust 16 to match effective resize handle area for your UI/UX preference
-        if (e.clientX > rect.right - 16 && e.clientY > rect.bottom - 16) {
-            // Let the browser handle the native resize!
-            return;
-        }
-
-        draggedToken = token;
-        startX = e.clientX;
-        startY = e.clientY;
-        startLeft = parseInt(token.style.left);
-        startTop = parseInt(token.style.top);
-
-        e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', function(e) {
-        if (!draggedToken) return;
-
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-
-        const newLeft = Math.max(0, startLeft + deltaX);
-        const newTop = Math.max(0, startTop + deltaY);
-
-        draggedToken.style.left = newLeft + 'px';
-        draggedToken.style.top = newTop + 'px';
-    });
-
-    document.addEventListener('mouseup', function(e) {
-        if (!draggedToken) return;
-
-        const tokenId = draggedToken.dataset.tokenId;
-        const newLeft = parseInt(draggedToken.style.left);
-        const newTop = parseInt(draggedToken.style.top);
-
-        // Update position in database
-        updateTokenPosition(tokenId, newLeft, newTop);
-
-        draggedToken = null;
-    });
-
-    function updateTokenPosition(tokenId, x, y) {
-        const formData = new FormData();
-        formData.append('action', 'update_position');
-        formData.append('token_id', tokenId);
-        formData.append('x_pos', x);
-        formData.append('y_pos', y);
-
-        fetch('/admin/ajax/tokens.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                console.error('Error updating position:', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    // Show controls on hover
-    canvas.addEventListener('mouseover', function(e) {
-        const token = e.target.closest('.token-item');
-        if (token) {
-            const controls = token.querySelector('.token-controls');
-            if (controls) {
-                controls.style.display = 'block';
+        function handleCanvasDblClick(e) {
+            const tokenElement = e.target.closest('.token-item');
+            if (tokenElement) {
+                e.stopPropagation(); // Prevent canvas dblclick from firing
+                showEditForm(tokenElement);
+            } else if (e.target === canvas) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                showCreateForm(x, y);
             }
         }
-    });
 
-    canvas.addEventListener('mouseout', function(e) {
-        const token = e.target.closest('.token-item');
-        if (token) {
-            const controls = token.querySelector('.token-controls');
-            if (controls) {
-                controls.style.display = 'none';
+        function handleCanvasClick(e) {
+            if (e.target.classList.contains('edit-token-btn')) {
+                showEditForm(e.target.closest('.token-item'));
+            }
+            if (e.target.classList.contains('delete-token-btn')) {
+                const tokenElement = e.target.closest('.token-item');
+                if (confirm('Are you sure you want to delete this token?')) {
+                    deleteToken(tokenElement.dataset.tokenId);
+                }
             }
         }
-    });
 
-    // Handle resize
-    const resizeObserver = new ResizeObserver(entries => {
-        for (let entry of entries) {
-            const token = entry.target;
-            if (token.classList.contains('token-item')) {
-                const tokenId = token.dataset.tokenId;
-                const newWidth = Math.round(entry.contentRect.width);
-                const newHeight = Math.round(entry.contentRect.height);
+        function showCreateForm(x, y) {
+            hideTokenForm(); // Reset form
+            tokenFormTitle.textContent = 'Create New Token';
+            tokenXPosInput.value = Math.round(x);
+            tokenYPosInput.value = Math.round(y);
 
-                // Debounce the resize updates
-                clearTimeout(token.resizeTimeout);
-                token.resizeTimeout = setTimeout(() => {
+            // Recall last used date
+            const lastDate = localStorage.getItem('lastTokenDate');
+            if (lastDate) {
+                tokenDateInput.value = lastDate;
+            }
+
+            tokenForm.style.left = `${x + 5}px`;
+            tokenForm.style.top = `${y + 5}px`;
+            showElement(tokenForm);
+            tokenStringInput.focus();
+        }
+
+        function showEditForm(tokenElement) {
+            hideTokenForm();
+            const tokenId = tokenElement.dataset.tokenId;
+            const content = tokenElement.querySelector('.token-content').firstChild.textContent.trim();
+            const dateElement = tokenElement.querySelector('.token-date');
+            const date = dateElement ? dateElement.textContent : '';
+            const color = tokenElement.dataset.tokenColor || 'Black';
+
+            tokenFormTitle.textContent = 'Edit Token';
+            tokenIdInput.value = tokenId;
+            tokenStringInput.value = content;
+            tokenDateInput.value = date;
+            tokenColorInput.value = color;
+
+            tokenForm.style.left = tokenElement.style.left;
+            tokenForm.style.top = tokenElement.style.top;
+            showElement(tokenForm);
+            tokenStringInput.focus();
+        }
+
+        function hideTokenForm() {
+            hideElement(tokenForm);
+            tokenIdInput.value = '';
+            tokenStringInput.value = '';
+            tokenDateInput.value = '';
+            tokenColorInput.value = 'Black';
+            tokenXPosInput.value = '';
+            tokenYPosInput.value = '';
+        }
+
+        function saveToken() {
+            const id = tokenIdInput.value;
+            const action = id ? 'update' : 'create';
+            const tokenData = {
+                action: action,
+                column_id: '<?= $column->column_id ?>',
+                token_string: tokenStringInput.value.trim(),
+                token_date: tokenDateInput.value.trim(),
+                token_color: tokenColorInput.value,
+                token_id: id
+            };
+
+            if (!tokenData.token_string) {
+                alert('Token text cannot be empty.');
+                return;
+            }
+
+            // Store date for next time
+            if (tokenData.token_date) {
+                localStorage.setItem('lastTokenDate', tokenData.token_date);
+            }
+
+            const formData = new FormData();
+            if (action === 'create') {
+                tokenData.token_x_pos = tokenXPosInput.value;
+                tokenData.token_y_pos = tokenYPosInput.value;
+                tokenData.token_width = 150; // Default width
+                tokenData.token_height = 80; // Default height
+            }
+
+            for (const key in tokenData) {
+                formData.append(key, tokenData[key]);
+            }
+
+            fetch('/admin/ajax/tokens.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    hideTokenForm();
+                    if (action === 'create') {
+                        renderToken(data.token);
+                    } else {
+                        updateTokenInDOM(data.token);
+                    }
+                } else {
+                    alert('Error saving token: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the token.');
+            });
+        }
+
+        function deleteToken(tokenId) {
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('token_id', tokenId);
+
+            fetch('/admin/ajax/tokens.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const tokenElement = document.querySelector(`.token-item[data-token-id="${tokenId}"]`);
+                    if (tokenElement) {
+                        tokenElement.remove();
+                    }
+                } else {
+                    alert('Error deleting token: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the token.');
+            });
+        }
+
+        function renderToken(token) {
+            const tokenElement = document.createElement('div');
+            tokenElement.className = 'token-item';
+            tokenElement.dataset.tokenId = token.token_id;
+            tokenElement.dataset.tokenColor = token.token_color;
+            tokenElement.style.position = 'absolute';
+            tokenElement.style.left = `${token.token_x_pos}px`;
+            tokenElement.style.top = `${token.token_y_pos}px`;
+            tokenElement.style.width = `${token.token_width}px`;
+            tokenElement.style.height = `${token.token_height}px`;
+            tokenElement.style.cursor = 'move';
+            tokenElement.style.padding = '5px';
+            tokenElement.style.fontSize = '12px';
+            tokenElement.style.overflow = 'hidden';
+            tokenElement.style.resize = 'both';
+            tokenElement.style.minWidth = '50px';
+            tokenElement.style.minHeight = '30px';
+
+            updateTokenStyle(tokenElement, token.token_color);
+
+            const content = document.createElement('div');
+            content.className = 'token-content';
+            content.innerHTML = htmlspecialchars(token.token_string) +
+                (token.token_date ? `<br><small class="token-date" style="color: #666;">${htmlspecialchars(token.token_date)}</small>` : '');
+
+            const controls = document.createElement('div');
+            controls.className = 'token-controls';
+            controls.style.position = 'absolute';
+            controls.style.top = '2px';
+            controls.style.right = '2px';
+            controls.style.display = 'none';
+            controls.innerHTML = `<button class="edit-token-btn" style="font-size: 10px; padding: 1px 3px;">✏️</button> <button class="delete-token-btn" style="font-size: 10px; padding: 1px 3px;">❌</button>`;
+
+            tokenElement.appendChild(content);
+            tokenElement.appendChild(controls);
+            canvas.appendChild(tokenElement);
+
+            resizeObserver.observe(tokenElement);
+        }
+
+        function updateTokenInDOM(token) {
+            const tokenElement = document.querySelector(`.token-item[data-token-id="${token.token_id}"]`);
+            if (!tokenElement) return;
+
+            tokenElement.dataset.tokenColor = token.token_color;
+            tokenElement.querySelector('.token-content').innerHTML = htmlspecialchars(token.token_string) +
+                (token.token_date ? `<br><small class="token-date" style="color: #666;">${htmlspecialchars(token.token_date)}</small>` : '');
+
+            updateTokenStyle(tokenElement, token.token_color);
+        }
+
+        function updateTokenStyle(element, color) {
+            const lowerColor = color.toLowerCase();
+            element.style.background = lowerColor === 'red' ? '#ffeeee' : (lowerColor === 'blue' ? '#eeeeff' : '#ffffff');
+            element.style.border = `2px solid ${lowerColor === 'red' ? '#ff0000' : (lowerColor === 'blue' ? '#0000ff' : '#000000')}`;
+        }
+
+        // --- Drag and Drop ---
+
+        function handleDragStart(e) {
+            const token = e.target.closest('.token-item');
+            if (!token || e.target.closest('.token-controls')) return;
+
+            const rect = token.getBoundingClientRect();
+            if (e.clientX > rect.right - 16 && e.clientY > rect.bottom - 16) {
+                return; // It's a resize, not a drag
+            }
+
+            draggedToken = token;
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = parseInt(token.style.left);
+            startTop = parseInt(token.style.top);
+            e.preventDefault();
+        }
+
+        function handleDragMove(e) {
+            if (!draggedToken) return;
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            draggedToken.style.left = `${Math.max(0, startLeft + deltaX)}px`;
+            draggedToken.style.top = `${Math.max(0, startTop + deltaY)}px`;
+        }
+
+        function handleDragEnd() {
+            if (!draggedToken) return;
+            const tokenId = draggedToken.dataset.tokenId;
+            const newX = parseInt(draggedToken.style.left);
+            const newY = parseInt(draggedToken.style.top);
+            updateTokenPosition(tokenId, newX, newY);
+            draggedToken = null;
+        }
+
+        function updateTokenPosition(id, x, y) {
+            const formData = new FormData();
+            formData.append('action', 'update_position');
+            formData.append('token_id', id);
+            formData.append('x_pos', x);
+            formData.append('y_pos', y);
+            fetch('/admin/ajax/tokens.php', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => { if (!data.success) console.error('Failed to update position'); })
+                .catch(err => console.error('Error updating position:', err));
+        }
+
+        // --- Resize ---
+
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                if (entry.target.resizeTimeout) clearTimeout(entry.target.resizeTimeout);
+                entry.target.resizeTimeout = setTimeout(() => {
+                    const token = entry.target;
+                    const tokenId = token.dataset.tokenId;
+                    const newWidth = Math.round(entry.contentRect.width);
+                    const newHeight = Math.round(entry.contentRect.height);
                     updateTokenSize(tokenId, newWidth, newHeight);
                 }, 500);
             }
+        });
+
+        document.querySelectorAll('.token-item').forEach(token => resizeObserver.observe(token));
+
+        function updateTokenSize(id, width, height) {
+            const formData = new FormData();
+            formData.append('action', 'update_size');
+            formData.append('token_id', id);
+            formData.append('width', width);
+            formData.append('height', height);
+            fetch('/admin/ajax/tokens.php', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => { if (!data.success) console.error('Failed to update size'); })
+                .catch(err => console.error('Error updating size:', err));
+        }
+
+        // --- Utility Functions ---
+        function showElement(el) { if (el) el.style.display = 'block'; }
+        function hideElement(el) { if (el) el.style.display = 'none'; }
+        function htmlspecialchars(str) {
+            if (typeof str !== 'string') return '';
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return str.replace(/[&<>"']/g, m => map[m]);
         }
     });
-
-    // Observe all tokens for resize
-    document.querySelectorAll('.token-item').forEach(token => {
-        resizeObserver.observe(token);
-    });
-
-    function updateTokenSize(tokenId, width, height) {
-        const formData = new FormData();
-        formData.append('action', 'update_size');
-        formData.append('token_id', tokenId);
-        formData.append('width', width);
-        formData.append('height', height);
-
-        fetch('/admin/ajax/tokens.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                console.error('Error updating size:', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-});
-
-function editToken(tokenId) {
-    isEditing = true;
-    const tokenString = prompt('Enter new token text:');
-    if (tokenString !== null && tokenString.trim() !== '') {
-        const tokenDate = prompt('Enter token date (optional):') || '';
-        const tokenColor = prompt('Enter token color (Black, Red, Blue):', 'Black') || 'Black';
-
-        const formData = new FormData();
-        formData.append('action', 'update');
-        formData.append('token_id', tokenId);
-        formData.append('column_id', '<?= $column->column_id ?>');
-        formData.append('token_string', tokenString.trim());
-        formData.append('token_date', tokenDate);
-        formData.append('token_color', tokenColor);
-
-        // Get current position and size
-        const token = document.querySelector(`[data-token-id="${tokenId}"]`);
-        formData.append('token_x_pos', parseInt(token.style.left));
-        formData.append('token_y_pos', parseInt(token.style.top));
-        formData.append('token_width', parseInt(token.style.width));
-        formData.append('token_height', parseInt(token.style.height));
-
-        fetch('/admin/ajax/tokens.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error updating token: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error updating token');
-        })
-        .finally(() => {
-            isEditing = false;
-        });
-    } else {
-        isEditing = false;
-    }
-}
-
-function deleteToken(tokenId) {
-    if (confirm('Are you sure you want to delete this token?')) {
-        const formData = new FormData();
-        formData.append('action', 'delete');
-        formData.append('token_id', tokenId);
-
-        fetch('/admin/ajax/tokens.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error deleting token: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error deleting token');
-        });
-    }
-}
-</script>
-<?php endif; // ($column): ?>
+    </script>
+    <?php endif; // ($column): ?>
+</div>

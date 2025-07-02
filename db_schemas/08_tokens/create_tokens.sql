@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `tokens` (
   `token_y_pos` int NOT NULL DEFAULT 0,
   `token_width` int NOT NULL DEFAULT 100,
   `token_height` int NOT NULL DEFAULT 50,
-  `token_color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Black',
+  `token_color` enum('Red','Blue','Black') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Black',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`token_id`) USING BTREE,
   KEY `column_id` (`column_id`),
