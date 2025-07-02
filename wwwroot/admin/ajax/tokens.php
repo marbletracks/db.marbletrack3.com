@@ -28,11 +28,11 @@ try {
             $token_width = (int) ($_POST['token_width'] ?? 100);
             $token_height = (int) ($_POST['token_height'] ?? 50);
             $token_color = trim($_POST['token_color'] ?? 'Black');
-            
+
             if ($column_id <= 0 || $token_string === '') {
                 throw new Exception('Column ID and token string are required');
             }
-            
+
             $token_id = $tokensRepo->insert(
                 $column_id,
                 $token_string,
@@ -43,10 +43,10 @@ try {
                 $token_height,
                 $token_color
             );
-            
+
             echo json_encode(['success' => true, 'token_id' => $token_id]);
             break;
-            
+
         case 'update':
             $token_id = (int) ($_POST['token_id'] ?? 0);
             $column_id = (int) ($_POST['column_id'] ?? 0);
@@ -57,11 +57,11 @@ try {
             $token_width = (int) ($_POST['token_width'] ?? 100);
             $token_height = (int) ($_POST['token_height'] ?? 50);
             $token_color = trim($_POST['token_color'] ?? 'Black');
-            
+
             if ($token_id <= 0 || $column_id <= 0 || $token_string === '') {
                 throw new Exception('Token ID, column ID and token string are required');
             }
-            
+
             $tokensRepo->update(
                 $token_id,
                 $column_id,
@@ -73,47 +73,47 @@ try {
                 $token_height,
                 $token_color
             );
-            
+
             echo json_encode(['success' => true]);
             break;
-            
+
         case 'update_position':
             $token_id = (int) ($_POST['token_id'] ?? 0);
             $x_pos = (int) ($_POST['x_pos'] ?? 0);
             $y_pos = (int) ($_POST['y_pos'] ?? 0);
-            
+
             if ($token_id <= 0) {
                 throw new Exception('Token ID is required');
             }
-            
+
             $tokensRepo->updatePosition($token_id, $x_pos, $y_pos);
             echo json_encode(['success' => true]);
             break;
-            
+
         case 'update_size':
             $token_id = (int) ($_POST['token_id'] ?? 0);
             $width = (int) ($_POST['width'] ?? 100);
             $height = (int) ($_POST['height'] ?? 50);
-            
+
             if ($token_id <= 0) {
                 throw new Exception('Token ID is required');
             }
-            
+
             $tokensRepo->updateSize($token_id, $width, $height);
             echo json_encode(['success' => true]);
             break;
-            
+
         case 'delete':
             $token_id = (int) ($_POST['token_id'] ?? 0);
-            
+
             if ($token_id <= 0) {
                 throw new Exception('Token ID is required');
             }
-            
+
             $tokensRepo->delete($token_id);
             echo json_encode(['success' => true]);
             break;
-            
+
         default:
             throw new Exception('Invalid action');
     }
