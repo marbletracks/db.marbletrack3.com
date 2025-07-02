@@ -240,7 +240,7 @@
             if (action === 'create') {
                 tokenData.token_x_pos = tokenXPosInput.value;
                 tokenData.token_y_pos = tokenYPosInput.value;
-                tokenData.token_width = 100; // Default width
+                tokenData.token_width = Math.max(50, 10 + tokenData.token_string.length * 7);
                 tokenData.token_height = 30; // Default height
             }
 
