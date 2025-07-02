@@ -320,7 +320,7 @@
             const content = document.createElement('div');
             content.className = 'token-content';
             content.innerHTML = htmlspecialchars(token.token_string) +
-                (token.token_date ? `<br><small class="token-date" style="color: #666;">${htmlspecialchars(token.token_date)}</small>` : '');
+                (token.token_date ? `<br><small class="token-date" style="color: red;">${htmlspecialchars(token.token_date)}</small>` : '');
 
             const controls = document.createElement('div');
             controls.className = 'token-controls';
@@ -343,7 +343,7 @@
 
             tokenElement.dataset.tokenColor = token.token_color;
             tokenElement.querySelector('.token-content').innerHTML = htmlspecialchars(token.token_string) +
-                (token.token_date ? `<br><small class="token-date" style="color: #666;">${htmlspecialchars(token.token_date)}</small>` : '');
+                (token.token_date ? `<br><small class="token-date" style="color: red;">${htmlspecialchars(token.token_date)}</small>` : '');
 
             updateTokenStyle(tokenElement, token.token_color);
         }
