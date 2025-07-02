@@ -74,7 +74,7 @@
                 </div>
             </div>
 
-            <div id="tokens-canvas" style="position: relative; width: 800px; height: 600px; border: 2px solid #ddd; margin-top: 20px; background: #f9f9f9;">
+            <div id="tokens-canvas" style="position: relative; width: 800px; height: 1600px; border: 2px solid #ddd; margin-top: 20px; background: #f9f9f9;">
                 <?php foreach ($tokens as $token): ?>
                     <div class="token-item"
                          data-token-id="<?= $token->token_id ?>"
