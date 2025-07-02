@@ -128,6 +128,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show/hide token form
     addTokenBtn.addEventListener('click', function() {
         tokenForm.style.display = tokenForm.style.display === 'none' ? 'block' : 'none';
+        // Set the date field if there is a saved value
+        if (tokenForm.style.display === 'block' && localStorage.getItem('lastTokenDate')) {
+            document.getElementById('new-token-date').value = localStorage.getItem('lastTokenDate');
+        }
     });
 
     cancelTokenBtn.addEventListener('click', function() {
@@ -144,6 +148,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!tokenString) {
             alert('Token text is required');
             return;
+        }
+
+        // Store the date to localStorage so it's remembered for subsequent tokens
+        if (tokenDate) {
+            localStorage.setItem('lastTokenDate', tokenDate);
         }
 
         createToken(tokenString, tokenDate, tokenColor);
