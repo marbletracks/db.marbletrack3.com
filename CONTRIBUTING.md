@@ -94,7 +94,17 @@ Adding a new data entity to the project involves the following steps:
 ### Step 4: Admin Panel Integration
 
 -   **Controller (`wwwroot/admin/`):**
-    1.  Include `prepend.php`.
+    1.  All PHP files inside `/wwwroot/admin/` must begin with the following boilerplate to ensure security and proper environment setup:
+        ```php
+        <?php
+        declare(strict_types=1);
+        include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
+
+        if (!$is_logged_in->isLoggedIn()) {
+            header("Location: /login/");
+            exit;
+        }
+        ```
     2.  Instantiate the new Repository.
     3.  Fetch data using the Repository.
     4.  Instantiate the `\Template` class for the view.

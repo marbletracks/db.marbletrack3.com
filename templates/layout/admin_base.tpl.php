@@ -10,7 +10,13 @@
 </head>
 <body>
     <div class="NavBar">
-        <a href="/">View Site</a> |
+        <!-- dropdown -->
+        <div class="dropdown">
+            <a href="/admin/scripts/generate_static_site.php">Generate Site ▾</a>
+            <div class="dropdown-menu">
+                <a href="/">View Site</a>
+            </div>
+        </div> |
         <a href="/admin/">Dashboard</a> |
         <a href="/admin/photos">Photos</a> |
         <!-- dropdown -->
