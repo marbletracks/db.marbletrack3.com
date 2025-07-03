@@ -1,22 +1,31 @@
 <div class="PagePanel">
+    <h1>Worker Details</h1>
 
-    Name:<br>
-    <?= htmlspecialchars($worker->name ?? '') ?>
+    <p>
+        <strong>Name:</strong><br>
+        <?= htmlspecialchars($worker->name ?? '') ?>
+    </p>
 
-    Alias:<br>
-    <?= htmlspecialchars($worker->worker_alias ?? '') ?>
+    <p>
+        <strong>Alias:</strong><br>
+        <?= htmlspecialchars($worker->worker_alias ?? '') ?>
+    </p>
 
-    Description:<br>
-    <?= htmlspecialchars($worker->description ?? '') ?>
-    <br>
-    <div id="image-url-fields">
-        <?php if (!empty($worker->photos)):
-            foreach ($worker->photos ?? [''] as $photo): ?>
-                <a href="<?= $photo->getUrl(); ?>">
-                    <img src="<?= $photo->getThumbnailUrl() ?>" alt="Image preview"><br>
-                </a>
+    <p>
+        <strong>Description:</strong><br>
+        <?= htmlspecialchars($worker->description ?? '') ?>
+    </p>
+
+    <?php if (!empty($worker->photos)): ?>
+        <h2>Photos</h2>
+        <div class="worker-photos">
+            <?php foreach ($worker->photos as $photo): ?>
+                <p>
+                    <a href="<?= htmlspecialchars($photo->getUrl()) ?>" target="_blank">
+                        <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Worker photo">
+                    </a>
+                </p>
             <?php endforeach; ?>
-        <?php endif; ?>
-        <!-- add empty row so we always have space -->
-    </div>
+        </div>
+    <?php endif; ?>
 </div>
