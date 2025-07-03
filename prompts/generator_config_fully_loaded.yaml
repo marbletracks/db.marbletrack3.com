@@ -41,7 +41,7 @@ entities:
   Worker:
     description: "An individual who assembles parts."
     repository: "WorkersRepository"
-    template: "templates/frontend/worker_detail.tpl.php"
+    template: "workers/worker.tpl.php"
     path_schema: "/workers/{slug}/index.html" # e.g., /workers/candy-mama/index.html
     relationships:
       - type: "has_many_through_join_table"
@@ -58,7 +58,7 @@ entities:
   Part:
     description: "A single component of a track."
     repository: "PartsRepository"
-    template: "templates/frontend/part_detail.tpl.php"
+    template: "parts/part.tpl.php"
     path_schema: "/parts/{slug}/index.html"
     relationships:
       - type: "belongs_to"
@@ -78,7 +78,7 @@ entities:
   Notebook:
     description: "A collection of pages with notes and diagrams."
     repository: "NotebookRepository"
-    template: "templates/frontend/notebook_detail.tpl.php"
+    template: "notebooks/notebook.tpl.php"
     path_schema: "/notebooks/{slug}/index.html"
     relationships:
       - type: "has_many"
@@ -88,7 +88,7 @@ entities:
   Page:
     description: "A single page within a notebook."
     repository: "PageRepository"
-    template: "templates/frontend/page_detail.tpl.php"
+    template: "pages/page.tpl.php"
     path_schema: "/notebooks/{notebook_slug}/pages/{page_number}.html"
     relationships:
       - type: "belongs_to"
@@ -117,24 +117,24 @@ entities:
 # -----------------------------------------
 indexes:
   - name: "Homepage"
-    template: "templates/frontend/index.tpl.php"
+    template: "index.tpl.php"
     path: "/index.html"
     # Data can be custom-fetched in the generator for specific pages
     data_fetcher: "getHomepageData" # A special function in the generator
 
   - name: "Workers Index"
     entity: "Worker"
-    template: "templates/frontend/workers_index.tpl.php"
+    template: "workers/index.tpl.php"
     path: "/workers/index.html"
 
   - name: "Parts Index"
     entity: "Part"
-    template: "templates/frontend/parts_index.tpl.php"
+    template: "parts/index.tpl.php"
     path: "/parts/index.html"
 
   - name: "Notebooks Index"
     entity: "Notebook"
-    template: "templates/frontend/notebooks_index.tpl.php"
+    template: "notebooks/index.tpl.php"
     path: "/notebooks/index.html"
 
 # -----------------------------------------
