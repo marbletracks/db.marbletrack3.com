@@ -5,6 +5,8 @@ use Domain\PartHasRoles;
 final class Part
 {
     use PartHasRoles;
+    public string $slug;
+
     /**
      * Represents a physical part of the track itself.
      *
@@ -24,5 +26,6 @@ final class Part
         public bool $is_support = false,
         public bool $is_track = false,
     ) {
+        $this->slug = \Utilities::slugify($name);
     }
 }
