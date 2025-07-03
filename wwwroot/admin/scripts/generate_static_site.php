@@ -67,10 +67,7 @@ $output_dir_prefix = $config->app_path . '/' . $config_data['settings']['output_
 
 // 2. Generate Index Pages
 if (isset($config_data['indexes'])) {
-    print_rob(object: $config_data['indexes'], exit: false);
     foreach ($config_data['indexes'] as $indexName => $index) {
-        print_rob(object: $indexName, exit: false);
-        print_rob(object: $index, exit: false);
         echo "Generating index: " . $index['name'] . "...\n";
 
         $entityName = $index['entity'];
