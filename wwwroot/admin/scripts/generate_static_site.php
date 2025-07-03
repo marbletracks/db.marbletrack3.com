@@ -25,23 +25,31 @@ if (!file_exists($configFile)) {
 // Use a simple regex-based parser if PECL yaml is not installed
 function simple_yaml_parse(string $yaml_content): array {
     $map = [];
-    $current_section = '';
-    $current_entity = '';
+    $lines = explode("\n", $yaml_content);
+    $L0_key = '';
+    $L1_key = '';
 
-    foreach (explode("\n", $yaml_content) as $line) {
-        if (preg_match('/^(\w+):$/', $line, $matches)) {
-            $current_section = $matches[1];
-            $map[$current_section] = [];
-            $current_entity = '';
-        } elseif (preg_match('/^  (\w+):$/', $line, $matches) && ($current_section === 'entities' || $current_section === 'indexes')) {
-            $current_entity = $matches[1];
-            $map[$current_section][$current_entity] = [];
-        } elseif (preg_match('/^    (\w+): (.+)/ ', $line, $matches)) {
-            if ($current_entity) {
-                $map[$current_section][$current_entity][trim($matches[1])] = trim($matches[2]);
-            } else {
-                 $map[$current_section][trim($matches[1])] = trim($matches[2]);
+    foreach ($lines as $line) {
+        if (trim($line) === '' || str_starts_with(trim($line), '#')) continue;
+
+        $indent = strlen($line) - strlen(ltrim($line));
+        $line_content = trim($line);
+
+        if ($indent == 0) { // Level 0 Section (e.g., settings:, entities:)
+            $L0_key = rtrim($line_content, ':');
+            $map[$L0_key] = [];
+        } elseif ($indent == 2) { // Level 1 Entity (e.g.,   Worker:)
+            $L1_key = rtrim($line_content, ':');
+            $map[$L0_key][$L1_key] = [];
+        } elseif ($indent == 4) { // Level 2 Property (e.g.,     description: "...")
+            list($key, $value) = explode(':', $line_content, 2);
+            $key = trim($key);
+            $value = trim($value);
+            if (str_contains($value, '#')) {
+                $value = trim(substr($value, 0, strpos($value, '#')));
             }
+            $value = trim($value, '"\' ');
+            $map[$L0_key][$L1_key][$key] = $value;
         }
     }
     return $map;
@@ -59,16 +67,25 @@ $output_dir_prefix = $config->app_path . '/wwwroot/ai';
 
 // 2. Generate Index Pages
 if (isset($config_data['indexes'])) {
+    print_rob(object: $config_data['indexes'], exit: false);
     foreach ($config_data['indexes'] as $indexName => $index) {
-        echo "Generating index: {$indexName}...\n";
+        print_rob(object: $indexName, exit: false);
+        print_rob(object: $index, exit: false);
+        echo "Generating index: " . $index['name'] . "...\n";
 
-        $repoName = "\\Database\\" . $index['repository'];
+        $entityName = $index['entity'];
+        if (!isset($config_data['entities'][$entityName]['repository'])) {
+            echo "  -> ERROR: Repository not defined for entity '{$entityName}' in config.\n";
+            continue;
+        }
+
+        $repoName = "\\Database\\" . $config_data['entities'][$entityName]['repository'];
         $repo = new $repoName($mla_database, $config_data['settings']['language_code']);
         $items = $repo->findAll();
 
         $tpl = new \Template($config);
         $tpl->setTemplate($index['template']);
-        $tpl->set($index['entity'] . 's', $items); // e.g., set('workers', $workers)
+        $tpl->set(strtolower($entityName) . 's', $items); // e.g., set('workers', $workers)
 
         $output_path = $output_dir_prefix . $index['path'];
         if ($tpl->saveToFile($output_path)) {

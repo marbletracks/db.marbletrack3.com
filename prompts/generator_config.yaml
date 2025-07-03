@@ -30,7 +30,8 @@ entities:
 # Index Page Definitions
 # -----------------------------------------
 indexes:
-  - name: "Workers Index"
+  WorkersIndex: # Use a map key instead of a list item
+    name: "Workers Index"
     entity: "Worker"
     template: "templates/workers/index.tpl.php" # This is the existing template
     path: "/workers/index.html"
