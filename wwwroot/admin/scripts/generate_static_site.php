@@ -86,12 +86,18 @@ if (isset($config_data['indexes'])) {
         $repo = new $repoName($mla_database, $config_data['settings']['language_code']);
         $items = $repo->findAll();
 
-        $tpl = new \Template($config);
-        $tpl->setTemplate($index['template']);
-        $tpl->set(strtolower($entityName) . 's', $items); // e.g., set('workers', $workers)
+        $inner_tpl = new \Template($config);
+        $inner_tpl->setTemplate($index['template']);
+        $inner_tpl->set(strtolower($entityName) . 's', $items); // e.g., set('workers', $workers)
+        $inner_content = $inner_tpl->grabTheGoods();
+
+        $layout_tpl = new \Template($config);
+        $layout_tpl->setTemplate("layout/frontend_base.tpl.php");
+        $layout_tpl->set("page_content", $inner_content);
+        $layout_tpl->set("page_title", $index['name']); // Use the index name as title
 
         $output_path = $output_dir_prefix . $index['path'];
-        if ($tpl->saveToFile($output_path)) {
+        if ($layout_tpl->saveToFile($output_path)) {
             echo "  -> Saved to {$output_path}\n";
         } else {
             echo "  -> ERROR: Failed to save to {$output_path}\n";
@@ -112,11 +118,19 @@ if (isset($config_data['entities'])) {
             $path = str_replace('{slug}', $item->slug, $entity['path_schema']);
             $output_path = $output_dir_prefix . $path;
 
-            $tpl = new \Template($config);
-            $tpl->setTemplate($entity['template']);
-            $tpl->set(strtolower($entityName), $item);
+            $inner_tpl = new \Template($config);
+            $inner_tpl->setTemplate($entity['template']);
+            $inner_tpl->set(strtolower($entityName), $item);
+            $inner_content = $inner_tpl->grabTheGoods();
 
-            if ($tpl->saveToFile($output_path)) {
+            $layout_tpl = new \Template($config);
+            $layout_tpl->setTemplate("layout/frontend_base.tpl.php");
+            $layout_tpl->set("page_content", $inner_content);
+            // Attempt to derive a good page title from the item
+            $page_title = $item->name ?? $item->worker_alias ?? $entityName;
+            $layout_tpl->set("page_title", $page_title);
+
+            if ($layout_tpl->saveToFile($output_path)) {
                 echo "  -> Saved to {$output_path}\n";
             } else {
                 echo "  -> ERROR: Failed to save to {$output_path}\n";
