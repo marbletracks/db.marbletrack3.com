@@ -30,25 +30,31 @@ function simple_yaml_parse(string $yaml_content): array {
     $L1_key = '';
 
     foreach ($lines as $line) {
-        if (trim($line) === '' || str_starts_with(trim($line), '#')) continue;
+        $trimmed_line = trim($line);
+        if ($trimmed_line === '' || str_starts_with($trimmed_line, '#')) continue;
 
         $indent = strlen($line) - strlen(ltrim($line));
-        $line_content = trim($line);
+        $line_content_without_comment = explode('#', $trimmed_line, 2)[0]; // Strip comments from the content
+        $line_content_without_comment = trim($line_content_without_comment);
 
         if ($indent == 0) { // Level 0 Section (e.g., settings:, entities:)
-            $L0_key = rtrim($line_content, ':');
+            $L0_key = rtrim($line_content_without_comment, ':');
             $map[$L0_key] = [];
-        } elseif ($indent == 2) { // Level 1 Entity (e.g.,   Worker:)
-            $L1_key = rtrim($line_content, ':');
-            $map[$L0_key][$L1_key] = [];
-        } elseif ($indent == 4) { // Level 2 Property (e.g.,     description: "...")
-            list($key, $value) = explode(':', $line_content, 2);
-            $key = trim($key);
-            $value = trim($value);
-            if (str_contains($value, '#')) {
-                $value = trim(substr($value, 0, strpos($value, '#')));
+            $L1_key = ''; // Reset L1_key for new top-level section
+        } elseif ($indent == 2) { // Level 1 (e.g.,   Worker: or   language_code: "en")
+            if (str_ends_with($line_content_without_comment, ':')) { // It's a new sub-section/entity
+                $L1_key = rtrim($line_content_without_comment, ':');
+                $map[$L0_key][$L1_key] = [];
+            } else { // It's a key-value pair directly under L0
+                list($key, $value) = explode(':', $line_content_without_comment, 2);
+                $key = trim($key);
+                $value = trim($value, '"\' '); // Strip quotes
+                $map[$L0_key][$key] = $value;
             }
-            $value = trim($value, '"\' ');
+        } elseif ($indent == 4) { // Level 2 Property (e.g.,     description: "...")
+            list($key, $value) = explode(':', $line_content_without_comment, 2);
+            $key = trim($key);
+            $value = trim($value, '"\' '); // Strip quotes
             $map[$L0_key][$L1_key][$key] = $value;
         }
     }
