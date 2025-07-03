@@ -1,22 +1,21 @@
 <?php
 
 class Template{
-    protected string $base_template_path;
-    protected string $template_file_name;
+    protected $template_location;
 
-    protected array $vars;
+    protected $vars;
 
     protected $mla_request;      // Encapsulates superglobals e.g. $SESSION, $REQUEST, etc (misspelled in this comment to keep searches clean)
     protected $di_dbase;
 
     public function __construct(\Config $config) {
-        $this->base_template_path = "{$config->app_path}/templates";
+        $this->template_location = "{$config->app_path}/templates";
 
         $this->vars = [];
     }
 
-    public function setTemplate(string $template_file) {
-        $this->template_file_name = $template_file;
+    public function setTemplate($template_file) {
+        $this->template_location = $this->template_location."/".$template_file;
     }
 
     /**
@@ -76,18 +75,17 @@ class Template{
 
         ob_start();                    	// Start output buffering
 
-        if(!isset($this->template_file_name)) {
+        if(!isset($this->template_location)) {
             echo "No template file provided";
         }
 
-        $full_template_path = "{$this->base_template_path}/{$this->template_file_name}";
-        include($full_template_path);	// Include the file
+        include($this->template_location);	// Include the file
 
         $ob_result = ob_get_clean();
 
         // if $ob_result is false, return an error message
         if (empty($ob_result)) {
-            return "Error loading template: {$full_template_path}";
+            return "Error loading template: {$this->template_location}";
         }
 
         return $ob_result;
