@@ -63,7 +63,7 @@ if (!$config_data) {
 
 echo "Configuration loaded successfully.\n\n";
 
-$output_dir_prefix = $config->app_path . '/wwwroot/ai';
+$output_dir_prefix = $config->app_path . '/' . $config_data['settings']['output_directory'];
 
 // 2. Generate Index Pages
 if (isset($config_data['indexes'])) {

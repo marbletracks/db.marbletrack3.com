@@ -6,7 +6,7 @@
 # Global Settings
 # -----------------------------------------
 settings:
-  output_directory: "wwwroot"
+  output_directory: "wwwroot/ai"
   clean_before_build: false # For now, we will add to the existing wwwroot
   language_code: "en"
 
