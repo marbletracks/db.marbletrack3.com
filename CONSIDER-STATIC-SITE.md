@@ -64,6 +64,49 @@ The generator would be a new PHP script (`generate_site.php`) that:
 4.  Instead of echoing the HTML, it uses `file_put_contents()` to save the rendered HTML to the correct file path (e.g., `wwwroot/notebooks/pages/42.html`).
 5.  Apache would be configured (using `mod_rewrite`) to serve `notebooks/pages/42.html` if it exists when a user requests `/notebooks/pages/page.php?id=42`.
 
+### Handling Complex Database Relationships
+
+The core of the generator is to "pre-calculate" all the relationships and build a fully interlinked site. You move from a "query-on-demand" model to a "pre-build-all-paths" model.
+
+The process is hierarchical:
+
+1.  **Generate "Leaf" Pages First:** Start with the most granular items (the individual `Worker`, `Part`, `Token`, etc.).
+    -   The script queries the database for all rows in a table (e.g., `SELECT * FROM workers`).
+    -   For each row, it generates a single detail page (e.g., `wwwroot/workers/alice.html`).
+    -   **Crucially, while generating this page, it also fetches all related data.** For a worker, it would fetch all parts they assembled. For a part, it would fetch the worker who made it and the tracks it belongs to.
+    -   These relationships are rendered as simple hyperlinks pointing to the *static paths* of the other pages (e.g., `<a href="/parts/p-001.html">`).
+
+2.  **Generate "Index" Pages Last:** After all the individual "leaf" pages exist, the script creates the index pages (`/workers/`, `/parts/`, etc.).
+    -   These pages simply query a table (e.g., `SELECT * FROM workers`) and create a list of links to the static detail pages that were just generated in the previous step.
+
+This approach creates a "map" of your database in the form of a static file structure. The generator script itself defines this map by the order it queries the database and how it constructs the hyperlinks in the templates.
+
+A conceptual generator script might look like this:
+
+```php
+<?php
+// pseudo-code for generate_site.php
+
+// 1. Setup (Autoloader, DB Connection)
+// 2. Clean old static files from /wwwroot/workers, etc.
+
+// 3. Generate Leaf Pages
+$allWorkers = $workersRepo->findAll();
+foreach ($allWorkers as $worker) {
+    $partsByWorker = $partsRepo->findByWorker($worker->worker_id);
+    $html = render_template('worker_detail.tpl.php', ['worker' => $worker, 'parts' => $partsByWorker]);
+    file_put_contents("wwwroot/workers/{$worker->worker_alias}.html", $html);
+}
+// ... repeat for all parts, tracks, etc.
+
+// 4. Generate Index Pages
+$html = render_template('worker_index.tpl.php', ['workers' => $allWorkers]);
+file_put_contents("wwwroot/workers/index.html", $html);
+// ... repeat for all other indexes.
+
+echo "Static site generation complete!";
+```
+
 ## Conclusion & Recommendation
 
 For a content-driven project like this, **adopting a static site generation model for the public-facing frontend is a highly recommended, modern approach.**
