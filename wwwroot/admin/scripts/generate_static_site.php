@@ -13,8 +13,7 @@ if (!$is_logged_in->isLoggedIn()) {
 // Set a higher time limit for this script, as it might take a while to run.
 set_time_limit(300);
 
-echo "<h1>Static Site Generator</h1>";
-echo "<pre>";
+ob_start(); // Start output buffering
 
 // 1. Load the configuration
 $configFile = $config->app_path . '/prompts/generator_config.yaml';
@@ -67,18 +66,18 @@ if (!$config_data) {
     die("Error: Could not parse YAML configuration.");
 }
 
-echo "Configuration loaded successfully.\n\n";
+$output_log = "<pre>\n";
 
 $output_dir_prefix = $config->app_path . '/' . $config_data['settings']['output_directory'];
 
 // 2. Generate Index Pages
 if (isset($config_data['indexes'])) {
     foreach ($config_data['indexes'] as $indexName => $index) {
-        echo "Generating index: " . $index['name'] . "...\n";
+        $output_log .= "Generating index: " . $index['name'] . "...\n";
 
         $entityName = $index['entity'];
         if (!isset($config_data['entities'][$entityName]['repository'])) {
-            echo "  -> ERROR: Repository not defined for entity '{$entityName}' in config.\n";
+            $output_log .= "  -> ERROR: Repository not defined for entity '{$entityName}' in config.\n";
             continue;
         }
 
@@ -98,9 +97,9 @@ if (isset($config_data['indexes'])) {
 
         $output_path = $output_dir_prefix . $index['path'];
         if ($layout_tpl->saveToFile($output_path)) {
-            echo "  -> Saved to {$output_path}\n";
+            $output_log .= "  -> Saved to {$output_path}\n";
         } else {
-            echo "  -> ERROR: Failed to save to {$output_path}\n";
+            $output_log .= "  -> ERROR: Failed to save to {$output_path}\n";
         }
     }
 }
@@ -108,7 +107,7 @@ if (isset($config_data['indexes'])) {
 // 3. Generate Entity (Detail) Pages
 if (isset($config_data['entities'])) {
     foreach ($config_data['entities'] as $entityName => $entity) {
-        echo "\nGenerating entity: {$entityName}...\n";
+        $output_log .= "\nGenerating entity: {$entityName}...\n";
 
         $repoName = "\\Database\\" . $entity['repository'];
         $repo = new $repoName($mla_database, $config_data['settings']['language_code']);
@@ -131,13 +130,24 @@ if (isset($config_data['entities'])) {
             $layout_tpl->set("page_title", $page_title);
 
             if ($layout_tpl->saveToFile($output_path)) {
-                echo "  -> Saved to {$output_path}\n";
+                $output_log .= "  -> Saved to {$output_path}\n";
             } else {
-                echo "  -> ERROR: Failed to save to {$output_path}\n";
+                $output_log .= "  -> ERROR: Failed to save to {$output_path}\n";
             }
         }
     }
 }
 
-echo "\nGeneration complete!\n";
-echo "</pre>";
+$output_log .= "\nGeneration complete!\n";
+$output_log .= "</pre>";
+
+$tpl = new \Template(config: $config);
+$tpl->setTemplate(template_file: "admin/generate_site_output.tpl.php");
+$tpl->set(name: "log_output", value: $output_log);
+$inner = $tpl->grabTheGoods();
+
+$layout = new \Template(config: $config);
+$layout->setTemplate(template_file: "layout/admin_base.tpl.php");
+$layout->set(name: "page_title", value: "Static Site Generation Log");
+$layout->set(name: "page_content", value: htmlspecialchars_decode($inner, ENT_QUOTES));
+$layout->echoToScreen();
