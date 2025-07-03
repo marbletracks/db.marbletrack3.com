@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Tokens in Columns";
+const SENTIMENTAL_VERSION = "MVP frontend static site";
 
 # write errors to screen
 ini_set('display_errors', 1);
