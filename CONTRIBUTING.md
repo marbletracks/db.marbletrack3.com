@@ -102,5 +102,5 @@ Adding a new data entity to the project involves the following steps:
     6.  Render the inner view and pass it to the `layout/admin_base.tpl.php`.
 -   **View (`templates/admin/`):**
     1.  Create a template file to display the data.
-    2.  **Always** escape output with `htmlspecialchars()` for security.
+    2.  **Consider** escaping output with `htmlspecialchars()` for security.
     3.  Follow the structure of existing templates like `templates/admin/workers/index.tpl.php`.
