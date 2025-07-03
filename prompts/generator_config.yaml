@@ -17,7 +17,7 @@ entities:
   Worker:
     description: "An individual who assembles parts."
     repository: "WorkersRepository" # The PHP class to use for DB queries
-    template: "workers/worker.tpl.php" # Show individual worker details
+    template: "frontend/workers/worker.tpl.php" # Show individual worker details
     path_schema: "/workers/{slug}/index.html" # e.g., /workers/candy-mama/index.html
     relationships:
       - type: "has_many_through_join_table"
@@ -33,5 +33,5 @@ indexes:
   WorkersIndex: # Use a map key instead of a list item
     name: "Workers Index"
     entity: "Worker"
-    template: "workers/index.tpl.php" # This is the existing template
+    template: "frontend/workers/index.tpl.php" # This is the existing template
     path: "/workers/index.html"

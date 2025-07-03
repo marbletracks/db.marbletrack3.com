@@ -124,17 +124,17 @@ indexes:
 
   - name: "Workers Index"
     entity: "Worker"
-    template: "workers/index.tpl.php"
+    template: "frontend/workers/index.tpl.php"
     path: "/workers/index.html"
 
   - name: "Parts Index"
     entity: "Part"
-    template: "parts/index.tpl.php"
+    template: "frontend/parts/index.tpl.php"
     path: "/parts/index.html"
 
   - name: "Notebooks Index"
     entity: "Notebook"
-    template: "notebooks/index.tpl.php"
+    template: "frontend/notebooks/index.tpl.php"
     path: "/notebooks/index.html"
 
 # -----------------------------------------

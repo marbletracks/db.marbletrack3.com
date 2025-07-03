@@ -94,13 +94,13 @@ A conceptual generator script might look like this:
 $allWorkers = $workersRepo->findAll();
 foreach ($allWorkers as $worker) {
     $partsByWorker = $partsRepo->findByWorker($worker->worker_id);
-    $html = render_template('worker_detail.tpl.php', ['worker' => $worker, 'parts' => $partsByWorker]);
+    $html = render_template('frontend/workers/worker.tpl.php', ['worker' => $worker, 'parts' => $partsByWorker]);
     file_put_contents("wwwroot/workers/{$worker->worker_alias}.html", $html);
 }
 // ... repeat for all parts, tracks, etc.
 
 // 4. Generate Index Pages
-$html = render_template('worker_index.tpl.php', ['workers' => $allWorkers]);
+$html = render_template('frontend/workers/index.tpl.php', ['workers' => $allWorkers]);
 file_put_contents("wwwroot/workers/index.html", $html);
 // ... repeat for all other indexes.
 
