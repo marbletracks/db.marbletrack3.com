@@ -12,7 +12,7 @@
     <div id="image-url-fields">
         <?php if (!empty($worker->photos)):
             foreach ($worker->photos ?? [''] as $photo): ?>
-                <a href="<?= $photo->getThumbnailUrl(); ?>">
+                <a href="<?= $photo->getUrl(); ?>">
                     <img src="<?= $photo->getThumbnailUrl() ?>" alt="Image preview"><br>
                 </a>
             <?php endforeach; ?>
