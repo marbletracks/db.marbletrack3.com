@@ -1,0 +1,150 @@
+# This file is a comprehensive example of what a fully-loaded generator
+# configuration could look like. It defines the rules for building the
+# entire static frontend for db.marbletrack3.com.
+
+# -----------------------------------------
+# Global Settings
+# -----------------------------------------
+settings:
+  output_directory: "wwwroot/static_build"
+  clean_before_build: true
+  base_url: "https://db.marbletrack3.com" # For generating sitemaps, etc.
+  language_code: "en" # Default language for content
+
+# -----------------------------------------
+# Content Processing Rules
+# -----------------------------------------
+content_processors:
+  - name: "markdown_to_html"
+    description: "Converts Markdown-formatted text into HTML."
+    handler_function: "processMarkdown" # Implemented in the generator script
+
+  - name: "gallery_images"
+    description: "Finds /photos/view/ links and converts them to gallery-ready HTML."
+    handler_function: "processGalleryImages"
+    regex: '!/photos/view/(\d+)!i'
+
+  - name: "inline_thumbnails"
+    description: "Finds /img/thumb/ links and converts them to simple <img> tags."
+    handler_function: "processInlineThumbnails"
+    regex: '!/img/thumb/([a-zA-Z0-9_.-]+)!i'
+
+  - name: "shortcode_parser"
+    description: "Parses custom shortcodes like [part:P-001] and replaces them with links to the correct static page."
+    handler_function: "processShortcodes"
+    regex: '!\[(part|worker):([a-zA-Z0-9_-]+)\]!i'
+
+# -----------------------------------------
+# Entity Definitions (The Core Map)
+# -----------------------------------------
+entities:
+  Worker:
+    description: "An individual who assembles parts."
+    repository: "WorkersRepository"
+    template: "templates/frontend/worker_detail.tpl.php"
+    path_schema: "/workers/{slug}/index.html" # e.g., /workers/candy-mama/index.html
+    relationships:
+      - type: "has_many_through_join_table"
+        entity: "Photo"
+        join_table: "workers_2_photos"
+        local_key: "worker_id"
+        foreign_key: "photo_id"
+    content_to_process:
+      - field: "description"
+        processor: "markdown_to_html"
+      - field: "description"
+        processor: "shortcode_parser"
+
+  Part:
+    description: "A single component of a track."
+    repository: "PartsRepository"
+    template: "templates/frontend/part_detail.tpl.php"
+    path_schema: "/parts/{slug}/index.html"
+    relationships:
+      - type: "belongs_to"
+        entity: "Worker"
+        local_key: "created_by_worker_id"
+      - type: "has_many_through_join_table"
+        entity: "Photo"
+        join_table: "parts_2_photos"
+        local_key: "part_id"
+        foreign_key: "photo_id"
+    content_to_process:
+      - field: "description"
+        processor: "markdown_to_html"
+      - field: "notes"
+        processor: "markdown_to_html"
+
+  Notebook:
+    description: "A collection of pages with notes and diagrams."
+    repository: "NotebookRepository"
+    template: "templates/frontend/notebook_detail.tpl.php"
+    path_schema: "/notebooks/{slug}/index.html"
+    relationships:
+      - type: "has_many"
+        entity: "Page"
+        foreign_key: "notebook_id"
+
+  Page:
+    description: "A single page within a notebook."
+    repository: "PageRepository"
+    template: "templates/frontend/page_detail.tpl.php"
+    path_schema: "/notebooks/{notebook_slug}/pages/{page_number}.html"
+    relationships:
+      - type: "belongs_to"
+        entity: "Notebook"
+        local_key: "notebook_id"
+      - type: "has_many"
+        entity: "Column"
+        foreign_key: "page_id"
+
+  Column:
+    description: "A column on a notebook page, containing tokens."
+    repository: "ColumnsRepository"
+    # Columns might not have individual pages, but are pulled into Page templates.
+    # If they had pages, a template and path_schema would be defined here.
+
+  Token:
+    description: "A piece of text on a column."
+    repository: "TokensRepository"
+    # Tokens are always displayed as part of a Column, so they don't have their own pages.
+    content_to_process:
+      - field: "token_string"
+        processor: "gallery_images" # A token might reference a photo
+
+# -----------------------------------------
+# Index & List Page Definitions
+# -----------------------------------------
+indexes:
+  - name: "Homepage"
+    template: "templates/frontend/index.tpl.php"
+    path: "/index.html"
+    # Data can be custom-fetched in the generator for specific pages
+    data_fetcher: "getHomepageData" # A special function in the generator
+
+  - name: "Workers Index"
+    entity: "Worker"
+    template: "templates/frontend/workers_index.tpl.php"
+    path: "/workers/index.html"
+
+  - name: "Parts Index"
+    entity: "Part"
+    template: "templates/frontend/parts_index.tpl.php"
+    path: "/parts/index.html"
+
+  - name: "Notebooks Index"
+    entity: "Notebook"
+    template: "templates/frontend/notebooks_index.tpl.php"
+    path: "/notebooks/index.html"
+
+# -----------------------------------------
+# Other Generation Tasks
+# -----------------------------------------
+tasks:
+  - name: "Generate Sitemap"
+    handler_function: "generateSitemap"
+    output_path: "/sitemap.xml"
+
+  - name: "Generate RSS Feed"
+    handler_function: "generateRssFeed"
+    output_path: "/feed.xml"
