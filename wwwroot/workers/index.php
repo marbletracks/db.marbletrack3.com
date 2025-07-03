@@ -15,7 +15,7 @@ $repo = new \Database\WorkersRepository(
 $workers = $repo->findAll();
 
 $page = new \Template(config: $config);
-$page->setTemplate("workers/index.tpl.php");
+$page->setTemplate("frontend/workers/index.tpl.php");
 $page->set(name: "workers", value: $workers);
 $page->set(name: "page_title", value: "Meet the Workers of Marble Track 3");
 $page->echoToScreen();

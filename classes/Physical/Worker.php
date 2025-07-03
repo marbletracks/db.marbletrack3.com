@@ -6,6 +6,7 @@ namespace Physical;
  */
 class Worker
 {
+    public string $slug;
     public function __construct(
         public int $worker_id,
         public string $worker_alias,
@@ -13,5 +14,6 @@ class Worker
         public string $description = '',
         public ?string $primary_image_url = null,
     ) {
+        $this->slug = \Utilities::slugify($name);
     }
 }

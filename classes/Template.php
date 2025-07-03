@@ -44,6 +44,31 @@ class Template{
         return $this->loadTemplate();
     }
 
+    /**
+     * Renders the template and saves it to a static file.
+     * Creates the directory if it doesn't exist.
+     * @param string $file_path The absolute path where the file should be saved.
+     * @return bool True on success, false on failure.
+     */
+    public function saveToFile(string $file_path): bool {
+        $content = $this->loadTemplate();
+        if ($content === false) {
+            return false;
+        }
+
+        $directory = dirname($file_path);
+        if (!is_dir($directory)) {
+            // Attempt to create the directory recursively
+            if (!mkdir($directory, 0755, true)) {
+                // In a real app, you might want to log this error
+                return false;
+            }
+        }
+
+        // Save the content to the file
+        return file_put_contents($file_path, $content) !== false;
+    }
+
     protected function loadTemplate(): string {
         $charEncode = "UTF-8";
         extract($this->vars);          	// Extract the vars to local namespace
