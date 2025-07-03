@@ -17,7 +17,7 @@ entities:
   Worker:
     description: "An individual who assembles parts."
     repository: "WorkersRepository" # The PHP class to use for DB queries
-    template: "workers/worker.tpl.php" # A new frontend template will be needed
+    template: "workers/worker.tpl.php" # Show individual worker details
     path_schema: "/workers/{slug}/index.html" # e.g., /workers/candy-mama/index.html
     relationships:
       - type: "has_many_through_join_table"
