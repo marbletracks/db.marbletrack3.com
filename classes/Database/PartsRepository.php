@@ -31,6 +31,7 @@ class PartsRepository
 SELECT
     p.part_id AS id,
     p.part_alias AS alias,
+    p.slug,
     pt.part_name AS name
 FROM parts p
 LEFT JOIN part_translations pt
