@@ -11,7 +11,8 @@
 <body>
     <div class="NavBar">
         <a href="/">Home</a> |
-        <a href="/workers/">Workers</a>
+        <a href="/workers/">Workers</a> |
+        <a href="/parts/">Parts</a>
     </div>
     <div class="PageWrapper">
         <?= $page_content ?>
