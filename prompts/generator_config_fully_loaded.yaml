@@ -6,7 +6,7 @@
 # Global Settings
 # -----------------------------------------
 settings:
-  output_directory: "wwwroot/static_build"
+  output_directory: "wwwroot"
   clean_before_build: true
   base_url: "https://db.marbletrack3.com" # For generating sitemaps, etc.
   language_code: "en" # Default language for content
