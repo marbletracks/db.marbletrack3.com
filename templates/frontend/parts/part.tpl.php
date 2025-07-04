@@ -16,7 +16,7 @@
         <?= htmlspecialchars($part->description ?? '') ?>
     </p>
 
-    <?php if (!empty($part->photos)):
+    <?php if (!empty($part->photos)): ?>
         <h2>Photos</h2>
         <div class="part-photos">
             <?php foreach ($part->photos as $photo): ?>
