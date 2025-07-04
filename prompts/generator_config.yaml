@@ -25,6 +25,17 @@ entities:
         join_table: "workers_2_photos"
         local_key: "worker_id"
         foreign_key: "photo_id"
+  Part:
+    description: "A single component of a track."
+    repository: "PartsRepository"
+    template: "frontend/parts/part.tpl.php"
+    path_schema: "/parts/{slug}/index.html"
+    relationships:
+      - type: "has_many_through_join_table"
+        entity: "Photo"
+        join_table: "parts_2_photos"
+        local_key: "part_id"
+        foreign_key: "photo_id"
 
 # -----------------------------------------
 # Index Page Definitions
@@ -35,3 +46,8 @@ indexes:
     entity: "Worker"
     template: "frontend/workers/index.tpl.php" # This is the existing template
     path: "/workers/index.html"
+  PartsIndex:
+    name: "Parts Index"
+    entity: "Part"
+    template: "frontend/parts/index.tpl.php"
+    path: "/parts/index.html"
