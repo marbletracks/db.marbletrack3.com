@@ -93,8 +93,8 @@ SQL,
             return null;
         }
 
-        $this->setPartId($part_id);
         $results->setRow(0);
+        $this->setPartId($part_id);
 
         return $this->hydrate($results->data);
     }
@@ -193,7 +193,7 @@ SQL,
 
         $insertData = ['part_alias' => $alias];
         $paramTypes = 's';
-        
+
         if ($slug !== null) {
             $insertData['slug'] = $slug;
             $paramTypes = 'ss';
