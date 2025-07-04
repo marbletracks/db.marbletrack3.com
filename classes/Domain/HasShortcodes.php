@@ -46,7 +46,7 @@ trait HasShortcodes
                 'id' => (int) $res->data['id'],
                 'alias' => $res->data['alias'],
                 'name' => $res->data['name'],
-                'expansion' => "<a href=\"/parts/part.php?part_id={$res->data['id']}\">{$res->data['name']}</a>",
+                'expansion' => "[part:{$res->data['slug']}]",
             ];
         }
         return $results;
