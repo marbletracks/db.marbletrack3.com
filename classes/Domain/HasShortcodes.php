@@ -51,4 +51,48 @@ trait HasShortcodes
         }
         return $results;
     }
+
+    public function expandShortcodes(string $text, bool $isForStaticSite = false): string
+    {
+        // This regex finds all occurrences of [part:some_slug]
+        preg_match_all('/\\[part:([\\w-]+)\\]/', $text, $matches);
+
+        if (empty($matches[1])) {
+            return $text;
+        }
+
+        $slugs = array_unique($matches[1]);
+        $placeholders = [];
+        $params = [];
+
+        foreach ($slugs as $slug) {
+            $placeholders[] = '?';
+            $params[] = $slug;
+        }
+
+        $db = $this->getDb();
+        $tableAlias = $this->getTableAlias();
+        $inClause = implode(',', $placeholders);
+
+        $sql = $this->getSelectPrefix() . " WHERE $tableAlias.slug IN ($inClause)";
+
+        $res = $db->fetchResults($sql, 's' . str_repeat('s', count($params)), ['en', ...$params]);
+
+        $replacements = [];
+        for ($i = 0; $i < $res->numRows(); $i++) {
+            $res->setRow($i);
+            $id = $res->data['id'];
+            $name = $res->data['name'];
+            $slug = $res->data['slug'];
+
+            if ($isForStaticSite) {
+                $url = "/parts/{$slug}/";
+            } else {
+                $url = "/parts/part.php?part_id={$id}";
+            }
+            $replacements["[part:{$slug}]"] = "<a href=\"{}\">{}</a>";
+        }
+
+        return strtr($text, $replacements);
+    }
 }
