@@ -117,6 +117,13 @@ if (isset($config_data['entities'])) {
             $path = str_replace('{slug}', $item->slug, $entity['path_schema']);
             $output_path = $output_dir_prefix . $path;
 
+            // If the item has a description, expand shortcodes in it.
+            if (property_exists($item, 'description') && $item->description) {
+                // We need a PartsRepository to expand the shortcodes.
+                $partsRepo = new \Database\PartsRepository($mla_database, $config_data['settings']['language_code']);
+                $item->description = $partsRepo->expandShortcodes($item->description, true);
+            }
+
             $inner_tpl = new \Template($config);
             $inner_tpl->setTemplate($entity['template']);
             $inner_tpl->set(strtolower($entityName), $item);
