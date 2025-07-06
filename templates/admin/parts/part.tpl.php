@@ -14,7 +14,7 @@
             Alias:<br>
             <input type="text" id="part_alias" name="part_alias"
                    value="<?= htmlspecialchars($part->part_alias ?? '') ?>">
-            <div id="alias-error" style="color:red; margin-top:4px;">ss</div>
+            <div id="alias-error" style="color:red; margin-top:4px;"></div>
         </label><br><br>
 
         <label>
@@ -77,9 +77,6 @@
         }
 
         nameField.addEventListener('input', updateAlias);
-
-        // Initialize on page load if editing
-        updateAlias();
 
         function updateAlias() {
             const value = nameField.value.trim();
