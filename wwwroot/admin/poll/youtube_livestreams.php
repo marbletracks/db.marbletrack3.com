@@ -101,6 +101,7 @@ do {
         if (!$ls->existsInDatabase(external_id: $ls->getExternalId())) {
             $ls->saveToDatabase();
             $results[] = [
+                'livestream_id' => $ls->getLivestreamId(),
                 'title' => $ls->getTitle(),
                 'status' => '✅ Saved to database',
                 'url' => $ls->getWatchUrl(),

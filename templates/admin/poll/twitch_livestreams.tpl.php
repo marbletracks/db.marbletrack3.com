@@ -16,6 +16,9 @@
                     <?php if (!empty($res['duration'])): ?>
                         <em>Duration:</em> <?= htmlspecialchars($res['duration']) ?><br>
                     <?php endif; ?>
+                    <a class="btn" href="/admin/episodes/episode.php?livestream_id=<?= $res['livestream_id'] ?>">
+                        🎥 Create Episode
+                    </a>
                 </li>
             <?php endforeach; ?>
         </ul>

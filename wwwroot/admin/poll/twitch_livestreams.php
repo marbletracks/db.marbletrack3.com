@@ -118,6 +118,7 @@ foreach ($data['data'] as $item) {
         // print_rob($ls);
         $ls->saveToDatabase();
         $results[] = [
+            'livestream_id' => $ls->getLivestreamId(),
             'title' => $ls->getTitle(),
             'status' => '✅ Saved  (and be sure to save this stuff in DB)',
             'url' => 'https://www.twitch.tv/videos/' . $item['id'],
