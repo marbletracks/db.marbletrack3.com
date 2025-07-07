@@ -13,8 +13,6 @@ if (!$is_logged_in->isLoggedIn()) {
 // Set a higher time limit for this script, as it might take a while to run.
 set_time_limit(300);
 
-ob_start(); // Start output buffering
-
 // 1. Load the configuration
 $configFile = $config->app_path . '/prompts/generator_config.yaml';
 if (!file_exists($configFile)) {
@@ -60,6 +58,17 @@ function simple_yaml_parse(string $yaml_content): array {
     return $map;
 }
 
+function expandShortCodes(Database\DbInterface $mla_database, string $text, string $langCode): string
+{
+
+    $worker_repo = new \Database\WorkersRepository($mla_database, $langCode);
+    $parts_repo = new \Database\PartsRepository($mla_database, $langCode);
+    $expand_workers = $worker_repo->expandShortcodes($text, "worker");
+    $expand_parts = $parts_repo->expandShortcodes($expand_workers, "part");
+
+    return $expand_parts;
+}
+
 $config_data = function_exists('yaml_parse_file') ? yaml_parse_file($configFile) : simple_yaml_parse(file_get_contents($configFile));
 
 if (!$config_data) {
@@ -89,10 +98,15 @@ if (isset($config_data['indexes'])) {
         $inner_tpl->setTemplate($index['template']);
         $inner_tpl->set(strtolower($entityName) . 's', $items); // e.g., set('workers', $workers)
         $inner_content = $inner_tpl->grabTheGoods();
+        $longcode_content = expandShortcodes(
+            mla_database: $mla_database,
+            text: $inner_content,
+            langCode: "en",
+        );
 
         $layout_tpl = new \Template($config);
         $layout_tpl->setTemplate("layout/frontend_base.tpl.php");
-        $layout_tpl->set("page_content", $inner_content);
+        $layout_tpl->set("page_content", $longcode_content);
         $layout_tpl->set("page_title", $index['name']); // Use the index name as title
 
         $output_path = $output_dir_prefix . $index['path'];
@@ -117,14 +131,20 @@ if (isset($config_data['entities'])) {
             $path = str_replace('{slug}', $item->slug, $entity['path_schema']);
             $output_path = $output_dir_prefix . $path;
 
+
             $inner_tpl = new \Template($config);
             $inner_tpl->setTemplate($entity['template']);
             $inner_tpl->set(strtolower($entityName), $item);
             $inner_content = $inner_tpl->grabTheGoods();
+            $longcode_content = expandShortcodes(
+                mla_database: $mla_database,
+                text: $inner_content,
+                langCode: "en",
+            );
 
             $layout_tpl = new \Template($config);
             $layout_tpl->setTemplate("layout/frontend_base.tpl.php");
-            $layout_tpl->set("page_content", $inner_content);
+            $layout_tpl->set("page_content", $longcode_content);
             // Attempt to derive a good page title from the item
             $page_title = $item->name ?? $item->worker_alias ?? $entityName;
             $layout_tpl->set("page_title", $page_title);

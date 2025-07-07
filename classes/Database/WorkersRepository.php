@@ -3,11 +3,13 @@ namespace Database;
 
 use Database\DbInterface;
 use Domain\HasPhotos;
+use Domain\HasShortcodes;
 use Physical\Worker;
 
 class WorkersRepository
 {
     use HasPhotos;
+    use HasShortcodes;
     private DbInterface $db;
     private string $langCode;
 
@@ -22,6 +24,25 @@ class WorkersRepository
         $this->langCode = $langCode;
     }
 
+    public function getSelectPrefix(): string
+    {
+        return <<<SQL
+SELECT
+    w.worker_id AS id,
+    w.worker_alias AS alias,
+    w.slug,
+    wn.worker_name AS name
+FROM workers w
+LEFT JOIN worker_names wn
+  ON w.worker_id = wn.worker_id
+  AND wn.language_code = ?
+SQL;
+    }
+
+    public function getTableAlias(): string
+    {
+        return 'w';
+    }
     public function getDb(): DbInterface
     {
         return $this->db;
@@ -124,7 +145,7 @@ SQL,
 
         $insertData = ['worker_alias' => $alias];
         $paramTypes = 's';
-        
+
         if ($slug !== null) {
             $insertData['slug'] = $slug;
             $paramTypes = 'ss';

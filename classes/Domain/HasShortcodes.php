@@ -51,4 +51,49 @@ trait HasShortcodes
         }
         return $results;
     }
+
+    /**
+     * Summary of expandShortcodes
+     * @param string $text
+     * @param string $type "part" or "worker"
+     * @return string
+     */
+    public function expandShortcodes(string $text, string $type): string
+    {
+        // This regex finds all occurrences of [part:some_slug]
+        preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
+
+        if (empty($matches[1])) {
+            return $text;
+        }
+
+        $slugs = array_unique($matches[1]);
+        $placeholders = [];
+        $params = [];
+
+        foreach ($slugs as $slug) {
+            $placeholders[] = '?';
+            $params[] = $slug;
+        }
+
+        $db = $this->getDb();
+        $tableAlias = $this->getTableAlias();
+        $inClause = implode(',', $placeholders);
+
+        $sql = $this->getSelectPrefix() . " WHERE $tableAlias.slug IN ($inClause)";
+
+        $res = $db->fetchResults($sql, 's' . str_repeat('s', count($params)), ['en', ...$params]);
+
+        $replacements = [];
+        for ($i = 0; $i < $res->numRows(); $i++) {
+            $res->setRow($i);
+            $name = $res->data['name'];
+            $slug = $res->data['slug'];
+
+            $url = "/{$type}s/{$slug}/";
+            $replacements["[{$type}:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
+        }
+
+        return strtr($text, $replacements);
+    }
 }
