@@ -4,8 +4,10 @@ namespace Domain;
 
 trait HasShortcodes
 {
-    abstract protected function getSelectPrefix(): string;
+    abstract protected function getSELECTExactAlias(): string;
+    abstract protected function getSELECTLikeAlias(): string;
     abstract protected function getTableAlias(): string;
+    abstract protected function getAliasType(): string;     // e.g., "part" or "worker"
     abstract protected function getDb(): \Database\DbInterface;
 
     public function searchByShortcodeOrName(
@@ -16,15 +18,15 @@ trait HasShortcodes
     ): array
     {
         $db = $this->getDb();
-        $alias = $this->getTableAlias();
+        $type = $this->getAliasType();
 
         if($exact) {
             // If exact match is requested, we use '=' instead of 'LIKE'
-            $sql = $this->getSelectPrefix() . " WHERE $alias.part_alias = ? OR pt.part_name = ? LIMIT ?";
+            $sql = $this->getSELECTExactAlias();
             $like = trim($like);
         } else {
             // For partial matches, we use 'LIKE'
-            $sql = $this->getSelectPrefix() . " WHERE $alias.part_alias LIKE ? OR pt.part_name LIKE ? LIMIT ?";
+            $sql = $this->getSELECTLikeAlias();
             $like = '%' . trim($like) . '%';
         }
 
@@ -46,7 +48,7 @@ trait HasShortcodes
                 'id' => (int) $res->data['id'],
                 'alias' => $res->data['alias'],
                 'name' => $res->data['name'],
-                'expansion' => "[part:{$res->data['slug']}]",
+                'expansion' => "[{$type}:{$res->data['slug']}]",
             ];
         }
         return $results;
@@ -80,7 +82,7 @@ trait HasShortcodes
         $tableAlias = $this->getTableAlias();
         $inClause = implode(',', $placeholders);
 
-        $sql = $this->getSelectPrefix() . " WHERE $tableAlias.slug IN ($inClause)";
+        $sql = $this->getSELECTExactAlias() . " WHERE $tableAlias.slug IN ($inClause)";
 
         $res = $db->fetchResults($sql, 's' . str_repeat('s', count($params)), ['en', ...$params]);
 

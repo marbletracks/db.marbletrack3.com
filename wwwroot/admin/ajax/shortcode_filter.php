@@ -16,9 +16,16 @@ $res = [];
 if ($q !== '') {
     $q = trim($q);
     $partsRepo = new \Database\PartsRepository($mla_database, $langCode);
+    $workersRepo = new \Database\WorkersRepository($mla_database, $langCode);
 
     // First, try for an exact match on the shortcode
     // When checking for duplicates, we only want exact matches.
+    $exact_worker_matches = $workersRepo->searchByShortcodeOrName(
+        like: $q,
+        lang: $langCode,
+        exact: true,
+        limit: 10
+    );
     $exact_part_matches = $partsRepo->searchByShortcodeOrName(
         like: $q,
         lang: $langCode,
@@ -35,12 +42,19 @@ if ($q !== '') {
             exact: false,
             limit: 10
         );
+        $like_worker_matches = $workersRepo->searchByShortcodeOrName(
+            like: $q,
+            lang: $langCode,
+            exact: false,
+            limit: 10
+        );
     } else {
         $like_part_matches = [];
+        $like_worker_matches = [];
     }
 
     // Combine and de-duplicate
-    $combined = array_merge($exact_part_matches, $like_part_matches);
+    $combined = array_merge($exact_worker_matches, $exact_part_matches, $like_part_matches, $like_part_matches);
     $unique_results = [];
     $seen_aliases = [];
 

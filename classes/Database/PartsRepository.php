@@ -25,7 +25,7 @@ class PartsRepository
         $this->langCode = $langCode;
     }
 
-    public function getSelectPrefix(): string
+    public function getSELECTExactAlias(): string
     {
         return <<<SQL
 SELECT
@@ -37,9 +37,38 @@ FROM parts p
 LEFT JOIN part_translations pt
   ON p.part_id = pt.part_id
   AND pt.language_code = ?
+WHERE p.part_alias = ?
+  OR pt.part_name = ?
+LIMIT ?
 SQL;
     }
 
+    public function getSELECTLikeAlias(): string
+    {
+        return <<<SQL
+SELECT
+    p.part_id AS id,
+    p.part_alias AS alias,
+    p.slug,
+    pt.part_name AS name
+FROM parts p
+LEFT JOIN part_translations pt
+  ON p.part_id = pt.part_id
+  AND pt.language_code = ?
+WHERE p.part_alias LIKE ?
+  OR pt.part_name LIKE ?
+LIMIT ?
+SQL;
+    }
+
+    /**
+     * written where we need [part:alias]
+     * @return string
+     */
+    public function getAliasType(): string
+    {
+        return 'part';
+    }
     public function getTableAlias(): string
     {
         return 'p';
