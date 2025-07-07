@@ -20,7 +20,8 @@
         </label><br><br>
         <label>
             Description:<br>
-            <textarea name="description" rows="5" cols="50"><?= htmlspecialchars($worker->description ?? '') ?></textarea>
+            <textarea id="shortcodey" name="description" rows="15" cols="100"><?= htmlspecialchars($worker->description ?? '') ?></textarea>
+            <div id="autocomplete"></div>
         </label><br><br>
         <label>
             Image URLs:<br>
@@ -50,3 +51,6 @@
         <button type="submit">Save</button>
     </form>
 </div>
+<link rel="stylesheet" href="/admin/css/autocomplete.css">
+<script src="/admin/js/autocomplete.js" defer></script>
+

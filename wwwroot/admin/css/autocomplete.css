@@ -1,0 +1,18 @@
+/* basic dropdown styling */
+#autocomplete {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+#autocomplete li {
+  padding: 4px 8px;
+  cursor: pointer;
+}
+#autocomplete li.selected {
+  background: #eef;
+}
