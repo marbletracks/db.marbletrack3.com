@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Clean up parts in episodes";
+const SENTIMENTAL_VERSION = "Expand parts and workers in parts and workers";
 
 # write errors to screen
 ini_set('display_errors', 1);
