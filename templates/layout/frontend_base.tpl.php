@@ -12,12 +12,7 @@
     <div class="NavBar">
         <a href="/">Home</a> |
         <a href="/workers/">Workers</a> |
-        <?php if (!empty($username)): ?>
-            <a href="/admin/">Admin</a> |
-            <a href="/logout/">Logout</a>
-        <?php else: ?>
-            <a href="/login/">Login</a>
-        <?php endif; ?>
+        <a href="/parts/">Parts</a>
     </div>
     <div class="PageWrapper">
         <?= $page_content ?>

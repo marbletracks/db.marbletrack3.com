@@ -24,9 +24,26 @@ class Template{
      * @param mixed $value mixed so array of file names can be passed in /list/index.php
      * @return void
      */
-    public function set(string $name, mixed $value) {
+    public function set(string $name, mixed $value, bool $use_hsc = false): void
+    {
+        if ($use_hsc) {
+            $value = self::specialchars($value);
+        }
         $this->vars[$name] = $value;
     }
+
+    public function specialchars(&$value)
+    {
+        if (is_array($value)) {
+            foreach ($value as $key => $sub_value) {
+                $value[$key] = self::specialchars($value[$key]);
+            }
+        } else if (is_string($value)) {
+            $value = htmlspecialchars($value);
+        }
+        return $value;
+    }
+
 
     public function echoToScreen(): void {
         echo $this->loadTemplate(); // Display the contents directly to the page
@@ -42,6 +59,31 @@ class Template{
      */
     public function grabTheGoods(): string {
         return $this->loadTemplate();
+    }
+
+    /**
+     * Renders the template and saves it to a static file.
+     * Creates the directory if it doesn't exist.
+     * @param string $file_path The absolute path where the file should be saved.
+     * @return bool True on success, false on failure.
+     */
+    public function saveToFile(string $file_path): bool {
+        $content = $this->loadTemplate();
+        if ($content === false) {
+            return false;
+        }
+
+        $directory = dirname($file_path);
+        if (!is_dir($directory)) {
+            // Attempt to create the directory recursively
+            if (!mkdir($directory, 0755, true)) {
+                // In a real app, you might want to log this error
+                return false;
+            }
+        }
+
+        // Save the content to the file
+        return file_put_contents($file_path, $content) !== false;
     }
 
     protected function loadTemplate(): string {

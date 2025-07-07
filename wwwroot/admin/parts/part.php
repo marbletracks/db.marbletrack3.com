@@ -28,27 +28,11 @@ if ($submitted) {
 
     if (empty($errors)) {
         if ($part) {
-            // this should be encapsulated like the insert method
-            $mla_database->executeSQL(
-                "UPDATE parts SET part_alias = ? WHERE part_id = ?",
-                'si',
-                [$alias,
-                $part->part_id]
-            );
-
-            $mla_database->executeSQL(
-                "REPLACE INTO part_translations (
-                    part_id,
-                    language_code,
-                    part_name,
-                    part_description
-                ) VALUES (?, 'en', ?, ?)",
-                'iss',
-                [
-                    $part->part_id,
-                    $name,
-                    $description,
-                ]
+            $repo->update(
+                part_id: $part->part_id,
+                alias: $alias,
+                name: $name,
+                description: $description
             );
             // save photos via HasPhotos
             $repo->setPartId(part_id: $part->part_id);

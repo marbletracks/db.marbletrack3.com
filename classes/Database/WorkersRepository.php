@@ -3,11 +3,13 @@ namespace Database;
 
 use Database\DbInterface;
 use Domain\HasPhotos;
+use Domain\HasShortcodes;
 use Physical\Worker;
 
 class WorkersRepository
 {
     use HasPhotos;
+    use HasShortcodes;
     private DbInterface $db;
     private string $langCode;
 
@@ -22,6 +24,25 @@ class WorkersRepository
         $this->langCode = $langCode;
     }
 
+    public function getSelectPrefix(): string
+    {
+        return <<<SQL
+SELECT
+    w.worker_id AS id,
+    w.worker_alias AS alias,
+    w.slug,
+    wn.worker_name AS name
+FROM workers w
+LEFT JOIN worker_names wn
+  ON w.worker_id = wn.worker_id
+  AND wn.language_code = ?
+SQL;
+    }
+
+    public function getTableAlias(): string
+    {
+        return 'w';
+    }
     public function getDb(): DbInterface
     {
         return $this->db;
@@ -116,10 +137,24 @@ SQL,
 
     public function insert(string $alias, string $name = '', string $description = ''): int
     {
+        // Generate slug from name if provided
+        $slug = null;
+        if (!empty($name)) {
+            $slug = \Utilities::slugify($name, 20);
+        }
+
+        $insertData = ['worker_alias' => $alias];
+        $paramTypes = 's';
+
+        if ($slug !== null) {
+            $insertData['slug'] = $slug;
+            $paramTypes = 'ss';
+        }
+
         $worker_id = $this->db->insertFromRecord(
             'workers',
-            's',
-            ['worker_alias' => $alias]
+            $paramTypes,
+            $insertData
         );
 
         if ($name || $description) {
@@ -136,6 +171,39 @@ SQL,
         }
 
         return $worker_id;
+    }
+
+    public function update(int $worker_id, string $alias, string $name = '', string $description = ''): void
+    {
+        // Generate slug from name if provided
+        $slug = null;
+        if (!empty($name)) {
+            $slug = \Utilities::slugify($name, 20);
+        }
+
+        // Update workers table
+        if ($slug !== null) {
+            $this->db->executeSQL(
+                "UPDATE workers SET worker_alias = ?, slug = ? WHERE worker_id = ?",
+                'ssi',
+                [$alias, $slug, $worker_id]
+            );
+        } else {
+            $this->db->executeSQL(
+                "UPDATE workers SET worker_alias = ? WHERE worker_id = ?",
+                'si',
+                [$alias, $worker_id]
+            );
+        }
+
+        // Update translations
+        if ($name || $description) {
+            $this->db->executeSQL(
+                "UPDATE worker_names SET worker_name = ?, worker_description = ? WHERE worker_id = ? AND language_code = ?",
+                'ssis',
+                [$name, $description, $worker_id, $this->langCode]
+            );
+        }
     }
 
     private function hydrate(array $row): Worker

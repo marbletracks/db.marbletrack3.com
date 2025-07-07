@@ -3,11 +3,13 @@ namespace Database;
 
 use Database\DbInterface;
 use Domain\HasPhotos;
+use Domain\HasShortcodes;
 use Physical\Part;
 
 class PartsRepository
 {
     use HasPhotos;
+    use HasShortcodes;
 
     private DbInterface $db;
     private string $langCode;
@@ -21,6 +23,26 @@ class PartsRepository
     {
         $this->db = $db;
         $this->langCode = $langCode;
+    }
+
+    public function getSelectPrefix(): string
+    {
+        return <<<SQL
+SELECT
+    p.part_id AS id,
+    p.part_alias AS alias,
+    p.slug,
+    pt.part_name AS name
+FROM parts p
+LEFT JOIN part_translations pt
+  ON p.part_id = pt.part_id
+  AND pt.language_code = ?
+SQL;
+    }
+
+    public function getTableAlias(): string
+    {
+        return 'p';
     }
 
     public function getDb(): DbInterface
@@ -71,8 +93,8 @@ SQL,
             return null;
         }
 
-        $this->setPartId($part_id);
         $results->setRow(0);
+        $this->setPartId($part_id);
 
         return $this->hydrate($results->data);
     }
@@ -163,10 +185,24 @@ SQL,
 
     public function insert(string $alias, string $name = '', string $description = ''): int
     {
+        // Generate slug from name if provided
+        $slug = null;
+        if (!empty($name)) {
+            $slug = \Utilities::slugify($name, 200);
+        }
+
+        $insertData = ['part_alias' => $alias];
+        $paramTypes = 's';
+
+        if ($slug !== null) {
+            $insertData['slug'] = $slug;
+            $paramTypes = 'ss';
+        }
+
         $part_id = $this->db->insertFromRecord(
             'parts',
-            's',
-            ['part_alias' => $alias]
+            $paramTypes,
+            $insertData
         );
 
         if ($name || $description) {
@@ -183,6 +219,44 @@ SQL,
         }
 
         return $part_id;
+    }
+
+    public function update(int $part_id, string $alias, string $name = '', string $description = ''): void
+    {
+        // Generate slug from name if provided
+        $slug = null;
+        if (!empty($name)) {
+            $slug = \Utilities::slugify($name, 200);
+        }
+
+        // Update parts table
+        if ($slug !== null) {
+            $this->db->executeSQL(
+                "UPDATE parts SET part_alias = ?, slug = ? WHERE part_id = ?",
+                'ssi',
+                [$alias, $slug, $part_id]
+            );
+        } else {
+            $this->db->executeSQL(
+                "UPDATE parts SET part_alias = ? WHERE part_id = ?",
+                'si',
+                [$alias, $part_id]
+            );
+        }
+
+        // Update translations
+        if ($name || $description) {
+            $this->db->executeSQL(
+                "REPLACE INTO part_translations (
+                    part_id,
+                    language_code,
+                    part_name,
+                    part_description
+                ) VALUES (?, ?, ?, ?)",
+                'isss',
+                [$part_id, $this->langCode, $name, $description]
+            );
+        }
     }
 
     private function hydrate(array $row): Part

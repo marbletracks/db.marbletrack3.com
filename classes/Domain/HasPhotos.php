@@ -17,6 +17,9 @@ trait HasPhotos
     abstract public function getPrimaryKeyColumn(): string;
 
     public function addPhoto(Photo $photo, bool $isPrimary = false): void {
+        if ($isPrimary) {
+            $photo->isPrimary = true; // Set the primary flag on the photo
+        }
         $this->photos[] = $photo;
         if ($isPrimary || $this->primaryPhoto === null) {
             $this->primaryPhoto = $photo;
@@ -46,19 +49,29 @@ trait HasPhotos
         );
         $results->toArray();
         $photoIds = [];
+        $primaryMap = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
-            $photoIds[] = $results->data['photo_id'];
+            $photoId = $results->data['photo_id'];
+            $photoIds[] = $photoId;
+            $primaryMap[$photoId] = !empty($results->data['is_primary']);
         }
 
-        // $photoIds = array_column($r->data, 'photo_id');
-        $photos = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
+        // Get photos from repository (order not guaranteed)
+        $photosFromRepo = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
+        
+        // Create a map to preserve the sort order
+        $photoMap = [];
+        foreach ($photosFromRepo as $photo) {
+            $photoMap[$photo->photo_id] = $photo;
+        }
 
-        foreach ($photos as $photo) {
-            // $pid = (int)$row['photo_id'];
-            // $photo = $photos[$pid] ?? null;
+        // Add photos in the correct sort order and pass through is_primary flag
+        foreach ($photoIds as $photoId) {
+            $photo = $photoMap[$photoId] ?? null;
             if ($photo) {
-                $this->addPhoto($photo); // , !empty($row['is_primary']));
+                $isPrimary = $primaryMap[$photoId] ?? false;
+                $this->addPhoto($photo, $isPrimary);
             }
         }
     }
@@ -84,11 +97,11 @@ trait HasPhotos
         $sort = 0;
         // print_rob($photos,false);
         foreach ($photos as $photo) {
-            // print_rob([$id, $photo->photo_id, $sort, ($photo === $this->primaryPhoto ? 1 : 0)],false);
+            // print_rob([$id, $photo->photo_id, $sort, ($photo->isPrimary ? 1 : 0)],false);
             $this->getDb()->executeSQL(
                 "INSERT INTO {$table} ({$key}, photo_id, photo_sort, is_primary) VALUES (?, ?, ?, ?)",
                 'iiii',
-                [$id, $photo->photo_id, $sort, ($photo === $this->primaryPhoto ? 1 : 0)]
+                [$id, $photo->photo_id, $sort, ($photo->isPrimary ? 1 : 0)]
             );
             $sort++;
         }
