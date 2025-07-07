@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Expand parts and workers in parts and workers";
+const SENTIMENTAL_VERSION = "Yay! Expand parts and workers shortcodes in parts and workers";
 
 # write errors to screen
 ini_set('display_errors', 1);
