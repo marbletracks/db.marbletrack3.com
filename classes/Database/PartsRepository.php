@@ -31,6 +31,7 @@ class PartsRepository
 SELECT
     p.part_id AS id,
     p.part_alias AS alias,
+    p.slug,
     pt.part_name AS name
 FROM parts p
 LEFT JOIN part_translations pt
@@ -92,8 +93,8 @@ SQL,
             return null;
         }
 
-        $this->setPartId($part_id);
         $results->setRow(0);
+        $this->setPartId($part_id);
 
         return $this->hydrate($results->data);
     }
@@ -192,7 +193,7 @@ SQL,
 
         $insertData = ['part_alias' => $alias];
         $paramTypes = 's';
-        
+
         if ($slug !== null) {
             $insertData['slug'] = $slug;
             $paramTypes = 'ss';
