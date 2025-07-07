@@ -15,13 +15,44 @@ $res = [];
 if ($q !== '') {
     $q = trim($q);
     $partsRepo = new \Database\PartsRepository($mla_database, "en");
-    $res = $partsRepo->searchByShortcodeOrName(
+
+    // First, try for an exact match on the shortcode
+    // When checking for duplicates, we only want exact matches.
+    $exact_matches = $partsRepo->searchByShortcodeOrName(
         like: $q,
         lang: "en",
-        exact: $exact,
+        exact: true,
         limit: 10
     );
+
+    // If we want partial matches, search for those too.
+    // This is the case on edit pages.
+    if( !$exact) {
+        $like_matches = $partsRepo->searchByShortcodeOrName(
+            like: $q,
+            lang: "en",
+            exact: false,
+            limit: 10
+        );
+    } else {
+        $like_matches = [];
+    }
+
+    // Combine and de-duplicate
+    $combined = array_merge($exact_matches, $like_matches);
+    $unique_results = [];
+    $seen_aliases = [];
+
+    foreach ($combined as $item) {
+        if (!isset($item['alias'])) {
+            continue;
+        }
+        if (!in_array($item['alias'], $seen_aliases)) {
+            $unique_results[] = $item;
+            $seen_aliases[] = $item['alias'];
+        }
+    }
 }
 
 header('Content-Type: application/json');
-echo json_encode($res);
+echo json_encode($unique_results);
