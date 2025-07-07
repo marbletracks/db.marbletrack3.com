@@ -13,8 +13,6 @@ if (!$is_logged_in->isLoggedIn()) {
 // Set a higher time limit for this script, as it might take a while to run.
 set_time_limit(300);
 
-ob_start(); // Start output buffering
-
 // 1. Load the configuration
 $configFile = $config->app_path . '/prompts/generator_config.yaml';
 if (!file_exists($configFile)) {

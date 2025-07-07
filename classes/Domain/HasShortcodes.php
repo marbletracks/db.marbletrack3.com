@@ -81,7 +81,6 @@ trait HasShortcodes
         $replacements = [];
         for ($i = 0; $i < $res->numRows(); $i++) {
             $res->setRow($i);
-            $id = $res->data['id'];
             $name = $res->data['name'];
             $slug = $res->data['slug'];
 
