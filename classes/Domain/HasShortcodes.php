@@ -52,7 +52,7 @@ trait HasShortcodes
         return $results;
     }
 
-    public function expandShortcodes(string $text, bool $isForStaticSite = false): string
+    public function expandShortcodes(string $text): string
     {
         // This regex finds all occurrences of [part:some_slug]
         preg_match_all('/\\[part:([\\w-]+)\\]/', $text, $matches);
@@ -85,12 +85,8 @@ trait HasShortcodes
             $name = $res->data['name'];
             $slug = $res->data['slug'];
 
-            if ($isForStaticSite) {
-                $url = "/parts/{$slug}/";
-            } else {
-                $url = "/parts/part.php?part_id={$id}";
-            }
-            $replacements["[part:{$slug}]"] = "<a href=\"{}\">{}</a>";
+            $url = "/parts/{$slug}/";
+            $replacements["[part:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
         }
 
         return strtr($text, $replacements);
