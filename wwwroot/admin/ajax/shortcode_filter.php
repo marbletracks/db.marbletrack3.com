@@ -10,17 +10,18 @@ if (!$is_logged_in->isLoggedIn()) {
 
 $q = $_GET['q'] ?? '';
 $exact = isset($_GET['exact']) && $_GET['exact'] === 'true';
+$langCode = "en";
 $res = [];
 
 if ($q !== '') {
     $q = trim($q);
-    $partsRepo = new \Database\PartsRepository($mla_database, "en");
+    $partsRepo = new \Database\PartsRepository($mla_database, $langCode);
 
     // First, try for an exact match on the shortcode
     // When checking for duplicates, we only want exact matches.
-    $exact_matches = $partsRepo->searchByShortcodeOrName(
+    $exact_part_matches = $partsRepo->searchByShortcodeOrName(
         like: $q,
-        lang: "en",
+        lang: $langCode,
         exact: true,
         limit: 10
     );
@@ -28,18 +29,18 @@ if ($q !== '') {
     // If we want partial matches, search for those too.
     // This is the case on edit pages.
     if( !$exact) {
-        $like_matches = $partsRepo->searchByShortcodeOrName(
+        $like_part_matches = $partsRepo->searchByShortcodeOrName(
             like: $q,
-            lang: "en",
+            lang: $langCode,
             exact: false,
             limit: 10
         );
     } else {
-        $like_matches = [];
+        $like_part_matches = [];
     }
 
     // Combine and de-duplicate
-    $combined = array_merge($exact_matches, $like_matches);
+    $combined = array_merge($exact_part_matches, $like_part_matches);
     $unique_results = [];
     $seen_aliases = [];
 
