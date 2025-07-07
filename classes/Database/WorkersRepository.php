@@ -24,7 +24,7 @@ class WorkersRepository
         $this->langCode = $langCode;
     }
 
-    public function getSelectPrefix(): string
+    public function getSELECTExactAlias(): string
     {
         return <<<SQL
 SELECT
@@ -36,8 +36,39 @@ FROM workers w
 LEFT JOIN worker_names wn
   ON w.worker_id = wn.worker_id
   AND wn.language_code = ?
+WHERE w.worker_alias = ?
+  OR wn.worker_name = ?
+LIMIT ?
 SQL;
     }
+
+    public function getSELECTLikeAlias(): string
+    {
+        return <<<SQL
+SELECT
+    w.worker_id AS id,
+    w.worker_alias AS alias,
+    w.slug,
+    wn.worker_name AS name
+FROM workers w
+LEFT JOIN worker_names wn
+  ON w.worker_id = wn.worker_id
+  AND wn.language_code = ?
+WHERE w.worker_alias LIKE ?
+  OR wn.worker_name LIKE ?
+LIMIT ?
+SQL;
+    }
+
+    /**
+     * written where we need [worker:alias]
+     * @return string
+     */
+    public function getAliasType(): string
+    {
+        return 'worker';
+    }
+
 
     public function getTableAlias(): string
     {

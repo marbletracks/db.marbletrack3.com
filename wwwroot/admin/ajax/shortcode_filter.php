@@ -10,18 +10,64 @@ if (!$is_logged_in->isLoggedIn()) {
 
 $q = $_GET['q'] ?? '';
 $exact = isset($_GET['exact']) && $_GET['exact'] === 'true';
+$langCode = "en";
 $res = [];
 
 if ($q !== '') {
     $q = trim($q);
-    $partsRepo = new \Database\PartsRepository($mla_database, "en");
-    $res = $partsRepo->searchByShortcodeOrName(
+    $partsRepo = new \Database\PartsRepository($mla_database, $langCode);
+    $workersRepo = new \Database\WorkersRepository($mla_database, $langCode);
+
+    // First, try for an exact match on the shortcode
+    // When checking for duplicates, we only want exact matches.
+    $exact_worker_matches = $workersRepo->searchByShortcodeOrName(
         like: $q,
-        lang: "en",
-        exact: $exact,
+        lang: $langCode,
+        exact: true,
         limit: 10
     );
+    $exact_part_matches = $partsRepo->searchByShortcodeOrName(
+        like: $q,
+        lang: $langCode,
+        exact: true,
+        limit: 10
+    );
+
+    // If we want partial matches, search for those too.
+    // This is the case on edit pages.
+    if( !$exact) {
+        $like_part_matches = $partsRepo->searchByShortcodeOrName(
+            like: $q,
+            lang: $langCode,
+            exact: false,
+            limit: 10
+        );
+        $like_worker_matches = $workersRepo->searchByShortcodeOrName(
+            like: $q,
+            lang: $langCode,
+            exact: false,
+            limit: 10
+        );
+    } else {
+        $like_part_matches = [];
+        $like_worker_matches = [];
+    }
+
+    // Combine and de-duplicate
+    $combined = array_merge($exact_worker_matches, $exact_part_matches, $like_part_matches, $like_part_matches);
+    $unique_results = [];
+    $seen_aliases = [];
+
+    foreach ($combined as $item) {
+        if (!isset($item['alias'])) {
+            continue;
+        }
+        if (!in_array($item['alias'], $seen_aliases)) {
+            $unique_results[] = $item;
+            $seen_aliases[] = $item['alias'];
+        }
+    }
 }
 
 header('Content-Type: application/json');
-echo json_encode($res);
+echo json_encode($unique_results);
