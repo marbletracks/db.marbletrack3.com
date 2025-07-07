@@ -28,7 +28,7 @@ $layout->setTemplate("layout/frontend_base.tpl.php");
 $layout->set("page_title", "MarbleTrack3 - Home");
 $layout->set("page_content", $inner);
 
-// Set username for navigation 
+// Set username for navigation
 if ($is_logged_in->isLoggedIn()) {
     $layout->set(name: "username", value: $is_logged_in->getLoggedInUsername());
 } else {

@@ -52,10 +52,16 @@ trait HasShortcodes
         return $results;
     }
 
-    public function expandShortcodes(string $text): string
+    /**
+     * Summary of expandShortcodes
+     * @param string $text
+     * @param string $type "part" or "worker"
+     * @return string
+     */
+    public function expandShortcodes(string $text, string $type): string
     {
         // This regex finds all occurrences of [part:some_slug]
-        preg_match_all('/\\[part:([\\w-]+)\\]/', $text, $matches);
+        preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
 
         if (empty($matches[1])) {
             return $text;
@@ -84,8 +90,8 @@ trait HasShortcodes
             $name = $res->data['name'];
             $slug = $res->data['slug'];
 
-            $url = "/parts/{$slug}/";
-            $replacements["[part:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
+            $url = "/{$type}s/{$slug}/";
+            $replacements["[{$type}:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
         }
 
         return strtr($text, $replacements);
