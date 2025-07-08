@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Insert worker shortcodes into Episodes";
+const SENTIMENTAL_VERSION = "Give me a Moment";
 
 # write errors to screen
 ini_set('display_errors', 1);
