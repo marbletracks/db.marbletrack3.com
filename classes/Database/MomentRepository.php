@@ -95,6 +95,7 @@ class MomentRepository
             frame_start: isset($row['frame_start']) ? (int)$row['frame_start'] : null,
             frame_end: isset($row['frame_end']) ? (int)$row['frame_end'] : null,
             phrase_id: isset($row['phrase_id']) ? (int)$row['phrase_id'] : null,
+            take_id: isset($row['take_id']) ? (int)$row['take_id'] : null,
             notes: $row['notes'] ?? null
         );
         $this->loadPhotos();  // defined in HasPhotos trait
