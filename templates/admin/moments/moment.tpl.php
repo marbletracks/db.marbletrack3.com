@@ -45,7 +45,7 @@
         <label>
             Image URLs:<br>
             <div id="image-url-fields">
-<?php foreach ($moment->photos ?? [''] as $photo): ?>
+<?php foreach ($moment->photos as $photo): ?>
     <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"><br>
                 <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
 <?php endforeach; ?>
