@@ -21,11 +21,17 @@ $takes = $take_repo->findAll();
 
 if ($submitted) {
     $notes = trim($_POST['notes'] ?? '');
-    $frame_start = filter_var($_POST['frame_start'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
-    $frame_end = filter_var($_POST['frame_end'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
-    $phrase_id = filter_var($_POST['phrase_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-    $take_id = filter_var($_POST['take_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    $frame_start = filter_input(INPUT_POST, 'frame_start', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
+    $frame_end = filter_input(INPUT_POST, 'frame_end', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
+    $phrase_id = filter_input(INPUT_POST, 'phrase_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    $take_id = filter_input(INPUT_POST, 'take_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
     $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
+
+    // filter_input returns false on failure, and null if the variable is not set. We want to store null in the DB
+    $frame_start = ($frame_start === false) ? null : $frame_start;
+    $frame_end = ($frame_end === false) ? null : $frame_end;
+    $phrase_id = ($phrase_id === false) ? null : $phrase_id;
+    $take_id = ($take_id === false) ? null : $take_id;
 
     if (empty($errors)) {
         if ($moment) {
