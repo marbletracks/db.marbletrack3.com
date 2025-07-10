@@ -17,7 +17,8 @@ $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 $part_id = (int) ($_GET['id'] ?? 0);
 $part = $part_id > 0 ? $repo->findById($part_id) : null;
-$moments = $moment_repo->findAll();
+$part_moments = $part_id > 0 ? $moment_repo->findByPartId($part_id) : [];
+$all_moments = $moment_repo->findAll();
 
 if ($submitted) {
     $alias = trim($_POST['part_alias'] ?? '');
@@ -59,7 +60,8 @@ $page = new \Template($config);
 $page->setTemplate("admin/parts/part.tpl.php");
 $page->set("errors", $errors);
 $page->set("part", $part);
-$page->set("moments", $moments);
+$page->set("part_moments", $part_moments);
+$page->set("all_moments", $all_moments);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);

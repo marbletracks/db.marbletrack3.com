@@ -27,11 +27,27 @@
             <textarea id="shortcodey" name="part_description" rows="15" cols="100"><?= htmlspecialchars($part->description ?? '') ?></textarea>
             <div id="autocomplete"></div>
         </label><br><br>
+
+        <?php if (!empty($part_moments)): ?>
+        <h2>Associated Moments</h2>
+        <ul>
+            <?php foreach ($part_moments as $moment): ?>
+                <li>
+                    <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>">
+                        <?= htmlspecialchars($moment->notes) ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+
         <label>
             Moments:<br>
             <select name="moment_ids[]" multiple size="10">
-                <?php foreach ($moments as $moment): ?>
-                    <option value="<?= $moment->moment_id ?>">
+                <?php
+                $part_moment_ids = array_map(fn($m) => $m->moment_id, $part_moments);
+                foreach ($all_moments as $moment): ?>
+                    <option value="<?= $moment->moment_id ?>" <?= in_array($moment->moment_id, $part_moment_ids) ? 'selected' : '' ?>>
                         <?= htmlspecialchars($moment->notes) ?>
                     </option>
                 <?php endforeach; ?>
