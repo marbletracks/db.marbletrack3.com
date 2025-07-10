@@ -6,6 +6,7 @@ trait HasShortcodes
 {
     abstract protected function getSELECTExactAlias(): string;
     abstract protected function getSELECTLikeAlias(): string;
+    abstract protected function getSELECTForShortcodeExpansion(): string;
     abstract protected function getTableAlias(): string;
     abstract protected function getAliasType(): string;     // e.g., "part" or "worker"
     abstract protected function getDb(): \Database\DbInterface;
@@ -82,7 +83,7 @@ trait HasShortcodes
         $tableAlias = $this->getTableAlias();
         $inClause = implode(',', $placeholders);
 
-        $sql = $this->getSELECTExactAlias() . " WHERE $tableAlias.slug IN ($inClause)";
+        $sql = $this->getSELECTForShortcodeExpansion() . " WHERE $tableAlias.slug IN ($inClause)";
 
         $res = $db->fetchResults($sql, 's' . str_repeat('s', count($params)), ['en', ...$params]);
 

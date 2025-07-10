@@ -60,6 +60,21 @@ LIMIT ?
 SQL;
     }
 
+    public function getSELECTForShortcodeExpansion(): string
+    {
+        return <<<SQL
+SELECT
+    w.worker_id AS id,
+    w.worker_alias AS alias,
+    w.slug,
+    wn.worker_name AS name
+FROM workers w
+LEFT JOIN worker_names wn
+  ON w.worker_id = wn.worker_id
+  AND wn.language_code = 'en'
+SQL;
+    }
+
     /**
      * written where we need [worker:alias]
      * @return string

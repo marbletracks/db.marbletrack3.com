@@ -61,6 +61,21 @@ LIMIT ?
 SQL;
     }
 
+    public function getSELECTForShortcodeExpansion(): string
+    {
+        return <<<SQL
+SELECT
+    p.part_id AS id,
+    p.part_alias AS alias,
+    p.slug,
+    pt.part_name AS name
+FROM parts p
+LEFT JOIN part_translations pt
+  ON p.part_id = pt.part_id
+  AND pt.language_code = 'en'
+SQL;
+    }
+
     /**
      * written where we need [part:alias]
      * @return string
