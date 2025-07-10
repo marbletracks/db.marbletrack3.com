@@ -61,7 +61,7 @@ LIMIT ?
 SQL;
     }
 
-    public function getSELECTForShortcodeExpansion(): string
+    public function getSELECTForShortcodeExpansion(string $langCode): string
     {
         return <<<SQL
 SELECT
@@ -72,7 +72,7 @@ SELECT
 FROM parts p
 LEFT JOIN part_translations pt
   ON p.part_id = pt.part_id
-  AND pt.language_code = 'en'
+  AND pt.language_code = "$langCode"
 SQL;
     }
 

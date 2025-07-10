@@ -6,7 +6,7 @@ trait HasShortcodes
 {
     abstract protected function getSELECTExactAlias(): string;
     abstract protected function getSELECTLikeAlias(): string;
-    abstract protected function getSELECTForShortcodeExpansion(): string;
+    abstract protected function getSELECTForShortcodeExpansion(string $langCode): string;
     abstract protected function getTableAlias(): string;
     abstract protected function getAliasType(): string;     // e.g., "part" or "worker"
     abstract protected function getDb(): \Database\DbInterface;
@@ -61,7 +61,7 @@ trait HasShortcodes
      * @param string $type "part" or "worker"
      * @return string
      */
-    public function expandShortcodes(string $text, string $type): string
+    public function expandShortcodes(string $text, string $type, string $langCode): string
     {
         // This regex finds all occurrences of [part:some_slug]
         preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
@@ -83,9 +83,9 @@ trait HasShortcodes
         $tableAlias = $this->getTableAlias();
         $inClause = implode(',', $placeholders);
 
-        $sql = $this->getSELECTForShortcodeExpansion() . " WHERE $tableAlias.slug IN ($inClause)";
+        $sql = $this->getSELECTForShortcodeExpansion($langCode) . " WHERE $tableAlias.slug IN ($inClause)";
 
-        $res = $db->fetchResults($sql, 's' . str_repeat('s', count($params)), ['en', ...$params]);
+        $res = $db->fetchResults($sql, str_repeat('s', count($params)), $params);
 
         $replacements = [];
         for ($i = 0; $i < $res->numRows(); $i++) {

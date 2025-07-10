@@ -63,8 +63,8 @@ function expandShortCodes(Database\DbInterface $mla_database, string $text, stri
 
     $worker_repo = new \Database\WorkersRepository($mla_database, $langCode);
     $parts_repo = new \Database\PartsRepository($mla_database, $langCode);
-    $expand_workers = $worker_repo->expandShortcodes($text, "worker");
-    $expand_parts = $parts_repo->expandShortcodes($expand_workers, "part");
+    $expand_workers = $worker_repo->expandShortcodes($text, "worker", $langCode);
+    $expand_parts = $parts_repo->expandShortcodes($expand_workers, "part", $langCode);
 
     return $expand_parts;
 }
