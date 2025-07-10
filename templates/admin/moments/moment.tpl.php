@@ -43,6 +43,11 @@
         </label><br><br>
 
         <label>
+            Moment Date:<br>
+            <input type="date" name="moment_date" value="<?= htmlspecialchars($moment->moment_date ?? '') ?>">
+        </label><br><br>
+
+        <label>
             Image URLs:<br>
             <div id="image-url-fields">
 <?php foreach ($moment->photos as $photo): ?>

@@ -44,7 +44,7 @@ class MomentRepository
     public function findById(int $moment_id): ?Moment
     {
         $results = $this->db->fetchResults(
-            "SELECT moment_id, frame_start, frame_end, phrase_id, notes FROM moments WHERE moment_id = ?",
+            "SELECT moment_id, frame_start, frame_end, phrase_id, take_id, notes, moment_date FROM moments WHERE moment_id = ?",
             'i',
             [$moment_id]
         );
@@ -61,7 +61,7 @@ class MomentRepository
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
-            "SELECT moment_id, frame_start, frame_end, phrase_id, notes FROM moments ORDER BY moment_id ASC"
+            "SELECT moment_id, frame_start, frame_end, phrase_id, take_id, notes, moment_date FROM moments ORDER BY moment_id ASC"
         );
 
         $moments = [];
@@ -74,16 +74,18 @@ class MomentRepository
         return $moments;
     }
 
-    public function insert(int $frame_start = null, int $frame_end = null, int $phrase_id = null, string $notes = null): int
+    public function insert(int $frame_start = null, int $frame_end = null, int $phrase_id = null, int $take_id = null, string $notes = null, string $moment_date = null): int
     {
         return $this->db->insertFromRecord(
             'moments',
-            'iiis',
+            'iiiiss',
             [
                 'frame_start' => $frame_start,
                 'frame_end' => $frame_end,
                 'phrase_id' => $phrase_id,
-                'notes' => $notes
+                'take_id' => $take_id,
+                'notes' => $notes,
+                'moment_date' => $moment_date
             ]
         );
     }
@@ -96,7 +98,8 @@ class MomentRepository
             frame_end: isset($row['frame_end']) ? (int)$row['frame_end'] : null,
             phrase_id: isset($row['phrase_id']) ? (int)$row['phrase_id'] : null,
             take_id: isset($row['take_id']) ? (int)$row['take_id'] : null,
-            notes: $row['notes'] ?? null
+            notes: $row['notes'] ?? null,
+            moment_date: $row['moment_date'] ?? null
         );
         $this->loadPhotos();  // defined in HasPhotos trait
         $moment->photos = $this->getPhotos();  // return an array of photos
