@@ -28,6 +28,17 @@
             <div id="autocomplete"></div>
         </label><br><br>
         <label>
+            Moments:<br>
+            <select name="moment_ids[]" multiple size="10">
+                <?php foreach ($moments as $moment): ?>
+                    <option value="<?= $moment->moment_id ?>">
+                        <?= htmlspecialchars($moment->notes) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </label><br><br>
+
+        <label>
             Image URLs:<br>
             <div id="image-url-fields">
 <?php if (!empty($part->photos)):foreach ($part->photos ?? [''] as $photo): ?>

@@ -303,6 +303,44 @@ SQL,
         }
     }
 
+    public function getMomentsForPart(int $part_id): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT moment_id FROM parts_2_moments WHERE part_id = ?",
+            'i',
+            [$part_id]
+        );
+
+        $moment_ids = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $moment_ids[] = (int) $results->data['moment_id'];
+        }
+
+        return $moment_ids;
+    }
+
+    public function saveMomentsForPart(int $part_id, array $moment_ids): void
+    {
+        // First, delete all existing moment associations for this part
+        $this->db->executeSQL(
+            "DELETE FROM parts_2_moments WHERE part_id = ?",
+            'i',
+            [$part_id]
+        );
+
+        // Now, insert the new associations
+        if (!empty($moment_ids)) {
+            foreach ($moment_ids as $moment_id) {
+                $this->db->executeSQL(
+                    "INSERT INTO parts_2_moments (part_id, moment_id) VALUES (?, ?)",
+                    'ii',
+                    [$part_id, (int)$moment_id]
+                );
+            }
+        }
+    }
+
     private function hydrate(array $row): Part
     {
         $part = new Part(
