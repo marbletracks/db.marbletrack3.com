@@ -114,7 +114,7 @@ class DBExistaroo {
 
             foreach ($schema_dirs as $schema_dir) {
                 $version = basename($schema_dir);
-                $sql_files = glob("$schema_dir/create_*.sql");
+                $sql_files = glob("$schema_dir/{create_,add_}*.sql", GLOB_BRACE);
 
                 foreach ($sql_files as $sql_path) {
                     echo "Applying schema file: $sql_path<br>";
@@ -171,7 +171,7 @@ class DBExistaroo {
 
             $version = basename($schema_dir);   // directory name in $base_dir, e.g. "02_workers"
             // print_rob($version, false);
-            $create_files = glob("$schema_dir/create_*.sql");
+            $create_files = glob("$schema_dir/{create_,add_}*.sql", GLOB_BRACE);
 
             foreach ($create_files as $file) {
                 $key = "$version/" . basename($file);
