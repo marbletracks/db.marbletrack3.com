@@ -331,11 +331,11 @@ SQL,
 
         // Now, insert the new associations
         if (!empty($moment_ids)) {
-            foreach ($moment_ids as $moment_id) {
+            foreach ($moment_ids as $index => $moment_id) {
                 $this->db->executeSQL(
-                    "INSERT INTO parts_2_moments (part_id, moment_id) VALUES (?, ?)",
-                    'ii',
-                    [$part_id, (int)$moment_id]
+                    "INSERT INTO parts_2_moments (part_id, moment_id, sort_order) VALUES (?, ?, ?)",
+                    'iii',
+                    [$part_id, (int)$moment_id, $index]
                 );
             }
         }

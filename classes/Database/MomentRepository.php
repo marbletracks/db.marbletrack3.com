@@ -81,7 +81,7 @@ class MomentRepository
             FROM moments m
             JOIN parts_2_moments p2m ON m.moment_id = p2m.moment_id
             WHERE p2m.part_id = ? 
-            ORDER BY m.moment_id ASC",
+            ORDER BY p2m.sort_order ASC",
             'i',
             [$part_id]
         );

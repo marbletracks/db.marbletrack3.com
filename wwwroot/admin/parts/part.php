@@ -25,7 +25,8 @@ if ($submitted) {
     $name = trim($_POST['part_name'] ?? '');
     $description = trim($_POST['part_description'] ?? '');
     $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
-    $moment_ids = $_POST['moment_ids'] ?? [];
+    $moment_ids_str = $_POST['moment_ids'] ?? '';
+    $moment_ids = $moment_ids_str ? explode(',', $moment_ids_str) : [];
 
     if ($alias === '') {
         $errors[] = "Alias is required.";

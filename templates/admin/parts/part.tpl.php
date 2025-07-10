@@ -30,27 +30,33 @@
 
         <?php if (!empty($part_moments)): ?>
         <h2>Associated Moments</h2>
-        <ul>
+        <ul id="sortable-moments">
             <?php foreach ($part_moments as $moment): ?>
-                <li>
+                <li data-moment-id="<?= $moment->moment_id ?>">
                     <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>">
                         <?= htmlspecialchars($moment->notes) ?>
                     </a>
+                    <button type="button" class="remove-moment">Remove</button>
                 </li>
             <?php endforeach; ?>
         </ul>
         <?php endif; ?>
 
+        <input type="hidden" name="moment_ids" id="moment_ids_hidden">
+
         <label>
-            Moments:<br>
-            <select name="moment_ids[]" multiple size="10">
+            Add Moment:<br>
+            <select id="add-moment-select">
+                <option value="">Select a moment to add</option>
                 <?php
                 $part_moment_ids = array_map(fn($m) => $m->moment_id, $part_moments);
-                foreach ($all_moments as $moment): ?>
-                    <option value="<?= $moment->moment_id ?>" <?= in_array($moment->moment_id, $part_moment_ids) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($moment->notes) ?>
-                    </option>
-                <?php endforeach; ?>
+                foreach ($all_moments as $moment):
+                    if (!in_array($moment->moment_id, $part_moment_ids)): ?>
+                        <option value="<?= $moment->moment_id ?>" data-notes="<?= htmlspecialchars($moment->notes) ?>">
+                            <?= htmlspecialchars($moment->notes) ?>
+                        </option>
+                    <?php endif;
+                endforeach; ?>
             </select>
         </label><br><br>
 
@@ -149,3 +155,121 @@
 </script>
 <link rel="stylesheet" href="/admin/css/autocomplete.css">
 <script src="/admin/js/autocomplete.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const sortableList = document.getElementById('sortable-moments');
+    let draggedItem = null;
+
+    if (sortableList) {
+        sortableList.addEventListener('dragstart', e => {
+            draggedItem = e.target;
+            setTimeout(() => {
+                e.target.style.display = 'none';
+            }, 0);
+        });
+
+        sortableList.addEventListener('dragend', e => {
+            setTimeout(() => {
+                draggedItem.style.display = '';
+                draggedItem = null;
+            }, 0);
+            updateHiddenInput();
+        });
+
+        sortableList.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(sortableList, e.clientY);
+            if (afterElement == null) {
+                sortableList.appendChild(draggedItem);
+            } else {
+                sortableList.insertBefore(draggedItem, afterElement);
+            }
+        });
+    }
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // Handle removing moments
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-moment')) {
+            const listItem = e.target.closest('li');
+            const momentId = listItem.dataset.momentId;
+            const notes = listItem.querySelector('a').textContent.trim();
+            
+            listItem.remove();
+
+            // Add back to the dropdown
+            const select = document.getElementById('add-moment-select');
+            const option = document.createElement('option');
+            option.value = momentId;
+            option.dataset.notes = notes;
+            option.textContent = notes;
+            select.appendChild(option);
+            updateHiddenInput();
+        }
+    });
+
+    // Handle adding moments
+    const addMomentSelect = document.getElementById('add-moment-select');
+    if (addMomentSelect) {
+        addMomentSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (!selectedOption.value) return;
+
+            const momentId = selectedOption.value;
+            const notes = selectedOption.dataset.notes;
+
+            const newLi = document.createElement('li');
+            newLi.dataset.momentId = momentId;
+            newLi.draggable = true;
+            newLi.innerHTML = `
+                <a href="/admin/moments/moment.php?id=${momentId}">${notes}</a>
+                <button type="button" class="remove-moment">Remove</button>
+            `;
+
+            if (!sortableList) {
+                const newSortableList = document.createElement('ul');
+                newSortableList.id = 'sortable-moments';
+                const h2 = document.createElement('h2');
+                h2.textContent = 'Associated Moments';
+                const form = document.querySelector('form');
+                form.insertBefore(newSortableList, addMomentSelect.parentElement);
+                form.insertBefore(h2, newSortableList);
+            }
+            
+            document.getElementById('sortable-moments').appendChild(newLi);
+            selectedOption.remove();
+            updateHiddenInput();
+        });
+    }
+
+    // Update hidden input with sorted moment IDs before form submission
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', updateHiddenInput);
+    }
+
+    function updateHiddenInput() {
+        const momentIds = [];
+        const momentList = document.getElementById('sortable-moments');
+        if(momentList) {
+            momentList.querySelectorAll('li').forEach(item => {
+                momentIds.push(item.dataset.momentId);
+            });
+        }
+        document.getElementById('moment_ids_hidden').value = momentIds.join(',');
+    }
+});
+</script>
