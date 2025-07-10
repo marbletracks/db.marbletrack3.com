@@ -4,7 +4,7 @@
 - **Marble Track 3** is a long-term stop motion animation project.
 - Started in **2017** and paused in 2022, active again in 2025.
 - Filmed using **Dragonframe**, livestreamed with **OBS**.
-- Characters (mostly pipe cleaner figures) build a physical marble track.
+- Workers (mostly pipe cleaner figures) build a physical marble track.
 - Thousands of frames are organized into **snippets**, which will be compiled into a full-length movie.
 
 ---
@@ -19,7 +19,7 @@
 ---
 
 ## 🌐 Website & Data Architecture Goals
-- Each **part** has one or more associated **snippets** showing its construction by specific **characters**.
+- Each **part** has one or more associated **phrases** showing its construction by specific **Workers**.
 - Action logs look like:
 
 ```
