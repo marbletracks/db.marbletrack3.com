@@ -1,0 +1,35 @@
+#sortable-moments {
+    list-style-type: none;
+    padding: 0;
+}
+#sortable-moments li {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+#sortable-moments li.dragging {
+    opacity: 0.5;
+}
+.drag-handle {
+    cursor: grab;
+    padding: 0 10px;
+    color: #666;
+    font-weight: bold;
+    user-select: none;
+}
+.drag-handle:active {
+    cursor: grabbing;
+}
+.remove-moment {
+    margin-left: auto;
+    background: #dc3232;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+}
