@@ -30,13 +30,21 @@
 
         <?php if (!empty($part_moments)): ?>
         <h2>Associated Moments</h2>
+        <h4>(Oldest on top)</h4>
         <ul id="sortable-moments">
             <?php foreach ($part_moments as $moment): ?>
                 <li data-moment-id="<?= $moment->moment_id ?>" draggable="true">
                     <div class="drag-handle">⋮⋮</div>
-                    <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>">
-                        <?= htmlspecialchars($moment->notes) ?>
-                    </a>
+                    <?php if ($moment->moment_date): ?>
+                        (<?= htmlspecialchars($moment->moment_date) ?>)&nbsp;
+                    <?php else: // ($moment->moment_date): ?>
+                        (<?= "--/--/----" ?>)&nbsp;
+                    <?php endif; // ($moment->moment_date): ?>
+                    <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>"><?= htmlspecialchars($moment->notes) ?></a>
+                    <?php if ($moment->frame_start || $moment->frame_end): ?>
+                        &nbsp; (Frames: <?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>)
+                    <?php endif; ?>
+
                     <button type="button" class="remove-moment">Remove</button>
                 </li>
             <?php endforeach; ?>
@@ -53,8 +61,18 @@
                 $part_moment_ids = array_map(fn($m) => $m->moment_id, $part_moments);
                 foreach ($all_moments as $moment):
                     if (!in_array($moment->moment_id, $part_moment_ids)): ?>
-                        <option value="<?= $moment->moment_id ?>" data-notes="<?= htmlspecialchars($moment->notes) ?>">
+                        <option value="<?= $moment->moment_id ?>"
+                                data-notes="<?= htmlspecialchars($moment->notes) ?>"
+                                data-frame-start="<?= $moment->frame_start ?>"
+                                data-frame-end="<?= $moment->frame_end ?>"
+                                data-moment-date="<?= $moment->moment_date ?>">
                             <?= htmlspecialchars($moment->notes) ?>
+                            <?php if ($moment->frame_start || $moment->frame_end): ?>
+                                (Frames: <?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>)
+                            <?php endif; ?>
+                            <?php if ($moment->moment_date): ?>
+                                (<?= htmlspecialchars($moment->moment_date) ?>)
+                            <?php endif; ?>
                         </option>
                     <?php endif;
                 endforeach; ?>
@@ -196,22 +214,35 @@
 <script src="/admin/js/autocomplete.js" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM fully loaded and parsed');
     const sortableList = document.getElementById('sortable-moments');
     let draggedItem = null;
 
     if (sortableList) {
-        sortableList.addEventListener('dragstart', e => {
-            // Only allow dragging from the handle
+        console.log('Sortable list found', sortableList);
+        // We listen for `mousedown` on the handle to initiate a drag.
+        sortableList.addEventListener('mousedown', e => {
             if (e.target.classList.contains('drag-handle')) {
-                draggedItem = e.target.closest('li');
-                draggedItem.classList.add('dragging');
-            } else {
-                e.preventDefault();
+                console.log('Mousedown on a drag handle');
+                // The `draggable` attribute is on the parent `li`.
+                // We don't need to do anything here, the browser will initiate the drag on the `li`.
             }
         });
 
+        sortableList.addEventListener('dragstart', e => {
+            // The target of the dragstart event is the `li` element itself.
+            draggedItem = e.target;
+            // It's good practice to add a class to the dragged item for styling.
+            setTimeout(() => {
+                draggedItem.classList.add('dragging');
+            }, 0);
+            console.log('Drag started:', draggedItem);
+        });
+
         sortableList.addEventListener('dragend', e => {
+            console.log('Drag ended');
             if (draggedItem) {
+                // Clean up the class.
                 draggedItem.classList.remove('dragging');
                 draggedItem = null;
                 updateHiddenInput();
@@ -219,9 +250,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         sortableList.addEventListener('dragover', e => {
+            // This is necessary to allow dropping.
             e.preventDefault();
             if (draggedItem) {
                 const afterElement = getDragAfterElement(sortableList, e.clientY);
+                // console.log('Dragging over, after element:', afterElement); // This can be noisy
                 if (afterElement == null) {
                     sortableList.appendChild(draggedItem);
                 } else {
@@ -229,6 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
+    } else {
+        console.log('Sortable list not found');
     }
 
     function getDragAfterElement(container, y) {
@@ -249,9 +284,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-moment')) {
             const listItem = e.target.closest('li');
+            console.log('Removing moment:', listItem.dataset.momentId);
             const momentId = listItem.dataset.momentId;
             const notes = listItem.querySelector('a').textContent.trim();
-            
+
             listItem.remove();
 
             // Add back to the dropdown
@@ -274,18 +310,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const momentId = selectedOption.value;
             const notes = selectedOption.dataset.notes;
+            const frameStart = selectedOption.dataset.frameStart;
+            const frameEnd = selectedOption.dataset.frameEnd;
+            const momentDate = selectedOption.dataset.momentDate;
+            console.log('Adding moment:', momentId);
 
             const newLi = document.createElement('li');
             newLi.dataset.momentId = momentId;
             newLi.draggable = true;
+
+            let frameHTML = '';
+            if (frameStart || frameEnd) {
+                frameHTML = ` (Frames: ${frameStart || '?'} - ${frameEnd || '?'})`;
+            }
+            let dateHTML = '';
+            if (momentDate) {
+                dateHTML = ` (${momentDate})`;
+            } else {
+                dateHTML = ` (--/--/----)`;
+            }
+
             newLi.innerHTML = `
                 <div class="drag-handle">⋮⋮</div>
-                <a href="/admin/moments/moment.php?id=${momentId}">${notes}</a>
+                ${dateHTML} <a href="/admin/moments/moment.php?id=${momentId}">${notes}</a> ${frameHTML}
                 <button type="button" class="remove-moment">Remove</button>
             `;
 
             let list = document.getElementById('sortable-moments');
             if (!list) {
+                console.log('Creating sortable list because it does not exist.');
                 list = document.createElement('ul');
                 list.id = 'sortable-moments';
                 const h2 = document.createElement('h2');
@@ -294,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 form.insertBefore(h2, addMomentSelect.parentElement);
                 form.insertBefore(list, h2.nextSibling);
             }
-            
+
             list.appendChild(newLi);
             selectedOption.remove();
             updateHiddenInput();
@@ -316,6 +369,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
         document.getElementById('moment_ids_hidden').value = momentIds.join(',');
+        console.log('Updated hidden input:', momentIds.join(','));
     }
 });
 </script>
+
