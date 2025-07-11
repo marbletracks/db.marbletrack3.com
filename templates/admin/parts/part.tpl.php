@@ -32,7 +32,8 @@
         <h2>Associated Moments</h2>
         <ul id="sortable-moments">
             <?php foreach ($part_moments as $moment): ?>
-                <li data-moment-id="<?= $moment->moment_id ?>">
+                <li data-moment-id="<?= $moment->moment_id ?>" draggable="true">
+                    <div class="drag-handle">⋮⋮</div>
                     <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>">
                         <?= htmlspecialchars($moment->notes) ?>
                     </a>
@@ -59,6 +60,44 @@
                 endforeach; ?>
             </select>
         </label><br><br>
+
+        <style>
+            #sortable-moments {
+                list-style-type: none;
+                padding: 0;
+            }
+            #sortable-moments li {
+                display: flex;
+                align-items: center;
+                margin: 5px 0;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background: #f9f9f9;
+            }
+            #sortable-moments li.dragging {
+                opacity: 0.5;
+            }
+            .drag-handle {
+                cursor: grab;
+                padding: 0 10px;
+                color: #666;
+                font-weight: bold;
+                user-select: none;
+            }
+            .drag-handle:active {
+                cursor: grabbing;
+            }
+            .remove-moment {
+                margin-left: auto;
+                background: #dc3232;
+                color: white;
+                border: none;
+                padding: 5px 8px;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+        </style>
 
         <label>
             Image URLs:<br>
@@ -162,27 +201,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (sortableList) {
         sortableList.addEventListener('dragstart', e => {
-            draggedItem = e.target;
-            setTimeout(() => {
-                e.target.style.display = 'none';
-            }, 0);
+            // Only allow dragging from the handle
+            if (e.target.classList.contains('drag-handle')) {
+                draggedItem = e.target.closest('li');
+                draggedItem.classList.add('dragging');
+            } else {
+                e.preventDefault();
+            }
         });
 
         sortableList.addEventListener('dragend', e => {
-            setTimeout(() => {
-                draggedItem.style.display = '';
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
                 draggedItem = null;
-            }, 0);
-            updateHiddenInput();
+                updateHiddenInput();
+            }
         });
 
         sortableList.addEventListener('dragover', e => {
             e.preventDefault();
-            const afterElement = getDragAfterElement(sortableList, e.clientY);
-            if (afterElement == null) {
-                sortableList.appendChild(draggedItem);
-            } else {
-                sortableList.insertBefore(draggedItem, afterElement);
+            if (draggedItem) {
+                const afterElement = getDragAfterElement(sortableList, e.clientY);
+                if (afterElement == null) {
+                    sortableList.appendChild(draggedItem);
+                } else {
+                    sortableList.insertBefore(draggedItem, afterElement);
+                }
             }
         });
     }
@@ -235,21 +279,23 @@ document.addEventListener('DOMContentLoaded', function () {
             newLi.dataset.momentId = momentId;
             newLi.draggable = true;
             newLi.innerHTML = `
+                <div class="drag-handle">⋮⋮</div>
                 <a href="/admin/moments/moment.php?id=${momentId}">${notes}</a>
                 <button type="button" class="remove-moment">Remove</button>
             `;
 
-            if (!sortableList) {
-                const newSortableList = document.createElement('ul');
-                newSortableList.id = 'sortable-moments';
+            let list = document.getElementById('sortable-moments');
+            if (!list) {
+                list = document.createElement('ul');
+                list.id = 'sortable-moments';
                 const h2 = document.createElement('h2');
                 h2.textContent = 'Associated Moments';
                 const form = document.querySelector('form');
-                form.insertBefore(newSortableList, addMomentSelect.parentElement);
-                form.insertBefore(h2, newSortableList);
+                form.insertBefore(h2, addMomentSelect.parentElement);
+                form.insertBefore(list, h2.nextSibling);
             }
             
-            document.getElementById('sortable-moments').appendChild(newLi);
+            list.appendChild(newLi);
             selectedOption.remove();
             updateHiddenInput();
         });
