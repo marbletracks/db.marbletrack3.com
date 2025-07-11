@@ -55,7 +55,8 @@
                 <option value="">Select a moment to add</option>
                 <?php
                 $worker_moment_ids = $worker ? array_map(fn($m) => $m->moment_id, $worker->moments) : [];
-                foreach ($all_moments as $moment):
+
+                foreach ($prioritized_moments as $moment):
                     if (!in_array($moment->moment_id, $worker_moment_ids)): ?>
                         <option value="<?= $moment->moment_id ?>"
                                 data-notes="<?= htmlspecialchars($moment->notes) ?>"
@@ -71,7 +72,30 @@
                             <?php endif; ?>
                         </option>
                     <?php endif;
-                endforeach; ?>
+                endforeach;
+
+                if (!empty($prioritized_moments) && !empty($other_moments)) {
+                    echo '<option disabled>--------------------</option>';
+                }
+
+                foreach ($other_moments as $moment):
+                    if (!in_array($moment->moment_id, $worker_moment_ids)): ?>
+                        <option value="<?= $moment->moment_id ?>"
+                                data-notes="<?= htmlspecialchars($moment->notes) ?>"
+                                data-frame-start="<?= $moment->frame_start ?>"
+                                data-frame-end="<?= $moment->frame_end ?>"
+                                data-moment-date="<?= $moment->moment_date ?>">
+                            <?= htmlspecialchars($moment->notes) ?>
+                            <?php if ($moment->frame_start || $moment->frame_end): ?>
+                                (Frames: <?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>)
+                            <?php endif; ?>
+                            <?php if ($moment->moment_date): ?>
+                                (<?= htmlspecialchars($moment->moment_date) ?>)
+                            <?php endif; ?>
+                        </option>
+                    <?php endif;
+                endforeach;
+                ?>
             </select>
         </label><br><br>
 

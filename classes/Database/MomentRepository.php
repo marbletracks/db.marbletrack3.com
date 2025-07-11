@@ -74,6 +74,27 @@ class MomentRepository
         return $moments;
     }
 
+    public function findAllForEntity(string $name, string $alias): array
+    {
+        $allMoments = $this->findAll();
+        $prioritized = [];
+        $other = [];
+
+        foreach ($allMoments as $moment) {
+            $note = strtolower($moment->notes ?? '');
+            $name = strtolower($name);
+            $alias = strtolower($alias);
+
+            if (str_contains($note, $name) || str_contains($note, $alias)) {
+                $prioritized[] = $moment;
+            } else {
+                $other[] = $moment;
+            }
+        }
+
+        return [$prioritized, $other];
+    }
+
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(

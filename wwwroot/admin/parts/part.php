@@ -17,8 +17,14 @@ $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 $part_id = (int) ($_GET['id'] ?? 0);
 $part = $part_id > 0 ? $repo->findById($part_id) : null;
-$part_moments = $part_id > 0 ? $moment_repo->findByPartId($part_id) : [];
-$all_moments = $moment_repo->findAll();
+
+if ($part) {
+    [$prioritized_moments, $other_moments] = $moment_repo->findAllForEntity($part->name, $part->part_alias);
+} else {
+    $prioritized_moments = [];
+    $other_moments = $moment_repo->findAll();
+}
+
 
 if ($submitted) {
     $alias = trim($_POST['part_alias'] ?? '');
@@ -61,8 +67,8 @@ $page = new \Template($config);
 $page->setTemplate("admin/parts/part.tpl.php");
 $page->set("errors", $errors);
 $page->set("part", $part);
-$page->set("part_moments", $part_moments);
-$page->set("all_moments", $all_moments);
+$page->set("prioritized_moments", $prioritized_moments);
+$page->set("other_moments", $other_moments);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);

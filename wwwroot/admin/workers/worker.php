@@ -17,7 +17,13 @@ $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 $worker_id = (int) ($_GET['id'] ?? 0);
 $worker = $worker_id > 0 ? $repo->findById($worker_id) : null;
-$all_moments = $moment_repo->findAll();
+
+if ($worker) {
+    [$prioritized_moments, $other_moments] = $moment_repo->findAllForEntity($worker->name, $worker->worker_alias);
+} else {
+    $prioritized_moments = [];
+    $other_moments = $moment_repo->findAll();
+}
 
 if ($submitted) {
     $worker_alias = trim($_POST['worker_alias'] ?? '');
@@ -65,7 +71,8 @@ $page = new \Template($config);
 $page->setTemplate("admin/workers/worker.tpl.php");
 $page->set("errors", $errors);
 $page->set("worker", $worker);
-$page->set("all_moments", $all_moments);
+$page->set("prioritized_moments", $prioritized_moments);
+$page->set("other_moments", $other_moments);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);
