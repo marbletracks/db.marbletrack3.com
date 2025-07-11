@@ -74,6 +74,28 @@ class MomentRepository
         return $moments;
     }
 
+    public function findByPartId(int $part_id): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date 
+            FROM moments m
+            JOIN parts_2_moments p2m ON m.moment_id = p2m.moment_id
+            WHERE p2m.part_id = ? 
+            ORDER BY p2m.sort_order ASC",
+            'i',
+            [$part_id]
+        );
+
+        $moments = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $this->moment_id = (int) $results->data['moment_id']; // Set the moment_id for HasPhotos
+            $moments[] = $this->hydrate($results->data);
+        }
+
+        return $moments;
+    }
+
     public function insert(int $frame_start = null, int $frame_end = null, int $phrase_id = null, int $take_id = null, string $notes = null, string $moment_date = null): int
     {
         return $this->db->insertFromRecord(

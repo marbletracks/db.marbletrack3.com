@@ -114,7 +114,9 @@ class DBExistaroo {
 
             foreach ($schema_dirs as $schema_dir) {
                 $version = basename($schema_dir);
-                $sql_files = glob("$schema_dir/{create_,add_}*.sql", GLOB_BRACE);
+                $create_files = glob("$schema_dir/create_*.sql");
+                $add_files = glob("$schema_dir/add_*.sql");
+                $sql_files = array_merge($create_files, $add_files);
 
                 foreach ($sql_files as $sql_path) {
                     echo "Applying schema file: $sql_path<br>";
@@ -171,9 +173,11 @@ class DBExistaroo {
 
             $version = basename($schema_dir);   // directory name in $base_dir, e.g. "02_workers"
             // print_rob($version, false);
-            $create_files = glob("$schema_dir/{create_,add_}*.sql", GLOB_BRACE);
+            $create_files = glob("$schema_dir/create_*.sql");
+            $add_files = glob("$schema_dir/add_*.sql");
+            $sql_files = array_merge($create_files, $add_files);
 
-            foreach ($create_files as $file) {
+            foreach ($sql_files as $file) {
                 $key = "$version/" . basename($file);
                 if (!in_array($key, $applied)) {
                     $pending[] = $key;
