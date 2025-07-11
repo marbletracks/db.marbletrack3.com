@@ -43,13 +43,13 @@ if ($submitted) {
             // save photos via HasPhotos
             $repo->setPartId(part_id: $part->part_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
-            $repo->saveMomentsForPart(part_id: $part->part_id, moment_ids: $moment_ids);
+            $repo->saveMoments(moment_ids: $moment_ids);
         } else {
             $newId = $repo->insert($alias, $name, $description);
             // now save photos
             $repo->setPartId($newId);
             $repo->savePhotosFromUrls($image_urls);
-            $repo->saveMomentsForPart(part_id: $newId, moment_ids: $moment_ids);
+            $repo->saveMoments(moment_ids: $moment_ids);
         }
 
         header("Location: /admin/parts/index.php");

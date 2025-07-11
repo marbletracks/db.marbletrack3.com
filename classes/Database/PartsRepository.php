@@ -3,12 +3,14 @@ namespace Database;
 
 use Database\DbInterface;
 use Domain\HasPhotos;
+use Domain\HasMoments;
 use Domain\HasShortcodes;
 use Physical\Part;
 
 class PartsRepository
 {
     use HasPhotos;
+    use HasMoments;
     use HasShortcodes;
 
     private DbInterface $db;
@@ -97,6 +99,11 @@ SQL;
     public function getPhotoLinkingTable(): string
     {
         return $this->photoLinkingTable;
+    }
+
+    public function getMomentLinkingTable(): string
+    {
+        return 'parts_2_moments';
     }
 
     public function getPrimaryKeyColumn(): string
@@ -210,7 +217,7 @@ SQL,
 SELECT p.part_id, p.part_alias, t.part_name, t.part_description
 FROM parts p
 JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
-WHERE p.part_alias REGEXP '^[0-9]{1,2}POSS$'
+WHERE p.part_alias REGEXP '^[0-9]{1,2}POSS'
 ORDER BY p.part_id DESC
 SQL,
             's',
@@ -303,44 +310,6 @@ SQL,
         }
     }
 
-    public function getMomentsForPart(int $part_id): array
-    {
-        $results = $this->db->fetchResults(
-            "SELECT moment_id FROM parts_2_moments WHERE part_id = ?",
-            'i',
-            [$part_id]
-        );
-
-        $moment_ids = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $moment_ids[] = (int) $results->data['moment_id'];
-        }
-
-        return $moment_ids;
-    }
-
-    public function saveMomentsForPart(int $part_id, array $moment_ids): void
-    {
-        // First, delete all existing moment associations for this part
-        $this->db->executeSQL(
-            "DELETE FROM parts_2_moments WHERE part_id = ?",
-            'i',
-            [$part_id]
-        );
-
-        // Now, insert the new associations
-        if (!empty($moment_ids)) {
-            foreach ($moment_ids as $index => $moment_id) {
-                $this->db->executeSQL(
-                    "INSERT INTO parts_2_moments (part_id, moment_id, sort_order) VALUES (?, ?, ?)",
-                    'iii',
-                    [$part_id, (int)$moment_id, $index]
-                );
-            }
-        }
-    }
-
     private function hydrate(array $row): Part
     {
         $part = new Part(
@@ -356,6 +325,10 @@ SQL,
         // Load and attach photos via HasPhotos trait
         $this->loadPhotos();
         $part->photos = $this->getPhotos();
+
+        // Load and attach moments via HasMoments trait
+        $this->loadMoments();
+        $part->moments = $this->getMoments();
 
         return $part;
     }
