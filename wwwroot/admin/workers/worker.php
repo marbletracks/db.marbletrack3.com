@@ -8,19 +8,24 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 use Database\WorkersRepository;
+use Database\MomentRepository;
 
 $repo = new WorkersRepository($mla_database, "en");
+$moment_repo = new MomentRepository($mla_database);
 $errors = [];
 $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 $worker_id = (int) ($_GET['id'] ?? 0);
 $worker = $worker_id > 0 ? $repo->findById($worker_id) : null;
+$all_moments = $moment_repo->findAll();
 
 if ($submitted) {
     $worker_alias = trim($_POST['worker_alias'] ?? '');
     $name = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
+    $moment_ids_str = $_POST['moment_ids'] ?? '';
+    $moment_ids = $moment_ids_str ? explode(',', $moment_ids_str) : [];
 
     if ($worker_alias === '') {
         $errors[] = "Alias is required.";
@@ -37,9 +42,9 @@ if ($submitted) {
                 name: $name,
                 description: $description
             );
-            // should probably be in WorkersRepository
             $repo->setWorkerId($worker_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->saveMoments(moment_ids: $moment_ids);
         } else {
             $worker_id = $repo->insert(
                 alias: $worker_alias,
@@ -48,6 +53,7 @@ if ($submitted) {
             );
             $repo->setWorkerId($worker_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->saveMoments(moment_ids: $moment_ids);
         }
 
         header("Location: /admin/workers/index.php");
@@ -59,6 +65,7 @@ $page = new \Template($config);
 $page->setTemplate("admin/workers/worker.tpl.php");
 $page->set("errors", $errors);
 $page->set("worker", $worker);
+$page->set("all_moments", $all_moments);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);

@@ -3,12 +3,14 @@ namespace Database;
 
 use Database\DbInterface;
 use Domain\HasPhotos;
+use Domain\HasMoments;
 use Domain\HasShortcodes;
 use Physical\Worker;
 
 class WorkersRepository
 {
     use HasPhotos;
+    use HasMoments;
     use HasShortcodes;
     private DbInterface $db;
     private string $langCode;
@@ -96,6 +98,10 @@ SQL;
     public function getPhotoLinkingTable(): string
     {
         return $this->photoLinkingTable;
+    }
+    public function getMomentLinkingTable(): string
+    {
+        return 'workers_2_moments';
     }
     public function getPrimaryKeyColumn(): string
     {
@@ -262,6 +268,9 @@ SQL,
         );
         $this->loadPhotos();  // defined in HasPhotos trait
         $worker->photos = $this->getPhotos(); // Get photos from HasPhotos trait
+
+        $this->loadMoments();
+        $worker->moments = $this->getMoments();
         return $worker;
     }
 }

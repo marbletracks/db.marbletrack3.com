@@ -7,6 +7,9 @@ namespace Physical;
 class Worker
 {
     public string $slug;
+    public array $photos = [];
+    public array $moments = [];
+
     public function __construct(
         public int $worker_id,
         public string $worker_alias,
