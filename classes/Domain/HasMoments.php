@@ -51,7 +51,7 @@ trait HasMoments
                 FROM moments m
                 JOIN moment_translations mt ON m.moment_id = mt.moment_id
                 WHERE mt.perspective_entity_type = ? AND mt.perspective_entity_id = ?
-                ORDER BY m.moment_id ASC";
+                ORDER BY m.take_id ASC, m.frame_start ASC";
         $types = 'si';
         $params = [$perspective_type, $perspective_id];
 
