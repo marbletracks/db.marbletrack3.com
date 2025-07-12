@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            // Update live preview
+            // Update live preview (with HTML)
             previewDiv.innerHTML = data.expanded_text || '';
 
             // Update perspective fields
@@ -119,21 +119,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 data.perspectives.forEach(p => {
                     const fieldId = `perspective-${p.type}-${p.id}`;
-
+                    
                     const label = document.createElement('label');
                     label.style.display = 'block';
                     label.style.marginTop = '10px';
                     label.textContent = `As ${p.name} (${p.type}):`;
-
+                    
                     const textarea = document.createElement('textarea');
                     textarea.name = `perspectives[${p.type}][${p.id}]`;
                     textarea.id = fieldId;
                     textarea.rows = 3;
                     textarea.style.width = '100%';
 
-                    // Pre-populate with expanded text, but respect manual edits
+                    // Pre-populate with the raw shortcode text, but respect manual edits
                     if (perspectiveValues[fieldId] === undefined) {
-                        textarea.value = data.expanded_text;
+                        textarea.value = text; // Use raw text from main notes field
                     } else {
                         textarea.value = perspectiveValues[fieldId];
                     }
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     notesTextarea.addEventListener('input', function() {
         clearTimeout(debounceTimer);
         // Clear saved values when the source text changes
-        perspectiveValues = {};
+        perspectiveValues = {}; 
         debounceTimer = setTimeout(updatePreviewAndPerspectives, 300);
     });
 
