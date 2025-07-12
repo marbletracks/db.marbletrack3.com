@@ -29,7 +29,15 @@ try {
     $expanded_with_workers = $worker_repo->expandShortcodes($text, "worker", $langCode);
     $fully_expanded = $parts_repo->expandShortcodes($expanded_with_workers, "part", $langCode);
 
-    echo json_encode(['expanded_text' => $fully_expanded]);
+    // Extract the perspectives
+    $worker_perspectives = $worker_repo->extractShortcodes($text, "worker", $langCode);
+    $part_perspectives = $parts_repo->extractShortcodes($text, "part", $langCode);
+    $all_perspectives = array_merge($worker_perspectives, $part_perspectives);
+
+    echo json_encode([
+        'expanded_text' => $fully_expanded,
+        'perspectives' => $all_perspectives
+    ]);
 
 } catch (Exception $e) {
     header('HTTP/1.1 500 Internal Server Error');
