@@ -50,7 +50,7 @@ if ($submitted) {
             );
             $repo->setWorkerId($worker_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
-            $repo->saveMoments(moment_ids: $moment_ids);
+            $repo->syncMomentsFromTranslations(worker_id: $worker_id, submitted_moment_ids: $moment_ids);
         } else {
             $worker_id = $repo->insert(
                 alias: $worker_alias,
@@ -59,7 +59,7 @@ if ($submitted) {
             );
             $repo->setWorkerId($worker_id);
             $repo->savePhotosFromUrls(urls: $image_urls);
-            $repo->saveMoments(moment_ids: $moment_ids);
+            $repo->syncMomentsFromTranslations(worker_id: $worker_id, submitted_moment_ids: $moment_ids);
         }
 
         header("Location: /admin/workers/index.php");

@@ -101,8 +101,34 @@ SQL;
     }
     public function getMomentLinkingTable(): string
     {
-        return 'workers_2_moments';
+        // This is deprecated for Workers, as we now use moment_translations as the source of truth.
+        return '';
     }
+
+    public function syncMomentsFromTranslations(int $worker_id, array $submitted_moment_ids): void
+    {
+        $moment_repo = new MomentRepository($this->getDb());
+
+        // Get current moments based on existing translations for this worker
+        $translations = $moment_repo->findTranslations($worker_id);
+        $current_moment_ids = isset($translations['worker']) ? array_keys($translations['worker']) : [];
+
+        // Cast submitted IDs to integers
+        $submitted_moment_ids = array_map('intval', $submitted_moment_ids);
+
+        // Find moments to add (present in submitted, but not in current)
+        $moments_to_add = array_diff($submitted_moment_ids, $current_moment_ids);
+        foreach ($moments_to_add as $moment_id) {
+            $moment_repo->createTranslationIfNotExists($moment_id, $worker_id, 'worker');
+        }
+
+        // Find moments to remove (present in current, but not in submitted)
+        $moments_to_remove = array_diff($current_moment_ids, $submitted_moment_ids);
+        foreach ($moments_to_remove as $moment_id) {
+            $moment_repo->deleteTranslation($moment_id, $worker_id, 'worker');
+        }
+    }
+
     public function getPrimaryKeyColumn(): string
     {
         return $this->primaryKeyColumn;
