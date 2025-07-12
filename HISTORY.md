@@ -27,32 +27,38 @@ We will implement a system of perspective-based translations for each Moment.
 
 This project will be broken down into the following steps.
 
-### Step 1: Create the `moment_translations` Table
+### Step 1: Fix the Moment Admin Page
+The admin page for editing a Moment (`/admin/moments/moment.php`) must handle shortcodes like Parts and Workers do.
+
+* Add JS to handle **Shortcode Expansion:** As the admin types in the main `notes` field, the JS allows easily replace `rg` with `[worker:reversible-guy]` which can be expanded into a link on the frontend.
+
+### Step 2: Create the `moment_translations` Table
 First, we need to create the new database table to store the translations. A SQL script will be created and executed.
 
-### Step 2: Enhance the Moment Admin Page
+### Step 3: Enhance the Moment Admin Page
 The admin page for editing a Moment (`/admin/moments/moment.php`) will be updated to facilitate the new workflow.
 
-*   **Live Shortcode Expansion:** As the admin types in the main `notes` field, a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the shortcodes.
+* a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the expanded shortcodes.     The logic for this has already been written somewhere (called by frontend generator script)
+
 *   **Dynamic Perspective Fields:** Based on the shortcodes entered in the `notes` field, the page will dynamically generate a text area for each unique Worker and Part mentioned.
 *   **Pre-populate Perspective Fields:** Initially, these new text areas will be automatically filled with the expanded shortcode text, providing a starting point for the admin to rewrite from that entity's perspective.
 
-### Step 3: Implement Save Logic
+### Step 4: Implement Save Logic
 When the admin saves the Moment form:
 *   The main `notes` field is saved to the `moments` table as usual.
 *   The content of each perspective field is saved into the `moment_translations` table, linking it to the correct moment and entity.
 
-### Step 4: Update the Frontend Site Generator
+### Step 5: Update the Frontend Site Generator
 The static site generator (`/admin/scripts/generate_static_site.php`) must be modified.
 
 *   The `Domain\HasMoments` trait will be updated. The `loadMoments()` function will be changed to accept the current perspective (e.g., the Worker or Part object for the page being generated).
 *   When fetching moments, the query will `JOIN` with the `moment_translations` table to pull the `translated_note` that matches the current perspective.
 *   The `Moment` object will be hydrated with this translated note instead of the internal one.
 
-### Step 5: Content Population
+### Step 6: Content Population
 This is a manual data entry phase. All existing Moments will need to be updated one-by-one using the new admin interface to create their perspective-based translations.
 
-### Step 6: AI-Assisted Generation (Future Enhancement)
+### Step 7: AI-Assisted Generation (Future Enhancement)
 After the core system is built and stable, we can explore adding a feature to the Moment admin page.
 *   A button ("Suggest Translations") would call an AI API.
 *   It would send the internal note and the list of perspectives (e.g., "Reversible Guy", "Mr Greene", "19th POSS").
