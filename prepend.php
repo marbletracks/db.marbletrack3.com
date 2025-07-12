@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Add History on frontend";
+const SENTIMENTAL_VERSION = "Simplify Moment tables on backend";
 
 # write errors to screen
 ini_set('display_errors', 1);
