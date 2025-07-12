@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const notesTextarea = document.getElementById('shortcodey');
     const previewDiv = document.getElementById('notes-preview');
     const perspectivesDiv = document.getElementById('perspective-fields');
+    const translations = <?= json_encode($translations ?? []) ?>;
     let debounceTimer;
 
     // Store original values to prevent overwriting manual edits
@@ -131,9 +132,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     textarea.rows = 3;
                     textarea.style.width = '100%';
 
-                    // Pre-populate with the raw shortcode text, but respect manual edits
+                    // Use saved translation if it exists, otherwise use raw text from main notes field
+                    const savedTranslation = translations[p.type] && translations[p.type][p.id] ? translations[p.type][p.id] : text;
+
                     if (perspectiveValues[fieldId] === undefined) {
-                        textarea.value = text; // Use raw text from main notes field
+                        textarea.value = savedTranslation;
                     } else {
                         textarea.value = perspectiveValues[fieldId];
                     }

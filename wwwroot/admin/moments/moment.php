@@ -17,6 +17,7 @@ $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 $moment_id = (int) ($_GET['id'] ?? 0);
 $moment = $moment_id > 0 ? $moment_repo->findById($moment_id) : null;
+$translations = $moment ? $moment_repo->findTranslations($moment_id) : [];
 $takes = $take_repo->findAll();
 
 if ($submitted) {
@@ -66,6 +67,7 @@ $page = new \Template($config);
 $page->setTemplate("admin/moments/moment.tpl.php");
 $page->set("errors", $errors);
 $page->set("moment", $moment);
+$page->set("translations", $translations);
 $page->set("takes", $takes);
 $inner = $page->grabTheGoods();
 

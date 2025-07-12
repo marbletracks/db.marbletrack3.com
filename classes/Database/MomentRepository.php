@@ -95,6 +95,26 @@ class MomentRepository
         return [$prioritized, $other];
     }
 
+    public function findTranslations(int $moment_id): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT perspective_entity_type, perspective_entity_id, translated_note FROM moment_translations WHERE moment_id = ?",
+            'i',
+            [$moment_id]
+        );
+
+        $translations = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $row = $results->data;
+            $type = $row['perspective_entity_type'];
+            $id = (int)$row['perspective_entity_id'];
+            $translations[$type][$id] = $row['translated_note'];
+        }
+
+        return $translations;
+    }
+
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
