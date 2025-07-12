@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Give me a Moment";
+const SENTIMENTAL_VERSION = "Add History on frontend";
 
 # write errors to screen
 ini_set('display_errors', 1);
