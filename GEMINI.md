@@ -185,4 +185,6 @@ If Rob uploads markdown files (e.g., part notes, snippets, logs), parse them int
 
 ### Note:
 
-`db.marbletrack3.com/wwwroot/admin/scripts/generate_static_site.php` is never run on CLI.  Instead, I must load https://db.marbletrack3.com/admin/scripts/generate_static_site.php manually because only I have the admin username and password
+We never run the site generation script from CLI.  It only runs on the web server, called via https.   More specifically,
+
+`db.marbletrack3.com/wwwroot/admin/scripts/generate_static_site.php` is never run on CLI.  Instead, human operator must load https://db.marbletrack3.com/admin/scripts/generate_static_site.php manually because only humans have the admin username and password.
