@@ -12,7 +12,16 @@
     <form action="" method="post">
         <label>
             Notes:<br>
-            <textarea name="notes" rows="4" cols="50"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
+            <textarea id="shortcodey" name="notes" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
+            <div id="autocomplete"></div>
+            <div style="margin-top: 10px;">
+                <strong>Live Preview:</strong>
+                <div id="notes-preview" style="padding: 5px; border: 1px solid #ccc; min-height: 50px; background-color: #f9f9f9;"></div>
+            </div>
+
+            <div id="perspective-fields" style="margin-top: 20px;">
+                <!-- Dynamic fields will be inserted here -->
+            </div>
         </label><br><br>
 
         <label>
@@ -74,3 +83,87 @@
         <button type="submit">Save</button>
     </form>
 </div>
+<link rel="stylesheet" href="/admin/css/autocomplete.css">
+<script src="/admin/js/autocomplete.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notesTextarea = document.getElementById('shortcodey');
+    const previewDiv = document.getElementById('notes-preview');
+    const perspectivesDiv = document.getElementById('perspective-fields');
+    const translations = <?= json_encode($translations ?? []) ?>;
+    let debounceTimer;
+
+    // Store original values to prevent overwriting manual edits
+    let perspectiveValues = {};
+
+    function updatePreviewAndPerspectives() {
+        const text = notesTextarea.value;
+
+        fetch('/admin/ajax/expand_shortcodes.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'text=' + encodeURIComponent(text)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update live preview (with HTML)
+            previewDiv.innerHTML = data.expanded_text || '';
+
+            // Update perspective fields
+            perspectivesDiv.innerHTML = ''; // Clear existing fields
+            if (data.perspectives && data.perspectives.length > 0) {
+                const header = document.createElement('h3');
+                header.textContent = 'Perspectives';
+                perspectivesDiv.appendChild(header);
+
+                data.perspectives.forEach(p => {
+                    const fieldId = `perspective-${p.type}-${p.id}`;
+                    
+                    const label = document.createElement('label');
+                    label.style.display = 'block';
+                    label.style.marginTop = '10px';
+                    label.textContent = `As ${p.name} (${p.type}):`;
+                    
+                    const textarea = document.createElement('textarea');
+                    textarea.name = `perspectives[${p.type}][${p.id}]`;
+                    textarea.id = fieldId;
+                    textarea.rows = 3;
+                    textarea.style.width = '100%';
+
+                    // Use saved translation if it exists, otherwise use raw text from main notes field
+                    const savedTranslation = translations[p.type] && translations[p.type][p.id] ? translations[p.type][p.id] : text;
+
+                    if (perspectiveValues[fieldId] === undefined) {
+                        textarea.value = savedTranslation;
+                    } else {
+                        textarea.value = perspectiveValues[fieldId];
+                    }
+
+                    textarea.addEventListener('input', () => {
+                        perspectiveValues[fieldId] = textarea.value;
+                    });
+
+                    perspectivesDiv.appendChild(label);
+                    perspectivesDiv.appendChild(textarea);
+                });
+            }
+        })
+        .catch(error => {
+            previewDiv.innerHTML = '<span style="color: red;">Error loading preview.</span>';
+            console.error('Fetch error:', error);
+        });
+    }
+
+    notesTextarea.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        // Clear saved values when the source text changes
+        perspectiveValues = {}; 
+        debounceTimer = setTimeout(updatePreviewAndPerspectives, 300);
+    });
+
+    // Initial load
+    updatePreviewAndPerspectives();
+});
+</script>

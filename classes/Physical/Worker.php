@@ -7,9 +7,8 @@ namespace Physical;
 class Worker
 {
     public string $slug;
-    public array $photos = [];
-    public array $moments = [];
-
+    public array $photos = [];     // added by Repository during hydrate
+    public array $moments = [];     // added by Repository during hydrate
     public function __construct(
         public int $worker_id,
         public string $worker_alias,

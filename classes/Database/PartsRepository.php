@@ -327,7 +327,7 @@ SQL,
         $part->photos = $this->getPhotos();
 
         // Load and attach moments via HasMoments trait
-        $this->loadMoments();
+        $this->loadMoments($part);
         $part->moments = $this->getMoments();
 
         return $part;

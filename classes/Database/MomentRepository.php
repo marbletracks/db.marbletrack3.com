@@ -95,6 +95,26 @@ class MomentRepository
         return [$prioritized, $other];
     }
 
+    public function findTranslations(int $moment_id): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT perspective_entity_type, perspective_entity_id, translated_note FROM moment_translations WHERE moment_id = ?",
+            'i',
+            [$moment_id]
+        );
+
+        $translations = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $row = $results->data;
+            $type = $row['perspective_entity_type'];
+            $id = (int)$row['perspective_entity_id'];
+            $translations[$type][$id] = $row['translated_note'];
+        }
+
+        return $translations;
+    }
+
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
@@ -131,6 +151,35 @@ class MomentRepository
                 'moment_date' => $moment_date
             ]
         );
+    }
+
+    public function saveTranslations(int $moment_id, array $perspectives): void
+    {
+        // First, delete all existing translations for this moment
+        $this->db->executeSQL("DELETE FROM moment_translations WHERE moment_id = ?", 'i', [$moment_id]);
+
+        // If there are no perspectives, we're done.
+        if (empty($perspectives)) {
+            return;
+        }
+
+        // Now, insert the new translations
+        foreach ($perspectives as $type => $entities) {
+            foreach ($entities as $id => $note) {
+                if (!empty($note)) { // Only insert if the note is not empty
+                    $this->db->insertFromRecord(
+                        'moment_translations',
+                        'isss',
+                        [
+                            'moment_id' => $moment_id,
+                            'perspective_entity_id' => (int)$id,
+                            'perspective_entity_type' => $type,
+                            'translated_note' => $note,
+                        ]
+                    );
+                }
+            }
+        }
     }
 
     private function hydrate(array $row): Moment

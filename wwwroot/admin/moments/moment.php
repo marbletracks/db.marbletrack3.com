@@ -17,6 +17,7 @@ $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
 $moment_id = (int) ($_GET['id'] ?? 0);
 $moment = $moment_id > 0 ? $moment_repo->findById($moment_id) : null;
+$translations = $moment ? $moment_repo->findTranslations($moment_id) : [];
 $takes = $take_repo->findAll();
 
 if ($submitted) {
@@ -27,6 +28,7 @@ if ($submitted) {
     $take_id = filter_input(INPUT_POST, 'take_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
     $moment_date = trim($_POST['moment_date'] ?? '');
     $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
+    $perspectives = $_POST['perspectives'] ?? [];
 
     // filter_input returns false on failure, and null if the variable is not set. We want to store null in the DB
     $frame_start = ($frame_start === false) ? null : $frame_start;
@@ -48,10 +50,12 @@ if ($submitted) {
             );
             $moment_repo->setMomentId(moment_id: $moment_id);
             $moment_repo->savePhotosFromUrls(urls: $image_urls);
+            $moment_repo->saveTranslations(moment_id: $moment_id, perspectives: $perspectives);
         } else {
             $new_moment_id = $moment_repo->insert($frame_start, $frame_end, $phrase_id, $take_id, $notes, $moment_date);
             $moment_repo->setMomentId(moment_id: $new_moment_id);
             $moment_repo->savePhotosFromUrls(urls: $image_urls);
+            $moment_repo->saveTranslations(moment_id: $new_moment_id, perspectives: $perspectives);
         }
 
         header("Location: /admin/moments/index.php");
@@ -63,6 +67,7 @@ $page = new \Template($config);
 $page->setTemplate("admin/moments/moment.tpl.php");
 $page->set("errors", $errors);
 $page->set("moment", $moment);
+$page->set("translations", $translations);
 $page->set("takes", $takes);
 $inner = $page->grabTheGoods();
 

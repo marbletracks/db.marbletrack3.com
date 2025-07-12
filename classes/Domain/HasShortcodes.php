@@ -99,4 +99,42 @@ trait HasShortcodes
 
         return strtr($text, $replacements);
     }
+
+    public function extractShortcodes(string $text, string $type, string $langCode): array
+    {
+        preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
+
+        if (empty($matches[1])) {
+            return [];
+        }
+
+        $slugs = array_unique($matches[1]);
+        $placeholders = [];
+        $params = [];
+
+        foreach ($slugs as $slug) {
+            $placeholders[] = '?';
+            $params[] = $slug;
+        }
+
+        $db = $this->getDb();
+        $tableAlias = $this->getTableAlias();
+        $inClause = implode(',', $placeholders);
+
+        $sql = $this->getSELECTForShortcodeExpansion($langCode) . " WHERE $tableAlias.slug IN ($inClause)";
+
+        $res = $db->fetchResults($sql, str_repeat('s', count($params)), $params);
+
+        $results = [];
+        for ($i = 0; $i < $res->numRows(); $i++) {
+            $res->setRow($i);
+            $results[] = [
+                'id' => (int) $res->data['id'],
+                'type' => $type,
+                'alias' => $res->data['alias'],
+                'name' => $res->data['name'],
+            ];
+        }
+        return $results;
+    }
 }
