@@ -25,9 +25,6 @@ trait HasMoments
 
     public function loadMoments(?object $perspective = null): void {
         $this->moments = [];
-        $table = $this->getMomentLinkingTable();
-        $key = $this->getPrimaryKeyColumn();
-        $id = $this->getId();
 
         $perspective_type = null;
         $perspective_id = null;
@@ -42,28 +39,21 @@ trait HasMoments
             }
         }
 
-        $sql = "";
-        $params = [];
-        $types = "";
-
-        if ($perspective_type && $perspective_id) {
-            $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date
-                    FROM moments m
-                    JOIN {$table} p2m ON m.moment_id = p2m.moment_id
-                    LEFT JOIN moment_translations mt ON m.moment_id = mt.moment_id AND mt.perspective_entity_type = ? AND mt.perspective_entity_id = ?
-                    WHERE p2m.{$key} = ?
-                    ORDER BY p2m.sort_order ASC";
-            $types = 'sii';
-            $params = [$perspective_type, $perspective_id, $id];
-        } else {
-            $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date
-                    FROM moments m
-                    JOIN {$table} p2m ON m.moment_id = p2m.moment_id
-                    WHERE p2m.{$key} = ?
-                    ORDER BY p2m.sort_order ASC";
-            $types = 'i';
-            $params = [$id];
+        // If there's no perspective, we cannot load any moments.
+        if (!$perspective_type || !$perspective_id) {
+            return;
         }
+
+        // This query now uses the existence of a translation as the source of truth,
+        // bypassing the `*_2_moments` linking tables.
+        // NOTE: This loses the custom `sort_order` from the linking tables. Ordering by moment_id as a fallback.
+        $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date
+                FROM moments m
+                JOIN moment_translations mt ON m.moment_id = mt.moment_id
+                WHERE mt.perspective_entity_type = ? AND mt.perspective_entity_id = ?
+                ORDER BY m.moment_id ASC";
+        $types = 'si';
+        $params = [$perspective_type, $perspective_id];
 
         // 1. Fetch all moment data into a temporary array
         $results = $this->getDb()->fetchResults($sql, $types, $params);
@@ -84,7 +74,7 @@ trait HasMoments
                       FROM photos p
                       JOIN moments_2_photos m2p ON p.photo_id = m2p.photo_id
                       WHERE m2p.moment_id IN (" . implode(',', array_fill(0, count($moment_ids), '?')) . ")";
-
+        
         $photo_results = $this->getDb()->fetchResults($photo_sql, str_repeat('i', count($moment_ids)), $moment_ids);
 
         // 3. Group photos by moment_id
