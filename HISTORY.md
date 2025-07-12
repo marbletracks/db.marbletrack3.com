@@ -27,7 +27,7 @@ We will implement a system of perspective-based translations for each Moment.
 
 This project will be broken down into the following steps.
 
-### Step 1: Fix the Moment Admin Page
+### :DONE: Step 1: Fix the Moment Admin Page
 The admin page for editing a Moment (`/admin/moments/moment.php`) must handle shortcodes like Parts and Workers do.
 
 * Add JS to handle **Shortcode Expansion:** As the admin types in the main `notes` field, the JS allows easily replace `rg` with `[worker:reversible-guy]` which can be expanded into a link on the frontend.
@@ -38,10 +38,10 @@ First, we need to create the new database table to store the translations. A SQL
 ### Step 3: Enhance the Moment Admin Page
 The admin page for editing a Moment (`/admin/moments/moment.php`) will be updated to facilitate the new workflow.
 
-* a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the expanded shortcodes.     The logic for this has already been written somewhere (called by frontend generator script)
+3a: a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the expanded shortcodes.     The logic for this has already been written somewhere (called by frontend generator script)
 
-*   **Dynamic Perspective Fields:** Based on the shortcodes entered in the `notes` field, the page will dynamically generate a text area for each unique Worker and Part mentioned.
-*   **Pre-populate Perspective Fields:** Initially, these new text areas will be automatically filled with the expanded shortcode text, providing a starting point for the admin to rewrite from that entity's perspective.
+3b: **Dynamic Perspective Fields:** Based on the shortcodes entered in the `notes` field, the page will dynamically generate a text area for each unique Worker and Part mentioned.
+3c: **Pre-populate Perspective Fields:** Initially, these new text areas will be automatically filled with the expanded shortcode text, providing a starting point for the admin to rewrite from that entity's perspective.
 
 ### Step 4: Implement Save Logic
 When the admin saves the Moment form:

@@ -12,7 +12,8 @@
     <form action="" method="post">
         <label>
             Notes:<br>
-            <textarea name="notes" rows="4" cols="50"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
+            <textarea id="shortcodey" name="notes" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
+            <div id="autocomplete"></div>
         </label><br><br>
 
         <label>
@@ -74,3 +75,5 @@
         <button type="submit">Save</button>
     </form>
 </div>
+<link rel="stylesheet" href="/admin/css/autocomplete.css">
+<script src="/admin/js/autocomplete.js" defer></script>
