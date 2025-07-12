@@ -80,7 +80,7 @@ Instead of "key moment," we will use the term **"significant moment"**. The corr
 
 ### 2. Implementation Plan
 
-#### Step A: Database Modification
+#### Step A: :DONE: Database Modification
 A new boolean column, `is_significant`, will be added to the `moment_translations` table.
 
 *   **Why `moment_translations`?** A moment might be significant from one worker's perspective (e.g., "I built my masterpiece") but trivial from another's (e.g., "I handed that guy a stick"). Placing the flag on the translation, rather than the moment itself, provides this crucial granularity.
