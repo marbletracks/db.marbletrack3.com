@@ -1,94 +1,60 @@
-# Discussion: Improving the "History" Section Display
+# Project Plan: Perspective-Based Moment History
 
-This document outlines a proposal for improving how "Moments" are displayed in the "History" section on Worker and Part pages.
+This document outlines the chosen solution and implementation plan for improving how "Moments" are displayed in the "History" section on the frontend website.
 
-## 1. The Problem: Redundant Information
+## 1. The Goal
 
-Currently, when viewing the history on a specific Worker's page, the Worker's name is repeated in every single moment description. This leads to a repetitive and less readable user experience.
+When viewing the history on a specific Worker or Part page, the description of each event should be tailored to that entity's perspective, avoiding redundant information and creating a more natural narrative.
 
-For example, on **Reversible Guy's** page, the history currently looks like this:
+**Example:** On **Reversible Guy's** page, instead of seeing `Reversible Guy get stick and place 2poss`, the user should simply see `get stick and place 2poss`. On another character's page involved in the same event, they would see a description from *their* perspective.
 
-**Current Output:**
-```
-History
+## 2. The Chosen Solution: Perspective-Based Translations
 
-* Reversible Guy place and test Caret Splitter Backboard
-* Reversible Guy place Caret Splitter Inner Wall
-* Reversible Guy get stick and place 2poss
-* RG drop stick as 3poss (page 1.5)
-* Reversible Guy get 2l2l2b
-* Reversible Guy put 2l2l2b on 1l2l2b
-* Reversible Guy get 19poss debris from Mr Greene
-* Reversible Guy hold 19poss for G Choppy
-```
+We will implement a system of perspective-based translations for each Moment.
 
-The same issue would apply to Part pages, where the Part's name might be needlessly repeated.
+*   The main `moments.notes` field will become an **internal-only** description, written concisely with shortcodes (e.g., `[worker:rg] received [part:19poss] from [worker:mrg]`).
+*   A new `moment_translations` table will store the public-facing narrative text for each perspective involved in the moment.
 
-## 2. Proposed Solution: Context-Aware Moment Translation
+### `moment_translations` Table Schema
 
-The core idea is to make multiple translations of the `Moment` based on the context (i.e., the page)
+*   `moment_id`: Foreign key to the `moments` table.
+*   `perspective_entity_id`: The ID of the Worker or Part.
+*   `perspective_entity_type`: A string, either `'worker'` or `'part'`.
+*   `translated_note`: The narrative text for that specific perspective.
+*   (Primary Key: `moment_id`, `perspective_entity_id`, `perspective_entity_type`)
 
-This would result in a much cleaner and more intuitive display.
+## 3. Implementation Plan
 
-**Desired Output (on Reversible Guy's page):**
-```
-History
+This project will be broken down into the following steps.
 
-* place and test Caret Splitter Backboard
-* place Caret Splitter Inner Wall
-* get stick and place 2poss
-* drop stick as 3poss (page 1.5)
-* get 2l2l2b
-* put 2l2l2b on 1l2l2b
-* get 19poss debris from Mr Greene
-* hold 19poss for G Choppy
-```
+### Step 1: Create the `moment_translations` Table
+First, we need to create the new database table to store the translations. A SQL script will be created and executed.
 
-## 3. Implementation Ideas
+### Step 2: Enhance the Moment Admin Page
+The admin page for editing a Moment (`/admin/moments/moment.php`) will be updated to facilitate the new workflow.
 
-We can achieve this by modifying how moments are loaded and prepared.
+*   **Live Shortcode Expansion:** As the admin types in the main `notes` field, a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the shortcodes.
+*   **Dynamic Perspective Fields:** Based on the shortcodes entered in the `notes` field, the page will dynamically generate a text area for each unique Worker and Part mentioned.
+*   **Pre-populate Perspective Fields:** Initially, these new text areas will be automatically filled with the expanded shortcode text, providing a starting point for the admin to rewrite from that entity's perspective.
 
-We could enhance the `loadMoments()` function within the `Domain\HasMoments` trait.
+### Step 3: Implement Save Logic
+When the admin saves the Moment form:
+*   The main `notes` field is saved to the `moments` table as usual.
+*   The content of each perspective field is saved into the `moment_translations` table, linking it to the correct moment and entity.
 
-1.  The `loadMoments()` method could accept a perspective, such as the type and ID or alias of the perspective (e.g., "worker" "RG").
-2.  Inside the loop that hydrates each moment, it would load the translations from the `moment_translations` based on these.  In the future, we could include language but this is nearly all English for now.
+### Step 4: Update the Frontend Site Generator
+The static site generator (`/admin/scripts/generate_static_site.php`) must be modified.
 
-This approach keeps the logic centralized in the domain layer.
+*   The `Domain\HasMoments` trait will be updated. The `loadMoments()` function will be changed to accept the current perspective (e.g., the Worker or Part object for the page being generated).
+*   When fetching moments, the query will `JOIN` with the `moment_translations` table to pull the `translated_note` that matches the current perspective.
+*   The `Moment` object will be hydrated with this translated note instead of the internal one.
 
-### Perspective-Based Translations
+### Step 5: Content Population
+This is a manual data entry phase. All existing Moments will need to be updated one-by-one using the new admin interface to create their perspective-based translations.
 
-This solution expands the concept of "translation" to be perspective-based. Instead of a single `notes` field, we would generate different descriptions of the same moment depending on which entity's page is being viewed.
-
-The `moments.notes` field would contain a concise, internal description, rich with shortcodes (e.g., `[worker:rg] received [part:19poss] from [worker:mrg]`).
-
-A `moment_translations` table would then store different narrative versions of that event.
-
-**Example `moment_translations` structure:**
-*   `moment_id`
-*   `perspective_entity_id` (e.g., the ID of the worker or part)
-*   `perspective_entity_type` (e.g., 'worker' or 'part')
-*   `translated_note` (the narrative text for that perspective)
-
-**Example Workflow:**
-
-1.  **Base Moment Note:** `[worker:rg] received [part:19poss] from [worker:mrg]`
-2.  **Translations Generated:**
-    *   **For Reversible Guy (RG):** "received 19th Placed Outer Spiral Support from Mr Greene"
-    *   **For Mr Greene (MrG):** "gave 19th Placed Outer Spiral Support to Reversible Guy"
-    *   **For 19th POSS (19poss):** "was given to Reversible Guy by Mr Greene"
-
-When rendering the history for a specific page (e.g., Mr Greene's worker page), the system would query for the translation corresponding to Mr Greene's ID.
-
-**Advantages:**
-*   **Highly Flexible:** Allows for completely different sentence structures and tones, not just removing a name.
-*   **Accurate:** Provides the most contextually accurate and natural-sounding history.
-*   **Leverages Shortcodes:** Integrates perfectly with the planned use of shortcodes in moment notes.
-*   **Maintainable:** Translations can be edited or regenerated as needed.
-
-**Considerations:**
-*   This is the most complex solution, requiring a new database table and logic to generate and manage the translations.
-*   Since no moment translations exist yet, the database schema can be designed cleanly for this purpose.
-
-## 4. Further Considerations
-
-At the time of creating the Moments, amazing support would be to call out to an AI API with "Please write this sentence from the perspective of Reversible Guy, G Choppy, and the part itself".    We'd need to parse the output and fill in the fields for a human to doublecheck before saving to our DB.
+### Step 6: AI-Assisted Generation (Future Enhancement)
+After the core system is built and stable, we can explore adding a feature to the Moment admin page.
+*   A button ("Suggest Translations") would call an AI API.
+*   It would send the internal note and the list of perspectives (e.g., "Reversible Guy", "Mr Greene", "19th POSS").
+*   The prompt would ask the AI to rewrite the sentence from each perspective.
+*   The AI's responses would then populate the perspective fields, ready for a human to review, edit, and save.
