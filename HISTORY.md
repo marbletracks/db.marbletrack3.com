@@ -53,7 +53,7 @@ Step 4a: :DONE: When the admin saves the Moment form:
 Step 4b: :DONE: when loading an existing Moment page, use the translations for each perspective and only fill in via JS if the translation doesn't exist.
 
 
-### Step 5: Update the Frontend Site Generator
+### Step 5: :DONE: Update the Frontend Site Generator
 The static site generator (`/admin/scripts/generate_static_site.php`) must be modified.
 
 *   The `Domain\HasMoments` trait will be updated. The `loadMoments()` function will be changed to accept the current perspective (e.g., the Worker or Part object for the page being generated).
@@ -69,3 +69,36 @@ After the core system is built and stable, we can explore adding a feature to th
 *   It would send the internal note and the list of perspectives (e.g., "Reversible Guy", "Mr Greene", "19th POSS").
 *   The prompt would ask the AI to rewrite the sentence from each perspective.
 *   The AI's responses would then populate the perspective fields, ready for a human to review, edit, and save.
+
+## Future Enhancement: Significant Moments
+
+To avoid overwhelming users with a complete history for every Worker and Part, we can introduce a way to flag certain moments as being more important. This will allow us to show a curated list of "highlights" by default, with an option to view the full history.
+
+### 1. Naming
+
+Instead of "key moment," we will use the term **"significant moment"**. The corresponding database field will be `is_significant`.
+
+### 2. Implementation Plan
+
+#### Step A: Database Modification
+A new boolean column, `is_significant`, will be added to the `moment_translations` table.
+
+*   **Why `moment_translations`?** A moment might be significant from one worker's perspective (e.g., "I built my masterpiece") but trivial from another's (e.g., "I handed that guy a stick"). Placing the flag on the translation, rather than the moment itself, provides this crucial granularity.
+*   **Schema Change:** The `moment_translations` table will be altered to include `is_significant TINYINT(1) NOT NULL DEFAULT 0`.
+
+#### Step B: Admin Interface Update
+The Moment edit page (`/admin/moments/moment.php`) will be updated.
+
+*   A checkbox labeled "Significant Moment?" will be added next to each dynamically generated perspective field.
+*   The `name` of the checkbox will be structured to link it to the perspective, e.g., `perspectives_meta[worker][{id}][is_significant]`.
+*   The save logic in `wwwroot/admin/moments/moment.php` will be updated to process this new data and store it in the `moment_translations` table.
+
+#### Step C: Frontend Query Update
+The `loadMoments()` function in `Domain/HasMoments.php` will be modified.
+
+*   It will be updated to accept a new optional boolean parameter, e.g., `loadMoments(?object $perspective, bool $onlySignificant = true)`.
+*   By default, it will only load significant moments (`WHERE mt.is_significant = 1`).
+*   The frontend generator will be updated to call `loadMoments` twice: once to get the significant moments for the main history, and a second time (passing `false`) to get all moments for a potential "Show Full History" link.
+
+#### Step D: Frontend Template Update
+The frontend templates (`part.tpl.php` and `worker.tpl.php`) will be updated to display the curated list and include a link to a separate page containing the full history.
