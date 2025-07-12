@@ -126,12 +126,7 @@ Currently, on the Frontend site:
 
 The following steps are listed in order of priority:
 
-1.  **Create trait** `HasMoments` and add to `PartsRepository`, similar to trait `HasPhotos`.  Any code that specifically mentions `part` will need to come from `PartsRepository` via abstract functions.
-2.  Fix UX for drag-n-drop sort of `Moments` on `Part` edit page.  There should be a handle to drag, and the "remove" button should be an X and stay adjacent to the Moment's text when the moment is dragged.
-3.  Add trait `HasMoments` to `WorkersRepository`
-4.  **On the Part edit page, Eventually, enhance the moments dropdown.** The dropdown should prioritize and show moments at the top of the list if the part's alias (`parts.part_alias`) is mentioned in the moment's notes (`moments.notes`).
-5.  **Add the ability to associate Workers with Moments.** This will require a `workers_2_moments` table to handle many-to-many relationships.
-6.  **Display "History" on the frontend.** Both Part and Worker pages should show a history of their associated moments.
+6.  On the frontend, let's think about what it would look like to display Moments on the Worker and Parts pages.   Under a <h2>History</h2>  show the list of Moments for that Part or Worker if they exist.  If you have questions, let me know.
 
 ### Future steps
 
