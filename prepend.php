@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Simplify Moment tables on backend";
+const SENTIMENTAL_VERSION = "Create Significant Moments";
 
 # write errors to screen
 ini_set('display_errors', 1);
