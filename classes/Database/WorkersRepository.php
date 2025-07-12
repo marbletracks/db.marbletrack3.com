@@ -269,7 +269,7 @@ SQL,
         $this->loadPhotos();  // defined in HasPhotos trait
         $worker->photos = $this->getPhotos(); // Get photos from HasPhotos trait
 
-        $this->loadMoments();
+        $this->loadMoments($worker);
         $worker->moments = $this->getMoments();
         return $worker;
     }
