@@ -32,13 +32,13 @@ The admin page for editing a Moment (`/admin/moments/moment.php`) must handle sh
 
 * Add JS to handle **Shortcode Expansion:** As the admin types in the main `notes` field, the JS allows easily replace `rg` with `[worker:reversible-guy]` which can be expanded into a link on the frontend.
 
-### Step 2: Create the `moment_translations` Table
+### :DONE: Step 2: Create the `moment_translations` Table
 First, we need to create the new database table to store the translations. A SQL script will be created and executed.
 
 ### Step 3: Enhance the Moment Admin Page
 The admin page for editing a Moment (`/admin/moments/moment.php`) will be updated to facilitate the new workflow.
 
-3a: a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the expanded shortcodes.     The logic for this has already been written somewhere (called by frontend generator script)
+3a: :DONE: a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the expanded shortcodes.     The logic for this has already been written somewhere (called by frontend generator script)
 
 3b: **Dynamic Perspective Fields:** Based on the shortcodes entered in the `notes` field, the page will dynamically generate a text area for each unique Worker and Part mentioned.
 3c: **Pre-populate Perspective Fields:** Initially, these new text areas will be automatically filled with the expanded shortcode text, providing a starting point for the admin to rewrite from that entity's perspective.

@@ -14,6 +14,10 @@
             Notes:<br>
             <textarea id="shortcodey" name="notes" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
             <div id="autocomplete"></div>
+            <div style="margin-top: 10px;">
+                <strong>Live Preview:</strong>
+                <div id="notes-preview" style="padding: 5px; border: 1px solid #ccc; min-height: 50px; background-color: #f9f9f9;"></div>
+            </div>
         </label><br><br>
 
         <label>
@@ -77,3 +81,47 @@
 </div>
 <link rel="stylesheet" href="/admin/css/autocomplete.css">
 <script src="/admin/js/autocomplete.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notesTextarea = document.getElementById('shortcodey');
+    const previewDiv = document.getElementById('notes-preview');
+    let debounceTimer;
+
+    function updatePreview() {
+        const text = notesTextarea.value;
+
+        fetch('/admin/ajax/expand_shortcodes.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'text=' + encodeURIComponent(text)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.expanded_text) {
+                previewDiv.innerHTML = data.expanded_text;
+            } else {
+                previewDiv.innerHTML = '';
+            }
+        })
+        .catch(error => {
+            previewDiv.innerHTML = '<span style="color: red;">Error loading preview.</span>';
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    }
+
+    notesTextarea.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(updatePreview, 300); // Debounce to avoid excessive requests
+    });
+
+    // Initial preview on page load
+    updatePreview();
+});
+</script>
