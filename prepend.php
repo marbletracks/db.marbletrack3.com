@@ -71,3 +71,8 @@ if (!empty($errors)) {
 
 $is_logged_in = new \Auth\IsLoggedIn($mla_database, $config);
 $is_logged_in->checkLogin($mla_request);
+
+// Automated Database Backup
+// This will check if a backup is needed and run it in the background.
+$persistaroo = new \Database\DBPersistaroo($config);
+$persistaroo->ensureBackupIsRecent();
