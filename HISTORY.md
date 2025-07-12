@@ -24,9 +24,9 @@ History
 
 The same issue would apply to Part pages, where the Part's name might be needlessly repeated.
 
-## 2. Proposed Solution: Context-Aware Moment Hydration
+## 2. Proposed Solution: Context-Aware Moment Translation
 
-The core idea is to make the `Moment` object "smarter." It should be aware of the context (i.e., the page) it's being displayed on. When the list of moments is prepared for a specific Worker or Part, we should process the description to remove the redundant entity name.
+The core idea is to make multiple translations of the `Moment` based on the context (i.e., the page)
 
 This would result in a much cleaner and more intuitive display.
 
@@ -48,51 +48,14 @@ History
 
 We can achieve this by modifying how moments are loaded and prepared.
 
-### Option A: Modify the `HasMoments` Trait
-
 We could enhance the `loadMoments()` function within the `Domain\HasMoments` trait.
 
-1.  The `loadMoments()` method could accept an optional context, such as the name or alias of the parent entity (e.g., "Reversible Guy").
-2.  Inside the loop that hydrates each moment, it would strip the provided name from the `notes` property.
-3.  This could be done with a case-insensitive search-and-replace for the entity's name and known aliases (e.g., "Reversible Guy", "RG").
+1.  The `loadMoments()` method could accept a perspective, such as the type and ID or alias of the perspective (e.g., "worker" "RG").
+2.  Inside the loop that hydrates each moment, it would load the translations from the `moment_translations` based on these.  In the future, we could include language but this is nearly all English for now.
 
 This approach keeps the logic centralized in the domain layer.
 
-### Option B: Create a `getDisplayName()` Method on the `Moment` Class
-
-A cleaner approach might be to add a new method to the `Media\Moment` class.
-
-```php
-// In Media/Moment.php
-public function getContextualNotes(?object $context = null): string
-{
-    if ($context === null || empty($this->notes)) {
-        return $this->notes ?? '';
-    }
-
-    $nameToRemove = '';
-    $aliasesToRemove = [];
-
-    if ($context instanceof \Physical\Worker) {
-        $nameToRemove = $context->name;
-        $aliasesToRemove[] = $context->worker_alias;
-        // could add more known aliases here
-    } elseif ($context instanceof \Physical\Part) {
-        $nameToRemove = $context->name;
-        $aliasesToRemove[] = $context->part_alias;
-    }
-
-    // Logic to remove the name and aliases from the start of the notes string
-    $processedNotes = $this->notes;
-    // ... implementation ...
-
-    return $processedNotes;
-}
-```
-
-The template would then call `$moment->getContextualNotes($worker)` instead of accessing `$moment->notes` directly.
-
-### Option C: Perspective-Based Translations
+### Perspective-Based Translations
 
 This solution expands the concept of "translation" to be perspective-based. Instead of a single `notes` field, we would generate different descriptions of the same moment depending on which entity's page is being viewed.
 
@@ -128,11 +91,4 @@ When rendering the history for a specific page (e.g., Mr Greene's worker page), 
 
 ## 4. Further Considerations
 
-This concept can be extended.
-
-*   **On a Part's page:** If the moment is "Reversible Guy placed Caret Splitter Backboard", and we are on the "Caret Splitter Backboard" page, the note could be transformed to focus on the actor: "**Reversible Guy** placed and tested this part."
-*   **Complex Notes:** For notes like "Reversible Guy get 19poss debris from Mr Greene", if we are on Mr Greene's page, the ideal output might be "Gave 19poss debris to Reversible Guy." This implies a much more sophisticated parsing of the `notes` field, potentially identifying subject, verb, and object. This is likely a future enhancement.
-
-For now, simply stripping the redundant name of the page's subject would be a significant improvement.
-
-```
+At the time of creating the Moments, amazing support would be to call out to an AI API with "Please write this sentence from the perspective of Reversible Guy, G Choppy, and the part itself".    We'd need to parse the output and fill in the fields for a human to doublecheck before saving to our DB.
