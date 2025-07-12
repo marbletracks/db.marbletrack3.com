@@ -47,7 +47,7 @@ trait HasMoments
         // This query now uses the existence of a translation as the source of truth,
         // bypassing the `*_2_moments` linking tables.
         // NOTE: This loses the custom `sort_order` from the linking tables. Ordering by moment_id as a fallback.
-        $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date
+        $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date, mt.is_significant
                 FROM moments m
                 JOIN moment_translations mt ON m.moment_id = mt.moment_id
                 WHERE mt.perspective_entity_type = ? AND mt.perspective_entity_id = ?
@@ -105,6 +105,7 @@ trait HasMoments
                 notes: $row['notes'] ?? null,
                 moment_date: $row['moment_date'] ?? null
             );
+            $moment->is_significant = (bool)($row['is_significant'] ?? false);
             $moment->photos = $photos_by_moment_id[$moment_id] ?? [];
             $this->addMoment($moment);
         }

@@ -98,7 +98,7 @@ class MomentRepository
     public function findTranslations(int $moment_id): array
     {
         $results = $this->db->fetchResults(
-            "SELECT perspective_entity_type, perspective_entity_id, translated_note FROM moment_translations WHERE moment_id = ?",
+            "SELECT perspective_entity_type, perspective_entity_id, translated_note, is_significant FROM moment_translations WHERE moment_id = ?",
             'i',
             [$moment_id]
         );
@@ -109,7 +109,10 @@ class MomentRepository
             $row = $results->data;
             $type = $row['perspective_entity_type'];
             $id = (int)$row['perspective_entity_id'];
-            $translations[$type][$id] = $row['translated_note'];
+            $translations[$type][$id] = [
+                'note' => $row['translated_note'],
+                'is_significant' => (bool)$row['is_significant'],
+            ];
         }
 
         return $translations;
@@ -144,6 +147,15 @@ class MomentRepository
                 'perspective_entity_type' => $perspective_type,
                 'translated_note' => $moment->notes,
             ]
+        );
+    }
+
+    public function updateSignificance(int $moment_id, int $perspective_id, string $perspective_type, bool $is_significant): void
+    {
+        $this->db->executeSQL(
+            "UPDATE moment_translations SET is_significant = ? WHERE moment_id = ? AND perspective_entity_id = ? AND perspective_entity_type = ?",
+            'iiis',
+            [(int)$is_significant, $moment_id, $perspective_id, $perspective_type]
         );
     }
 
@@ -206,16 +218,19 @@ class MomentRepository
 
         // Now, insert the new translations
         foreach ($perspectives as $type => $entities) {
-            foreach ($entities as $id => $note) {
+            foreach ($entities as $id => $data) {
+                $note = $data['note'] ?? null;
                 if (!empty($note)) { // Only insert if the note is not empty
+                    $is_significant = (int)($data['is_significant'] ?? 0);
                     $this->db->insertFromRecord(
                         'moment_translations',
-                        'isss',
+                        'isssi',
                         [
                             'moment_id' => $moment_id,
                             'perspective_entity_id' => (int)$id,
                             'perspective_entity_type' => $type,
                             'translated_note' => $note,
+                            'is_significant' => $is_significant,
                         ]
                     );
                 }
