@@ -6,6 +6,8 @@ final class Part
 {
     use PartHasRoles;
     public string $slug;
+    public array $photos = [];     // added by Repository during hydrate
+    public array $moments = [];     // added by Repository during hydrate
 
     /**
      * Represents a physical part of the track itself.
