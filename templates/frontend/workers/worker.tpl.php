@@ -28,4 +28,15 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <?php if (!empty($worker->moments)): ?>
+        <h2>History</h2>
+        <div class="worker-moments">
+            <ul>
+                <?php foreach ($worker->moments as $moment): ?>
+                    <li><?= htmlspecialchars($moment->notes ?? '') ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 </div>
