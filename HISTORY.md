@@ -40,13 +40,18 @@ The admin page for editing a Moment (`/admin/moments/moment.php`) will be update
 
 3a: :DONE: a read-only area below it will show the fully expanded text (e.g., "Reversible Guy received 19th Placed Outer Spiral Support from Mr Greene") to provide immediate feedback. This will likely require an AJAX endpoint that processes the expanded shortcodes.     The logic for this has already been written somewhere (called by frontend generator script)
 
-3b: **Dynamic Perspective Fields:** Based on the shortcodes entered in the `notes` field, the page will dynamically generate a text area for each unique Worker and Part mentioned.
-3c: **Pre-populate Perspective Fields:** Initially, these new text areas will be automatically filled with the expanded shortcode text, providing a starting point for the admin to rewrite from that entity's perspective.
+3b: :DONE: **Dynamic Perspective Fields:** Based on the shortcodes entered in the `notes` field, the page will dynamically generate a text area for each unique Worker and Part mentioned.
+3c: :DONE: **Pre-populate Perspective Fields:** Initially, these new text areas will be automatically filled with the expanded shortcode text, providing a starting point for the admin to rewrite from that entity's perspective.
 
 ### Step 4: Implement Save Logic
-When the admin saves the Moment form:
+
+Step 4a: When the admin saves the Moment form:
 *   The main `notes` field is saved to the `moments` table as usual.
 *   The content of each perspective field is saved into the `moment_translations` table, linking it to the correct moment and entity.
+*   In the rare case there is no perspective, don't save anything to TABLE `moment_translations`
+
+Step 4b: when loading an existing Moment page, use the translations for each perspective and only fill in via JS if the translation doesn't exist.
+
 
 ### Step 5: Update the Frontend Site Generator
 The static site generator (`/admin/scripts/generate_static_site.php`) must be modified.
