@@ -56,7 +56,6 @@ trait HasMoments
             $types = 'sii';
             $params = [$perspective_type, $perspective_id, $id];
         } else {
-            // Fallback to original query if no perspective is provided
             $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date
                     FROM moments m
                     JOIN {$table} p2m ON m.moment_id = p2m.moment_id
@@ -66,31 +65,57 @@ trait HasMoments
             $params = [$id];
         }
 
+        // 1. Fetch all moment data into a temporary array
         $results = $this->getDb()->fetchResults($sql, $types, $params);
-
-        $momentRepo = new MomentRepository($this->getDb());
+        $moment_data_rows = [];
+        $moment_ids = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
-            // The 'notes' field in the result set is now the correct translated version.
-            // We can use the standard findById to hydrate, but we need to override the notes.
-            // Actually, it's easier to just hydrate from the row since we have all the data.
-            $moment_id = (int)$results->data['moment_id'];
-            $momentRepo->setMomentId($moment_id);
-            
-            // Manually create the moment object to ensure the correct 'notes' field is used.
+            $moment_data_rows[] = $results->data;
+            $moment_ids[] = (int)$results->data['moment_id'];
+        }
+
+        if (empty($moment_data_rows)) {
+            return; // No moments, nothing to do
+        }
+
+        // 2. Fetch all photos for all moments in a single query
+        $photo_sql = "SELECT p.photo_id, p.code, p.url, m2p.moment_id
+                      FROM photos p
+                      JOIN moments_2_photos m2p ON p.photo_id = m2p.photo_id
+                      WHERE m2p.moment_id IN (" . implode(',', array_fill(0, count($moment_ids), '?')) . ")";
+
+        $photo_results = $this->getDb()->fetchResults($photo_sql, str_repeat('i', count($moment_ids)), $moment_ids);
+
+        // 3. Group photos by moment_id
+        $photos_by_moment_id = [];
+        for ($i = 0; $i < $photo_results->numRows(); $i++) {
+            $photo_results->setRow($i);
+            $photo_data = $photo_results->data;
+            $moment_id = (int)$photo_data['moment_id'];
+            if (!isset($photos_by_moment_id[$moment_id])) {
+                $photos_by_moment_id[$moment_id] = [];
+            }
+            $photos_by_moment_id[$moment_id][] = new \Media\Photo(
+                photo_id: (int) $photo_data['photo_id'],
+                code: $photo_data['code'] ?? null,
+                url: $photo_data['url'] ?? null
+            );
+        }
+
+        // 4. Create Moment objects and attach photos
+        foreach ($moment_data_rows as $row) {
+            $moment_id = (int)$row['moment_id'];
             $moment = new \Media\Moment(
                 moment_id: $moment_id,
-                frame_start: isset($results->data['frame_start']) ? (int)$results->data['frame_start'] : null,
-                frame_end: isset($results->data['frame_end']) ? (int)$results->data['frame_end'] : null,
-                phrase_id: isset($results->data['phrase_id']) ? (int)$results->data['phrase_id'] : null,
-                take_id: isset($results->data['take_id']) ? (int)$results->data['take_id'] : null,
-                notes: $results->data['notes'] ?? null,
-                moment_date: $results->data['moment_date'] ?? null
+                frame_start: isset($row['frame_start']) ? (int)$row['frame_start'] : null,
+                frame_end: isset($row['frame_end']) ? (int)$row['frame_end'] : null,
+                phrase_id: isset($row['phrase_id']) ? (int)$row['phrase_id'] : null,
+                take_id: isset($row['take_id']) ? (int)$row['take_id'] : null,
+                notes: $row['notes'] ?? null,
+                moment_date: $row['moment_date'] ?? null
             );
-            // Manually load photos for the moment
-            $momentRepo->loadPhotos();
-            $moment->photos = $momentRepo->getPhotos();
-
+            $moment->photos = $photos_by_moment_id[$moment_id] ?? [];
             $this->addMoment($moment);
         }
     }
