@@ -92,6 +92,40 @@ public function getContextualNotes(?object $context = null): string
 
 The template would then call `$moment->getContextualNotes($worker)` instead of accessing `$moment->notes` directly.
 
+### Option C: Perspective-Based Translations
+
+This solution expands the concept of "translation" to be perspective-based. Instead of a single `notes` field, we would generate different descriptions of the same moment depending on which entity's page is being viewed.
+
+The `moments.notes` field would contain a concise, internal description, rich with shortcodes (e.g., `[worker:rg] received [part:19poss] from [worker:mrg]`).
+
+A `moment_translations` table would then store different narrative versions of that event.
+
+**Example `moment_translations` structure:**
+*   `moment_id`
+*   `perspective_entity_id` (e.g., the ID of the worker or part)
+*   `perspective_entity_type` (e.g., 'worker' or 'part')
+*   `translated_note` (the narrative text for that perspective)
+
+**Example Workflow:**
+
+1.  **Base Moment Note:** `[worker:rg] received [part:19poss] from [worker:mrg]`
+2.  **Translations Generated:**
+    *   **For Reversible Guy (RG):** "received 19th Placed Outer Spiral Support from Mr Greene"
+    *   **For Mr Greene (MrG):** "gave 19th Placed Outer Spiral Support to Reversible Guy"
+    *   **For 19th POSS (19poss):** "was given to Reversible Guy by Mr Greene"
+
+When rendering the history for a specific page (e.g., Mr Greene's worker page), the system would query for the translation corresponding to Mr Greene's ID.
+
+**Advantages:**
+*   **Highly Flexible:** Allows for completely different sentence structures and tones, not just removing a name.
+*   **Accurate:** Provides the most contextually accurate and natural-sounding history.
+*   **Leverages Shortcodes:** Integrates perfectly with the planned use of shortcodes in moment notes.
+*   **Maintainable:** Translations can be edited or regenerated as needed.
+
+**Considerations:**
+*   This is the most complex solution, requiring a new database table and logic to generate and manage the translations.
+*   Since no moment translations exist yet, the database schema can be designed cleanly for this purpose.
+
 ## 4. Further Considerations
 
 This concept can be extended.
