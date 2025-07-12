@@ -112,6 +112,12 @@ trait HasMoments
 
     public function saveMoments(array $moment_ids): void {
         $table = $this->getMomentLinkingTable();
+        
+        // If the linking table is empty, this entity does not use this method.
+        if (empty($table)) {
+            return;
+        }
+
         $key = $this->getPrimaryKeyColumn();
         $id = $this->getId();
 

@@ -115,6 +115,47 @@ class MomentRepository
         return $translations;
     }
 
+    public function createTranslationIfNotExists(int $moment_id, int $perspective_id, string $perspective_type): void
+    {
+        // Check if a translation already exists
+        $r = $this->db->fetchResults(
+            "SELECT 1 FROM moment_translations WHERE moment_id = ? AND perspective_entity_id = ? AND perspective_entity_type = ?",
+            'iis',
+            [$moment_id, $perspective_id, $perspective_type]
+        );
+
+        if ($r->numRows() > 0) {
+            return; // Translation already exists, do nothing
+        }
+
+        // Get the original moment notes to use as a default
+        $moment = $this->findById($moment_id);
+        if (!$moment || !$moment->notes) {
+            return; // Cannot create a translation without a default note
+        }
+
+        // Insert the new default translation
+        $this->db->insertFromRecord(
+            'moment_translations',
+            'isss',
+            [
+                'moment_id' => $moment_id,
+                'perspective_entity_id' => $perspective_id,
+                'perspective_entity_type' => $perspective_type,
+                'translated_note' => $moment->notes,
+            ]
+        );
+    }
+
+    public function deleteTranslation(int $moment_id, int $perspective_id, string $perspective_type): void
+    {
+        $this->db->executeSQL(
+            "DELETE FROM moment_translations WHERE moment_id = ? AND perspective_entity_id = ? AND perspective_entity_type = ?",
+            'iis',
+            [$moment_id, $perspective_id, $perspective_type]
+        );
+    }
+
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
