@@ -133,6 +133,35 @@ class MomentRepository
         );
     }
 
+    public function saveTranslations(int $moment_id, array $perspectives): void
+    {
+        // First, delete all existing translations for this moment
+        $this->db->executeSQL("DELETE FROM moment_translations WHERE moment_id = ?", 'i', [$moment_id]);
+
+        // If there are no perspectives, we're done.
+        if (empty($perspectives)) {
+            return;
+        }
+
+        // Now, insert the new translations
+        foreach ($perspectives as $type => $entities) {
+            foreach ($entities as $id => $note) {
+                if (!empty($note)) { // Only insert if the note is not empty
+                    $this->db->insertFromRecord(
+                        'moment_translations',
+                        'isss',
+                        [
+                            'moment_id' => $moment_id,
+                            'perspective_entity_id' => (int)$id,
+                            'perspective_entity_type' => $type,
+                            'translated_note' => $note,
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
     private function hydrate(array $row): Moment
     {
         $moment = new Moment(
