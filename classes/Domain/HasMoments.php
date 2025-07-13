@@ -74,7 +74,7 @@ trait HasMoments
                       FROM photos p
                       JOIN moments_2_photos m2p ON p.photo_id = m2p.photo_id
                       WHERE m2p.moment_id IN (" . implode(',', array_fill(0, count($moment_ids), '?')) . ")";
-        
+
         $photo_results = $this->getDb()->fetchResults($photo_sql, str_repeat('i', count($moment_ids)), $moment_ids);
 
         // 3. Group photos by moment_id
@@ -113,7 +113,7 @@ trait HasMoments
 
     public function saveMoments(array $moment_ids): void {
         $table = $this->getMomentLinkingTable();
-        
+
         // If the linking table is empty, this entity does not use this method.
         if (empty($table)) {
             return;
