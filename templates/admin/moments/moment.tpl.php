@@ -26,12 +26,20 @@
 
         <label>
             Frame Start:<br>
-            <input type="number" name="frame_start" value="<?= htmlspecialchars((string)($moment->frame_start ?? '')) ?>">
+            <input type="number" id="frame_start" name="frame_start" value="<?= htmlspecialchars((string)($moment->frame_start ?? '')) ?>">
+        </label>
+        <label>
+            Seconds:
+            <input type="number" id="frame_start_seconds" style="width: 60px;">
         </label><br><br>
 
         <label>
             Frame End:<br>
-            <input type="number" name="frame_end" value="<?= htmlspecialchars((string)($moment->frame_end ?? '')) ?>">
+            <input type="number" id="frame_end" name="frame_end" value="<?= htmlspecialchars((string)($moment->frame_end ?? '')) ?>">
+        </label>
+        <label>
+            Seconds:
+            <input type="number" id="frame_end_seconds" style="width: 60px;">
         </label><br><br>
 
         <label>
@@ -161,5 +169,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     updatePreviewAndPerspectives();
+});
+
+document.getElementById('frame_start_seconds').addEventListener('input', function(e) {
+    const seconds = e.target.value;
+    if (seconds && !isNaN(seconds)) {
+        const frameStartInput = document.getElementById('frame_start');
+        frameStartInput.value = Math.round(seconds * 12);
+    }
+});
+
+document.getElementById('frame_end_seconds').addEventListener('input', function(e) {
+    const seconds = e.target.value;
+    if (seconds && !isNaN(seconds)) {
+        const frameEndInput = document.getElementById('frame_end');
+        frameEndInput.value = Math.round(seconds * 12);
+    }
 });
 </script>
