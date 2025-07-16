@@ -107,6 +107,36 @@ SQL;
         return '';
     }
 
+    /**
+     * Used by wwwroot/admin/parts/part.php to save Moments with Parts.
+     * Created by Gemini, based on Workers (created by Gemini)
+     * @param int $part_id
+     * @param array $submitted_moment_ids
+     * @return void
+     */
+    public function syncMomentsFromTranslations(int $part_id, array $submitted_moment_ids): void
+    {
+        $moment_repo = new MomentRepository($this->getDb());
+
+        // Get current moments based on existing translations for this part
+        $current_moment_ids = $moment_repo->findMomentIdsByEntity($part_id, 'part');
+
+        // Cast submitted IDs to integers
+        $submitted_moment_ids = array_map('intval', $submitted_moment_ids);
+
+        // Find moments to add (present in submitted, but not in current)
+        $moments_to_add = array_diff($submitted_moment_ids, $current_moment_ids);
+        foreach ($moments_to_add as $moment_id) {
+            $moment_repo->createTranslationIfNotExists($moment_id, $part_id, 'part');
+        }
+
+        // Find moments to remove (present in current, but not in submitted)
+        $moments_to_remove = array_diff($current_moment_ids, $submitted_moment_ids);
+        foreach ($moments_to_remove as $moment_id) {
+            $moment_repo->deleteTranslation($moment_id, $part_id, 'part');
+        }
+    }
+
     public function getPrimaryKeyColumn(): string
     {
         return $this->primaryKeyColumn;

@@ -130,6 +130,29 @@ class MomentRepository
         return $translations;
     }
 
+    /**
+     * Created by Gemini when using moment_translations for Parts as well as Workers
+     * @param int $entity_id
+     * @param string $entity_type
+     * @return int[]
+     */
+    public function findMomentIdsByEntity(int $entity_id, string $entity_type): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT moment_id FROM moment_translations WHERE perspective_entity_id = ? AND perspective_entity_type = ?",
+            'is',
+            [$entity_id, $entity_type]
+        );
+
+        $moment_ids = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $moment_ids[] = (int) $results->data['moment_id'];
+        }
+
+        return $moment_ids;
+    }
+
     public function createTranslationIfNotExists(int $moment_id, int $perspective_id, string $perspective_type): void
     {
         // Check if a translation already exists
