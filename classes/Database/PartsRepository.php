@@ -180,6 +180,36 @@ SQL,
         return $this->hydrate($results->data);
     }
 
+    public function findBySlug(string $slug): ?Part
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT p.part_id,
+       p.part_alias,
+       t.part_name,
+       t.part_description,
+       p.is_rail,
+       p.is_support,
+       p.is_track
+FROM parts p
+LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
+WHERE p.slug = ?
+SQL,
+            'ss',
+            [$this->langCode, $slug]
+        );
+
+        if ($results->numRows() === 0) {
+            return null;
+        }
+
+        $results->setRow(0);
+        $part_id = (int) $results->data['part_id'];
+        $this->setPartId($part_id);
+
+        return $this->hydrate($results->data);
+    }
+
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
