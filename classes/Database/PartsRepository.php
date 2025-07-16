@@ -391,6 +391,14 @@ SQL,
         $this->loadMoments($part);
         $part->moments = $this->getMoments();
 
+        if($part->name == $part->description) {
+            // quickly get the source of the data.  Not needed once all Parts on this site have detailed info
+            $part->frontend_link = "https://www.marbletrack3.com/p/{$part->part_alias}";
+        } else {
+            // We have data on this site so stay on this site.
+            $part->frontend_link = "/parts/" . \Utilities::slugify($part->name, 200);
+        }
+
         return $part;
     }
 }

@@ -22,7 +22,7 @@
                         <?= nl2br(htmlspecialchars($part->description)) ?><br>
                     <?php endif; ?>
 
-                    <em>Alias:</em> <?= htmlspecialchars($part->part_alias ?? '—') ?><br>
+                    <em>Alias:</em> <a href="<?= $part->frontend_link; ?>"><?= htmlspecialchars($part->part_alias ?? '—') ?></a><br>
 
                     <?php if (!empty($part->created_at)): ?>
                         <em>Created:</em> <?= htmlspecialchars($part->created_at) ?><br>
