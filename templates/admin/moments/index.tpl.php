@@ -3,7 +3,7 @@
     <table border="1" cellpadding="5">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Take ID</th>
                 <th>Photo</th>
                 <th>Notes</th>
                 <th>Frames</th>
@@ -15,7 +15,7 @@
         <tbody>
             <?php foreach ($moments as $moment): ?>
                 <tr>
-                    <td><?= $moment->moment_id ?></td>
+                    <td><?= $moment->take_id ?></td>
                     <td>
                         <?php if ($moment->photos[0]): ?>
                             <img src="<?= htmlspecialchars($moment->photos[0]->getThumbnailUrl()) ?>" alt="Moment photo" style="max-width: 100px; max-height: 100px;">

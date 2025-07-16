@@ -61,7 +61,19 @@ class MomentRepository
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
-            "SELECT moment_id, frame_start, frame_end, phrase_id, take_id, notes, moment_date FROM moments ORDER BY moment_id ASC"
+            sql: "SELECT
+                    moment_id,
+                    frame_start,
+                    frame_end,
+                    phrase_id,
+                    take_id,
+                    notes,
+                    moment_date
+                  FROM
+                    moments
+                  ORDER BY
+                    take_id ASC,
+                    frame_start ASC"
         );
 
         $moments = [];
@@ -171,10 +183,10 @@ class MomentRepository
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
-            "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date 
+            "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date
             FROM moments m
             JOIN parts_2_moments p2m ON m.moment_id = p2m.moment_id
-            WHERE p2m.part_id = ? 
+            WHERE p2m.part_id = ?
             ORDER BY p2m.sort_order ASC",
             'i',
             [$part_id]
