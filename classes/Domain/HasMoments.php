@@ -47,7 +47,7 @@ trait HasMoments
         // This query now uses the existence of a translation as the source of truth,
         // bypassing the `*_2_moments` linking tables.
         // NOTE: This loses the custom `sort_order` from the linking tables. Ordering by moment_id as a fallback.
-        $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date
+        $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date, mt.is_significant
                 FROM moments m
                 JOIN moment_translations mt ON m.moment_id = mt.moment_id
                 WHERE mt.perspective_entity_type = ? AND mt.perspective_entity_id = ?
@@ -74,7 +74,7 @@ trait HasMoments
                       FROM photos p
                       JOIN moments_2_photos m2p ON p.photo_id = m2p.photo_id
                       WHERE m2p.moment_id IN (" . implode(',', array_fill(0, count($moment_ids), '?')) . ")";
-        
+
         $photo_results = $this->getDb()->fetchResults($photo_sql, str_repeat('i', count($moment_ids)), $moment_ids);
 
         // 3. Group photos by moment_id
@@ -105,6 +105,7 @@ trait HasMoments
                 notes: $row['notes'] ?? null,
                 moment_date: $row['moment_date'] ?? null
             );
+            $moment->is_significant = (bool)($row['is_significant'] ?? false);
             $moment->photos = $photos_by_moment_id[$moment_id] ?? [];
             $this->addMoment($moment);
         }
@@ -112,7 +113,7 @@ trait HasMoments
 
     public function saveMoments(array $moment_ids): void {
         $table = $this->getMomentLinkingTable();
-        
+
         // If the linking table is empty, this entity does not use this method.
         if (empty($table)) {
             return;

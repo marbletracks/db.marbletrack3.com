@@ -110,8 +110,7 @@ SQL;
         $moment_repo = new MomentRepository($this->getDb());
 
         // Get current moments based on existing translations for this worker
-        $translations = $moment_repo->findTranslations($worker_id);
-        $current_moment_ids = isset($translations['worker']) ? array_keys($translations['worker']) : [];
+        $current_moment_ids = $moment_repo->findMomentIdsByEntity($worker_id, 'worker');
 
         // Cast submitted IDs to integers
         $submitted_moment_ids = array_map('intval', $submitted_moment_ids);

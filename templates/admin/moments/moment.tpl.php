@@ -93,60 +93,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const translations = <?= json_encode($translations ?? []) ?>;
     let debounceTimer;
 
-    // Store original values to prevent overwriting manual edits
-    let perspectiveValues = {};
-
     function updatePreviewAndPerspectives() {
         const text = notesTextarea.value;
 
         fetch('/admin/ajax/expand_shortcodes.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'text=' + encodeURIComponent(text)
         })
         .then(response => response.json())
         .then(data => {
-            // Update live preview (with HTML)
             previewDiv.innerHTML = data.expanded_text || '';
+            perspectivesDiv.innerHTML = '';
 
-            // Update perspective fields
-            perspectivesDiv.innerHTML = ''; // Clear existing fields
             if (data.perspectives && data.perspectives.length > 0) {
                 const header = document.createElement('h3');
                 header.textContent = 'Perspectives';
                 perspectivesDiv.appendChild(header);
 
                 data.perspectives.forEach(p => {
-                    const fieldId = `perspective-${p.type}-${p.id}`;
-                    
+                    const saved_translation = translations[p.type] && translations[p.type][p.id] ? translations[p.type][p.id] : null;
+
+                    const container = document.createElement('div');
+                    container.style.marginBottom = '15px';
+
                     const label = document.createElement('label');
                     label.style.display = 'block';
-                    label.style.marginTop = '10px';
+                    label.style.fontWeight = 'bold';
                     label.textContent = `As ${p.name} (${p.type}):`;
-                    
+
                     const textarea = document.createElement('textarea');
-                    textarea.name = `perspectives[${p.type}][${p.id}]`;
-                    textarea.id = fieldId;
+                    textarea.name = `perspectives[${p.type}][${p.id}][note]`;
                     textarea.rows = 3;
                     textarea.style.width = '100%';
+                    textarea.value = saved_translation ? saved_translation.note : text;
 
-                    // Use saved translation if it exists, otherwise use raw text from main notes field
-                    const savedTranslation = translations[p.type] && translations[p.type][p.id] ? translations[p.type][p.id] : text;
+                    const checkboxLabel = document.createElement('label');
+                    checkboxLabel.style.marginLeft = '10px';
 
-                    if (perspectiveValues[fieldId] === undefined) {
-                        textarea.value = savedTranslation;
-                    } else {
-                        textarea.value = perspectiveValues[fieldId];
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = `perspectives[${p.type}][${p.id}][is_significant]`;
+                    checkbox.value = '1';
+                    if (saved_translation && saved_translation.is_significant) {
+                        checkbox.checked = true;
                     }
 
-                    textarea.addEventListener('input', () => {
-                        perspectiveValues[fieldId] = textarea.value;
-                    });
+                    checkboxLabel.appendChild(checkbox);
+                    checkboxLabel.append(' Is Significant Moment?');
 
-                    perspectivesDiv.appendChild(label);
-                    perspectivesDiv.appendChild(textarea);
+                    container.appendChild(label);
+                    container.appendChild(textarea);
+                    container.appendChild(checkboxLabel);
+                    perspectivesDiv.appendChild(container);
                 });
             }
         })
@@ -158,12 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     notesTextarea.addEventListener('input', function() {
         clearTimeout(debounceTimer);
-        // Clear saved values when the source text changes
-        perspectiveValues = {}; 
         debounceTimer = setTimeout(updatePreviewAndPerspectives, 300);
     });
 
-    // Initial load
     updatePreviewAndPerspectives();
 });
 </script>

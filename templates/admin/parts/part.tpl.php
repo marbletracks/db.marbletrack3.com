@@ -45,6 +45,10 @@
                         &nbsp; (Frames: <?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>)
                     <?php endif; ?>
 
+                    <label class="is-significant-label">
+                        <input type="checkbox" class="is-significant-checkbox" data-moment-id="<?= $moment->moment_id ?>" <?= $moment->is_significant ? 'checked' : '' ?>>
+                        IS
+                    </label>
                     <button type="button" class="remove-moment">Remove</button>
                 </li>
             <?php endforeach; ?>
@@ -200,4 +204,11 @@
 <script src="/admin/js/autocomplete.js" defer></script>
 <link rel="stylesheet" href="/admin/css/sortable-moments.css">
 <script src="/admin/js/sortable-moments.js" defer></script>
+<link rel="stylesheet" href="/admin/css/is-significant.css">
+<script src="/admin/js/update-significance.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeSignificanceUpdater(<?= $part->part_id ?? 'null' ?>, 'part');
+});
+</script>
 

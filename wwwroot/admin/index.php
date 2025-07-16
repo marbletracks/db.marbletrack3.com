@@ -9,6 +9,10 @@ if ($is_logged_in->isLoggedIn()) {
     $page->set(name: "site_version", value: SENTIMENTAL_VERSION);
     $page->set(name: "username", value: $is_logged_in->getLoggedInUsername());
 
+    $persistaroo = new \Database\DBPersistaroo($config);
+    $page->set(name: "backup_count", value: $persistaroo->getBackupCount());
+    $page->set(name: "latest_backup_time", value: $persistaroo->getLatestBackupTime());
+
     $pending = $dbExistaroo->getPendingMigrations();
     $page->set(name: "has_pending_migrations", value: !empty($pending));
     $inner = $page->grabTheGoods();

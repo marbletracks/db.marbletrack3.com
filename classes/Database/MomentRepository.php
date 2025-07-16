@@ -61,7 +61,19 @@ class MomentRepository
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
-            "SELECT moment_id, frame_start, frame_end, phrase_id, take_id, notes, moment_date FROM moments ORDER BY moment_id ASC"
+            sql: "SELECT
+                    moment_id,
+                    frame_start,
+                    frame_end,
+                    phrase_id,
+                    take_id,
+                    notes,
+                    moment_date
+                  FROM
+                    moments
+                  ORDER BY
+                    take_id ASC,
+                    frame_start ASC"
         );
 
         $moments = [];
@@ -98,7 +110,7 @@ class MomentRepository
     public function findTranslations(int $moment_id): array
     {
         $results = $this->db->fetchResults(
-            "SELECT perspective_entity_type, perspective_entity_id, translated_note FROM moment_translations WHERE moment_id = ?",
+            "SELECT perspective_entity_type, perspective_entity_id, translated_note, is_significant FROM moment_translations WHERE moment_id = ?",
             'i',
             [$moment_id]
         );
@@ -109,10 +121,36 @@ class MomentRepository
             $row = $results->data;
             $type = $row['perspective_entity_type'];
             $id = (int)$row['perspective_entity_id'];
-            $translations[$type][$id] = $row['translated_note'];
+            $translations[$type][$id] = [
+                'note' => $row['translated_note'],
+                'is_significant' => (bool)$row['is_significant'],
+            ];
         }
 
         return $translations;
+    }
+
+    /**
+     * Created by Gemini when using moment_translations for Parts as well as Workers
+     * @param int $entity_id
+     * @param string $entity_type
+     * @return int[]
+     */
+    public function findMomentIdsByEntity(int $entity_id, string $entity_type): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT moment_id FROM moment_translations WHERE perspective_entity_id = ? AND perspective_entity_type = ?",
+            'is',
+            [$entity_id, $entity_type]
+        );
+
+        $moment_ids = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $moment_ids[] = (int) $results->data['moment_id'];
+        }
+
+        return $moment_ids;
     }
 
     public function createTranslationIfNotExists(int $moment_id, int $perspective_id, string $perspective_type): void
@@ -147,6 +185,15 @@ class MomentRepository
         );
     }
 
+    public function updateSignificance(int $moment_id, int $perspective_id, string $perspective_type, bool $is_significant): void
+    {
+        $this->db->executeSQL(
+            "UPDATE moment_translations SET is_significant = ? WHERE moment_id = ? AND perspective_entity_id = ? AND perspective_entity_type = ?",
+            'iiis',
+            [(int)$is_significant, $moment_id, $perspective_id, $perspective_type]
+        );
+    }
+
     public function deleteTranslation(int $moment_id, int $perspective_id, string $perspective_type): void
     {
         $this->db->executeSQL(
@@ -159,10 +206,10 @@ class MomentRepository
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
-            "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date 
+            "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date
             FROM moments m
             JOIN parts_2_moments p2m ON m.moment_id = p2m.moment_id
-            WHERE p2m.part_id = ? 
+            WHERE p2m.part_id = ?
             ORDER BY p2m.sort_order ASC",
             'i',
             [$part_id]
@@ -206,16 +253,19 @@ class MomentRepository
 
         // Now, insert the new translations
         foreach ($perspectives as $type => $entities) {
-            foreach ($entities as $id => $note) {
+            foreach ($entities as $id => $data) {
+                $note = $data['note'] ?? null;
                 if (!empty($note)) { // Only insert if the note is not empty
+                    $is_significant = (int)($data['is_significant'] ?? 0);
                     $this->db->insertFromRecord(
                         'moment_translations',
-                        'isss',
+                        'isssi',
                         [
                             'moment_id' => $moment_id,
                             'perspective_entity_id' => (int)$id,
                             'perspective_entity_type' => $type,
                             'translated_note' => $note,
+                            'is_significant' => $is_significant,
                         ]
                     );
                 }

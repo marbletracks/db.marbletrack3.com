@@ -103,7 +103,38 @@ SQL;
 
     public function getMomentLinkingTable(): string
     {
-        return 'parts_2_moments';
+        // This is deprecated for Parts, as we now use moment_translations as the source of truth.
+        return '';
+    }
+
+    /**
+     * Used by wwwroot/admin/parts/part.php to save Moments with Parts.
+     * Created by Gemini, based on Workers (created by Gemini)
+     * @param int $part_id
+     * @param array $submitted_moment_ids
+     * @return void
+     */
+    public function syncMomentsFromTranslations(int $part_id, array $submitted_moment_ids): void
+    {
+        $moment_repo = new MomentRepository($this->getDb());
+
+        // Get current moments based on existing translations for this part
+        $current_moment_ids = $moment_repo->findMomentIdsByEntity($part_id, 'part');
+
+        // Cast submitted IDs to integers
+        $submitted_moment_ids = array_map('intval', $submitted_moment_ids);
+
+        // Find moments to add (present in submitted, but not in current)
+        $moments_to_add = array_diff($submitted_moment_ids, $current_moment_ids);
+        foreach ($moments_to_add as $moment_id) {
+            $moment_repo->createTranslationIfNotExists($moment_id, $part_id, 'part');
+        }
+
+        // Find moments to remove (present in current, but not in submitted)
+        $moments_to_remove = array_diff($current_moment_ids, $submitted_moment_ids);
+        foreach ($moments_to_remove as $moment_id) {
+            $moment_repo->deleteTranslation($moment_id, $part_id, 'part');
+        }
     }
 
     public function getPrimaryKeyColumn(): string
@@ -167,6 +198,36 @@ WHERE p.part_alias = ?
 SQL,
             'ss',
             [$this->langCode, $alias]
+        );
+
+        if ($results->numRows() === 0) {
+            return null;
+        }
+
+        $results->setRow(0);
+        $part_id = (int) $results->data['part_id'];
+        $this->setPartId($part_id);
+
+        return $this->hydrate($results->data);
+    }
+
+    public function findBySlug(string $slug): ?Part
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT p.part_id,
+       p.part_alias,
+       t.part_name,
+       t.part_description,
+       p.is_rail,
+       p.is_support,
+       p.is_track
+FROM parts p
+LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
+WHERE p.slug = ?
+SQL,
+            'ss',
+            [$this->langCode, $slug]
         );
 
         if ($results->numRows() === 0) {
@@ -329,6 +390,14 @@ SQL,
         // Load and attach moments via HasMoments trait
         $this->loadMoments($part);
         $part->moments = $this->getMoments();
+
+        if($part->name == $part->description) {
+            // quickly get the source of the data.  Not needed once all Parts on this site have detailed info
+            $part->frontend_link = "https://www.marbletrack3.com/p/{$part->part_alias}";
+        } else {
+            // We have data on this site so stay on this site.
+            $part->frontend_link = "/parts/" . \Utilities::slugify($part->name, 200);
+        }
 
         return $part;
     }
