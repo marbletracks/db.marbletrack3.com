@@ -103,7 +103,8 @@ SQL;
 
     public function getMomentLinkingTable(): string
     {
-        return 'parts_2_moments';
+        // This is deprecated for Parts, as we now use moment_translations as the source of truth.
+        return '';
     }
 
     public function getPrimaryKeyColumn(): string
