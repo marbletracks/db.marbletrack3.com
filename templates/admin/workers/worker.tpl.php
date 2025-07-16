@@ -136,48 +136,10 @@
 <link rel="stylesheet" href="/admin/css/sortable-moments.css">
 <script src="/admin/js/sortable-moments.js" defer></script>
 <link rel="stylesheet" href="/admin/css/is-significant.css">
+<script src="/admin/js/update-significance.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const workerId = <?= $worker->worker_id ?? 'null' ?>;
-    if (!workerId) return;
-
-    document.querySelectorAll('.is-significant-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const momentId = this.dataset.momentId;
-            const isSignificant = this.checked;
-            const listItem = this.closest('li');
-
-            listItem.classList.add('saving');
-
-            const formData = new FormData();
-            formData.append('moment_id', momentId);
-            formData.append('perspective_id', workerId);
-            formData.append('perspective_type', 'worker');
-            formData.append('is_significant', isSignificant);
-
-            fetch('/admin/ajax/update_moment_significance.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status !== 'success') {
-                    alert('Error saving significance.');
-                    // Revert checkbox on failure
-                    this.checked = !isSignificant;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('A network error occurred.');
-                this.checked = !isSignificant;
-            })
-            .finally(() => {
-                // Remove the visual indicator
-                setTimeout(() => listItem.classList.remove('saving'), 250);
-            });
-        });
-    });
+    initializeSignificanceUpdater(<?= $worker->worker_id ?? 'null' ?>, 'worker');
 });
 </script>
 
