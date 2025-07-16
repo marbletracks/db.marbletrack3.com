@@ -1,0 +1,12 @@
+.is-significant-label {
+    margin: 0 10px;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+.is-significant-label input {
+    vertical-align: middle;
+}
+li.saving {
+    background-color: #fff8e1;
+    transition: background-color 0.2s;
+}

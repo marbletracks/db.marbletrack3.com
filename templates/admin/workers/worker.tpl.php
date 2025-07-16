@@ -135,20 +135,7 @@
 <script src="/admin/js/autocomplete.js" defer></script>
 <link rel="stylesheet" href="/admin/css/sortable-moments.css">
 <script src="/admin/js/sortable-moments.js" defer></script>
-<style>
-    .is-significant-label {
-        margin: 0 10px;
-        font-size: 0.8em;
-        cursor: pointer;
-    }
-    .is-significant-label input {
-        vertical-align: middle;
-    }
-    li.saving {
-        background-color: #fff8e1;
-        transition: background-color 0.2s;
-    }
-</style>
+<link rel="stylesheet" href="/admin/css/is-significant.css">
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const workerId = <?= $worker->worker_id ?? 'null' ?>;
