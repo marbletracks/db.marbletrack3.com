@@ -19,7 +19,7 @@
                     <td><?= $moment->take_id ?></td>
                     <td>
                         <?php if ($moment->photos[0]): ?>
-                            <img src="<?= htmlspecialchars($moment->photos[0]->getThumbnailUrl()) ?>" alt="Moment photo" style="max-width: 100px; max-height: 100px;">
+                            <a href="<?= $moment->photos[0]->getUrl() ?>"><img src="<?= $moment->photos[0]->getThumbnailUrl() ?>" alt="Image preview" style="max-width: 100px;"></a>
                         <?php endif; ?>
                     </td>
                     <td><?= htmlspecialchars($moment->notes ?? '(no notes)') ?></td>

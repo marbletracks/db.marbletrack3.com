@@ -111,7 +111,7 @@
             Image URLs:<br>
             <div id="image-url-fields">
 <?php if (!empty($part->photos)):foreach ($part->photos ?? [''] as $photo): ?>
-    <img src="<?= $photo->getThumbnailUrl() ?>" alt="Image preview"><br>
+    <a href="<?= $photo->getUrl() ?>"><img src="<?= $photo->getThumbnailUrl() ?>" alt="Image preview"></a><br>
     <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
 <?php endforeach; ?>
 <?php endif; ?>
