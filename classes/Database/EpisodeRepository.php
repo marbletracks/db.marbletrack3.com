@@ -92,6 +92,31 @@ SQL
         return $this->hydrate(row: $results->data);
     }
 
+    public function findByLivestreamId(int $livestream_id): ?Episode
+    {
+        $results = $this->db->fetchResults(
+            "SELECT
+                    episode_id,
+                    title,
+                    episode_english_description,
+                    episode_frames,
+                    livestream_id,
+                    created_at
+                  FROM episodes
+                  WHERE livestream_id = ?",
+            'i',
+            [$livestream_id]
+        );
+
+        if ($results->numRows() === 0) {
+            return null;
+        }
+
+        $results->setRow(0);
+        $this->episode_id = (int) $results->data['episode_id'];
+        return $this->hydrate(row: $results->data);
+    }
+
     public function update(
         int $episode_id,
         string $title,

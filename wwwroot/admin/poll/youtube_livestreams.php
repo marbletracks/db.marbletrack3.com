@@ -40,6 +40,7 @@ if (empty($apiKey)) {
 }
 
 use Database\LivestreamFactory;
+use Database\EpisodeRepository;
 
 function fetchYouTube($url)
 {
@@ -75,6 +76,10 @@ $requirePagination = false; // continue pagination until we find a video already
 
 $pageToken = null;
 $count = 0;
+$livestreams_repo = new LivestreamsRepository(db: $mla_database);
+$episodes_repo = new EpisodeRepository(db: $mla_database);
+$results = [];   // will be sent to the template
+
 do {
     $url = "https://www.googleapis.com/youtube/v3/search?" . http_build_query([
         'key' => $apiKey,
@@ -94,7 +99,6 @@ do {
     }
     $data = json_decode($response, true);
 
-    $results = [];   // will be sent to the template
     foreach ($data['items'] as $item) {
         // print_rob(object: $item, exit: false);
         $ls = LivestreamFactory::fromApiItem(apiItem: $item, db: $mla_database, platform: 'youtube');
@@ -107,20 +111,36 @@ do {
                 'url' => $ls->getWatchUrl(),
                 'thumbnail_url' => $ls->getThumbnailUrl(),
                 'duration' => $item['duration'],
+                'has_episode' => false,
             ];
-            $requirePagination = false;
-        } elseif (!$ls->durationSavedInDatabaseBool(external_id: $ls->getExternalId())) {
-            $need_duration_for_external_ids[] = $ls->getExternalId();
             $requirePagination = false;
         } else {
             $requirePagination = false;
-            $results[] = [
+            $local_livestream = $livestreams_repo->findByExternalId($ls->getExternalId());
+            $episode = $episodes_repo->findByLivestreamId($local_livestream->livestream_id);
+
+            $result = [
+                'livestream_id' => $local_livestream->livestream_id,
                 'title' => $ls->getTitle(),
-                'status' => '😊 Already in database including thumbnail',
+                'status' => '😊 Already in database',
                 'url' => $ls->getWatchUrl(),
                 'thumbnail_url' => 'https://i.ytimg.com/vi/' . $item['id']['videoId'] . '/mqdefault.jpg',
                 'duration' => $item['duration'],
+                'has_episode' => false,
             ];
+
+            if ($episode) {
+                $result['has_episode'] = true;
+                $result['episode_id'] = $episode->episode_id;
+                $result['status'] .= ', episode exists';
+            }
+
+            if (!$ls->durationSavedInDatabaseBool(external_id: $ls->getExternalId())) {
+                $need_duration_for_external_ids[] = $ls->getExternalId();
+            } else {
+                $result['status'] .= ' including thumbnail';
+            }
+            $results[] = $result;
             // break;  // YT API returns most recent first, so we can stop if it's already in the database
         }
     }
@@ -171,7 +191,7 @@ do {
 
 $platform = "YouTube";
 $page = new \Template(config: $config);
-$page->setTemplate(template_file: "admin/poll/twitch_livestreams.tpl.php");
+$page->setTemplate(template_file: "admin/poll/livestream_poll_results.tpl.php");
 $page->set(name: "results", value: $results);
 $page->set(name: "platform", value: $platform);
 $inner = $page->grabTheGoods();
