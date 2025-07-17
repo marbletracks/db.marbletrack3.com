@@ -1,5 +1,6 @@
 <div class="PagePanel">
     <h1>All Moments</h1>
+    <p><a href="/admin/moments/moment.php">Create New Moment</a></p>
     <table border="1" cellpadding="5">
         <thead>
             <tr>
