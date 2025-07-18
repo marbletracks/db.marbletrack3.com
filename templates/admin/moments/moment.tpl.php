@@ -26,7 +26,7 @@
 
         <label>
             Frame Start:<br>
-            <input type="number" id="frame_start" name="frame_start" value="<?= htmlspecialchars((string)($moment->frame_start ?? '')) ?>">
+            <input type="number" id="frame_start" name="frame_start" value="<?= htmlspecialchars((string)($moment->frame_start ?? $default_frame_start)) ?>">
         </label>
         <label>
             Seconds:
@@ -52,7 +52,13 @@
             <select name="take_id">
                 <option value="">-- Select a Take --</option>
                 <?php foreach ($takes as $take): ?>
-                    <option value="<?= $take->take_id ?>" <?= ($moment && $moment->take_id == $take->take_id) ? 'selected' : '' ?>>
+<?php
+$selected = false;
+if($moment && $moment->take_id == $take->take_id) { $selected = true; }  // editing an existing moment
+elseif($default_take_id == $take->take_id) { $selected = true; }   // creating new moment for this take_id
+else { $selected = false; }
+?>
+                    <option value="<?= $take->take_id ?>" <?= $selected ? 'selected' : '' ?>>
                         <?= htmlspecialchars($take->take_name) ?>
                     </option>
                 <?php endforeach; ?>

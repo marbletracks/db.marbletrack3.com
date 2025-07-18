@@ -10,6 +10,10 @@ if (!$is_logged_in->isLoggedIn()) {
 use Database\MomentRepository;
 use Database\TakeRepository;
 
+// grab these in case we are tryna populate a new Moment from Moment Index
+$default_frame_start = $mla_request->get['frame_start'] ?? "";
+$default_take_id = $mla_request->get['take_id'] ?? "";
+
 $moment_repo = new MomentRepository($mla_database);
 $take_repo = new TakeRepository($mla_database);
 $errors = [];
@@ -67,6 +71,8 @@ $page = new \Template($config);
 $page->setTemplate("admin/moments/moment.tpl.php");
 $page->set("errors", $errors);
 $page->set("moment", $moment);
+$page->set(name: "default_frame_start", value: $default_frame_start);
+$page->set(name: "default_take_id", value: $default_take_id);
 $page->set("translations", $translations);
 $page->set("takes", $takes);
 $inner = $page->grabTheGoods();

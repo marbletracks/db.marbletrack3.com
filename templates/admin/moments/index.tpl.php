@@ -25,7 +25,10 @@
                     <td><?= $moment->notes ?? '(no notes)' ?></td>
                     <td>
                         <?php if ($moment->frame_start || $moment->frame_end): ?>
-                            <?= $moment->frame_start ?? '?' ?> - <?= $moment->frame_end ?? '?' ?>
+                            <?= $moment->frame_start ?? '?' ?> -
+                            <a href="/admin/moments/moment.php?take_id=<?= $moment->take_id ?>&frame_start=<?= $moment->frame_end ?>">
+                                <?= $moment->frame_end ?? '?' ?>
+                            </a>
                         <?php endif; ?>
                     </td>
                     <td><?= htmlspecialchars($moment->moment_date ?? '') ?></td>
