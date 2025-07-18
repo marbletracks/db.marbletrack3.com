@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            previewDiv.innerHTML = '<span style="color: red;">Error loading preview.</span>';
+            previewDiv.innerHTML = '<span style="color: red;">Error loading preview: ' + error + '</span>';
             console.error('Fetch error:', error);
         });
     }
