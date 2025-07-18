@@ -22,7 +22,7 @@
                             <a href="<?= $moment->photos[0]->getUrl() ?>"><img src="<?= $moment->photos[0]->getThumbnailUrl() ?>" alt="Image preview" style="max-width: 100px;"></a>
                         <?php endif; ?>
                     </td>
-                    <td><?= htmlspecialchars($moment->notes ?? '(no notes)') ?></td>
+                    <td><?= $moment->notes ?? '(no notes)' ?></td>
                     <td>
                         <?php if ($moment->frame_start || $moment->frame_end): ?>
                             <?= $moment->frame_start ?? '?' ?> - <?= $moment->frame_end ?? '?' ?>

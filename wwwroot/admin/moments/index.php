@@ -8,9 +8,16 @@ if (!$is_logged_in->isLoggedIn()) {
     exit;
 }
 
+$partRepo = new \Database\PartsRepository($mla_database, "en");
+$workerRepo = new \Database\WorkersRepository($mla_database, "en");
+
 $repo = new \Database\MomentRepository($mla_database);
 $moments = $repo->findAll();
 
+foreach ($moments as $key => $moment) {
+    $moment->notes = $partRepo->expandShortcodesForBackend($moment->notes, "part", "en");
+    $moment->notes = $workerRepo->expandShortcodesForBackend($moment->notes, "worker", "en");
+}
 $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/moments/index.tpl.php");
 $page->set(name: "moments", value: $moments);
