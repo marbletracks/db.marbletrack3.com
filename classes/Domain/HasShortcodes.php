@@ -56,12 +56,12 @@ trait HasShortcodes
     }
 
     /**
-     * Summary of expandShortcodes
+     * Summary of expandShortcodesForFrontend
      * @param string $text
      * @param string $type "part" or "worker"
      * @return string
      */
-    public function expandShortcodes(string $text, string $type, string $langCode): string
+    public function expandShortcodesForFrontend(string $text, string $type, string $langCode): string
     {
         // This regex finds all occurrences of [part:some_slug]
         preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);

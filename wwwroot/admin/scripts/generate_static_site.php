@@ -58,13 +58,13 @@ function simple_yaml_parse(string $yaml_content): array {
     return $map;
 }
 
-function expandShortCodes(Database\DbInterface $mla_database, string $text, string $langCode): string
+function expandShortcodesForFrontend(Database\DbInterface $mla_database, string $text, string $langCode): string
 {
 
     $worker_repo = new \Database\WorkersRepository($mla_database, $langCode);
     $parts_repo = new \Database\PartsRepository($mla_database, $langCode);
-    $expand_workers = $worker_repo->expandShortcodes($text, "worker", $langCode);
-    $expand_parts = $parts_repo->expandShortcodes($expand_workers, "part", $langCode);
+    $expand_workers = $worker_repo->expandShortcodesForFrontend($text, "worker", $langCode);
+    $expand_parts = $parts_repo->expandShortcodesForFrontend($expand_workers, "part", $langCode);
 
     return $expand_parts;
 }
@@ -98,7 +98,7 @@ if (isset($config_data['indexes'])) {
         $inner_tpl->setTemplate($index['template']);
         $inner_tpl->set(strtolower($entityName) . 's', $items); // e.g., set('workers', $workers)
         $inner_content = $inner_tpl->grabTheGoods();
-        $longcode_content = expandShortcodes(
+        $longcode_content = expandShortcodesForFrontend(
             mla_database: $mla_database,
             text: $inner_content,
             langCode: "en",
@@ -136,7 +136,7 @@ if (isset($config_data['entities'])) {
             $inner_tpl->setTemplate($entity['template']);
             $inner_tpl->set(strtolower($entityName), $item);
             $inner_content = $inner_tpl->grabTheGoods();
-            $longcode_content = expandShortcodes(
+            $longcode_content = expandShortcodesForFrontend(
                 mla_database: $mla_database,
                 text: $inner_content,
                 langCode: "en",
