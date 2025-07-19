@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Add Moments and Parts";
+const SENTIMENTAL_VERSION = "Add Moments in Realtime";
 
 # write errors to screen
 ini_set('display_errors', 1);
