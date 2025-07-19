@@ -8,11 +8,18 @@ if (!$is_logged_in->isLoggedIn()) {
     exit;
 }
 
+$take_id = intval(value: $mla_request->get['take_id']) ?? 0;
+
 $partRepo = new \Database\PartsRepository($mla_database, "en");
 $workerRepo = new \Database\WorkersRepository($mla_database, "en");
 
 $repo = new \Database\MomentRepository($mla_database);
-$moments = $repo->findAll();
+$moments = [];
+if($take_id > 0) {
+    $moments = $repo->findWithinTakeId(take_id: $take_id);
+} else {
+    $moments = $repo->findAll();
+}
 
 foreach ($moments as $key => $moment) {
     $moment->notes = $partRepo->expandShortcodesForBackend($moment->notes, "part", "en");
@@ -21,6 +28,7 @@ foreach ($moments as $key => $moment) {
 $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/moments/index.tpl.php");
 $page->set(name: "moments", value: $moments);
+$page->set(name: "take_id", value: $take_id);
 $page->set(name: "page_title", value: "Moment Index");
 $inner = $page->grabTheGoods();
 

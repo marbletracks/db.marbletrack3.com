@@ -58,6 +58,35 @@ class MomentRepository
         return $this->hydrate($results->data);
     }
 
+    public function findWithinTakeId(int $take_id): array
+    {
+        $results = $this->db->fetchResults(
+            sql: "SELECT
+                    moment_id,
+                    frame_start,
+                    frame_end,
+                    phrase_id,
+                    take_id,
+                    notes,
+                    moment_date
+                  FROM moments
+                  WHERE take_id = ?
+                  ORDER BY
+                    frame_start ASC",
+            paramtypes: 'i',
+            var1: [$take_id]
+        );
+
+        $moments = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $this->moment_id = (int) $results->data['moment_id']; // Set the moment_id for HasPhotos
+            $moments[] = $this->hydrate($results->data);
+        }
+
+        return $moments;
+    }
+
     public function findAll(): array
     {
         $results = $this->db->fetchResults(

@@ -1,6 +1,12 @@
 <div class="PagePanel">
     <h1>All Moments</h1>
     <p><a href="/admin/moments/moment.php">Create New Moment</a></p>
+    <?php if ($take_id > 0): ?>
+        <p>
+            <a href="/admin/moments/?take_id=<?= $take_id - 1 ?>">Previous take</a> -
+            <a href="/admin/moments/?take_id=<?= $take_id + 1 ?>">Next take</a>
+        </p>
+    <?php endif; // ($take_id > 0): ?>
     <table border="1" cellpadding="5">
         <thead>
             <tr>
@@ -16,7 +22,7 @@
         <tbody>
             <?php foreach ($moments as $moment): ?>
                 <tr>
-                    <td><?= $moment->take_id ?></td>
+                    <td><a href="/admin/moments/?take_id=<?= $moment->take_id ?>"><?= $moment->take_id ?></a></td>
                     <td>
                         <?php if ($moment->photos[0]): ?>
                             <a href="<?= $moment->photos[0]->getUrl() ?>"><img src="<?= $moment->photos[0]->getThumbnailUrl() ?>" alt="Image preview" style="max-width: 100px;"></a>
