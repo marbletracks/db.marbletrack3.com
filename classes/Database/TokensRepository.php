@@ -53,13 +53,46 @@ class TokensRepository
      */
     public function findForWorker(int $worker_id): array
     {
+        // First, find the permanent token for each column for this worker.
+        // A permanent token is the one with the lowest y_pos in its column.
+        $sql_permanent = "SELECT t.token_id
+                          FROM tokens t
+                          JOIN (
+                              SELECT column_id, MIN(token_y_pos) as min_y
+                              FROM tokens
+                              GROUP BY column_id
+                          ) as min_tokens ON t.column_id = min_tokens.column_id AND t.token_y_pos = min_tokens.min_y
+                          JOIN columns c ON t.column_id = c.column_id
+                          WHERE c.worker_id = ?";
+        $permanent_results = $this->db->fetchResults($sql_permanent, 'i', [$worker_id]);
+        $permanent_token_ids = [];
+        for ($i = 0; $i < $permanent_results->numRows(); $i++) {
+            $permanent_results->setRow($i);
+            $permanent_token_ids[] = (int)$permanent_results->data['token_id'];
+        }
+
+        $params = [$worker_id];
+        $types = 'i';
+
+        $permanent_clause = "p.phrase_id IS NULL"; // Default for when there are no permanent tokens
+        if (!empty($permanent_token_ids)) {
+            $placeholders = implode(',', array_fill(0, count($permanent_token_ids), '?'));
+            $permanent_clause = "p.phrase_id IS NULL OR t.token_id IN ($placeholders)";
+            $types .= str_repeat('i', count($permanent_token_ids));
+            $params = array_merge($params, $permanent_token_ids);
+        }
+
+
+        // Now, get all tokens for the worker that are either permanent, or not yet part of a moment.
         $sql = "SELECT t.*
                 FROM tokens t
                 JOIN columns c ON t.column_id = c.column_id
+                LEFT JOIN phrases p ON JSON_CONTAINS(p.token_json, CAST(t.token_id AS JSON)) AND p.moment_id IS NOT NULL
                 WHERE c.worker_id = ?
+                AND ($permanent_clause)
                 ORDER BY t.token_y_pos ASC, t.token_x_pos ASC";
 
-        $results = $this->db->fetchResults($sql, 'i', [$worker_id]);
+        $results = $this->db->fetchResults($sql, $types, $params);
 
         $tokens = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
