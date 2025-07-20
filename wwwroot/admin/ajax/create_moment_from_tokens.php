@@ -55,11 +55,27 @@ try {
     // Create the phrase string without alias expansion
     $phrase_string = implode(' ', array_map(fn($t) => $t->token_string, $tokens));
 
-    // Create the phrase in the database
-    $phrase_id = $phrasesRepo->create($phrase_string, $token_ids);
+    // --- Parse frame numbers from the phrase string ---
+    $moment_text_for_notes = $phrase_string;
+    $frame_start = null;
+    $frame_end = null;
+
+    // Regex to find two numbers at the end of the string, with an optional hyphen or tilde
+    $pattern = '/\s+(\d+)\s*[-~]?\s*(\d+)$/';
+    if (preg_match($pattern, $phrase_string, $matches)) {
+        // The main text for the note is everything before the matched numbers
+        $moment_text_for_notes = preg_replace($pattern, '', $phrase_string);
+        $frame_start = (int)$matches[1];
+        $frame_end = (int)$matches[2];
+    }
+
+    // --- Get the date from the last token, or use today as a fallback ---
+    $last_token = end($tokens);
+    $moment_date = (!empty($last_token->token_date)) ? $last_token->token_date : date('Y-m-d');
+
 
     // Expand aliases for the moment notes
-    $expanded_with_workers = $workersRepo->expandShortcodesForBackend($phrase_string, "worker", 'en');
+    $expanded_with_workers = $workersRepo->expandShortcodesForBackend($moment_text_for_notes, "worker", 'en');
     $moment_notes = $partsRepo->expandShortcodesForBackend($expanded_with_workers, "part", 'en');
 
     // 1. Create the moment first to get a valid moment_id
