@@ -343,6 +343,6 @@ class MomentRepository
                 moment_date: $results->data['moment_date'] ?? null
             );
         }
-        return $moments;
+        return array_reverse($moments);
     }
 }
