@@ -62,11 +62,11 @@ try {
     $expanded_with_workers = $workersRepo->expandShortcodesForBackend($phrase_string, "worker", 'en');
     $moment_notes = $partsRepo->expandShortcodesForBackend($expanded_with_workers, "part", 'en');
 
-    // Create the moment
-    $moment_id = $momentRepo->insert(null, null, $phrase_id, null, $moment_notes, date('Y-m-d'));
+    // 1. Create the moment first to get a valid moment_id
+    $moment_id = $momentRepo->insert($frame_start, $frame_end, null, $moment_notes, $moment_date);
 
-    // Link the phrase to the moment
-    $phrasesRepo->setMomentId($phrase_id, $moment_id);
+    // 2. Now create the phrase, linking it to the new moment
+    $phrase_id = $phrasesRepo->create($phrase_string, $token_ids, $moment_id);
 
     echo json_encode(['success' => true, 'moment_id' => $moment_id, 'phrase_id' => $phrase_id]);
 

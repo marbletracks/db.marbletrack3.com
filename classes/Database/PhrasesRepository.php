@@ -11,14 +11,15 @@ class PhrasesRepository
         $this->db = $db;
     }
 
-    public function create(string $phrase, array $token_ids): int
+    public function create(string $phrase, array $token_ids, int $moment_id): int
     {
         return $this->db->insertFromRecord(
             'phrases',
-            'ss',
+            'ssi',
             [
                 'phrase' => $phrase,
                 'token_json' => json_encode($token_ids),
+                'moment_id' => $moment_id,
             ]
         );
     }
