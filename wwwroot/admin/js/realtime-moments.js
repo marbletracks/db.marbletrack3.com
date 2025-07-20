@@ -95,29 +95,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const tokenIds = Array.from(tokenItems).map(item => item.dataset.tokenId);
 
-            if (confirm('Are you sure you want to create a moment from these tokens?')) {
-                const formData = new FormData();
-                formData.append('action', 'create_from_tokens');
-                formData.append('token_ids', JSON.stringify(tokenIds));
+            const formData = new FormData();
+            formData.append('action', 'create_from_tokens');
+            formData.append('token_ids', JSON.stringify(tokenIds));
 
-                fetch('/admin/ajax/create_moment_from_tokens.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Moment created successfully!');
-                        window.location.reload(); // Reload to see the changes
-                    } else {
-                        alert('Error: ' + (data.error || 'An unknown error occurred.'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An unexpected network error occurred.');
-                });
-            }
+            fetch('/admin/ajax/create_moment_from_tokens.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload(); // Reload to see the changes
+                } else {
+                    alert('Error: ' + (data.error || 'An unknown error occurred.'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An unexpected network error occurred.');
+            });
         });
     });
 });
