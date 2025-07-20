@@ -22,7 +22,6 @@ $page->setTemplate('admin/moments/realtime.tpl.php');
 $page->set('title', 'Realtime Moments');
 $page->set('workers', $workers);
 $page->set('page_title', 'Realtime Moments');
-$page->set('user', $is_logged_in->getLoggedInUsername());
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);
