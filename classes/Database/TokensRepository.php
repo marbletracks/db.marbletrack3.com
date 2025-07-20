@@ -57,7 +57,7 @@ class TokensRepository
                 FROM tokens t
                 JOIN columns c ON t.column_id = c.column_id
                 WHERE c.worker_id = ?
-                ORDER BY t.created_at DESC";
+                ORDER BY t.token_y_pos ASC, t.token_x_pos ASC";
 
         $results = $this->db->fetchResults($sql, 'i', [$worker_id]);
 

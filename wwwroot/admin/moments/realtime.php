@@ -16,7 +16,8 @@ $workers = $workers_repo->findAll();
 
 foreach ($workers as $worker) {
     $worker->moments = $moment_repo->findLatestForWorker($worker->worker_id, 2);
-    $worker->tokens = $tokens_repo->findForWorker($worker->worker_id);
+    $tokens = $tokens_repo->findForWorker($worker->worker_id);
+    $worker->phrases = \Physical\PhraseBuilder::groupTokensIntoPhrases($tokens);
 }
 
 $page = new \Template($config);

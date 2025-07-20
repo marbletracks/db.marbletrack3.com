@@ -35,16 +35,18 @@
 
                 <div class="tokens-section" style="margin-top: 15px;">
                     <h4 style="margin-bottom: 5px; font-size: 1em; color: #333;">Recent Tokens:</h4>
-                    <?php if (!empty($worker->tokens)): ?>
-                        <div class="token-inputs" style="display: flex; flex-wrap: wrap; gap: 5px;">
-                            <?php foreach ($worker->tokens as $index => $token): ?>
-                                <?php if ($index === 0): ?>
-                                    <input type="text" value="<?= htmlspecialchars($token->token_string) ?>" style="width: 120px;" title="<?= $token->token_id ?>">
-                                <?php else: ?>
-                                    <input type="text" value="<?= htmlspecialchars($token->token_string) ?>" style="width: 40px;" title="<?= $token->token_id ?>">
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </div>
+                    <?php if (!empty($worker->phrases)): ?>
+                        <?php foreach ($worker->phrases as $phrase): ?>
+                            <div class="token-inputs" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 5px;">
+                                <?php foreach ($phrase->tokens as $index => $token): ?>
+                                    <?php if ($index === 0): ?>
+                                        <input type="text" value="<?= htmlspecialchars($token->token_string) ?>" style="width: 120px;" title="Token ID: <?= $token->token_id ?>">
+                                    <?php else: ?>
+                                        <input type="text" value="<?= htmlspecialchars($token->token_string) ?>" style="width: 40px;" title="Token ID: <?= $token->token_id ?>">
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <p style="font-size: 0.85em; color: #888; font-style: italic;">No recent tokens.</p>
                     <?php endif; ?>
