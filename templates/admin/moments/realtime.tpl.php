@@ -30,6 +30,10 @@
     .token-item:active {
         cursor: grabbing;
     }
+    .token-permanent {
+        border: 2px solid #000000 !important;
+        font-weight: bold;
+    }
     .phrase-builder-area {
         display: flex;
         align-items: center;
@@ -78,7 +82,7 @@
                     <div id="available-tokens-<?= $worker->worker_id ?>" class="tokens-container available-tokens">
                         <?php if (!empty($worker->tokens)): ?>
                             <?php foreach ($worker->tokens as $token): ?>
-                                <div class="token-item" data-token-id="<?= $token->token_id ?>">
+                                <div class="token-item <?= $token->is_permanent ? 'token-permanent' : '' ?>" data-token-id="<?= $token->token_id ?>" title="Token ID: <?= $token->token_id ?>">
                                     <?= htmlspecialchars($token->token_string) ?>
                                 </div>
                             <?php endforeach; ?>

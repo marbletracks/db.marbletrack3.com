@@ -11,29 +11,71 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Make both containers sortable and part of the same group
         new Sortable(availableContainer, {
-            group: {
-                name: `worker-${workerId}`,
-                pull: true,
-                put: true
-            },
+            group: { name: `worker-${workerId}`, pull: true, put: true },
             animation: 150,
             forceFallback: true,
-            ghostClass: 'blue-background-class'
+            ghostClass: 'blue-background-class',
+            onStart: () => {
+                document.body.classList.add('dragging');
+            },
+            onEnd: () => {
+                document.body.classList.remove('dragging');
+            }
         });
 
         new Sortable(buildPhraseContainer, {
-            group: {
-                name: `worker-${workerId}`,
-                pull: true,
-                put: true
-            },
+            group: { name: `worker-${workerId}`, pull: true, put: true },
             animation: 150,
             forceFallback: true,
-            ghostClass: 'blue-background-class'
+            ghostClass: 'blue-background-class',
+            onStart: () => {
+                document.body.classList.add('dragging');
+            },
+            onEnd: () => {
+                document.body.classList.remove('dragging');
+            }
         });
     });
 
-    // Add event listeners for the 'Create Moment' buttons
+    // --- Click vs. Drag Logic for Toggling Permanence ---
+    document.querySelectorAll('.tokens-container').forEach(container => {
+        container.addEventListener('click', function(e) {
+            // Only act on clicks on .token-item, and only if we are not currently dragging
+            const tokenItem = e.target.closest('.token-item');
+            if (tokenItem && !document.body.classList.contains('dragging')) {
+                toggleTokenPermanence(tokenItem);
+            }
+        });
+    });
+
+    function toggleTokenPermanence(tokenElement) {
+        const tokenId = tokenElement.dataset.tokenId;
+        if (!tokenId) return;
+
+        const formData = new FormData();
+        formData.append('token_id', tokenId);
+
+        fetch('/admin/ajax/toggle_token_permanence.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Toggle the class for immediate visual feedback
+                tokenElement.classList.toggle('token-permanent', data.is_permanent);
+            } else {
+                alert('Error: ' + (data.error || 'An unknown error occurred.'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An unexpected network error occurred.');
+        });
+    }
+
+
+    // --- Create Moment Button Logic ---
     document.querySelectorAll('.create-moment-btn').forEach(button => {
         button.addEventListener('click', function () {
             const workerId = this.dataset.workerId;
