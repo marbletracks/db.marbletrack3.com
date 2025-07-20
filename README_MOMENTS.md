@@ -12,7 +12,7 @@ This feature introduces a new page that acts as a digital notebook. The text ent
 - **Immediate Token Creation:** Any text entered is immediately saved as a `Token` in the database.
 - **Phrases Group Tokens:** A `Phrase` is a collection of one or more `Tokens` that logically belong together. On this page, each line of input under a worker will correspond to a single `Phrase`.
 - **Moments Expand Phrases:** A `Moment` is the structured, actionable version of a `Phrase`, containing frame data and expanded shortcodes.
-- **Linking Phrases to Workers (Temporary Solution):** To associate an incomplete `Phrase` (one that is not yet a `Moment`) with a `Worker`, a temporary column `temp_not_3rd_normal_worker_id` will be added to the `phrases` table. This provides the necessary link for the UI.
+- **Linking Tokens to Workers:** Each `Worker` has one or more `Columns` assigned to them in the digital notebook. When a user enters text for a `Worker` on the "Realtime Moments" page, `Tokens` are created within that `Worker`'s `Column`. This establishes the link: `Worker` -> `Column` -> `Token`. A `Phrase` is a logical grouping of these `Tokens`.
 
 ## 3. Page Design and Functionality
 
@@ -23,7 +23,7 @@ The page will display a sortable grid of all `Workers` who are the main drivers 
 
 ### Step 2: Display of Recent Activity
 Below each `Worker` in the grid, a list of their activity will be displayed:
-- **Incomplete Phrases:** Open `Phrases` linked to that `Worker` via `temp_not_3rd_normal_worker_id`. These are lines of `Tokens` waiting to become a `Moment`.
+- **Incomplete Phrases:** Open `Phrases` linked to that `Worker`. The connection is made via `Tokens` which belong to a `Column` that is assigned to the `Worker`. These are lines of `Tokens` waiting to become a `Moment`.
 - **Recent Moments:** A list of the two most recent `Moments` for which a `moment_translation` exists for that `Worker`. This is fetched by the `MomentRepository::findLatestForWorker()` method.
 - The sorting for recent moments is descending by `moment.take_id` and `moment.frame_start` to show the latest activity first.
 
@@ -33,7 +33,7 @@ Below each `Worker` in the grid, a list of their activity will be displayed:
 2.  **Token Creation:** When a user types text (e.g., `Go to CS 1245`) and submits (e.g., presses Enter or a save button), a `Token` is created instantly.
 3.  **Phrase Creation/Update:** A corresponding `Phrase` record is created or updated.
     -   The `phrase.token_json` array is populated with the new `token_id`.
-    -   The `phrase.temp_not_3rd_normal_worker_id` is set to the ID of the `Worker` it's under.
+    -   The `Phrase` is implicitly linked to the `Worker` because its `Tokens` belong to a `Column` assigned to that `Worker`.
 4.  **Realtime Parsing:** As `Tokens` are added, a read-only field below the input will show a preview of the potential `Moment.note` (e.g., `[worker:reversible-guy] go to [part:caret-splitter]`) and the frame numbers, using the same parsing logic as the moment edit page.
 5.  **Moment Creation:** A `[create moment]` button is always visible next to each `Phrase`.
     -   **Heuristic:** The button could be enabled or highlighted once the system detects what looks like a complete phrase (e.g., text and two numbers).
