@@ -24,8 +24,8 @@ The page will display a sortable grid of all `Workers` who are the main drivers 
 ### Step 2: Display of Recent Activity
 Below each `Worker` in the grid, a list of their activity will be displayed:
 - **Incomplete Phrases:** Open `Phrases` linked to that `Worker` via `temp_not_3rd_normal_worker_id`. These are lines of `Tokens` waiting to become a `Moment`.
-- **Recent Moments:** A list of the most recent `Moments` for which a `moment_translation` exists for that `Worker`.
-- The sorting will be chronological (`moment.take_id`, `moment.frame_start`).
+- **Recent Moments:** A list of the two most recent `Moments` for which a `moment_translation` exists for that `Worker`. This is fetched by the `MomentRepository::findLatestForWorker()` method.
+- The sorting for recent moments is descending by `moment.take_id` and `moment.frame_start` to show the latest activity first.
 
 ### Step 3: Input and Moment Creation
 
