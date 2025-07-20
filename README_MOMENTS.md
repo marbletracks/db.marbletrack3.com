@@ -6,46 +6,44 @@ The "Realtime Moments" page is a new feature designed to streamline the creation
 
 ## 2. Core Concepts & Data Flow
 
-This feature introduces a new page that acts as a digital notebook. The text entered on this page is saved immediately as `Tokens`, which are then grouped into `Phrases`. These `Phrases` are then used to generate `Moments`.
+- **Tokens:** The fundamental units of text. These are fetched from the database and displayed for each worker.
+- **Permanent Tokens:** Some tokens, typically the worker's name, can be marked as "permanent". These tokens will always remain available and are not consumed when a moment is created.
+- **Moments:** A `Moment` is the final, structured record of an event, created from a `Phrase`.
+- **Phrases:** A `Phrase` is a sequence of `Tokens` that are manually assembled by the user to form a complete thought or action.
 
-- **From Physical to Digital:** Instead of writing in the notebook and later transcribing, this page allows for the direct creation of `Tokens`.
-- **Immediate Token Creation:** Any text entered is immediately saved as a `Token` in the database.
-- **Phrases Group Tokens:** A `Phrase` is a collection of one or more `Tokens` that logically belong together. On this page, each line of input under a worker will correspond to a single `Phrase`.
-- **Moments Expand Phrases:** A `Moment` is the structured, actionable version of a `Phrase`, containing frame data and expanded shortcodes.
-- **Linking Tokens to Workers:** Each `Worker` has one or more `Columns` assigned to them in the digital notebook. When a user enters text for a `Worker` on the "Realtime Moments" page, `Tokens` are created within that `Worker`'s `Column`. This establishes the link: `Worker` -> `Column` -> `Token`. A `Phrase` is a logical grouping of these `Tokens`.
+Per business-rules, all Phrases have a Moment, but not all Moments have Phrases.  Therefore the Moment record must be created before the Phrase can be created.
+
+The data flow is as follows:
+1.  `Tokens` are fetched for each `Worker`.
+2.  The user drags and drops `Tokens` to build a `Phrase`.
+3.  Clicking `[Create Moment]` converts the `Phrase` into a `Moment`.
+4.  The `Tokens` used in the `Phrase` (unless permanent) are then hidden from the "Available Tokens" list.
+
+todo:  Allow user to see and edit the Moment before it's saved to disk.  Use a copy of the interface used on Moment edit page: (Alias expand into shortcodes, fields for `moment_translations` per perspective are editable.)
 
 ## 3. Page Design and Functionality
 
-The new page will be located at `wwwroot/admin/moments/realtime.php` and titled "Realtime Moments".
+The page is located at `wwwroot/admin/moments/realtime.php` and titled "Realtime Moments".
 
-### Step 1: Worker Grid
-The page will display a sortable grid of all `Workers` who are the main drivers of activity. The sorting order will be determined by the `worker.busy_sort` database column.
+### Worker Sections
+The page is divided into sections, one for each `Worker`. Each section contains:
+- **Recent Activity:** A list of the two most recent `Moments` for that worker, for context.
+- **Available Tokens:** A container holding all unused `Tokens` for that worker.
+- **Build-a-Phrase:** A drop zone where `Tokens` can be dragged to construct a new `Phrase`.
 
-### Step 2: Display of Recent Activity
-Below each `Worker` in the grid, a list of their activity will be displayed:
-- **Incomplete Phrases:** Open `Phrases` linked to that `Worker`. The connection is made via `Tokens` which belong to a `Column` that is assigned to the `Worker`. These are lines of `Tokens` waiting to become a `Moment`.
-- **Recent Moments:** A list of the two most recent `Moments` for which a `moment_translation` exists for that `Worker`. This is fetched by the `MomentRepository::findLatestForWorker()` method.
-- The sorting for recent moments is descending by `moment.take_id` and `moment.frame_start` to show the latest activity first.
+### Interaction
+1.  **Drag and Drop:** Users can drag tokens from the "Available Tokens" container into the "Build-a-Phrase" container. The order of tokens in the phrase can be adjusted by dragging them within the "Build-a-Phrase" container.
+2.  **Toggle Permanence:** A single, quick click on a token (without dragging) will toggle its `is_permanent` status. Permanent tokens are visually distinguished with a solid black border. This action is saved immediately via an AJAX call.
+3.  **Moment Creation:**
+    -   A `[Create Moment]` button is located next to the "Build-a-Phrase" container.
+    -   When clicked, the sequence of tokens in the container is sent to the server.
+    -TODO: When `[Create Moment]` button is clicked, make visible an interface for creating Moments based on the Moment text.  Code is based on Moments' moment.tpl.php page
+    -TODO: add a new button to actually `[Save Moment and translations]`
+    -   The server creates a new `Moment` and a corresponding `Phrase` record. (TODO: and create corresponding `moment_translations`)
+    -   The page then reloads, and the tokens used in the new phrase (except for permanent ones) are no longer shown in the "Available Tokens" list.
 
-### Step 3: Input and Moment Creation
-
-1.  **Input:** A text input field will be available under each `Worker`'s activity list. This represents a new, empty `Phrase`.
-2.  **Token Creation:** When a user types text (e.g., `Go to CS 1245`) and submits (e.g., presses Enter or a save button), a `Token` is created instantly.
-3.  **Phrase Creation/Update:** A corresponding `Phrase` record is created or updated.
-    -   The `phrase.token_json` array is populated with the new `token_id`.
-    -   The `Phrase` is implicitly linked to the `Worker` because its `Tokens` belong to a `Column` assigned to that `Worker`.
-4.  **Realtime Parsing:** As `Tokens` are added, a read-only field below the input will show a preview of the potential `Moment.note` (e.g., `[worker:reversible-guy] go to [part:caret-splitter]`) and the frame numbers, using the same parsing logic as the moment edit page.
-5.  **Moment Creation:** A `[create moment]` button is always visible next to each `Phrase`.
-    -   **Heuristic:** The button could be enabled or highlighted once the system detects what looks like a complete phrase (e.g., text and two numbers).
-    -   **Action:** When clicked, the system uses the `Tokens` in the `Phrase` to create a new `Moment` and its associated `moment_translations`. The original `Tokens` and `Phrase` remain in the database for archival purposes.
-    -   After creation, a new empty `Phrase` input appears for that worker.
-
-### Step 4: Handling Planned (Incomplete) Moments
-The system inherently supports planned `Moments`. These are simply `Phrases` that have `Tokens` but have not yet had the `[create moment]` button clicked. They remain visible under their associated `Worker` on each page load.
-
-**Example of planned `Phrase`:**
-A user has entered two `Tokens` on separate occasions for the same `Phrase`:
-- `Token 1`: "Hold CSR"
-- `Token 2`: "1350"
-
-This will be displayed as an incomplete `Phrase` ("Hold CSR 1350") until the user adds a final frame number and clicks `[create moment]`.
+### Intelligent Moment Parsing
+- **Frame Numbers:** If the constructed phrase ends with two numbers (e.g., `... 348 - 381` or `... 348 ~ 381` or `... 348 381`), these numbers are automatically parsed and saved as the `frame_start` and `frame_end` for the `Moment`. The numbers are excluded from the final `moment.notes`.
+- **Moment Date:** The `moment_date` is automatically set from the `token_date` of the *last* token in the phrase. If the last token has no date, the current date is used as a fallback.
+-TODO: this parsing should be done when "into" the new interface for visually creating the moment on Realtime Moments page as on Moment edit page.
+- **Alias Expansion:** Worker and Part aliases (e.g., `GC` or `CS`) are automatically expanded into their full shortcode equivalents (e.g., `[worker:g-choppy]` or `[part:caret-splitter]`) in the final `moment.notes`. The original, un-expanded text is saved in the `phrases.phrase` field for archival purposes.
