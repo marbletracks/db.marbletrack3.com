@@ -17,6 +17,19 @@
                     Alias: <?= htmlspecialchars($worker->worker_alias ?? '—') ?>
                 </p>
                 
+                <div class="recent-moments" style="margin-top: 15px;">
+                    <h4 style="margin-bottom: 5px; font-size: 1em; color: #333;">Recent Activity:</h4>
+                    <?php if (!empty($worker->moments)): ?>
+                        <ul style="font-size: 0.85em; padding-left: 20px; margin: 0; color: #555;">
+                            <?php foreach ($worker->moments as $moment): ?>
+                                <li><?= htmlspecialchars($moment->notes) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p style="font-size: 0.85em; color: #888; font-style: italic;">No recent moments.</p>
+                    <?php endif; ?>
+                </div>
+
                 <?php /* Future content will go here */ ?>
 
             </div>

@@ -10,7 +10,12 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 $workers_repo = new \Database\WorkersRepository($mla_database, 'en');
+$moment_repo = new \Database\MomentRepository($mla_database);
 $workers = $workers_repo->findAll();
+
+foreach ($workers as $worker) {
+    $worker->moments = $moment_repo->findLatestForWorker($worker->worker_id, 2);
+}
 
 $page = new \Template($config);
 $page->setTemplate('admin/moments/realtime.tpl.php');

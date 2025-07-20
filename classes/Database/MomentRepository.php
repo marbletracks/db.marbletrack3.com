@@ -317,4 +317,32 @@ class MomentRepository
         $moment->photos = $this->getPhotos();  // return an array of photos
         return $moment;
     }
+
+    public function findLatestForWorker(int $worker_id, int $limit = 2): array
+    {
+        $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date, mt.is_significant
+                FROM moments m
+                JOIN moment_translations mt ON m.moment_id = mt.moment_id
+                WHERE mt.perspective_entity_type = 'worker' AND mt.perspective_entity_id = ?
+                ORDER BY m.take_id DESC, m.frame_start DESC
+                LIMIT ?";
+
+        $results = $this->getDb()->fetchResults($sql, 'ii', [$worker_id, $limit]);
+
+        $moments = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            // Using a simplified hydration here to avoid re-fetching photos etc.
+            $moments[] = new \Media\Moment(
+                moment_id: (int)$results->data['moment_id'],
+                frame_start: isset($results->data['frame_start']) ? (int)$results->data['frame_start'] : null,
+                frame_end: isset($results->data['frame_end']) ? (int)$results->data['frame_end'] : null,
+                phrase_id: isset($results->data['phrase_id']) ? (int)$results->data['phrase_id'] : null,
+                take_id: isset($results->data['take_id']) ? (int)$results->data['take_id'] : null,
+                notes: $results->data['notes'] ?? null,
+                moment_date: $results->data['moment_date'] ?? null
+            );
+        }
+        return $moments;
+    }
 }
