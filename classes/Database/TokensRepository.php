@@ -56,8 +56,7 @@ class TokensRepository
         $sql = "SELECT t.*
                 FROM tokens t
                 JOIN columns c ON t.column_id = c.column_id
-                JOIN phrases p ON c.phrase_id = p.phrase_id
-                WHERE p.temp_not_3rd_normal_worker_id = ?
+                WHERE c.worker_id = ?
                 ORDER BY t.created_at DESC";
 
         $results = $this->db->fetchResults($sql, 'i', [$worker_id]);
