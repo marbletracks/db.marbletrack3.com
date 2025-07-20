@@ -46,6 +46,31 @@ class TokensRepository
         return $tokens;
     }
 
+    /**
+     * Helps Realtime Moments page to keep track of tokens per worker.
+     * @param int $worker_id
+     * @return Token[]
+     */
+    public function findForWorker(int $worker_id): array
+    {
+        $sql = "SELECT t.*
+                FROM tokens t
+                JOIN columns c ON t.column_id = c.column_id
+                JOIN phrases p ON c.phrase_id = p.phrase_id
+                WHERE p.temp_not_3rd_normal_worker_id = ?
+                ORDER BY t.created_at DESC";
+
+        $results = $this->db->fetchResults($sql, 'i', [$worker_id]);
+
+        $tokens = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $tokens[] = $this->hydrate($results->data);
+        }
+
+        return $tokens;
+    }
+
     public function insert(
         int $column_id,
         string $token_string,
