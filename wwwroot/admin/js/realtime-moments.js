@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.body.classList.add('dragging');
             },
             onEnd: () => {
-                document.body.classList.remove('dragging');
+                // Use a timeout to distinguish between a click and a drag-end
+                setTimeout(() => {
+                    document.body.classList.remove('dragging');
+                }, 50);
             }
         });
 
@@ -32,7 +35,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.body.classList.add('dragging');
             },
             onEnd: () => {
-                document.body.classList.remove('dragging');
+                // Use a timeout to distinguish between a click and a drag-end
+                setTimeout(() => {
+                    document.body.classList.remove('dragging');
+                }, 50);
             }
         });
     });
