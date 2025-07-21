@@ -10,4 +10,7 @@ interface DbInterface {
     public function executeSQL($sql, $paramtypes = null, $var1 = null);
     public function insertId(): ?int;
     public function getAffectedRows(): int;
+    public function beginTransaction(): void;
+    public function commit(): void;
+    public function rollBack(): void;
 }
