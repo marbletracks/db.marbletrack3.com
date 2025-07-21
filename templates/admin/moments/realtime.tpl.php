@@ -93,7 +93,7 @@
                             <p style="font-size: 0.85em; color: #888; font-style: italic; margin: 0;">No available tokens.</p>
                         <?php endif; ?>
                     </div>
-                    
+
                     <!-- Token Creation Form (hidden by default) -->
                     <div id="token-form-<?= $worker->worker_id ?>" class="token-form" style="display: none; margin-top: 10px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px;">
                         <h5 style="margin-top: 0;">Create New Token</h5>
@@ -103,8 +103,8 @@
                                 <textarea name="token_string" rows="3" style="width: 100%; margin-top: 3px; resize: vertical;" placeholder="Enter token text..." required></textarea>
                             </label>
                             <label style="display: block; margin-bottom: 10px;">
-                                Date (optional):<br>
-                                <input type="text" name="token_date" style="width: 200px; margin-top: 3px;" placeholder="e.g., 2024-01-15">
+                                Date:<br>
+                                <input type="text" name="token_date" value="<?= date(format: "Y-m-d") ?>" style="width: 200px; margin-top: 3px;" placeholder="e.g., 2024-01-15">
                             </label>
                             <label style="display: block; margin-bottom: 15px;">
                                 Color:<br>

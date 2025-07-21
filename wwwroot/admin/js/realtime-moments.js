@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const tokenIds = Array.from(tokenItems).map(item => item.dataset.tokenId);
             const phraseText = Array.from(tokenItems).map(item => item.textContent.trim()).join(' ');
-            
+
             // --- Prepare Data for Editor ---
             let frame_start = '';
             let frame_end = '';
@@ -161,17 +161,11 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function() {
             const workerId = this.dataset.workerId;
             const tokenForm = document.getElementById(`token-form-${workerId}`);
-            
+
             // Toggle form visibility
             if (tokenForm.style.display === 'none' || !tokenForm.style.display) {
                 tokenForm.style.display = 'block';
                 tokenForm.querySelector('textarea[name="token_string"]').focus();
-                
-                // Pre-fill date with last used date if available
-                const lastDate = localStorage.getItem('lastTokenDate');
-                if (lastDate) {
-                    tokenForm.querySelector('input[name="token_date"]').value = lastDate;
-                }
             } else {
                 tokenForm.style.display = 'none';
             }
@@ -183,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function() {
             const workerId = this.dataset.workerId;
             const tokenForm = document.getElementById(`token-form-${workerId}`);
-            
+
             // Hide form and reset
             tokenForm.style.display = 'none';
             const form = tokenForm.querySelector('.token-creation-form');
@@ -195,30 +189,30 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.token-creation-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const workerId = this.dataset.workerId;
             const tokenString = this.querySelector('textarea[name="token_string"]').value.trim();
             const tokenDate = this.querySelector('input[name="token_date"]').value.trim();
             const tokenColor = this.querySelector('select[name="token_color"]').value;
-            
+
             if (!tokenString) {
                 alert('Token text cannot be empty.');
                 return;
             }
-            
+
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Saving...';
-            
+
             // Store date for next time
             if (tokenDate) {
                 localStorage.setItem('lastTokenDate', tokenDate);
             }
-            
+
             // Use timestamp-based coordinates instead of X/Y positioning
             const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
-            
+
             // Create FormData for the token
             const formData = new FormData();
             formData.append('action', 'create_for_worker');
@@ -230,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('token_y_pos', timestamp.toString());
             formData.append('token_width', Math.max(50, 10 + tokenString.length * 7).toString());
             formData.append('token_height', '30');
-            
+
             fetch('/admin/ajax/tokens.php', {
                 method: 'POST',
                 body: formData
@@ -247,10 +241,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     const tokenForm = document.getElementById(`token-form-${workerId}`);
                     tokenForm.style.display = 'none';
                     this.reset();
-                    
+
                     // Add the new token to the available tokens container
                     addTokenToContainer(workerId, data.token);
-                    
+
                     // Show success message
                     const successMsg = document.createElement('div');
                     successMsg.style.cssText = 'background: #d4edda; color: #155724; padding: 8px; border: 1px solid #c3e6cb; border-radius: 4px; margin-top: 10px;';
@@ -274,13 +268,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addTokenToContainer(workerId, token) {
         const container = document.getElementById(`available-tokens-${workerId}`);
-        
+
         // Remove "No available tokens" message if it exists
         const noTokensMsg = container.querySelector('p');
         if (noTokensMsg && noTokensMsg.textContent.includes('No available tokens')) {
             noTokensMsg.remove();
         }
-        
+
         // Create new token element
         const tokenElement = document.createElement('div');
         tokenElement.className = 'token-item';
@@ -291,10 +285,10 @@ document.addEventListener('DOMContentLoaded', function () {
         tokenElement.dataset.tokenDate = token.token_date || '';
         tokenElement.title = `Token ID: ${token.token_id}`;
         tokenElement.textContent = token.token_string;
-        
+
         // Add to container
         container.appendChild(tokenElement);
-        
+
         // No need to reinitialize SortableJS as it automatically detects new elements
     }
 
