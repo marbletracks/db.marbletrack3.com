@@ -82,7 +82,7 @@
                     <div id="available-tokens-<?= $worker->worker_id ?>" class="tokens-container available-tokens">
                         <?php if (!empty($worker->tokens)): ?>
                             <?php foreach ($worker->tokens as $token): ?>
-                                <div class="token-item <?= $token->is_permanent ? 'token-permanent' : '' ?>" data-token-id="<?= $token->token_id ?>" title="Token ID: <?= $token->token_id ?>">
+                                <div class="token-item <?= $token->is_permanent ? 'token-permanent' : '' ?>" data-token-id="<?= $token->token_id ?>" data-token-date="<?= htmlspecialchars($token->token_date ?? '') ?>" title="Token ID: <?= $token->token_id ?>">
                                     <?= htmlspecialchars($token->token_string) ?>
                                 </div>
                             <?php endforeach; ?>
@@ -102,6 +102,34 @@
                         <button class="create-moment-btn" data-worker-id="<?= $worker->worker_id ?>">Create Moment</button>
                     </div>
                 </div>
+
+                <!-- Moment Editor (hidden by default) -->
+                <div id="moment-editor-<?= $worker->worker_id ?>" class="moment-editor" style="display: none; margin-top: 20px; border-top: 2px solid #007bff; padding-top: 20px;">
+                    <h4>Edit Moment Details</h4>
+                    <form class="moment-editor-form" data-worker-id="<?= $worker->worker_id ?>">
+                        <input type="hidden" name="token_ids">
+                        <input type="hidden" name="phrase_string">
+                        <label>
+                            Notes:<br>
+                            <textarea name="notes" class="shortcodey-textarea" rows="5" style="width: 100%;"></textarea>
+                        </label>
+                        <div class="notes-preview" style="margin-top: 10px; padding: 5px; border: 1px solid #ccc; min-height: 30px; background-color: #f9f9f9;"></div>
+
+                        <div class="perspective-fields" style="margin-top: 20px;"></div>
+
+                        <div style="display: flex; gap: 20px; margin-top: 15px;">
+                            <label>Frame Start: <input type="number" name="frame_start" style="width: 100px;"></label>
+                            <label>Frame End: <input type="number" name="frame_end" style="width: 100px;"></label>
+                            <label>Moment Date: <input type="date" name="moment_date"></label>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <button type="submit" class="save-moment-btn">Save Moment</button>
+                            <button type="button" class="cancel-edit-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         <?php endforeach; ?>
     </div>

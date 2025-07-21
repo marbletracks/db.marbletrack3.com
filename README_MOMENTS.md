@@ -19,7 +19,7 @@ The data flow is as follows:
 3.  Clicking `[Create Moment]` converts the `Phrase` into a `Moment`.
 4.  The `Tokens` used in the `Phrase` (unless permanent) are then hidden from the "Available Tokens" list.
 
-todo:  Allow user to see and edit the Moment before it's saved to disk.  Use a copy of the interface used on Moment edit page: (Alias expand into shortcodes, fields for `moment_translations` per perspective are editable.)
+DONE:  Allow user to see and edit the Moment before it's saved to disk.  Use a copy of the interface used on Moment edit page: (Alias expand into shortcodes, fields for `moment_translations` per perspective are editable.)
 
 ## 3. Page Design and Functionality
 
@@ -37,13 +37,13 @@ The page is divided into sections, one for each `Worker`. Each section contains:
 3.  **Moment Creation:**
     -   A `[Create Moment]` button is located next to the "Build-a-Phrase" container.
     -   When clicked, the sequence of tokens in the container is sent to the server.
-    -TODO: When `[Create Moment]` button is clicked, make visible an interface for creating Moments based on the Moment text.  Code is based on Moments' moment.tpl.php page
-    -TODO: add a new button to actually `[Save Moment and translations]`
-    -   The server creates a new `Moment` and a corresponding `Phrase` record. (TODO: and create corresponding `moment_translations`)
+    -DONE: When `[Create Moment]` button is clicked, make visible an interface for creating Moments based on the Moment text.  Code is based on Moments' moment.tpl.php page
+    -DONE: add a new button to actually `[Save Moment and translations]`
+    -   The server creates a new `Moment` and a corresponding `Phrase` record. (DONE: and create corresponding `moment_translations`)
     -   The page then reloads, and the tokens used in the new phrase (except for permanent ones) are no longer shown in the "Available Tokens" list.
 
 ### Intelligent Moment Parsing
 - **Frame Numbers:** If the constructed phrase ends with two numbers (e.g., `... 348 - 381` or `... 348 ~ 381` or `... 348 381`), these numbers are automatically parsed and saved as the `frame_start` and `frame_end` for the `Moment`. The numbers are excluded from the final `moment.notes`.
 - **Moment Date:** The `moment_date` is automatically set from the `token_date` of the *last* token in the phrase. If the last token has no date, the current date is used as a fallback.
--TODO: this parsing should be done when "into" the new interface for visually creating the moment on Realtime Moments page as on Moment edit page.
+-DONE: this parsing should be done when "into" the new interface for visually creating the moment on Realtime Moments page as on Moment edit page.
 - **Alias Expansion:** Worker and Part aliases (e.g., `GC` or `CS`) are automatically expanded into their full shortcode equivalents (e.g., `[worker:g-choppy]` or `[part:caret-splitter]`) in the final `moment.notes`. The original, un-expanded text is saved in the `phrases.phrase` field for archival purposes.
