@@ -156,6 +156,136 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // --- Add Token Button Logic ---
+    document.querySelectorAll('.add-token-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const workerId = this.dataset.workerId;
+            const tokenForm = document.getElementById(`token-form-${workerId}`);
+            
+            // Toggle form visibility
+            if (tokenForm.style.display === 'none' || !tokenForm.style.display) {
+                tokenForm.style.display = 'block';
+                tokenForm.querySelector('textarea[name="token_string"]').focus();
+                
+                // Pre-fill date with last used date if available
+                const lastDate = localStorage.getItem('lastTokenDate');
+                if (lastDate) {
+                    tokenForm.querySelector('input[name="token_date"]').value = lastDate;
+                }
+            } else {
+                tokenForm.style.display = 'none';
+            }
+        });
+    });
+
+    // --- Cancel Token Button Logic ---
+    document.querySelectorAll('.cancel-token-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const workerId = this.dataset.workerId;
+            const tokenForm = document.getElementById(`token-form-${workerId}`);
+            
+            // Hide form and reset
+            tokenForm.style.display = 'none';
+            const form = tokenForm.querySelector('.token-creation-form');
+            form.reset();
+        });
+    });
+
+    // --- Token Creation Form Submission ---
+    document.querySelectorAll('.token-creation-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const workerId = this.dataset.workerId;
+            const tokenString = this.querySelector('textarea[name="token_string"]').value.trim();
+            const tokenDate = this.querySelector('input[name="token_date"]').value.trim();
+            const tokenColor = this.querySelector('select[name="token_color"]').value;
+            
+            if (!tokenString) {
+                alert('Token text cannot be empty.');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            // Store date for next time
+            if (tokenDate) {
+                localStorage.setItem('lastTokenDate', tokenDate);
+            }
+            
+            // Use timestamp-based coordinates instead of X/Y positioning
+            const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
+            
+            // Create FormData for the token
+            const formData = new FormData();
+            formData.append('action', 'create_for_worker');
+            formData.append('worker_id', workerId);
+            formData.append('token_string', tokenString);
+            formData.append('token_date', tokenDate);
+            formData.append('token_color', tokenColor);
+            formData.append('token_x_pos', timestamp.toString());
+            formData.append('token_y_pos', timestamp.toString());
+            formData.append('token_width', Math.max(50, 10 + tokenString.length * 7).toString());
+            formData.append('token_height', '30');
+            
+            fetch('/admin/ajax/tokens.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide form and reset
+                    const tokenForm = document.getElementById(`token-form-${workerId}`);
+                    tokenForm.style.display = 'none';
+                    this.reset();
+                    
+                    // Add the new token to the available tokens container
+                    addTokenToContainer(workerId, data.token);
+                    
+                    alert('Token created successfully!');
+                } else {
+                    alert('Error creating token: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while creating the token.');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            });
+        });
+    });
+
+    function addTokenToContainer(workerId, token) {
+        const container = document.getElementById(`available-tokens-${workerId}`);
+        
+        // Remove "No available tokens" message if it exists
+        const noTokensMsg = container.querySelector('p');
+        if (noTokensMsg && noTokensMsg.textContent.includes('No available tokens')) {
+            noTokensMsg.remove();
+        }
+        
+        // Create new token element
+        const tokenElement = document.createElement('div');
+        tokenElement.className = 'token-item';
+        if (token.is_permanent) {
+            tokenElement.classList.add('token-permanent');
+        }
+        tokenElement.dataset.tokenId = token.token_id;
+        tokenElement.dataset.tokenDate = token.token_date || '';
+        tokenElement.title = `Token ID: ${token.token_id}`;
+        tokenElement.textContent = token.token_string;
+        
+        // Add to container
+        container.appendChild(tokenElement);
+    }
+
     // --- Perspective Loading Logic ---
     let debounceTimer;
     document.querySelectorAll('.shortcodey-textarea').forEach(textarea => {
