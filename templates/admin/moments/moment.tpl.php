@@ -43,11 +43,6 @@
         </label><br><br>
 
         <label>
-            Phrase ID:<br>
-            <input type="number" name="phrase_id" value="<?= htmlspecialchars((string)($moment->phrase_id ?? '')) ?>">
-        </label><br><br>
-
-        <label>
             Take:<br>
             <select name="take_id">
                 <option value="">-- Select a Take --</option>

@@ -28,7 +28,6 @@ if ($submitted) {
     $notes = trim($_POST['notes'] ?? '');
     $frame_start = filter_input(INPUT_POST, 'frame_start', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
     $frame_end = filter_input(INPUT_POST, 'frame_end', FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
-    $phrase_id = filter_input(INPUT_POST, 'phrase_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
     $take_id = filter_input(INPUT_POST, 'take_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
     $moment_date = trim($_POST['moment_date'] ?? '');
     $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
@@ -37,7 +36,6 @@ if ($submitted) {
     // filter_input returns false on failure, and null if the variable is not set. We want to store null in the DB
     $frame_start = ($frame_start === false) ? null : $frame_start;
     $frame_end = ($frame_end === false) ? null : $frame_end;
-    $phrase_id = ($phrase_id === false) ? null : $phrase_id;
     $take_id = ($take_id === false) ? null : $take_id;
     if (empty($moment_date)) {
         $moment_date = null;
@@ -48,15 +46,15 @@ if ($submitted) {
     if (empty($errors)) {
         if ($moment) {
             $mla_database->executeSQL(
-                "UPDATE moments SET notes = ?, frame_start = ?, frame_end = ?, phrase_id = ?, take_id = ?, moment_date = ? WHERE moment_id = ?",
-                'siiiisi',
-                [$notes, $frame_start, $frame_end, $phrase_id, $take_id, $moment_date, $moment_id]
+                "UPDATE moments SET notes = ?, frame_start = ?, frame_end = ?, take_id = ?, moment_date = ? WHERE moment_id = ?",
+                'siiisi',
+                [$notes, $frame_start, $frame_end, $take_id, $moment_date, $moment_id]
             );
             $moment_repo->setMomentId(moment_id: $moment_id);
             $moment_repo->savePhotosFromUrls(urls: $image_urls);
             $moment_repo->saveTranslations(moment_id: $moment_id, perspectives: $perspectives);
         } else {
-            $new_moment_id = $moment_repo->insert($frame_start, $frame_end, $phrase_id, $take_id, $notes, $moment_date);
+            $new_moment_id = $moment_repo->insert($frame_start, $frame_end, $take_id, $notes, $moment_date);
             $moment_repo->setMomentId(moment_id: $new_moment_id);
             $moment_repo->savePhotosFromUrls(urls: $image_urls);
             $moment_repo->saveTranslations(moment_id: $new_moment_id, perspectives: $perspectives);
