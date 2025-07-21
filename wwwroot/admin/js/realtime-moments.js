@@ -71,43 +71,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // --- 1. Prepare Data for Editor ---
             const tokenIds = Array.from(tokenItems).map(item => item.dataset.tokenId);
             const phraseText = Array.from(tokenItems).map(item => item.textContent.trim()).join(' ');
-            let notes = phraseText;
-            let frame_start = '';
-            let frame_end = '';
+            
+            // --- 1. Expand Aliases via AJAX ---
+            fetch('/admin/ajax/expand_shortcodes.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'text=' + encodeURIComponent(phraseText)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // --- 2. Prepare Data for Editor ---
+                let notesWithShortcodes = data.expanded_text || phraseText;
+                let frame_start = '';
+                let frame_end = '';
 
-            const framePattern = /\s+(\d+)\s*[-~]?\s*(\d+)$/;
-            const match = phraseText.match(framePattern);
-            if (match) {
-                notes = phraseText.replace(framePattern, '').trim();
-                frame_start = match[1];
-                frame_end = match[2];
-            }
+                const framePattern = /\s+(\d+)\s*[-~]?\s*(\d+)$/;
+                const match = notesWithShortcodes.match(framePattern);
+                if (match) {
+                    notesWithShortcodes = notesWithShortcodes.replace(framePattern, '').trim();
+                    frame_start = match[1];
+                    frame_end = match[2];
+                }
 
-            const lastToken = tokenItems[tokenItems.length - 1];
-            let moment_date = lastToken.dataset.tokenDate;
-            if (!moment_date) {
-                moment_date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-            }
+                const lastToken = tokenItems[tokenItems.length - 1];
+                let moment_date = lastToken.dataset.tokenDate;
+                if (!moment_date) {
+                    moment_date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+                }
 
-            // --- 2. Populate and Show Editor ---
-            const phraseBuilderSection = card.querySelector('.phrase-builder-section');
-            const momentEditor = card.querySelector('.moment-editor');
+                // --- 3. Populate and Show Editor ---
+                const phraseBuilderSection = card.querySelector('.phrase-builder-section');
+                const momentEditor = card.querySelector('.moment-editor');
 
-            momentEditor.querySelector('input[name="token_ids"]').value = JSON.stringify(tokenIds);
-            momentEditor.querySelector('input[name="phrase_string"]').value = phraseText;
-            momentEditor.querySelector('textarea[name="notes"]').value = notes;
-            momentEditor.querySelector('input[name="frame_start"]').value = frame_start;
-            momentEditor.querySelector('input[name="frame_end"]').value = frame_end;
-            momentEditor.querySelector('input[name="moment_date"]').value = moment_date;
+                momentEditor.querySelector('input[name="token_ids"]').value = JSON.stringify(tokenIds);
+                momentEditor.querySelector('input[name="phrase_string"]').value = phraseText; // Save original phrase
+                momentEditor.querySelector('textarea[name="notes"]').value = notesWithShortcodes; // Use expanded notes
+                momentEditor.querySelector('input[name="frame_start"]').value = frame_start;
+                momentEditor.querySelector('input[name="frame_end"]').value = frame_end;
+                momentEditor.querySelector('input[name="moment_date"]').value = moment_date;
 
-            phraseBuilderSection.style.display = 'none';
-            momentEditor.style.display = 'block';
+                phraseBuilderSection.style.display = 'none';
+                momentEditor.style.display = 'block';
 
-            // --- 3. Trigger Perspective Loading ---
-            updatePreviewAndPerspectives(momentEditor);
+                // --- 4. Trigger Perspective Loading with pre-fetched data ---
+                updatePreviewAndPerspectives(momentEditor, data.perspectives, data.expanded_text);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('An unexpected network error occurred while expanding shortcodes.');
+            });
         });
     });
 
@@ -162,32 +176,25 @@ document.addEventListener('DOMContentLoaded', function () {
         textarea.addEventListener('input', function() {
             clearTimeout(debounceTimer);
             const editor = this.closest('.moment-editor');
+            // When user types, we need to re-fetch perspectives
             debounceTimer = setTimeout(() => updatePreviewAndPerspectives(editor), 300);
         });
     });
 
-    function updatePreviewAndPerspectives(editor) {
+    function updatePreviewAndPerspectives(editor, perspectives = null, expanded_text = null) {
         const notesTextarea = editor.querySelector('.shortcodey-textarea');
         const previewDiv = editor.querySelector('.notes-preview');
         const perspectivesDiv = editor.querySelector('.perspective-fields');
         const text = notesTextarea.value;
 
-        fetch('/admin/ajax/expand_shortcodes.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'text=' + encodeURIComponent(text)
-        })
-        .then(response => response.json())
-        .then(data => {
-            previewDiv.innerHTML = data.expanded_text || '';
+        const displayPerspectives = (perspectivesData) => {
             perspectivesDiv.innerHTML = ''; // Clear previous perspectives
-
-            if (data.perspectives && data.perspectives.length > 0) {
+            if (perspectivesData && perspectivesData.length > 0) {
                 const header = document.createElement('h3');
                 header.textContent = 'Perspectives';
                 perspectivesDiv.appendChild(header);
 
-                data.perspectives.forEach(p => {
+                perspectivesData.forEach(p => {
                     const container = document.createElement('div');
                     container.style.marginBottom = '15px';
 
@@ -218,10 +225,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     perspectivesDiv.appendChild(container);
                 });
             }
-        })
-        .catch(error => {
-            previewDiv.innerHTML = '<span style="color: red;">Error loading preview.</span>';
-            console.error('Fetch error:', error);
-        });
+        };
+
+        // If perspectives are passed in, use them directly. Otherwise, fetch them.
+        if (perspectives !== null && expanded_text !== null) {
+            previewDiv.innerHTML = expanded_text;
+            displayPerspectives(perspectives);
+        } else {
+            fetch('/admin/ajax/expand_shortcodes.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'text=' + encodeURIComponent(text)
+            })
+            .then(response => response.json())
+            .then(data => {
+                previewDiv.innerHTML = data.expanded_text || '';
+                displayPerspectives(data.perspectives);
+            })
+            .catch(error => {
+                previewDiv.innerHTML = '<span style="color: red;">Error loading preview.</span>';
+                console.error('Fetch error:', error);
+            });
+        }
     }
 });

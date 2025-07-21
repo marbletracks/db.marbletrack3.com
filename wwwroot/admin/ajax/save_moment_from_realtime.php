@@ -15,11 +15,14 @@ header('Content-Type: application/json');
 
 use Database\MomentRepository;
 use Database\PhrasesRepository;
-use Database\MomentTranslationsRepository;
+use Database\WorkersRepository;
+use Database\PartsRepository;
 
 $momentRepo = new MomentRepository($mla_database);
 $phrasesRepo = new PhrasesRepository($mla_database);
-$translationsRepo = new MomentTranslationsRepository($mla_database);
+$workersRepo = new WorkersRepository($mla_database, 'en');
+$partsRepo = new PartsRepository($mla_database, 'en');
+
 
 // The `perspectives` array is expected in the format:
 // perspectives[worker][123][note] = "Text"
@@ -41,31 +44,18 @@ if (empty($notes) || empty($token_ids) || empty($phrase_string)) {
 $mla_database->beginTransaction();
 
 try {
+    // Expand aliases for the moment notes before saving
+    $expanded_with_workers = $workersRepo->expandShortcodesForBackend($notes, "worker", 'en');
+    $final_moment_notes = $partsRepo->expandShortcodesForBackend($expanded_with_workers, "part", 'en');
+
     // 1. Create the moment
-    $moment_id = $momentRepo->insert($frame_start, $frame_end, null, $notes, $moment_date);
+    $moment_id = $momentRepo->insert($frame_start, $frame_end, null, $final_moment_notes, $moment_date);
 
     // 2. Create the phrase
     $phrasesRepo->create($phrase_string, $token_ids, $moment_id);
 
-    // 3. Create moment translations from perspectives
-    if (!empty($perspectives)) {
-        foreach ($perspectives as $type => $entities) {
-            foreach ($entities as $entity_id => $data) {
-                $translation_note = $data['note'] ?? '';
-                $is_significant = isset($data['is_significant']) && $data['is_significant'] == '1';
-
-                if (!empty($translation_note)) {
-                    $translationsRepo->create(
-                        $moment_id,
-                        (int)$entity_id,
-                        $type, // 'worker' or 'part'
-                        $translation_note,
-                        $is_significant
-                    );
-                }
-            }
-        }
-    }
+    // 3. Save the translations
+    $momentRepo->saveTranslations($moment_id, $perspectives);
 
     $mla_database->commit();
     echo json_encode(['success' => true, 'moment_id' => $moment_id]);
