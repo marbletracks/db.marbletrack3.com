@@ -1,5 +1,4 @@
-/* basic dropdown styling */
-#autocomplete {
+.autocomplete-container {
   position: absolute;
   z-index: 1000;
   background: white;
@@ -9,10 +8,10 @@
   overflow-y: auto;
   display: none;
 }
-#autocomplete li {
+.autocomplete-container li {
   padding: 4px 8px;
   cursor: pointer;
 }
-#autocomplete li.selected {
+.autocomplete-container li.selected {
   background: #eef;
 }

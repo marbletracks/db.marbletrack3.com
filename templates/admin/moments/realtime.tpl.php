@@ -113,8 +113,6 @@
                             Notes:<br>
                             <textarea name="notes" class="shortcodey-textarea" rows="5" style="width: 100%;"></textarea>
                         </label>
-                        <div class="notes-preview" style="margin-top: 10px; padding: 5px; border: 1px solid #ccc; min-height: 30px; background-color: #f9f9f9;"></div>
-
                         <div class="perspective-fields" style="margin-top: 20px;"></div>
 
                         <div style="display: flex; gap: 20px; margin-top: 15px;">
@@ -135,6 +133,8 @@
     </div>
 </div>
 
+<link rel="stylesheet" href="/admin/css/autocomplete.css">
+<script src="/admin/js/autocomplete.js" defer></script>
 <!-- CDN for SortableJS -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="/admin/js/realtime-moments.js"></script>

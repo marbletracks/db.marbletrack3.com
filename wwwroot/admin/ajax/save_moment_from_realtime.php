@@ -44,12 +44,8 @@ if (empty($notes) || empty($token_ids) || empty($phrase_string)) {
 $mla_database->beginTransaction();
 
 try {
-    // Expand aliases for the moment notes before saving
-    $expanded_with_workers = $workersRepo->expandShortcodesForBackend($notes, "worker", 'en');
-    $final_moment_notes = $partsRepo->expandShortcodesForBackend($expanded_with_workers, "part", 'en');
-
     // 1. Create the moment
-    $moment_id = $momentRepo->insert($frame_start, $frame_end, null, $final_moment_notes, $moment_date);
+    $moment_id = $momentRepo->insert($frame_start, $frame_end, null, $notes, $moment_date);
 
     // 2. Create the phrase
     $phrasesRepo->create($phrase_string, $token_ids, $moment_id);
