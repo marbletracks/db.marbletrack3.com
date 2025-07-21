@@ -12,7 +12,7 @@
     <form action="" method="post">
         <label>
             Notes:<br>
-            <textarea id="shortcodey" name="notes" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
+            <textarea id="shortcodey" name="notes" class="shortcodey-textarea" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
             <div id="autocomplete"></div>
             <div style="margin-top: 10px;">
                 <strong>Live Preview:</strong>
