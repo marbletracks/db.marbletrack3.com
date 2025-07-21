@@ -78,7 +78,10 @@
 
                 <!-- Available Tokens -->
                 <div class="tokens-section" style="margin-top: 15px;">
-                    <h4 style="margin-bottom: 5px; font-size: 1em; color: #333;">Available Tokens:</h4>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                        <h4 style="margin: 0; font-size: 1em; color: #333;">Available Tokens:</h4>
+                        <button class="add-token-btn" data-worker-id="<?= $worker->worker_id ?>" style="padding: 3px 8px; font-size: 0.8em; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">Add Token</button>
+                    </div>
                     <div id="available-tokens-<?= $worker->worker_id ?>" class="tokens-container available-tokens">
                         <?php if (!empty($worker->tokens)): ?>
                             <?php foreach ($worker->tokens as $token): ?>
@@ -89,6 +92,33 @@
                         <?php else: ?>
                             <p style="font-size: 0.85em; color: #888; font-style: italic; margin: 0;">No available tokens.</p>
                         <?php endif; ?>
+                    </div>
+
+                    <!-- Token Creation Form (hidden by default) -->
+                    <div id="token-form-<?= $worker->worker_id ?>" class="token-form" style="display: none; margin-top: 10px; padding: 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px;">
+                        <h5 style="margin-top: 0;">Create New Token</h5>
+                        <form class="token-creation-form" data-worker-id="<?= $worker->worker_id ?>">
+                            <label style="display: block; margin-bottom: 10px;">
+                                Token Text:<br>
+                                <textarea name="token_string" rows="3" style="width: 100%; margin-top: 3px; resize: vertical;" placeholder="Enter token text..." required></textarea>
+                            </label>
+                            <label style="display: block; margin-bottom: 10px;">
+                                Date:<br>
+                                <input type="text" name="token_date" value="<?= date(format: "Y-m-d") ?>" style="width: 200px; margin-top: 3px;" placeholder="e.g., 2024-01-15">
+                            </label>
+                            <label style="display: block; margin-bottom: 15px;">
+                                Color:<br>
+                                <select name="token_color" style="margin-top: 3px;">
+                                    <option value="Black">Black</option>
+                                    <option value="Red">Red</option>
+                                    <option value="Blue">Blue</option>
+                                </select>
+                            </label>
+                            <div>
+                                <button type="submit" style="padding: 5px 15px; background-color: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">Save Token</button>
+                                <button type="button" class="cancel-token-btn" data-worker-id="<?= $worker->worker_id ?>" style="padding: 5px 15px; background-color: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer;">Cancel</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
