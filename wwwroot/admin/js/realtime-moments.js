@@ -235,7 +235,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     // Hide form and reset
@@ -246,14 +251,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Add the new token to the available tokens container
                     addTokenToContainer(workerId, data.token);
                     
-                    alert('Token created successfully!');
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.style.cssText = 'background: #d4edda; color: #155724; padding: 8px; border: 1px solid #c3e6cb; border-radius: 4px; margin-top: 10px;';
+                    successMsg.textContent = 'Token created successfully!';
+                    tokenForm.insertAdjacentElement('afterend', successMsg);
+                    setTimeout(() => successMsg.remove(), 3000);
                 } else {
                     alert('Error creating token: ' + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while creating the token.');
+                alert('An error occurred while creating the token. Please try again.');
             })
             .finally(() => {
                 submitBtn.disabled = false;
@@ -284,6 +294,8 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Add to container
         container.appendChild(tokenElement);
+        
+        // No need to reinitialize SortableJS as it automatically detects new elements
     }
 
     // --- Perspective Loading Logic ---

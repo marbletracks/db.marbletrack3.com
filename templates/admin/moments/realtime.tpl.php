@@ -100,7 +100,7 @@
                         <form class="token-creation-form" data-worker-id="<?= $worker->worker_id ?>">
                             <label style="display: block; margin-bottom: 10px;">
                                 Token Text:<br>
-                                <textarea name="token_string" rows="3" style="width: 100%; margin-top: 3px;" placeholder="Enter token text..."></textarea>
+                                <textarea name="token_string" rows="3" style="width: 100%; margin-top: 3px; resize: vertical;" placeholder="Enter token text..." required></textarea>
                             </label>
                             <label style="display: block; margin-bottom: 10px;">
                                 Date (optional):<br>
