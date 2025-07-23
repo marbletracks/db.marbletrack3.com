@@ -30,6 +30,50 @@ G Choppy: cut triple splitter: 1080 - 1308
 
 ---
 
+## 🧪 Testing
+
+This project includes comprehensive testing infrastructure to prevent bugs like the form field mapping issues found in [Issue #57](https://github.com/marbletracks/db.marbletrack3.com/issues/57) and [Issue #58](https://github.com/marbletracks/db.marbletrack3.com/pull/58).
+
+### Quick Start
+
+```bash
+# Run basic validation tests (no dependencies required)
+php scripts/run_simple_tests.php
+
+# Test specific bug fixes
+php scripts/test_issues_57_58.php
+
+# Check test database setup
+php scripts/setup_test_database.php check
+```
+
+### Full Testing Setup
+
+```bash
+# Install testing dependencies
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install
+
+# Run all tests
+php composer.phar run test
+
+# Run only unit tests
+php composer.phar run test-unit
+```
+
+For complete testing setup instructions, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
+
+### What Our Tests Catch
+
+- ✅ Form field mapping issues (duplicate `name` attributes)
+- ✅ SQL parameter count mismatches  
+- ✅ Database operation errors
+- ✅ Form submission workflow bugs
+
+The testing infrastructure is designed to work within Dreamhost shared hosting constraints while providing comprehensive validation.
+
+---
+
 ## ✅ **Planned Work for `db.marbletrack3.com` (Next Development Goals)**
 
 
