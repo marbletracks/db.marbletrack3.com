@@ -16,12 +16,20 @@ $repo = new \Database\PartsRepository(
     langCode: 'en',
 );
 
-// Fetch parts
-$parts = $repo->findAll();
+// Get filter parameter
+$filter = trim($_GET['filter'] ?? '');
+
+// Fetch parts (filtered if filter provided)
+if (!empty($filter)) {
+    $parts = $repo->findByFilter($filter);
+} else {
+    $parts = $repo->findAll();
+}
 
 $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/parts/index.tpl.php");
 $page->set(name: "parts", value: $parts);
+$page->set(name: "filter", value: $filter);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template(config: $config);
