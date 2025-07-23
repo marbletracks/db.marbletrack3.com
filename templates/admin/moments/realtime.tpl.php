@@ -152,10 +152,20 @@
                         </div>
 
                         <div style="margin-top: 20px;">
-                            <button type="submit" class="save-moment-btn">Save Moment</button>
+                            <button type="submit" class="save-moment-btn">Search for Moments</button>
+                            <button type="button" class="create-new-moment-btn" style="display:none;">Create New Moment</button>
                             <button type="button" class="cancel-edit-btn">Cancel</button>
                         </div>
                     </form>
+                </div>
+
+                <!-- Moment Search Results (hidden by default) -->
+                <div id="moment-search-results-<?= $worker->worker_id ?>" class="moment-search-results" style="display: none; margin-top: 20px; border-top: 2px solid #6c757d; padding-top: 20px;">
+                    <h4>Potential Existing Moments</h4>
+                    <div class="results-container"></div>
+                    <div style="margin-top: 15px;">
+                        <button type="button" class="use-selected-moment-btn" disabled>Use Selected Moment &amp; Create Phrase</button>
+                    </div>
                 </div>
 
             </div>

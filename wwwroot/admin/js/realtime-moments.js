@@ -116,45 +116,199 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.cancel-edit-btn').forEach(button => {
         button.addEventListener('click', function () {
             const card = this.closest('.worker-card');
-            const phraseBuilderSection = card.querySelector('.phrase-builder-section');
-            const momentEditor = card.querySelector('.moment-editor');
-
-            momentEditor.style.display = 'none';
-            phraseBuilderSection.style.display = 'block';
+            hideEditorAndSearchResults(card);
         });
     });
 
-    // --- "Save Moment" Form Submission ---
+    function hideEditorAndSearchResults(card) {
+        const phraseBuilderSection = card.querySelector('.phrase-builder-section');
+        const momentEditor = card.querySelector('.moment-editor');
+        const searchResults = card.querySelector('.moment-search-results');
+
+        momentEditor.style.display = 'none';
+        searchResults.style.display = 'none';
+        phraseBuilderSection.style.display = 'block';
+
+        // Reset button states
+        const saveBtn = momentEditor.querySelector('.save-moment-btn');
+        saveBtn.textContent = 'Search for Moments';
+        saveBtn.style.display = 'inline-block';
+        momentEditor.querySelector('.create-new-moment-btn').style.display = 'none';
+    }
+
+    // --- Moment Editor Form Submission (now SEARCH) ---
     document.querySelectorAll('.moment-editor-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            const formData = new FormData(this);
+            const workerId = this.dataset.workerId;
+            const card = this.closest('.worker-card');
+            const frame_start = this.querySelector('input[name="frame_start"]').value;
+            const frame_end = this.querySelector('input[name="frame_end"]').value;
+
+            if (!frame_start || !frame_end) {
+                alert('Please enter both a start and end frame.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('worker_id', workerId);
+            formData.append('frame_start', frame_start);
+            formData.append('frame_end', frame_end);
+
             const button = this.querySelector('button[type="submit"]');
             button.disabled = true;
-            button.textContent = 'Saving...';
+            button.textContent = 'Searching...';
 
-            fetch('/admin/ajax/save_moment_from_realtime.php', {
+            fetch('/admin/ajax/search_moments.php', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.reload();
+                    displayMomentSearchResults(card, data.moments);
                 } else {
                     alert('Error: ' + (data.error || 'An unknown error occurred.'));
-                    button.disabled = false;
-                    button.textContent = 'Save Moment';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('An unexpected network error occurred.');
+            })
+            .finally(() => {
                 button.disabled = false;
-                button.textContent = 'Save Moment';
+                button.textContent = 'Search for Moments';
             });
         });
     });
+
+    function displayMomentSearchResults(card, moments) {
+        const searchResultsContainer = card.querySelector('.moment-search-results');
+        const resultsDiv = searchResultsContainer.querySelector('.results-container');
+        const momentEditor = card.querySelector('.moment-editor');
+        resultsDiv.innerHTML = '';
+
+        if (moments.length > 0) {
+            const list = document.createElement('ul');
+            list.style.listStyleType = 'none';
+            list.style.paddingLeft = '0';
+
+            moments.forEach(moment => {
+                const item = document.createElement('li');
+                item.style.marginBottom = '10px';
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'selected_moment';
+                radio.value = moment.moment_id;
+                radio.id = `moment-${moment.moment_id}`;
+                radio.addEventListener('change', () => {
+                    card.querySelector('.use-selected-moment-btn').disabled = false;
+                });
+
+                const label = document.createElement('label');
+                label.htmlFor = `moment-${moment.moment_id}`;
+                label.style.marginLeft = '10px';
+                label.innerHTML = `<strong>ID ${moment.moment_id}:</strong> [${moment.frame_start}-${moment.frame_end}] <em>${moment.notes}</em>`;
+
+                item.appendChild(radio);
+                item.appendChild(label);
+                list.appendChild(item);
+            });
+            resultsDiv.appendChild(list);
+        } else {
+            resultsDiv.innerHTML = '<p>No similar moments found.</p>';
+        }
+
+        searchResultsContainer.style.display = 'block';
+        momentEditor.querySelector('.save-moment-btn').style.display = 'none';
+        momentEditor.querySelector('.create-new-moment-btn').style.display = 'inline-block';
+    }
+
+    // --- "Create New Moment" Button ---
+    document.querySelectorAll('.create-new-moment-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+            saveMoment(form);
+        });
+    });
+
+    function saveMoment(form) {
+        const formData = new FormData(form);
+        const button = form.querySelector('.create-new-moment-btn');
+        button.disabled = true;
+        button.textContent = 'Saving...';
+
+        fetch('/admin/ajax/save_moment_from_realtime.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'An unknown error occurred.'));
+                button.disabled = false;
+                button.textContent = 'Create New Moment';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An unexpected network error occurred.');
+            button.disabled = false;
+            button.textContent = 'Create New Moment';
+        });
+    }
+
+    // --- "Use Selected Moment" Button ---
+    document.querySelectorAll('.use-selected-moment-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const card = this.closest('.worker-card');
+            const selectedRadio = card.querySelector('input[name="selected_moment"]:checked');
+            if (!selectedRadio) {
+                alert('Please select a moment to use.');
+                return;
+            }
+            const moment_id = selectedRadio.value;
+            const momentEditor = card.querySelector('.moment-editor');
+            const token_ids = momentEditor.querySelector('input[name="token_ids"]').value;
+            const phrase_string = momentEditor.querySelector('input[name="phrase_string"]').value;
+
+            createPhraseForExistingMoment(this, { moment_id, token_ids, phrase_string });
+        });
+    });
+
+    function createPhraseForExistingMoment(button, data) {
+        button.disabled = true;
+        button.textContent = 'Saving...';
+
+        const formData = new FormData();
+        formData.append('moment_id', data.moment_id);
+        formData.append('token_ids', data.token_ids);
+        formData.append('phrase_string', data.phrase_string);
+
+        fetch('/admin/ajax/create_phrase_for_moment.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'An unknown error occurred.'));
+                button.disabled = false;
+                button.textContent = 'Use Selected Moment & Create Phrase';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An unexpected network error occurred.');
+            button.disabled = false;
+            button.textContent = 'Use Selected Moment & Create Phrase';
+        });
+    }
+
 
     // --- Add Token Button Logic ---
     document.querySelectorAll('.add-token-btn').forEach(button => {
@@ -189,52 +343,20 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.token-creation-form').forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-
             const workerId = this.dataset.workerId;
-            const tokenString = this.querySelector('textarea[name="token_string"]').value.trim();
-            const tokenDate = this.querySelector('input[name="token_date"]').value.trim();
-            const tokenColor = this.querySelector('select[name="token_color"]').value;
-
-            if (!tokenString) {
-                alert('Token text cannot be empty.');
-                return;
-            }
-
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
-
-            // Store date for next time
-            if (tokenDate) {
-                localStorage.setItem('lastTokenDate', tokenDate);
-            }
-
-            // Use timestamp-based coordinates instead of X/Y positioning
-            const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
-
-            // Create FormData for the token
-            const formData = new FormData();
+            const formData = new FormData(this);
             formData.append('action', 'create_for_worker');
             formData.append('worker_id', workerId);
-            formData.append('token_string', tokenString);
-            formData.append('token_date', tokenDate);
-            formData.append('token_color', tokenColor);
-            formData.append('token_x_pos', timestamp.toString());
-            formData.append('token_y_pos', timestamp.toString());
-            formData.append('token_width', Math.max(50, 10 + tokenString.length * 7).toString());
-            formData.append('token_height', '30');
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
 
             fetch('/admin/ajax/tokens.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Hide form and reset
@@ -244,24 +366,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Add the new token to the available tokens container
                     addTokenToContainer(workerId, data.token);
-
-                    // Show success message
-                    const successMsg = document.createElement('div');
-                    successMsg.style.cssText = 'background: #d4edda; color: #155724; padding: 8px; border: 1px solid #c3e6cb; border-radius: 4px; margin-top: 10px;';
-                    successMsg.textContent = 'Token created successfully!';
-                    tokenForm.insertAdjacentElement('afterend', successMsg);
-                    setTimeout(() => successMsg.remove(), 3000);
                 } else {
                     alert('Error creating token: ' + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while creating the token. Please try again.');
+                alert('An error occurred while creating the token.');
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+                submitBtn.textContent = 'Save Token';
             });
         });
     });
@@ -271,22 +386,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Remove "No available tokens" message if it exists
         const noTokensMsg = container.querySelector('p');
-        if (noTokensMsg && noTokensMsg.textContent.includes('No available tokens')) {
-            noTokensMsg.remove();
-        }
+        if (noTokensMsg) noTokensMsg.remove();
 
         // Create new token element
         const tokenElement = document.createElement('div');
         tokenElement.className = 'token-item';
-        if (token.is_permanent) {
-            tokenElement.classList.add('token-permanent');
-        }
+        if (token.is_permanent) tokenElement.classList.add('token-permanent');
         tokenElement.dataset.tokenId = token.token_id;
         tokenElement.dataset.tokenDate = token.token_date || '';
         tokenElement.title = `Token ID: ${token.token_id}`;
         tokenElement.textContent = token.token_string;
-
-        // Add to container
         container.appendChild(tokenElement);
 
         // No need to reinitialize SortableJS as it automatically detects new elements
@@ -352,8 +461,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
+        .catch(error => console.error('Fetch error:', error));
     }
 });

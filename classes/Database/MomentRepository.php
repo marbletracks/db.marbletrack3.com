@@ -340,4 +340,31 @@ class MomentRepository
         }
         return array_reverse($moments);
     }
+
+    public function findSimilarMoments(int $worker_id, int $frame_start, int $frame_end, int $frame_buffer = 5): array
+    {
+        $sql = "SELECT m.*
+                FROM moments m
+                JOIN moment_translations mt ON m.moment_id = mt.moment_id
+                WHERE mt.perspective_entity_type = 'worker'
+                  AND mt.perspective_entity_id = ?
+                  AND m.frame_start <= (? + ?)
+                  AND m.frame_end >= (? - ?)
+                ORDER BY m.frame_start ASC";
+
+        $results = $this->db->fetchResults(
+            $sql,
+            'iiiii',
+            [$worker_id, $frame_end, $frame_buffer, $frame_start, $frame_buffer]
+        );
+
+        $moments = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $this->moment_id = (int) $results->data['moment_id'];
+            $moments[] = $this->hydrate($results->data);
+        }
+
+        return $moments;
+    }
 }
