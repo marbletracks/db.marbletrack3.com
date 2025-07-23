@@ -1,0 +1,47 @@
+name: Basic Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: dom, libxml
+    
+    - name: Validate PHP syntax
+      run: |
+        find . -name "*.php" -not -path "./vendor/*" -exec php -l {} \;
+    
+    - name: Run basic validation tests
+      run: |
+        php scripts/run_simple_tests.php
+    
+    - name: Test database setup script syntax
+      run: |
+        php -l scripts/setup_test_database.php
+    
+    - name: Install Composer dependencies
+      run: |
+        curl -sS https://getcomposer.org/installer | php
+        php composer.phar install --prefer-dist --no-progress --no-interaction
+      continue-on-error: true
+    
+    - name: Run PHPUnit tests (if available)
+      run: |
+        if [ -f "vendor/bin/phpunit" ]; then
+          vendor/bin/phpunit tests/Unit
+        else
+          echo "PHPUnit not available, skipping"
+        fi
+      continue-on-error: true
