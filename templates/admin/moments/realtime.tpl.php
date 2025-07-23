@@ -141,7 +141,7 @@
                         <input type="hidden" name="phrase_string">
                         <label>
                             Notes:<br>
-                            <textarea name="notes" class="shortcodey-textarea" rows="5" style="width: 100%;"></textarea>
+                            <textarea id="shortcodey" name="notes" class="shortcodey-textarea" rows="5" style="width: 100%;"></textarea>
                         </label>
                         <div class="perspective-fields" style="margin-top: 20px;"></div>
 

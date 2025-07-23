@@ -20,7 +20,7 @@
         </label><br><br>
         <label>
             Description:<br>
-            <textarea id="shortcodey" name="description" rows="15" cols="100"><?= htmlspecialchars($worker->description ?? '') ?></textarea>
+            <textarea id="shortcodey" name="notes" class="shortcodey-textarea" name="description" rows="15" cols="100"><?= htmlspecialchars($worker->description ?? '') ?></textarea>
             <div id="autocomplete"></div>
         </label><br><br>
 
