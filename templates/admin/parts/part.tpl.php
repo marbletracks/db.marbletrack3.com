@@ -24,7 +24,7 @@
 
         <label>
             Description:<br>
-            <textarea id="shortcodey" name="notes" class="shortcodey-textarea" name="part_description" rows="15" cols="100"><?= htmlspecialchars($part->description ?? '') ?></textarea>
+            <textarea id="shortcodey" name="part_description" class="shortcodey-textarea" rows="15" cols="100"><?= htmlspecialchars($part->description ?? '') ?></textarea>
             <div id="autocomplete"></div>
         </label><br><br>
 
