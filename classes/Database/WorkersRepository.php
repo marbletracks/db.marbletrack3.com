@@ -192,11 +192,12 @@ SQL,
             sql: <<<SQL
 SELECT w.worker_id,
        w.worker_alias,
+       w.busy_sort,
        n.worker_name,
        n.worker_description
 FROM workers w
-JOIN worker_names n ON w.worker_id = n.worker_id AND n.language_code = ?
-ORDER BY w.worker_id ASC
+LEFT JOIN worker_names n ON w.worker_id = n.worker_id AND n.language_code = ?
+ORDER BY w.busy_sort ASC, w.worker_id ASC
 SQL,
             paramtypes: 's',
             var1: [$this->langCode]
@@ -288,6 +289,7 @@ SQL,
         $worker = new Worker(
             worker_id: (int) $row['worker_id'],
             worker_alias: $row['worker_alias'],
+            busy_sort: (int) $row['busy_sort'],
             name: $row['worker_name'] ?? '',
             description: $row['worker_description'] ?? ''
         );

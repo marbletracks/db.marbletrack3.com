@@ -56,12 +56,12 @@ trait HasShortcodes
     }
 
     /**
-     * Summary of expandShortcodes
+     * Summary of expandShortcodesForFrontend
      * @param string $text
      * @param string $type "part" or "worker"
      * @return string
      */
-    public function expandShortcodes(string $text, string $type, string $langCode): string
+    public function expandShortcodesForFrontend(string $text, string $type, string $langCode): string
     {
         // This regex finds all occurrences of [part:some_slug]
         preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
@@ -94,6 +94,46 @@ trait HasShortcodes
             $slug = $res->data['slug'];
 
             $url = "/{$type}s/{$slug}/";
+            $replacements["[{$type}:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
+        }
+
+        return strtr($text, $replacements);
+    }
+
+    public function expandShortcodesForBackend(string $text, string $type, string $langCode): string
+    {
+        // This regex finds all occurrences of [part:some_slug]
+        preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
+
+        if (empty($matches[1])) {
+            return $text;
+        }
+
+        $slugs = array_unique($matches[1]);
+        $placeholders = [];
+        $params = [];
+
+        foreach ($slugs as $slug) {
+            $placeholders[] = '?';
+            $params[] = $slug;
+        }
+
+        $db = $this->getDb();
+        $tableAlias = $this->getTableAlias();
+        $inClause = implode(',', $placeholders);
+
+        $sql = $this->getSELECTForShortcodeExpansion($langCode) . " WHERE $tableAlias.slug IN ($inClause)";
+
+        $res = $db->fetchResults($sql, str_repeat('s', count($params)), $params);
+
+        $replacements = [];
+        for ($i = 0; $i < $res->numRows(); $i++) {
+            $res->setRow($i);
+            $id = $res->data['id'];
+            $name = $res->data['name'];
+            $slug = $res->data['slug'];
+
+            $url = "/admin/{$type}s/{$type}.php?id={$id}";
             $replacements["[{$type}:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
         }
 

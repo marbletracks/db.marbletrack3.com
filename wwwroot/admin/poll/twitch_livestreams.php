@@ -21,6 +21,8 @@ if (!$twitchClientId || !$twitchClientSecret || !$twitchUserName) {
 }
 
 use Database\LivestreamFactory;
+use Database\EpisodeRepository;
+use Database\LivestreamsRepository;
 
 /**
  * Exchange client credentials for an app access token.
@@ -111,6 +113,9 @@ $url = "https://api.twitch.tv/helix/videos?user_id=$twitchUserID&type=archive";
 $data = fetchTwitch($url, $twitchClientId, $twitchAccessToken);
 
 $results = [];
+$livestreams_repo = new LivestreamsRepository(db: $mla_database);
+$episodes_repo = new EpisodeRepository(db: $mla_database);
+
 foreach ($data['data'] as $item) {
     // print_rob($item);
     $ls = LivestreamFactory::fromApiItem($item, $mla_database, 'twitch');
@@ -120,30 +125,44 @@ foreach ($data['data'] as $item) {
         $results[] = [
             'livestream_id' => $ls->getLivestreamId(),
             'title' => $ls->getTitle(),
-            'status' => '✅ Saved  (and be sure to save this stuff in DB)',
+            'status' => '✅ Saved to database',
             'url' => 'https://www.twitch.tv/videos/' . $item['id'],
             'thumbnail_url' => str_replace('%{width}x%{height}', '320x180', $item['thumbnail_url']),
             'duration' => $item['duration'],
+            'has_episode' => false,
         ];
     } else {
-        $results[] = [
+        $local_livestream = $livestreams_repo->findByExternalId($ls->getExternalId());
+        $episode = $episodes_repo->findByLivestreamId($local_livestream->livestream_id);
+
+        $result = [
+            'livestream_id' => $local_livestream->livestream_id,
             'title' => $ls->getTitle(),
-            'status' => '😊 Already in database BUT THIS IS NOT IN DATABASE need thumbnail 149 characters',
+            'status' => '😊 Already in database',
             'url' => 'https://www.twitch.tv/videos/' . $item['id'],
             'thumbnail_url' => str_replace('%{width}x%{height}', '320x180', $item['thumbnail_url']),
             'duration' => $item['duration'],
+            'has_episode' => false,
         ];
+
+        if ($episode) {
+            $result['has_episode'] = true;
+            $result['episode_id'] = $episode->episode_id;
+            $result['status'] .= ', episode exists';
+        }
+        $results[] = $result;
     }
 }
 
+$platform = "Twitch";
 $page = new \Template(config: $config);
-$page->setTemplate(template_file: "admin/poll/twitch_livestreams.tpl.php");
+$page->setTemplate(template_file: "admin/poll/livestream_poll_results.tpl.php");
 $page->set(name: "results", value: $results);
-$page->set(name: "page_title", value: "Twitch Livestream Poll");
+$page->set(name: "platform", value: $platform);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template(config: $config);
 $layout->setTemplate(template_file: "layout/admin_base.tpl.php");
-$layout->set(name: "page_title", value: "Twitch Livestream Poll");
+$layout->set(name: "page_title", value: "$platform Livestream Poll");
 $layout->set(name: "page_content", value: $inner);
 $layout->echoToScreen();

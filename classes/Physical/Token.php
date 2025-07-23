@@ -32,6 +32,7 @@ class Token implements \JsonSerializable
         public int $token_height,
         public string $token_color,
         public string $created_at,
+        public bool $is_permanent = false,
     ) {
     }
 

@@ -12,7 +12,6 @@ class Moment
         public int $moment_id,
         public ?int $frame_start,
         public ?int $frame_end,
-        public ?int $phrase_id,
         public ?int $take_id,
         public ?string $notes,
         public ?string $moment_date

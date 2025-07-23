@@ -12,7 +12,7 @@
     <form action="" method="post">
         <label>
             Notes:<br>
-            <textarea id="shortcodey" name="notes" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
+            <textarea id="shortcodey" name="notes" class="shortcodey-textarea" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>
             <div id="autocomplete"></div>
             <div style="margin-top: 10px;">
                 <strong>Live Preview:</strong>
@@ -26,17 +26,20 @@
 
         <label>
             Frame Start:<br>
-            <input type="number" name="frame_start" value="<?= htmlspecialchars((string)($moment->frame_start ?? '')) ?>">
+            <input type="number" id="frame_start" name="frame_start" value="<?= htmlspecialchars((string)($moment->frame_start ?? $default_frame_start)) ?>">
+        </label>
+        <label>
+            Seconds:
+            <input type="number" id="frame_start_seconds" style="width: 60px;">
         </label><br><br>
 
         <label>
             Frame End:<br>
-            <input type="number" name="frame_end" value="<?= htmlspecialchars((string)($moment->frame_end ?? '')) ?>">
-        </label><br><br>
-
+            <input type="number" id="frame_end" name="frame_end" value="<?= htmlspecialchars((string)($moment->frame_end ?? '')) ?>">
+        </label>
         <label>
-            Phrase ID:<br>
-            <input type="number" name="phrase_id" value="<?= htmlspecialchars((string)($moment->phrase_id ?? '')) ?>">
+            Seconds:
+            <input type="number" id="frame_end_seconds" style="width: 60px;">
         </label><br><br>
 
         <label>
@@ -44,7 +47,13 @@
             <select name="take_id">
                 <option value="">-- Select a Take --</option>
                 <?php foreach ($takes as $take): ?>
-                    <option value="<?= $take->take_id ?>" <?= ($moment && $moment->take_id == $take->take_id) ? 'selected' : '' ?>>
+<?php
+$selected = false;
+if($moment && $moment->take_id == $take->take_id) { $selected = true; }  // editing an existing moment
+elseif($default_take_id == $take->take_id) { $selected = true; }   // creating new moment for this take_id
+else { $selected = false; }
+?>
+                    <option value="<?= $take->take_id ?>" <?= $selected ? 'selected' : '' ?>>
                         <?= htmlspecialchars($take->take_name) ?>
                     </option>
                 <?php endforeach; ?>
@@ -150,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            previewDiv.innerHTML = '<span style="color: red;">Error loading preview.</span>';
+            previewDiv.innerHTML = '<span style="color: red;">Error loading preview: ' + error + '</span>';
             console.error('Fetch error:', error);
         });
     }
@@ -161,5 +170,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     updatePreviewAndPerspectives();
+});
+
+document.getElementById('frame_start_seconds').addEventListener('input', function(e) {
+    const seconds = e.target.value;
+    if (seconds && !isNaN(seconds)) {
+        const frameStartInput = document.getElementById('frame_start');
+        frameStartInput.value = Math.round(seconds * 12);
+    }
+});
+
+document.getElementById('frame_end_seconds').addEventListener('input', function(e) {
+    const seconds = e.target.value;
+    if (seconds && !isNaN(seconds)) {
+        const frameEndInput = document.getElementById('frame_end');
+        frameEndInput.value = Math.round(seconds * 12);
+    }
 });
 </script>

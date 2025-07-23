@@ -26,8 +26,8 @@ try {
     $parts_repo = new \Database\PartsRepository($mla_database, $langCode);
 
     // First expand workers, then parts on the result of the first expansion
-    $expanded_with_workers = $worker_repo->expandShortcodes($text, "worker", $langCode);
-    $fully_expanded = $parts_repo->expandShortcodes($expanded_with_workers, "part", $langCode);
+    $expanded_with_workers = $worker_repo->expandShortcodesForBackend($text, "worker", $langCode);
+    $fully_expanded = $parts_repo->expandShortcodesForBackend($expanded_with_workers, "part", $langCode);
 
     // Extract the perspectives
     $worker_perspectives = $worker_repo->extractShortcodes($text, "worker", $langCode);

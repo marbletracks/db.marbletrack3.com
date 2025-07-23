@@ -12,6 +12,7 @@ class Worker
     public function __construct(
         public int $worker_id,
         public string $worker_alias,
+        public int $busy_sort,
         public string $name = '',
         public string $description = '',
         public ?string $primary_image_url = null,
