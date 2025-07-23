@@ -271,6 +271,67 @@ SQL,
         return $parts;
     }
 
+    public function findByFilter(string $filter): array
+    {
+        $filter = trim($filter);
+        if (empty($filter)) {
+            return $this->findAll();
+        }
+
+        // Priority search:
+        // 1. Exact match of alias
+        // 2. LIKE "alias%" (starts with)
+        // 3. Exact match of name
+        // 4. LIKE "%name%" (contains)
+        
+        $results = $this->db->fetchResults(
+            sql: <<<SQL
+SELECT p.part_id,
+       p.part_alias,
+       p.is_rail,
+       p.is_support,
+       p.is_track,
+       t.part_name,
+       t.part_description,
+       CASE 
+           WHEN p.part_alias = ? THEN 1
+           WHEN p.part_alias LIKE ? THEN 2
+           WHEN t.part_name = ? THEN 3
+           WHEN t.part_name LIKE ? THEN 4
+           ELSE 5
+       END as priority
+FROM parts p
+JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
+WHERE p.part_alias = ?
+   OR p.part_alias LIKE ?
+   OR t.part_name = ?
+   OR t.part_name LIKE ?
+ORDER BY priority ASC, p.part_id ASC
+SQL,
+            paramtypes: 'sssssssss',
+            var1: [
+                $filter,           // exact alias match (case)
+                $filter . '%',     // alias starts with (case)
+                $filter,           // exact name match (case)
+                '%' . $filter . '%',  // name contains (case)
+                $this->langCode,   // language code
+                $filter,           // exact alias match (where)
+                $filter . '%',     // alias starts with (where)
+                $filter,           // exact name match (where)
+                '%' . $filter . '%'   // name contains (where)
+            ]
+        );
+
+        $parts = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $this->setPartId((int) $results->data['part_id']);
+            $parts[] = $this->hydrate($results->data);
+        }
+
+        return $parts;
+    }
+
     public function findPossParts(): array
     {
         $results = $this->db->fetchResults(
