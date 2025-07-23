@@ -44,7 +44,7 @@ class MomentRepository
     public function findById(int $moment_id): ?Moment
     {
         $results = $this->db->fetchResults(
-            "SELECT moment_id, frame_start, frame_end, phrase_id, take_id, notes, moment_date FROM moments WHERE moment_id = ?",
+            "SELECT moment_id, frame_start, frame_end, take_id, notes, moment_date FROM moments WHERE moment_id = ?",
             'i',
             [$moment_id]
         );
@@ -65,7 +65,6 @@ class MomentRepository
                     moment_id,
                     frame_start,
                     frame_end,
-                    phrase_id,
                     take_id,
                     notes,
                     moment_date
@@ -94,7 +93,6 @@ class MomentRepository
                     moment_id,
                     frame_start,
                     frame_end,
-                    phrase_id,
                     take_id,
                     notes,
                     moment_date
@@ -235,7 +233,7 @@ class MomentRepository
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
-            "SELECT m.moment_id, m.frame_start, m.frame_end, m.phrase_id, m.take_id, m.notes, m.moment_date
+            "SELECT m.moment_id, m.frame_start, m.frame_end, m.take_id, m.notes, m.moment_date
             FROM moments m
             JOIN parts_2_moments p2m ON m.moment_id = p2m.moment_id
             WHERE p2m.part_id = ?
@@ -254,15 +252,14 @@ class MomentRepository
         return $moments;
     }
 
-    public function insert(int $frame_start = null, int $frame_end = null, int $phrase_id = null, int $take_id = null, string $notes = null, string $moment_date = null): int
+    public function insert(int $frame_start = null, int $frame_end = null, int $take_id = null, string $notes = null, string $moment_date = null): int
     {
         return $this->db->insertFromRecord(
             'moments',
-            'iiiiss',
+            'iisss',
             [
                 'frame_start' => $frame_start,
                 'frame_end' => $frame_end,
-                'phrase_id' => $phrase_id,
                 'take_id' => $take_id,
                 'notes' => $notes,
                 'moment_date' => $moment_date
@@ -308,7 +305,6 @@ class MomentRepository
             moment_id: (int) $row['moment_id'],
             frame_start: isset($row['frame_start']) ? (int)$row['frame_start'] : null,
             frame_end: isset($row['frame_end']) ? (int)$row['frame_end'] : null,
-            phrase_id: isset($row['phrase_id']) ? (int)$row['phrase_id'] : null,
             take_id: isset($row['take_id']) ? (int)$row['take_id'] : null,
             notes: $row['notes'] ?? null,
             moment_date: $row['moment_date'] ?? null
@@ -316,5 +312,32 @@ class MomentRepository
         $this->loadPhotos();  // defined in HasPhotos trait
         $moment->photos = $this->getPhotos();  // return an array of photos
         return $moment;
+    }
+
+    public function findLatestForWorker(int $worker_id, int $limit = 2): array
+    {
+        $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date, mt.is_significant
+                FROM moments m
+                JOIN moment_translations mt ON m.moment_id = mt.moment_id
+                WHERE mt.perspective_entity_type = 'worker' AND mt.perspective_entity_id = ?
+                ORDER BY m.take_id DESC, m.frame_start DESC
+                LIMIT ?";
+
+        $results = $this->getDb()->fetchResults($sql, 'ii', [$worker_id, $limit]);
+
+        $moments = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            // Using a simplified hydration here to avoid re-fetching photos etc.
+            $moments[] = new \Media\Moment(
+                moment_id: (int)$results->data['moment_id'],
+                frame_start: isset($results->data['frame_start']) ? (int)$results->data['frame_start'] : null,
+                frame_end: isset($results->data['frame_end']) ? (int)$results->data['frame_end'] : null,
+                take_id: isset($results->data['take_id']) ? (int)$results->data['take_id'] : null,
+                notes: $results->data['notes'] ?? null,
+                moment_date: $results->data['moment_date'] ?? null
+            );
+        }
+        return array_reverse($moments);
     }
 }

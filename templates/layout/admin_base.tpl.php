@@ -30,7 +30,12 @@
         </div> |
         <a href="/admin/workers">Workers</a> |
         <a href="/admin/parts">Parts</a> |
-        <a href="/admin/moments">Moments</a> |
+        <div class="dropdown">
+            <a href="/admin/moments">Moments ▾</a>
+            <div class="dropdown-menu">
+                <a href="/admin/moments/realtime.php">Realtime</a>
+            </div>
+        </div> |
         <a href="/admin/parts/oss">Outer Spiral Supports</a> |
         <!-- dropdown -->
         <div class="dropdown">

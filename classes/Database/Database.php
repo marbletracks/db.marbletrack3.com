@@ -305,4 +305,20 @@ class Database implements DbInterface {
 
         return $res->num_rows > 0;
     }
+
+    public function beginTransaction(): void
+    {
+        $this->connect();
+        $this->dbObj->begin_transaction();
+    }
+
+    public function commit(): void
+    {
+        $this->dbObj->commit();
+    }
+
+    public function rollBack(): void
+    {
+        $this->dbObj->rollback();
+    }
 }
