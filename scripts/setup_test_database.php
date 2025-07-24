@@ -11,13 +11,13 @@ class TestDatabaseSetup
 {
     private \Config $config;
     private \Database\Database $prodDb;
-    private string $testDbName;
+    private \Database\Database $testDb;
     
     public function __construct()
     {
         $this->config = new \Config();
         $this->prodDb = \Database\Base::getDB($this->config);
-        $this->testDbName = $this->config->dbName . '_test';
+        $this->testDb = \Database\Base::getTestDb($this->config);
     }
     
     /**
@@ -28,11 +28,8 @@ class TestDatabaseSetup
         $errors = [];
         
         try {
-            $testConfig = new TestConfig();
-            $testDb = \Database\Base::getDB($testConfig);
-            
             // Try a simple query to test connectivity
-            $result = $testDb->executeSQL("SELECT 1 as test");
+            $result = $this->testDb->executeSQL("SELECT 1 as test");
             if ($result) {
                 echo "✓ Test database connection successful\n";
             } else {
@@ -46,7 +43,7 @@ class TestDatabaseSetup
             echo "\nTo set up the test database:\n";
             echo "1. Log into Dreamhost panel\n";
             echo "2. Go to 'MySQL Databases'\n";
-            echo "3. Create new database: '{$this->testDbName}'\n";
+            echo "3. Create new database\n";
             echo "4. Create new user or grant access to existing user\n";
             echo "5. Update your Config.php with test database credentials\n";
         }
@@ -110,11 +107,8 @@ class TestDatabaseSetup
      */
     private function clearTestDatabase(): void
     {
-        $testConfig = new TestConfig();
-        $testDb = \Database\Base::getDB($testConfig);
-        
         // Get all tables
-        $result = $testDb->executeSQL("SHOW TABLES");
+        $result = $this->testDb->executeSQL("SHOW TABLES");
         $tables = [];
         
         while ($row = $result->fetch()) {
@@ -127,15 +121,15 @@ class TestDatabaseSetup
         }
         
         // Disable foreign key checks and truncate all tables
-        $testDb->executeSQL("SET FOREIGN_KEY_CHECKS = 0");
+        $this->testDb->executeSQL("SET FOREIGN_KEY_CHECKS = 0");
         foreach ($tables as $table) {
             try {
-                $testDb->executeSQL("TRUNCATE TABLE `{$table}`");
+                $this->testDb->executeSQL("TRUNCATE TABLE `{$table}`");
             } catch (\Exception $e) {
                 echo "Warning: Could not truncate table {$table}: " . $e->getMessage() . "\n";
             }
         }
-        $testDb->executeSQL("SET FOREIGN_KEY_CHECKS = 1");
+        $this->testDb->executeSQL("SET FOREIGN_KEY_CHECKS = 1");
     }
     
     /**
@@ -172,13 +166,10 @@ class TestDatabaseSetup
      */
     private function sanitizeTestData(): void
     {
-        $testConfig = new TestConfig();
-        $testDb = \Database\Base::getDB($testConfig);
-        
         try {
             // Remove or anonymize sensitive data if tables exist
             // Example: Clear user passwords, email addresses, etc.
-            $testDb->executeSQL("UPDATE users SET password_hash = 'test_hash' WHERE password_hash IS NOT NULL");
+            $this->testDb->executeSQL("UPDATE users SET password_hash = 'test_hash' WHERE password_hash IS NOT NULL");
             echo "✓ User passwords sanitized\n";
             
         } catch (\Exception $e) {
@@ -188,7 +179,7 @@ class TestDatabaseSetup
         
         // Add test data markers
         try {
-            $testDb->executeSQL("INSERT INTO parts (alias, name, description) VALUES ('test_marker', 'Test Data Marker', 'This part indicates test database is properly set up') ON DUPLICATE KEY UPDATE description = VALUES(description)");
+            $this->testDb->executeSQL("INSERT INTO parts (alias, name, description) VALUES ('test_marker', 'Test Data Marker', 'This part indicates test database is properly set up') ON DUPLICATE KEY UPDATE description = VALUES(description)");
             echo "✓ Test data marker added\n";
         } catch (\Exception $e) {
             echo "Note: Could not add test marker: " . $e->getMessage() . "\n";
@@ -201,18 +192,15 @@ class TestDatabaseSetup
     public function validateTestDatabase(): bool
     {
         try {
-            $testConfig = new TestConfig();
-            $testDb = \Database\Base::getDB($testConfig);
-            
             // Test basic operations
-            $result = $testDb->executeSQL("SELECT COUNT(*) as count FROM parts");
+            $result = $this->testDb->executeSQL("SELECT COUNT(*) as count FROM parts");
             $row = $result->fetch();
             $partCount = $row['count'] ?? 0;
             
             echo "✓ Test database contains {$partCount} parts\n";
             
             // Test if our test marker exists
-            $markerResult = $testDb->executeSQL("SELECT * FROM parts WHERE alias = 'test_marker'");
+            $markerResult = $this->testDb->executeSQL("SELECT * FROM parts WHERE alias = 'test_marker'");
             if ($markerResult && $markerResult->fetch()) {
                 echo "✓ Test data marker found\n";
                 return true;
