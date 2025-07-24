@@ -2,3 +2,14 @@
 .aider*
 scp_files_to_dh.sh
 .env
+
+# Testing artifacts
+/vendor/
+/composer.phar
+/composer.lock
+/.phpunit.result.cache
+/tests/reports/
+/coverage/
+
+# Config files with credentials
+/classes/Config.php

@@ -1,0 +1,21 @@
+{
+    "name": "marbletracks/db.marbletrack3.com",
+    "description": "Marble Track 3 website with testing infrastructure",
+    "type": "project",
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-unit": "phpunit tests/Unit",
+        "test-integration": "phpunit tests/Integration"
+    }
+}
