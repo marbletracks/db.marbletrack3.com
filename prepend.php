@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Using existing Moments in realtime";
+const SENTIMENTAL_VERSION = "Which OSS did Big Brother install?";
 
 # write errors to screen
 ini_set('display_errors', 1);
