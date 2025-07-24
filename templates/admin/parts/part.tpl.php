@@ -42,7 +42,8 @@
                     <?php endif; // ($moment->moment_date): ?>
                     <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>"><?= htmlspecialchars($moment->notes) ?></a>
                     <?php if ($moment->frame_start || $moment->frame_end): ?>
-                        &nbsp; (Frames: <?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>)
+                        (<a href="/admin/moments/?take_id=<?= $moment->take_id ?>">T:<?= $moment->take_id ?></a>
+                         F:<?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>)
                     <?php endif; ?>
 
                     <label class="is-significant-label">
