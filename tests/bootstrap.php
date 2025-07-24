@@ -68,7 +68,7 @@ if (class_exists('Config')) {
 
         if ($testDb === null) {
             $testConfig = new TestConfig();
-            $testDb = \Database\Base::getDB($testConfig);
+            $testDb = \Database\Base::getTestDB($testConfig);
         }
 
         return $testDb;
