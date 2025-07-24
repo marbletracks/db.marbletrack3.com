@@ -1,5 +1,5 @@
 <div class="PagePanel">
-    <h1><?= $part ? 'Edit Part' : 'Create Part' ?></h1>
+    <h1><?= $part ? 'Edit ' . htmlspecialchars($part->name) : 'Create Part' ?></h1>
 
     <?php if (!empty($errors)): ?>
             <div class="Errors">
