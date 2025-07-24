@@ -11,6 +11,7 @@ class PartsIntegrationTest extends TestCase
 {
     private \Database\Database $testDb;
     private PartsRepository $partsRepo;
+    private string $testPrefix;
     
     protected function setUp(): void
     {
@@ -18,7 +19,10 @@ class PartsIntegrationTest extends TestCase
         $this->testDb = getTestDatabase();
         $this->partsRepo = new PartsRepository($this->testDb, 'en');
         
-        // Clean up any test data from previous runs
+        // Create unique test prefix using timestamp and random number
+        $this->testPrefix = 'test_' . time() . '_' . rand(1000, 9999) . '_';
+        
+        // Clean up any old test data from previous runs
         $this->cleanupTestData();
     }
     
@@ -36,7 +40,7 @@ class PartsIntegrationTest extends TestCase
     {
         // Simulate form data that would be submitted
         $formData = [
-            'part_alias' => 'test_part_alias',
+            'part_alias' => $this->testPrefix . 'part_alias',
             'part_name' => 'Test Part Name',
             'part_description' => 'This is a test part description',
             'image_urls' => ['http://example.com/image1.jpg', 'http://example.com/image2.jpg'],
@@ -68,11 +72,11 @@ class PartsIntegrationTest extends TestCase
     public function testPartUpdateWithFormData()
     {
         // Create a test part first
-        $originalPartId = $this->partsRepo->insert('original_alias', 'Original Name', 'Original description');
+        $originalPartId = $this->partsRepo->insert($this->testPrefix . 'original_alias', 'Original Name', 'Original description');
         
         // Simulate form data for update
         $updateData = [
-            'part_alias' => 'updated_alias',
+            'part_alias' => $this->testPrefix . 'updated_alias',
             'part_name' => 'Updated Name',
             'part_description' => 'Updated description with more content'
         ];
@@ -100,12 +104,12 @@ class PartsIntegrationTest extends TestCase
     public function testPartWithEmptyDescription()
     {
         // Test with empty string
-        $partId1 = $this->partsRepo->insert('test_empty', 'Test Empty', '');
+        $partId1 = $this->partsRepo->insert($this->testPrefix . 'empty', 'Test Empty', '');
         $part1 = $this->partsRepo->findById($partId1);
         $this->assertEquals('', $part1->description, "Empty description should be saved as empty string");
         
         // Test with null
-        $partId2 = $this->partsRepo->insert('test_null', 'Test Null', null);
+        $partId2 = $this->partsRepo->insert($this->testPrefix . 'null', 'Test Null', null);
         $part2 = $this->partsRepo->findById($partId2);
         $this->assertEmpty($part2->description, "Null description should be handled gracefully");
     }
@@ -119,20 +123,20 @@ class PartsIntegrationTest extends TestCase
         // Test that we can perform common database operations without SQL errors
         try {
             // Test INSERT
-            $partId = $this->partsRepo->insert('param_test', 'Parameter Test', 'Testing SQL parameters');
+            $partId = $this->partsRepo->insert($this->testPrefix . 'param_test', 'Parameter Test', 'Testing SQL parameters');
             $this->assertGreaterThan(0, $partId, "INSERT should work without parameter errors");
             
             // Test UPDATE
             $this->partsRepo->update(
                 part_id: $partId,
-                alias: 'param_test_updated',
+                alias: $this->testPrefix . 'param_test_updated',
                 name: 'Parameter Test Updated',
                 description: 'Updated testing SQL parameters'
             );
             
             // Verify update worked
             $updatedPart = $this->partsRepo->findById($partId);
-            $this->assertEquals('param_test_updated', $updatedPart->alias, "UPDATE should work without parameter errors");
+            $this->assertEquals($this->testPrefix . 'param_test_updated', $updatedPart->alias, "UPDATE should work without parameter errors");
             
         } catch (\Exception $e) {
             $this->fail("Database operations should not throw exceptions. Error: " . $e->getMessage());
@@ -147,7 +151,7 @@ class PartsIntegrationTest extends TestCase
     {
         // Simulate $_POST data as it would come from the form
         $_POST = [
-            'part_alias' => 'form_test',
+            'part_alias' => $this->testPrefix . 'form_test',
             'part_name' => 'Form Test Part',
             'part_description' => 'This part was created via form submission test',
             'image_urls' => [],
@@ -163,7 +167,7 @@ class PartsIntegrationTest extends TestCase
         $moment_ids = $moment_ids_str ? explode(',', $moment_ids_str) : [];
         
         // Validate that the form data was processed correctly
-        $this->assertEquals('form_test', $alias, "Form alias should be processed correctly");
+        $this->assertEquals($this->testPrefix . 'form_test', $alias, "Form alias should be processed correctly");
         $this->assertEquals('Form Test Part', $name, "Form name should be processed correctly");
         $this->assertEquals('This part was created via form submission test', $description, "Form description should be processed correctly");
         $this->assertIsArray($image_urls, "Image URLs should be processed as array");
@@ -182,28 +186,38 @@ class PartsIntegrationTest extends TestCase
      */
     private function cleanupTestData(): void
     {
-        // Remove test parts (be careful to only remove test data)
-        $testAliases = [
-            'test_part_alias',
-            'original_alias', 
-            'updated_alias',
-            'test_empty',
-            'test_null',
-            'param_test',
-            'param_test_updated',
-            'form_test'
-        ];
-        
-        foreach ($testAliases as $alias) {
-            try {
+        // Remove all test parts with our unique prefix pattern
+        // This covers all possible aliases we might have created during testing
+        try {
+            // Clean up parts created with our test prefix
+            $this->testDb->executeSQL(
+                "DELETE FROM parts WHERE part_alias LIKE ?",
+                's',
+                [$this->testPrefix . '%']
+            );
+            
+            // Also clean up any old test data from previous runs that might have used fixed names
+            $oldTestAliases = [
+                'test_part_alias',
+                'original_alias', 
+                'updated_alias',
+                'test_empty',
+                'test_null',
+                'param_test',
+                'param_test_updated',
+                'form_test'
+            ];
+            
+            foreach ($oldTestAliases as $alias) {
                 $this->testDb->executeSQL(
-                    "DELETE FROM parts WHERE alias = ?",
+                    "DELETE FROM parts WHERE part_alias = ?",
                     's',
                     [$alias]
                 );
-            } catch (\Exception $e) {
-                // Ignore errors during cleanup
             }
+        } catch (\Exception $e) {
+            // Ignore errors during cleanup - table might not exist or different structure
+            // This ensures tests can still run even if cleanup fails
         }
     }
 }

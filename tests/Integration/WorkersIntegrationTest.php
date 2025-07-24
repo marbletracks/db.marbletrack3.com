@@ -11,6 +11,7 @@ class WorkersIntegrationTest extends TestCase
 {
     private \Database\Database $testDb;
     private WorkersRepository $workersRepo;
+    private string $testPrefix;
     
     protected function setUp(): void
     {
@@ -18,7 +19,10 @@ class WorkersIntegrationTest extends TestCase
         $this->testDb = getTestDatabase();
         $this->workersRepo = new WorkersRepository($this->testDb, 'en');
         
-        // Clean up any test data from previous runs
+        // Create unique test prefix using timestamp and random number
+        $this->testPrefix = 'test_' . time() . '_' . rand(1000, 9999) . '_';
+        
+        // Clean up any old test data from previous runs
         $this->cleanupTestData();
     }
     
@@ -36,7 +40,7 @@ class WorkersIntegrationTest extends TestCase
     {
         // Simulate form data that would be submitted for a worker
         $formData = [
-            'worker_name' => 'Test Worker',
+            'worker_name' => $this->testPrefix . 'Worker',
             'description' => 'This is a test worker description'
         ];
         
@@ -114,7 +118,7 @@ class WorkersIntegrationTest extends TestCase
     {
         // Simulate $_POST data as it would come from the Workers form
         $_POST = [
-            'worker_name' => 'Form Test Worker',
+            'worker_name' => $this->testPrefix . 'Form_Test_Worker',
             'description' => 'This worker was created via form submission test'
         ];
         
@@ -123,7 +127,7 @@ class WorkersIntegrationTest extends TestCase
         $description = trim($_POST['description'] ?? '');
         
         // Validate that the form data was processed correctly
-        $this->assertEquals('Form Test Worker', $name, "Form worker name should be processed correctly");
+        $this->assertEquals($this->testPrefix . 'Form_Test_Worker', $name, "Form worker name should be processed correctly");
         $this->assertEquals('This worker was created via form submission test', $description, 
             "Form description should be processed correctly");
         
@@ -141,14 +145,14 @@ class WorkersIntegrationTest extends TestCase
     {
         // Simulate form data with empty description
         $_POST = [
-            'worker_name' => 'Worker With Empty Description',
+            'worker_name' => $this->testPrefix . 'Worker_With_Empty_Description',
             'description' => ''
         ];
         
         $name = trim($_POST['worker_name'] ?? '');
         $description = trim($_POST['description'] ?? '');
         
-        $this->assertEquals('Worker With Empty Description', $name, "Worker name should be processed");
+        $this->assertEquals($this->testPrefix . 'Worker_With_Empty_Description', $name, "Worker name should be processed");
         $this->assertEquals('', $description, "Empty description should be processed as empty string");
         
         unset($_POST);
@@ -159,23 +163,40 @@ class WorkersIntegrationTest extends TestCase
      */
     private function cleanupTestData(): void
     {
-        // Remove test workers (be careful to only remove test data)
-        $testNames = [
-            'Test Worker',
-            'Form Test Worker',
-            'Worker With Empty Description'
-        ];
-        
-        foreach ($testNames as $name) {
-            try {
+        // Remove all test workers with our unique prefix pattern
+        try {
+            // Clean up workers created with our test prefix
+            // Note: The exact SQL depends on the workers table structure
+            $this->testDb->executeSQL(
+                "DELETE FROM workers WHERE worker_alias LIKE ?",
+                's',
+                [$this->testPrefix . '%']
+            );
+            
+            // Also try cleaning by name pattern if that's how workers are identified
+            $this->testDb->executeSQL(
+                "DELETE FROM worker_names WHERE worker_name LIKE ?",
+                's',
+                [$this->testPrefix . '%']
+            );
+            
+            // Clean up any old test data from previous runs that might have used fixed names
+            $oldTestNames = [
+                'Test Worker',
+                'Form Test Worker',
+                'Worker With Empty Description'
+            ];
+            
+            foreach ($oldTestNames as $name) {
                 $this->testDb->executeSQL(
-                    "DELETE FROM workers WHERE name = ?",
+                    "DELETE FROM worker_names WHERE worker_name = ?",
                     's',
                     [$name]
                 );
-            } catch (\Exception $e) {
-                // Ignore errors during cleanup - table might not exist or different structure
             }
+        } catch (\Exception $e) {
+            // Ignore errors during cleanup - table might not exist or different structure
+            // This ensures tests can still run even if cleanup fails
         }
     }
 }
