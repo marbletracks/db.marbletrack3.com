@@ -12,21 +12,21 @@ class TestDatabaseSetup
     private \Config $config;
     private \Database\Database $prodDb;
     private \Database\Database $testDb;
-    
+
     public function __construct()
     {
         $this->config = new \Config();
         $this->prodDb = \Database\Base::getDB($this->config);
         $this->testDb = \Database\Base::getTestDb($this->config);
     }
-    
+
     /**
      * Check if test database exists and is accessible
      */
     public function checkTestDatabaseAccess(): array
     {
         $errors = [];
-        
+
         try {
             // Try a simple query to test connectivity
             $result = $this->testDb->executeSQL("SELECT 1 as test");
@@ -35,7 +35,7 @@ class TestDatabaseSetup
             } else {
                 $errors[] = "Could not execute test query on test database";
             }
-            
+
         } catch (\Exception $e) {
             $errors[] = "Test database connection failed: " . $e->getMessage();
             echo "❌ Test database connection failed\n";
@@ -47,10 +47,10 @@ class TestDatabaseSetup
             echo "4. Create new user or grant access to existing user\n";
             echo "5. Update your Config.php with test database credentials\n";
         }
-        
+
         return $errors;
     }
-    
+
     /**
      * Sync test database with production using existing backup system
      * Based on TESTING.md recommendations
@@ -58,49 +58,49 @@ class TestDatabaseSetup
     public function syncTestDatabase(): void
     {
         echo "Starting test database sync...\n";
-        
+
         try {
             // 1. Create fresh backup using existing system
             $persistaroo = new \Database\DBPersistaroo($this->config);
             $persistaroo->ensureBackupIsRecent();
             echo "✓ Production backup created\n";
-            
+
             // 2. Find latest backup file
             $backupDir = $this->config->app_path . '/db_backups';
             if (!is_dir($backupDir)) {
                 throw new \Exception("Backup directory not found: {$backupDir}");
             }
-            
+
             $backups = glob($backupDir . '/*.sql');
             if (empty($backups)) {
                 throw new \Exception("No backup files found in {$backupDir}");
             }
-            
+
             // Get most recent backup
             usort($backups, fn($a, $b) => filemtime($b) - filemtime($a));
             $latestBackup = $backups[0];
             echo "✓ Using backup: " . basename($latestBackup) . "\n";
-            
+
             // 3. Clear test database (truncate all tables since we can't DROP/CREATE)
             $this->clearTestDatabase();
             echo "✓ Test database cleared\n";
-            
+
             // 4. Import backup to test database
             $this->importBackupToTest($latestBackup);
             echo "✓ Backup imported to test database\n";
-            
+
             // 5. Clean up test data (remove sensitive production data)
             $this->sanitizeTestData();
             echo "✓ Test data sanitized\n";
-            
+
             echo "Test database sync complete!\n";
-            
+
         } catch (\Exception $e) {
             echo "❌ Test database sync failed: " . $e->getMessage() . "\n";
             throw $e;
         }
     }
-    
+
     /**
      * Clear test database by truncating all tables
      * (We can't DROP/CREATE database on shared hosting)
@@ -110,16 +110,16 @@ class TestDatabaseSetup
         // Get all tables
         $result = $this->testDb->executeSQL("SHOW TABLES");
         $tables = [];
-        
+
         while ($row = $result->fetch()) {
             $tables[] = $row[0];
         }
-        
+
         if (empty($tables)) {
             echo "No tables found in test database - this might be the first run\n";
             return;
         }
-        
+
         // Disable foreign key checks and truncate all tables
         $this->testDb->executeSQL("SET FOREIGN_KEY_CHECKS = 0");
         foreach ($tables as $table) {
@@ -131,36 +131,36 @@ class TestDatabaseSetup
         }
         $this->testDb->executeSQL("SET FOREIGN_KEY_CHECKS = 1");
     }
-    
+
     /**
      * Import backup to test database using mysql command
      */
     private function importBackupToTest(string $backupFile): void
     {
         $testConfig = new TestConfig();
-        
+
         // Build mysql command for import
         $host = escapeshellarg($testConfig->dbHost);
         $user = escapeshellarg($testConfig->dbUser);
         $pass = escapeshellarg($testConfig->dbPass);
         $dbName = escapeshellarg($testConfig->dbName);
         $backupFile = escapeshellarg($backupFile);
-        
+
         $command = "mysql -h {$host} -u {$user} -p{$pass} {$dbName} < {$backupFile}";
-        
+
         // Execute the import command
         $output = shell_exec($command . " 2>&1");
-        
+
         if ($output) {
             echo "Import output: " . $output . "\n";
-            
+
             // Check if there were any errors
             if (strpos(strtolower($output), 'error') !== false) {
                 throw new \Exception("MySQL import reported errors: " . $output);
             }
         }
     }
-    
+
     /**
      * Remove or anonymize sensitive data in test database
      */
@@ -171,12 +171,12 @@ class TestDatabaseSetup
             // Example: Clear user passwords, email addresses, etc.
             $this->testDb->executeSQL("UPDATE users SET password_hash = 'test_hash' WHERE password_hash IS NOT NULL");
             echo "✓ User passwords sanitized\n";
-            
+
         } catch (\Exception $e) {
             // Tables might not exist yet, that's okay
             echo "Note: Some sanitization skipped (tables may not exist): " . $e->getMessage() . "\n";
         }
-        
+
         // Add test data markers
         try {
             $this->testDb->executeSQL("INSERT INTO parts (alias, name, description) VALUES ('test_marker', 'Test Data Marker', 'This part indicates test database is properly set up') ON DUPLICATE KEY UPDATE description = VALUES(description)");
@@ -185,7 +185,7 @@ class TestDatabaseSetup
             echo "Note: Could not add test marker: " . $e->getMessage() . "\n";
         }
     }
-    
+
     /**
      * Validate that test database is working properly
      */
@@ -196,9 +196,9 @@ class TestDatabaseSetup
             $result = $this->testDb->executeSQL("SELECT COUNT(*) as count FROM parts");
             $row = $result->fetch();
             $partCount = $row['count'] ?? 0;
-            
+
             echo "✓ Test database contains {$partCount} parts\n";
-            
+
             // Test if our test marker exists
             $markerResult = $this->testDb->executeSQL("SELECT * FROM parts WHERE alias = 'test_marker'");
             if ($markerResult && $markerResult->fetch()) {
@@ -208,7 +208,7 @@ class TestDatabaseSetup
                 echo "⚠ Test data marker not found - database may not be properly synced\n";
                 return false;
             }
-            
+
         } catch (\Exception $e) {
             echo "❌ Test database validation failed: " . $e->getMessage() . "\n";
             return false;
@@ -219,9 +219,9 @@ class TestDatabaseSetup
 // CLI usage
 if (php_sapi_name() === 'cli') {
     $setup = new TestDatabaseSetup();
-    
+
     $command = $argv[1] ?? 'help';
-    
+
     switch ($command) {
         case 'check':
             echo "Checking test database access...\n";
@@ -236,17 +236,17 @@ if (php_sapi_name() === 'cli') {
                 exit(1);
             }
             break;
-            
+
         case 'sync':
             echo "Syncing test database with production...\n";
             $setup->syncTestDatabase();
             break;
-            
+
         case 'validate':
             echo "Validating test database...\n";
             $isValid = $setup->validateTestDatabase();
             exit($isValid ? 0 : 1);
-            
+
         case 'setup':
             echo "Full test database setup...\n";
             $errors = $setup->checkTestDatabaseAccess();
@@ -258,7 +258,7 @@ if (php_sapi_name() === 'cli') {
             $isValid = $setup->validateTestDatabase();
             echo $isValid ? "✓ Test database setup complete\n" : "❌ Test database setup failed validation\n";
             exit($isValid ? 0 : 1);
-            
+
         default:
             echo "Test Database Setup Script\n";
             echo "Usage: php " . basename(__FILE__) . " <command>\n";

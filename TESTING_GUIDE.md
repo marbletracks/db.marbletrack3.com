@@ -18,7 +18,7 @@ php scripts/run_simple_tests.php
 
 These tests verify:
 - ✅ Parts form has correct `name="part_description"` attribute
-- ✅ Workers form has correct `name="description"` attribute  
+- ✅ Workers form has correct `name="description"` attribute
 - ✅ No duplicate `name="notes"` attributes (the bug from #57)
 - ✅ SQL parameter counts match placeholder counts
 
@@ -36,7 +36,7 @@ php composer.phar run test
 # Run only unit tests
 php composer.phar run test-unit
 
-# Run only integration tests  
+# Run only integration tests
 php composer.phar run test-integration
 ```
 
@@ -65,7 +65,7 @@ Since we're on Dreamhost shared hosting, test database setup requires manual ste
 
 1. **Create Test Database via Dreamhost Panel:**
    - Log into Dreamhost panel
-   - Go to "MySQL Databases"  
+   - Go to "MySQL Databases"
    - Create new database: `marbletrack3_test`
    - Create new user or grant access to existing user
 
@@ -112,7 +112,7 @@ $sql = "UPDATE moments SET notes = ?, frame_start = ? WHERE id = ?";
 $params = ['note', 100]; // Missing 3rd parameter!
 
 // ✅ This is correct:
-$sql = "UPDATE moments SET notes = ?, frame_start = ? WHERE id = ?";  
+$sql = "UPDATE moments SET notes = ?, frame_start = ? WHERE id = ?";
 $params = ['note', 100, 1]; // All parameters provided
 ```
 
@@ -146,7 +146,7 @@ scripts/
 - `phpunit.xml` - PHPUnit configuration
 - `tests/bootstrap.php` - Test environment setup
 - `tests/Unit/FormFieldMappingTest.php` - Form field validation tests
-- `tests/Integration/PartsIntegrationTest.php` - Parts database tests  
+- `tests/Integration/PartsIntegrationTest.php` - Parts database tests
 - `tests/Integration/WorkersIntegrationTest.php` - Workers database tests
 - `scripts/setup_test_database.php` - Test database management
 - `scripts/run_simple_tests.php` - Quick validation without PHPUnit
@@ -165,7 +165,7 @@ Add new unit tests to `tests/Unit/` for:
 - Business logic
 - SQL query validation
 
-### Integration Tests  
+### Integration Tests
 
 Add new integration tests to `tests/Integration/` for:
 - Database operations
@@ -179,7 +179,7 @@ public function testNewFeatureFormMapping()
 {
     $templatePath = __DIR__ . '/../../templates/admin/new_feature.tpl.php';
     $templateContent = file_get_contents($templatePath);
-    
+
     // Validate form fields match handler expectations
     $this->assertStringContainsString('name="expected_field"', $templateContent);
     $this->assertStringNotContainsString('name="duplicate_field"', $templateContent);
@@ -223,7 +223,7 @@ cp classes/ConfigSample.php classes/Config.php
 
 **Error**: `"Database connection failed in tests"`
 
-**Solution**: 
+**Solution**:
 1. Make sure you have a test database set up
 2. Run `php scripts/setup_test_database.php check` to verify access
 3. For unit tests, use the simple scripts that don't require database access
@@ -242,7 +242,7 @@ php scripts/test_issues_57_58.php          # Specific bug tests
 
 **Error**: `"Permission denied"` when running scripts
 
-**Solution**: 
+**Solution**:
 ```bash
 chmod +x scripts/*.php
 ```

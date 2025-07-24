@@ -15,15 +15,15 @@ echo "=== Test Prefix Generation ===\n";
 for ($i = 1; $i <= 5; $i++) {
     $prefix = generateTestPrefix();
     echo "Test run {$i}: {$prefix}\n";
-    
+
     // Simulate test data that would be created
     $partAlias = $prefix . 'part_alias';
     $workerName = $prefix . 'Worker';
-    
+
     echo "  -> Part alias: {$partAlias}\n";
     echo "  -> Worker name: {$workerName}\n";
     echo "\n";
-    
+
     // Small delay to ensure unique timestamps
     usleep(10000); // 10ms
 }
