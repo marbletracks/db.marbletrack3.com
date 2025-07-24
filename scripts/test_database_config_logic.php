@@ -1,133 +1,106 @@
 <?php
 /**
- * Simple test configuration verification that doesn't load the full app
+ * Test database configuration verification using Base::getTestDB()
  */
 
-// Load just the autoloader and classes we need
-require_once __DIR__ . '/../classes/Mlaphp/Autoloader.php';
-$autoloader = new \Mlaphp\Autoloader();
-spl_autoload_register(array($autoloader, 'load'));
+require_once __DIR__ . '/../prepend.php';
 
 echo "=== Test Database Configuration Check ===\n\n";
 
-// Create Config.php from sample if it doesn't exist
-$configPath = __DIR__ . '/../classes/Config.php';
-$configSamplePath = __DIR__ . '/../classes/ConfigSample.php';
-
-if (!file_exists($configPath) && file_exists($configSamplePath)) {
-    copy($configSamplePath, $configPath);
-    echo "ℹ️  Created Config.php from ConfigSample.php\n";
-}
-
-// Load Config class
 try {
-    require_once $configPath;
-    
-    // Test production config
+    // Test production database connection
     $prodConfig = new Config();
-    echo "Production Config values:\n";
-    echo "  dbName: '" . $prodConfig->dbName . "'\n";
-    echo "  dbHost: '" . $prodConfig->dbHost . "'\n";
-    echo "  dbUser: '" . $prodConfig->dbUser . "'\n\n";
+    $prodDb = \Database\Base::getDB($prodConfig);
     
-    // Test our TestConfig logic manually
-    echo "Testing TestConfig logic:\n";
-    
-    // Simulate what TestConfig does
-    class TestTestConfig extends Config {
-        public function __construct() {
-            // Override database settings for testing
-            // The production database is 'dbmt3', so test database should be 'dbmt3_test'
-            if (empty($this->dbName)) {
-                // If dbName is empty (from ConfigSample.php), set it to the test database
-                $this->dbName = 'dbmt3_test';
-                echo "  dbName was empty, set to: 'dbmt3_test'\n";
-            } else {
-                // If dbName is set (on Dreamhost with real Config.php), 
-                // replace production name with test name
-                if ($this->dbName === 'dbmt3') {
-                    $this->dbName = 'dbmt3_test';
-                    echo "  dbName was 'dbmt3', changed to: 'dbmt3_test'\n";
-                } else {
-                    // For other database names, append _test
-                    $originalName = $this->dbName;
-                    $this->dbName = $this->dbName . '_test';
-                    echo "  dbName was '$originalName', changed to: '{$this->dbName}'\n";
-                }
-            }
-            
-            // Test-specific settings
-            $this->app_path = __DIR__ . '/..';
-        }
+    echo "Production Database:\n";
+    $prodResult = $prodDb->executeSQL("SELECT DATABASE() as current_db");
+    if ($prodResult && $prodResult->num_rows > 0) {
+        $row = $prodResult->fetch_assoc();
+        $prodDbName = $row['current_db'];
+        echo "  Connected to: '$prodDbName'\n";
+    } else {
+        echo "  Could not determine production database name\n";
+        $prodDbName = $prodConfig->dbName ?: 'unknown';
     }
+    echo "  Host: '" . $prodConfig->dbHost . "'\n";
+    echo "  User: '" . $prodConfig->dbUser . "'\n\n";
     
-    $testConfig = new TestTestConfig();
-    echo "\nResulting test config:\n";
-    echo "  dbName: '" . $testConfig->dbName . "'\n";
-    echo "  dbHost: '" . $testConfig->dbHost . "'\n";
-    echo "  dbUser: '" . $testConfig->dbUser . "'\n\n";
+    // Test test database connection using Base::getTestDB()
+    require_once __DIR__ . '/../tests/bootstrap.php';
+    $testConfig = getTestConfig();
+    $testDb = \Database\Base::getTestDB($testConfig);
+    
+    echo "Test Database:\n";
+    $testResult = $testDb->executeSQL("SELECT DATABASE() as current_db");
+    if ($testResult && $testResult->num_rows > 0) {
+        $row = $testResult->fetch_assoc();
+        $testDbName = $row['current_db'];
+        echo "  Connected to: '$testDbName'\n";
+    } else {
+        echo "  Could not determine test database name\n";
+        $testDbName = $testConfig->dbName ?: 'unknown';
+    }
+    echo "  Host: '" . $testConfig->dbHost . "'\n";
+    echo "  User: '" . $testConfig->dbUser . "'\n\n";
     
     // Validation
-    if ($testConfig->dbName === 'dbmt3_test') {
+    if ($testDbName === $prodDbName && !empty($prodDbName) && $prodDbName !== 'unknown') {
+        echo "❌ ERROR: Test and production are using the same database!\n";
+        echo "   Production: $prodDbName\n";
+        echo "   Test: $testDbName\n";
+        echo "   This would cause tests to write to production data!\n";
+    } else if ($testDbName === 'dbmt3_test') {
         echo "✅ SUCCESS: Test database correctly configured as 'dbmt3_test'\n";
-        echo "   This means on Dreamhost, tests will use the test database instead of production\n";
+        echo "   Production: $prodDbName\n";
+        echo "   Test: $testDbName\n";
+        echo "   Tests will safely use separate database\n";
     } else {
-        echo "⚠️  Test database name: '{$testConfig->dbName}'\n";
-        echo "   Expected: 'dbmt3_test'\n";
+        echo "⚠️  Test database name: '$testDbName'\n";
+        echo "   Production database: '$prodDbName'\n";
+        echo "   Expected test database: 'dbmt3_test' (for Dreamhost)\n";
     }
     
-    // Show what would happen in production environment
-    echo "\n=== Simulation: Production Environment (Dreamhost) ===\n";
-    
-    // Simulate production config values
-    $mockProdConfig = new Config();
-    $mockProdConfig->dbName = 'dbmt3';  // Simulate real production value
-    $mockProdConfig->dbHost = 'mysql.example.com';
-    $mockProdConfig->dbUser = 'dh_mt3';
-    
-    echo "Simulated production config:\n";
-    echo "  dbName: '{$mockProdConfig->dbName}'\n";
-    echo "  dbHost: '{$mockProdConfig->dbHost}'\n";
-    echo "  dbUser: '{$mockProdConfig->dbUser}'\n\n";
-    
-    // Simulate TestConfig with production values
-    class MockTestConfig {
-        public $dbName;
-        public $dbHost;
-        public $dbUser;
+    // Test basic operations on test database
+    echo "\n=== Test Database Operations ===\n";
+    try {
+        // Check if basic tables exist
+        $tablesResult = $testDb->executeSQL("SHOW TABLES");
+        $tableCount = $tablesResult ? $tablesResult->num_rows : 0;
+        echo "  Tables in test database: $tableCount\n";
         
-        public function __construct($baseConfig) {
-            // Copy base config values
-            $this->dbName = $baseConfig->dbName;
-            $this->dbHost = $baseConfig->dbHost;
-            $this->dbUser = $baseConfig->dbUser;
-            
-            // Apply test logic
-            if (empty($this->dbName)) {
-                $this->dbName = 'dbmt3_test';
+        if ($tableCount === 0) {
+            echo "  ⚠️  Test database appears empty - run setup_test_database.php to sync with production\n";
+        } else {
+            // Check for specific tables we need for tests
+            $partsResult = $testDb->executeSQL("SHOW TABLES LIKE 'parts'");
+            if ($partsResult && $partsResult->num_rows > 0) {
+                echo "  ✅ 'parts' table exists\n";
             } else {
-                if ($this->dbName === 'dbmt3') {
-                    $this->dbName = 'dbmt3_test';
-                } else {
-                    $this->dbName = $this->dbName . '_test';
-                }
+                echo "  ❌ 'parts' table missing - tests will fail\n";
+            }
+            
+            $workersResult = $testDb->executeSQL("SHOW TABLES LIKE 'workers'");
+            if ($workersResult && $workersResult->num_rows > 0) {
+                echo "  ✅ 'workers' table exists\n";
+            } else {
+                echo "  ❌ 'workers' table missing - tests will fail\n";
             }
         }
+        
+    } catch (Exception $e) {
+        echo "  ❌ Error checking test database: " . $e->getMessage() . "\n";
     }
     
-    $mockTestConfig = new MockTestConfig($mockProdConfig);
-    echo "Simulated test config on Dreamhost:\n";
-    echo "  dbName: '{$mockTestConfig->dbName}'\n";
-    echo "  dbHost: '{$mockTestConfig->dbHost}'\n";
-    echo "  dbUser: '{$mockTestConfig->dbUser}'\n\n";
-    
-    if ($mockTestConfig->dbName === 'dbmt3_test') {
-        echo "✅ SUCCESS: In production environment, tests would use 'dbmt3_test'\n";
-        echo "✅ This should fix the issue where tests were writing to production database\n";
-    } else {
-        echo "❌ ERROR: Test config logic needs adjustment\n";
+    echo "\n=== Recommendations ===\n";
+    if ($tableCount === 0) {
+        echo "To set up test database:\n";
+        echo "  php scripts/setup_test_database.php setup\n\n";
     }
+    echo "To run tests:\n";
+    echo "  php composer.phar run test\n";
     
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
+    echo "\nThis usually means the database connection failed.\n";
+    echo "Check your Config.php settings or run setup_test_database.php\n";
 }

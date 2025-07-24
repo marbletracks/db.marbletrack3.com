@@ -1,31 +1,46 @@
 <?php
 /**
  * Script to verify that test configuration is pointing to the correct database
+ * Uses Base::getTestDB() to get the actual test database connection
  */
 
-// Include test bootstrap
-require_once __DIR__ . '/../tests/bootstrap.php';
+require_once __DIR__ . '/../prepend.php';
 
 echo "=== Database Configuration Verification ===\n\n";
 
 try {
-    // Check if we have Config class available
-    if (!class_exists('Config')) {
-        echo "❌ Config class not available\n";
-        exit(1);
-    }
-    
-    // Create production config
+    // Get production database connection
     $prodConfig = new Config();
-    echo "Production Config:\n";
-    echo "  Database Name: '" . $prodConfig->dbName . "'\n";
+    $prodDb = \Database\Base::getDB($prodConfig);
+    
+    echo "Production Database:\n";
+    $prodResult = $prodDb->executeSQL("SELECT DATABASE() as current_db");
+    if ($prodResult && $prodResult->num_rows > 0) {
+        $row = $prodResult->fetch_assoc();
+        $prodDbName = $row['current_db'];
+        echo "  Database Name: '$prodDbName'\n";
+    } else {
+        $prodDbName = $prodConfig->dbName ?: 'unknown';
+        echo "  Database Name: '$prodDbName' (from config)\n";
+    }
     echo "  Database Host: '" . $prodConfig->dbHost . "'\n";
     echo "  Database User: '" . $prodConfig->dbUser . "'\n\n";
     
-    // Create test config
+    // Get test database connection using Base::getTestDB()
+    require_once __DIR__ . '/../tests/bootstrap.php';
     $testConfig = getTestConfig();
-    echo "Test Config:\n";
-    echo "  Database Name: '" . $testConfig->dbName . "'\n";
+    $testDb = \Database\Base::getTestDB($testConfig);
+    
+    echo "Test Database:\n";
+    $testResult = $testDb->executeSQL("SELECT DATABASE() as current_db");
+    if ($testResult && $testResult->num_rows > 0) {
+        $row = $testResult->fetch_assoc();
+        $testDbName = $row['current_db'];
+        echo "  Database Name: '$testDbName'\n";
+    } else {
+        $testDbName = $testConfig->dbName ?: 'unknown';
+        echo "  Database Name: '$testDbName' (from config)\n";
+    }
     echo "  Database Host: '" . $testConfig->dbHost . "'\n";
     echo "  Database User: '" . $testConfig->dbUser . "'\n\n";
     
@@ -37,70 +52,66 @@ try {
     }
     
     // Verify test database name is different and correct
-    if ($testConfig->dbName === $prodConfig->dbName && !empty($prodConfig->dbName)) {
+    if ($testDbName === $prodDbName && !empty($prodDbName) && $prodDbName !== 'unknown') {
         echo "❌ ERROR: Test database name is the same as production!\n";
-        echo "   Production: {$prodConfig->dbName}\n";
-        echo "   Test: {$testConfig->dbName}\n";
+        echo "   Production: {$prodDbName}\n";
+        echo "   Test: {$testDbName}\n";
+        echo "   This would cause tests to write to production data!\n";
         exit(1);
     }
     
-    if (empty($testConfig->dbName)) {
-        echo "❌ ERROR: Test database name is empty!\n";
+    if (empty($testDbName) || $testDbName === 'unknown') {
+        echo "❌ ERROR: Test database name could not be determined!\n";
         exit(1);
     }
     
-    if ($testConfig->dbName === 'dbmt3_test') {
+    if ($testDbName === 'dbmt3_test') {
         echo "✅ Test database correctly set to 'dbmt3_test'\n";
     } else {
-        echo "⚠️  Test database name: '{$testConfig->dbName}' (expected 'dbmt3_test' for production environment)\n";
+        echo "⚠️  Test database name: '{$testDbName}' (expected 'dbmt3_test' for production environment)\n";
     }
     
-    // Try to get test database connection only if we have database credentials
-    if (!empty($testConfig->dbHost) && !empty($testConfig->dbUser) && !empty($testConfig->dbName)) {
-        echo "\n=== Database Connection Test ===\n";
-        try {
-            $testDb = getTestDatabase();
-            echo "✅ Test database connection established successfully\n";
-            
-            // Try a simple query to verify we're connected to the right database
-            $result = $testDb->executeSQL("SELECT DATABASE() as current_db");
-            if ($result && $result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                $currentDb = $row['current_db'];
-                echo "✅ Connected to database: '$currentDb'\n";
-                
-                if ($currentDb === 'dbmt3_test') {
-                    echo "✅ SUCCESS: Connected to correct test database!\n";
-                } elseif ($currentDb === 'dbmt3') {
-                    echo "❌ ERROR: Connected to production database instead of test database!\n";
-                    exit(1);
-                } else {
-                    echo "⚠️  Connected to unexpected database: '$currentDb'\n";
-                }
+    // Test database operations
+    echo "\n=== Database Connection Test ===\n";
+    try {
+        // Test basic operations on test database
+        $testDb->executeSQL("SELECT 1");
+        echo "✅ Test database connection established successfully\n";
+        
+        // Check tables exist
+        $tablesResult = $testDb->executeSQL("SHOW TABLES");
+        $tableCount = $tablesResult ? $tablesResult->num_rows : 0;
+        echo "✅ Test database contains $tableCount tables\n";
+        
+        if ($tableCount === 0) {
+            echo "⚠️  Test database is empty - run 'php scripts/setup_test_database.php setup'\n";
+        } else {
+            // Check for required tables
+            $partsCheck = $testDb->executeSQL("SHOW TABLES LIKE 'parts'");
+            if ($partsCheck && $partsCheck->num_rows > 0) {
+                echo "✅ Required 'parts' table exists\n";
+            } else {
+                echo "❌ Missing 'parts' table - tests will fail\n";
             }
-            
-        } catch (Exception $e) {
-            echo "❌ Failed to connect to test database: " . $e->getMessage() . "\n";
-            echo "   This is expected in development environment without real DB credentials\n";
         }
-    } else {
-        echo "\n=== Database Connection Test ===\n";
-        echo "ℹ️  Skipping database connection test (no credentials available)\n";
-        echo "   This is normal in development environment\n";
-        echo "   On Dreamhost with real Config.php, this test should work\n";
+        
+    } catch (Exception $e) {
+        echo "❌ Failed to test database operations: " . $e->getMessage() . "\n";
+        echo "   Check database credentials and permissions\n";
     }
     
     echo "\n=== Configuration Summary ===\n";
-    echo "Production DB: '" . ($prodConfig->dbName ?: 'empty') . "'\n";
-    echo "Test DB: '" . ($testConfig->dbName ?: 'empty') . "'\n";
+    echo "Production DB: '$prodDbName'\n";
+    echo "Test DB: '$testDbName'\n";
     
-    if ($testConfig->dbName === 'dbmt3_test') {
-        echo "✅ Test configuration is correctly set to use test database!\n";
+    if ($testDbName === 'dbmt3_test' && $testDbName !== $prodDbName) {
+        echo "✅ Test configuration is correctly isolated from production!\n";
     } else {
         echo "⚠️  Test configuration may need adjustment for production environment\n";
     }
     
 } catch (Exception $e) {
     echo "❌ Error during verification: " . $e->getMessage() . "\n";
+    echo "   This usually indicates a configuration or connection problem\n";
     exit(1);
 }
