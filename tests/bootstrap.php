@@ -34,7 +34,7 @@ try {
 if (class_exists('Config')) {
     class TestConfig extends Config {
         public function __construct() {
-            parent::__construct();
+            // Config class doesn't have a constructor, so don't call parent::__construct()
             
             // Override database settings for testing
             // These would be set to test database credentials
