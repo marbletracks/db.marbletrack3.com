@@ -21,6 +21,11 @@ class Autoloader
         // strip off any leading namespace separator from PHP 5.3
         $class = ltrim($class, '\\');
 
+        // Don't try to load PHPUnit classes or test suite names
+        if (strpos($class, 'PHPUnit') === 0 || $class === 'Unit' || $class === 'Integration') {
+            return false;
+        }
+
         // the eventual file path
         $subpath = '';
 
@@ -46,8 +51,10 @@ class Autoloader
         $file = $dir . DIRECTORY_SEPARATOR . $subpath . '.php';
         if (file_exists($file)) {
             require $file;
-        } else {
-            throw new \Exception("You call that a file? (" . $file . " not found)", 1);
+            return true;
         }
+        
+        // Don't throw exceptions for classes we can't find - let other autoloaders try
+        return false;
     }
 }

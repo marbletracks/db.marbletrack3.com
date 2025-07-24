@@ -40,6 +40,8 @@ php composer.phar run test-unit
 php composer.phar run test-integration
 ```
 
+**Note**: If you encounter autoloader conflicts with PHPUnit (like `"You call that a file? Unit.php not found"`), this has been fixed in the `classes/Mlaphp/Autoloader.php` to prevent conflicts with PHPUnit's test suite names and classes.
+
 ### 3. Database Integration Tests (Requires Test Database)
 
 For full integration testing, you need a test database set up:
@@ -195,3 +197,71 @@ This testing infrastructure provides:
 5. **Gradual Adoption** - Can add tests incrementally as needed
 
 The key insight is that while shared hosting limits our automation options, we can still achieve effective testing through manual setup and leveraging existing backup systems for data sync.
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+#### 1. PHPUnit Autoloader Conflicts
+
+**Error**: `"You call that a file? (/path/to/classes/Unit.php not found)"`
+
+**Solution**: This error occurs when the existing autoloader conflicts with PHPUnit's test suite naming. This has been fixed in `classes/Mlaphp/Autoloader.php` to prevent conflicts with PHPUnit classes and test suite names.
+
+#### 2. Missing Config.php
+
+**Error**: `"Class Config not found"`
+
+**Solution**: The application expects a `classes/Config.php` file. On production, this is created from `classes/ConfigSample.php`. For testing, the bootstrap will automatically create a temporary one if needed.
+
+```bash
+# Manually create Config.php if needed
+cp classes/ConfigSample.php classes/Config.php
+```
+
+#### 3. Database Connection Issues in Tests
+
+**Error**: `"Database connection failed in tests"`
+
+**Solution**: 
+1. Make sure you have a test database set up
+2. Run `php scripts/setup_test_database.php check` to verify access
+3. For unit tests, use the simple scripts that don't require database access
+
+#### 4. Composer Installation Issues on Dreamhost
+
+**Issue**: Composer downloads may time out on shared hosting
+
+**Solution**: Use the simple test scripts that don't require composer:
+```bash
+php scripts/run_simple_tests.php           # Basic validation
+php scripts/test_issues_57_58.php          # Specific bug tests
+```
+
+#### 5. Permission Issues
+
+**Error**: `"Permission denied"` when running scripts
+
+**Solution**: 
+```bash
+chmod +x scripts/*.php
+```
+
+### Getting Help
+
+If tests are failing and you're not sure why:
+
+1. Run the simple tests first: `php scripts/run_simple_tests.php`
+2. Check that your environment matches the working configuration
+3. Review the test output for specific assertion failures
+4. Ensure you're testing against the correct branch with the fixes applied
+
+### Minimal Testing Setup
+
+If you just need to verify the fixes for issues #57 and #58 work:
+
+```bash
+# These require no dependencies and no database
+php scripts/test_issues_57_58.php
+php scripts/demonstrate_bug_prevention.php
+```
