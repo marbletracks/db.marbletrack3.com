@@ -37,9 +37,20 @@ if (class_exists('Config')) {
             // Config class doesn't have a constructor, so don't call parent::__construct()
             
             // Override database settings for testing
-            // These would be set to test database credentials
-            // For now, we'll use the same structure but different database name
-            $this->dbName = $this->dbName . '_test'; // e.g., marbletrack3_test
+            // The production database is 'dbmt3', so test database should be 'dbmt3_test'
+            if (empty($this->dbName)) {
+                // If dbName is empty (from ConfigSample.php), set it to the test database
+                $this->dbName = 'dbmt3_test';
+            } else {
+                // If dbName is set (on Dreamhost with real Config.php), 
+                // replace production name with test name
+                if ($this->dbName === 'dbmt3') {
+                    $this->dbName = 'dbmt3_test';
+                } else {
+                    // For other database names, append _test
+                    $this->dbName = $this->dbName . '_test';
+                }
+            }
             
             // Test-specific settings
             $this->app_path = __DIR__ . '/..';
