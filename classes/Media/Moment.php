@@ -8,6 +8,8 @@ namespace Media;
 class Moment
 {
     public array $photos = [];
+    public string $slug;
+    
     public function __construct(
         public int $moment_id,
         public ?int $frame_start,
@@ -16,5 +18,17 @@ class Moment
         public ?string $notes,
         public ?string $moment_date
     ) {
+        // Generate a meaningful slug for URL generation
+        $slug_parts = [];
+        if ($this->take_id) {
+            $slug_parts[] = "take-{$this->take_id}";
+        }
+        if ($this->frame_start) {
+            $slug_parts[] = "frame-{$this->frame_start}";
+        }
+        if (empty($slug_parts)) {
+            $slug_parts[] = "moment-{$this->moment_id}";
+        }
+        $this->slug = implode('-', $slug_parts);
     }
 }

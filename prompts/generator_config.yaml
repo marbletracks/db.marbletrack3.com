@@ -36,6 +36,17 @@ entities:
         join_table: "parts_2_photos"
         local_key: "part_id"
         foreign_key: "photo_id"
+  Moment:
+    description: "A discrete animated event within the stop motion timeline."
+    repository: "MomentRepository"
+    template: "frontend/moments/moment.tpl.php"
+    path_schema: "/moments/{slug}/index.html"
+    relationships:
+      - type: "has_many_through_join_table"
+        entity: "Photo"
+        join_table: "moments_2_photos"
+        local_key: "moment_id"
+        foreign_key: "photo_id"
 
 # -----------------------------------------
 # Index Page Definitions
@@ -51,3 +62,8 @@ indexes:
     entity: "Part"
     template: "frontend/parts/index.tpl.php"
     path: "/parts/index.html"
+  MomentsIndex:
+    name: "Moments Index"
+    entity: "Moment"
+    template: "frontend/moments/index.tpl.php"
+    path: "/moments/index.html"
