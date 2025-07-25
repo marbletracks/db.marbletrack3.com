@@ -113,6 +113,65 @@ class MomentRepository
         return $moments;
     }
 
+    public function findByFilter(string $filter, int $take_id = 0): array
+    {
+        $filter = trim($filter);
+        if (empty($filter)) {
+            return $take_id > 0 ? $this->findWithinTakeId($take_id) : $this->findAll();
+        }
+
+        // Search both moments.notes and moment_translations.translated_note
+        // Priority search:
+        // 1. moments.notes LIKE %filter%
+        // 2. moment_translations.translated_note LIKE %filter%
+        
+        $whereClause = "WHERE (m.notes LIKE ? OR mt.translated_note LIKE ?)";
+        $params = [
+            '%' . $filter . '%',  // priority case 1
+            '%' . $filter . '%',  // priority case 2  
+            '%' . $filter . '%',  // where case 1
+            '%' . $filter . '%'   // where case 2
+        ];
+        $paramTypes = 'ssss';
+        
+        // Add take_id filter if provided
+        if ($take_id > 0) {
+            $whereClause .= " AND m.take_id = ?";
+            $params[] = $take_id;
+            $paramTypes .= 'i';
+        }
+        
+        $results = $this->db->fetchResults(
+            sql: "SELECT DISTINCT
+                    m.moment_id,
+                    m.frame_start,
+                    m.frame_end,
+                    m.take_id,
+                    m.notes,
+                    m.moment_date,
+                    CASE 
+                        WHEN m.notes LIKE ? THEN 1
+                        WHEN mt.translated_note LIKE ? THEN 2
+                        ELSE 3
+                    END as priority
+                  FROM moments m
+                  LEFT JOIN moment_translations mt ON m.moment_id = mt.moment_id
+                  $whereClause
+                  ORDER BY priority ASC, m.take_id ASC, m.frame_start ASC",
+            paramtypes: $paramTypes,
+            var1: $params
+        );
+
+        $moments = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $this->moment_id = (int) $results->data['moment_id']; // Set the moment_id for HasPhotos
+            $moments[] = $this->hydrate($results->data);
+        }
+
+        return $moments;
+    }
+
     public function findAllForEntity(string $name, string $alias): array
     {
         $allMoments = $this->findAll();

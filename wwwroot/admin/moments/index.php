@@ -9,15 +9,24 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 $take_id = intval(value: $mla_request->get['take_id']) ?? 0;
+$filter = trim($_GET['filter'] ?? '');
 
 $partRepo = new \Database\PartsRepository($mla_database, "en");
 $workerRepo = new \Database\WorkersRepository($mla_database, "en");
 
 $repo = new \Database\MomentRepository($mla_database);
 $moments = [];
-if($take_id > 0) {
+if($take_id > 0 && !empty($filter)) {
+    // Both take_id and filter provided - filter within the specific take
+    $moments = $repo->findByFilter($filter, $take_id);
+} elseif($take_id > 0) {
+    // Only take_id provided
     $moments = $repo->findWithinTakeId(take_id: $take_id);
+} elseif (!empty($filter)) {
+    // Only filter provided
+    $moments = $repo->findByFilter($filter);
 } else {
+    // Neither provided - get all moments
     $moments = $repo->findAll();
 }
 
@@ -29,6 +38,7 @@ $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/moments/index.tpl.php");
 $page->set(name: "moments", value: $moments);
 $page->set(name: "take_id", value: $take_id);
+$page->set(name: "filter", value: $filter);
 $page->set(name: "page_title", value: "Moment Index");
 $inner = $page->grabTheGoods();
 

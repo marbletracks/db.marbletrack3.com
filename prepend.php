@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Which OSS did Big Brother install?";
+const SENTIMENTAL_VERSION = "Filtering Moments";
 
 # write errors to screen
 ini_set('display_errors', 1);
