@@ -16,15 +16,18 @@ $workerRepo = new \Database\WorkersRepository($mla_database, "en");
 
 $repo = new \Database\MomentRepository($mla_database);
 $moments = [];
-if($take_id > 0) {
+if($take_id > 0 && !empty($filter)) {
+    // Both take_id and filter provided - filter within the specific take
+    $moments = $repo->findByFilter($filter, $take_id);
+} elseif($take_id > 0) {
+    // Only take_id provided
     $moments = $repo->findWithinTakeId(take_id: $take_id);
+} elseif (!empty($filter)) {
+    // Only filter provided
+    $moments = $repo->findByFilter($filter);
 } else {
-    // Use filter if provided, otherwise get all moments
-    if (!empty($filter)) {
-        $moments = $repo->findByFilter($filter);
-    } else {
-        $moments = $repo->findAll();
-    }
+    // Neither provided - get all moments
+    $moments = $repo->findAll();
 }
 
 foreach ($moments as $key => $moment) {

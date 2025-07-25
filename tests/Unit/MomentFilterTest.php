@@ -48,7 +48,7 @@ class MomentFilterTest extends TestCase
         $filter = 'test_search';
         $expectedFilter = '%' . $filter . '%';
         
-        // Simulate the SQL query structure from MomentRepository::findByFilter
+        // Test basic filtering without take_id
         $sqlTemplate = "SELECT DISTINCT
                     m.moment_id,
                     m.frame_start,
@@ -63,8 +63,7 @@ class MomentFilterTest extends TestCase
                     END as priority
                   FROM moments m
                   LEFT JOIN moment_translations mt ON m.moment_id = mt.moment_id
-                  WHERE m.notes LIKE ?
-                     OR mt.translated_note LIKE ?
+                  WHERE (m.notes LIKE ? OR mt.translated_note LIKE ?)
                   ORDER BY priority ASC, m.take_id ASC, m.frame_start ASC";
         
         // Validate that SQL contains expected elements
@@ -76,11 +75,33 @@ class MomentFilterTest extends TestCase
         
         // Validate parameter count matches placeholders
         $parameterCount = substr_count($sqlTemplate, '?');
-        $this->assertEquals(4, $parameterCount, 'Query should have exactly 4 parameter placeholders');
+        $this->assertEquals(4, $parameterCount, 'Basic filter query should have exactly 4 parameter placeholders');
         
-        // Expected parameters would be: [$expectedFilter, $expectedFilter, $expectedFilter, $expectedFilter]
-        $parameters = [$expectedFilter, $expectedFilter, $expectedFilter, $expectedFilter];
-        $this->assertCount($parameterCount, $parameters, 'Parameter count should match placeholder count');
+        // Test filtering with take_id
+        $sqlTemplateWithTakeId = "SELECT DISTINCT
+                    m.moment_id,
+                    m.frame_start,
+                    m.frame_end,
+                    m.take_id,
+                    m.notes,
+                    m.moment_date,
+                    CASE 
+                        WHEN m.notes LIKE ? THEN 1
+                        WHEN mt.translated_note LIKE ? THEN 2
+                        ELSE 3
+                    END as priority
+                  FROM moments m
+                  LEFT JOIN moment_translations mt ON m.moment_id = mt.moment_id
+                  WHERE (m.notes LIKE ? OR mt.translated_note LIKE ?) AND m.take_id = ?
+                  ORDER BY priority ASC, m.take_id ASC, m.frame_start ASC";
+                  
+        $parameterCountWithTakeId = substr_count($sqlTemplateWithTakeId, '?');
+        $this->assertEquals(5, $parameterCountWithTakeId, 'Filter query with take_id should have exactly 5 parameter placeholders');
+        $this->assertStringContainsString('AND m.take_id = ?', $sqlTemplateWithTakeId, 'Query should filter by take_id when provided');
+        
+        // Expected parameters would be: [$expectedFilter, $expectedFilter, $expectedFilter, $expectedFilter, $take_id]
+        $parameters = [$expectedFilter, $expectedFilter, $expectedFilter, $expectedFilter, 5];
+        $this->assertCount($parameterCountWithTakeId, $parameters, 'Parameter count should match placeholder count');
     }
 
     /**
@@ -105,6 +126,45 @@ class MomentFilterTest extends TestCase
                 $testCase['expected_clear_url'], 
                 $clearUrl, 
                 "Clear URL should be constructed correctly for take_id={$testCase['take_id']}"
+            );
+        }
+    }
+
+    /**
+     * Test the logic for determining which repository method to call
+     */
+    public function testRepositoryMethodSelection()
+    {
+        $testCases = [
+            // Both take_id and filter provided
+            ['take_id' => 5, 'filter' => 'test', 'expected_method' => 'findByFilter_with_take_id'],
+            // Only take_id provided
+            ['take_id' => 5, 'filter' => '', 'expected_method' => 'findWithinTakeId'],
+            // Only filter provided
+            ['take_id' => 0, 'filter' => 'test', 'expected_method' => 'findByFilter'],
+            // Neither provided
+            ['take_id' => 0, 'filter' => '', 'expected_method' => 'findAll'],
+        ];
+
+        foreach ($testCases as $testCase) {
+            // Simulate the logic from index.php
+            $take_id = $testCase['take_id'];
+            $filter = trim($testCase['filter']);
+            
+            if ($take_id > 0 && !empty($filter)) {
+                $method = 'findByFilter_with_take_id';
+            } elseif ($take_id > 0) {
+                $method = 'findWithinTakeId';
+            } elseif (!empty($filter)) {
+                $method = 'findByFilter';
+            } else {
+                $method = 'findAll';
+            }
+            
+            $this->assertEquals(
+                $testCase['expected_method'], 
+                $method, 
+                "Should select correct repository method for take_id={$take_id}, filter='{$filter}'"
             );
         }
     }

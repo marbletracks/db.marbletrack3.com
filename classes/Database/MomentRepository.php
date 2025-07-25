@@ -113,17 +113,33 @@ class MomentRepository
         return $moments;
     }
 
-    public function findByFilter(string $filter): array
+    public function findByFilter(string $filter, int $take_id = 0): array
     {
         $filter = trim($filter);
         if (empty($filter)) {
-            return $this->findAll();
+            return $take_id > 0 ? $this->findWithinTakeId($take_id) : $this->findAll();
         }
 
         // Search both moments.notes and moment_translations.translated_note
         // Priority search:
         // 1. moments.notes LIKE %filter%
         // 2. moment_translations.translated_note LIKE %filter%
+        
+        $whereClause = "WHERE (m.notes LIKE ? OR mt.translated_note LIKE ?)";
+        $params = [
+            '%' . $filter . '%',  // priority case 1
+            '%' . $filter . '%',  // priority case 2  
+            '%' . $filter . '%',  // where case 1
+            '%' . $filter . '%'   // where case 2
+        ];
+        $paramTypes = 'ssss';
+        
+        // Add take_id filter if provided
+        if ($take_id > 0) {
+            $whereClause .= " AND m.take_id = ?";
+            $params[] = $take_id;
+            $paramTypes .= 'i';
+        }
         
         $results = $this->db->fetchResults(
             sql: "SELECT DISTINCT
@@ -140,16 +156,10 @@ class MomentRepository
                     END as priority
                   FROM moments m
                   LEFT JOIN moment_translations mt ON m.moment_id = mt.moment_id
-                  WHERE m.notes LIKE ?
-                     OR mt.translated_note LIKE ?
+                  $whereClause
                   ORDER BY priority ASC, m.take_id ASC, m.frame_start ASC",
-            paramtypes: 'ssss',
-            var1: [
-                '%' . $filter . '%',  // priority case 1
-                '%' . $filter . '%',  // priority case 2  
-                '%' . $filter . '%',  // where case 1
-                '%' . $filter . '%'   // where case 2
-            ]
+            paramtypes: $paramTypes,
+            var1: $params
         );
 
         $moments = [];
