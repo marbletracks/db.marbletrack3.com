@@ -73,6 +73,6 @@ $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);
 $layout->setTemplate("layout/admin_base.tpl.php");
-$layout->set("page_title", $part ? "Edit Part" : "Create Part");
+$layout->set("page_title", $part ? "Edit " . htmlspecialchars($part->name) : "Create Part");
 $layout->set("page_content", $inner);
 $layout->echoToScreen();
