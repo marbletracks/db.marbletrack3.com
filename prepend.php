@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Filtering Moments";
+const SENTIMENTAL_VERSION = "Showing Moments on Frontend";
 
 # write errors to screen
 ini_set('display_errors', 1);
