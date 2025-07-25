@@ -1,14 +1,14 @@
 <div class="PagePanel">
     <h1>All Moments</h1>
     <p><a href="/admin/moments/moment.php">Create New Moment</a></p>
-    
+
     <div style="margin-bottom: 20px;">
         <form method="get" action="/admin/moments/" style="display: flex; align-items: center; gap: 10px;">
             <?php if ($take_id > 0): ?>
                 <input type="hidden" name="take_id" value="<?= $take_id ?>">
             <?php endif; ?>
             <label for="filter">Filter moments:</label>
-            <input type="text" id="filter" name="filter" value="<?= htmlspecialchars($filter) ?>" 
+            <input type="text" id="filter" name="filter" value="<?= htmlspecialchars($filter) ?>"
                    placeholder="Search in notes..." style="padding: 5px; width: 250px;">
             <button type="submit" style="padding: 5px 10px;">Filter</button>
             <?php if (!empty($filter)): ?>
@@ -17,16 +17,16 @@
         </form>
         <?php if (!empty($filter)): ?>
             <p style="margin-top: 10px; font-style: italic;">
-                Showing results for: <strong><?= htmlspecialchars($filter) ?></strong> 
+                Showing results for: <strong><?= htmlspecialchars($filter) ?></strong>
                 (<?= count($moments) ?> moment<?= count($moments) !== 1 ? 's' : '' ?> found)
             </p>
         <?php endif; ?>
     </div>
-    
+
     <?php if ($take_id > 0): ?>
         <p>
-            <a href="/admin/moments/?take_id=<?= $take_id - 1 ?>">Previous take</a> -
-            <a href="/admin/moments/?take_id=<?= $take_id + 1 ?>">Next take</a>
+            <a href="/admin/moments/?take_id=<?= $take_id - 1 ?>&filter=<?= urlencode($filter) ?>">Previous take</a> -
+            <a href="/admin/moments/?take_id=<?= $take_id + 1 ?>&filter=<?= urlencode($filter) ?>">Next take</a>
         </p>
     <?php endif; // ($take_id > 0): ?>
     <table border="1" cellpadding="5">
@@ -70,11 +70,11 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-    
+
     <?php if (empty($moments)): ?>
         <p>No moments found<?= !empty($filter) ? ' matching your filter' : '' ?>.</p>
     <?php endif; ?>
-    
+
     <p><a href="/admin/moments/moment.php">Create New Moment</a></p>
 </div>
 
