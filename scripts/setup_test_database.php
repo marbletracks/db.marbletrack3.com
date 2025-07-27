@@ -28,8 +28,8 @@ class TestDatabaseSetup
         $errors = [];
 
         try {
-            // Try a simple query to test connectivity
-            $result = $this->testDb->executeSQL("SELECT 1 as test");
+            // Try a simple query to test connectivity by checking if we can get table list
+            $result = $this->testDb->fetchResults("SHOW TABLES");
             if ($result) {
                 echo "✓ Test database connection successful\n";
             } else {
@@ -108,11 +108,11 @@ class TestDatabaseSetup
     private function clearTestDatabase(): void
     {
         // Get all tables
-        $result = $this->testDb->executeSQL("SHOW TABLES");
+        $result = $this->testDb->fetchResults("SHOW TABLES");
         $tables = [];
 
-        while ($row = $result->fetch()) {
-            $tables[] = $row[0];
+        foreach ($result as $row) {
+            $tables[] = $row['Tables_in_' . $this->config->testDbName];
         }
 
         if (empty($tables)) {
@@ -137,19 +137,25 @@ class TestDatabaseSetup
      */
     private function importBackupToTest(string $backupFile): void
     {
-        $testConfig = new TestConfig();
-
         // Build mysql command for import
-        $host = escapeshellarg($testConfig->dbHost);
-        $user = escapeshellarg($testConfig->dbUser);
-        $pass = escapeshellarg($testConfig->dbPass);
-        $dbName = escapeshellarg($testConfig->dbName);
+        $host = escapeshellarg($this->config->dbHost);
+        $user = escapeshellarg($this->config->dbUser);
+        $pass = escapeshellarg($this->config->dbPass);
+        $dbName = escapeshellarg($this->config->testDbName);
         $backupFile = escapeshellarg($backupFile);
 
-        $command = "mysql -h {$host} -u {$user} -p{$pass} {$dbName} < {$backupFile}";
+        // Create a filtered backup file without warning messages
+        $filteredBackup = tempnam(sys_get_temp_dir(), 'db_import_');
+        $filterCommand = "grep -v '^mysqldump:' {$backupFile} > {$filteredBackup}";
+        shell_exec($filterCommand);
+
+        $command = "mysql -h {$host} -u {$user} -p{$pass} {$dbName} < {$filteredBackup}";
 
         // Execute the import command
         $output = shell_exec($command . " 2>&1");
+
+        // Clean up filtered backup file
+        unlink($filteredBackup);
 
         if ($output) {
             echo "Import output: " . $output . "\n";
