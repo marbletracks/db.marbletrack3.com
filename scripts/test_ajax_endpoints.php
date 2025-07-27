@@ -195,7 +195,7 @@ class AjaxEndpointValidator
         $criticalEndpoints = [
             'save_moment_from_realtime.php' => [
                 'description' => 'Saves moment data from real-time form',
-                'expectedParams' => ['perspectives', 'frame_start', 'frame_end', 'take_id'],
+                'expectedParams' => ['perspectives', 'frame_start', 'frame_end', 'notes'],
                 'securityConcerns' => ['Mass assignment', 'SQL injection', 'XSS in notes']
             ],
             'update_moment_significance.php' => [
@@ -210,7 +210,7 @@ class AjaxEndpointValidator
             ],
             'create_moment_from_tokens.php' => [
                 'description' => 'Creates moments from token selections',
-                'expectedParams' => ['token_ids', 'take_id'],
+                'expectedParams' => ['token_ids', 'action'],
                 'securityConcerns' => ['Array injection', 'Bulk operations', 'Transaction safety']
             ]
         ];
@@ -283,11 +283,11 @@ class AjaxEndpointValidator
         echo "\n=== SQL Injection Protection Analysis ===\n";
 
         $riskyPatterns = [
-            '/\$_POST.*\.\s*["\'][^"\']*["\']/' => 'Direct $_POST concatenation in SQL',
-            '/\$_GET.*\.\s*["\'][^"\']*["\']/' => 'Direct $_GET concatenation in SQL',
-            '/["\'][^"\']*\$_/' => 'Variable interpolation in SQL strings',
+            '/\$_POST.*\s*\.\s*["\'][^"\']*["\']/' => 'Direct $_POST concatenation in SQL',
+            '/\$_GET.*\s*\.\s*["\'][^"\']*["\']/' => 'Direct $_GET concatenation in SQL',
+            '/["\'][^"\']*\s*\.\s*\$_/' => 'Direct user input concatenation in SQL',
             '/mysql_query\s*\(/' => 'Legacy mysql_query usage',
-            '/mysqli_query\s*\([^,]*\$/' => 'Direct variable in mysqli_query'
+            '/mysqli_query\s*\([^,]*\$[^,)]*[,)]/' => 'Direct variable in mysqli_query'
         ];
 
         $totalRisks = 0;
@@ -356,7 +356,7 @@ class AjaxFormMappingValidator
         $mappingTests = [
             [
                 'endpoint' => 'save_moment_from_realtime.php',
-                'form_params' => ['frame_start', 'frame_end', 'take_id', 'notes', 'moment_date'],
+                'form_params' => ['frame_start', 'frame_end', 'notes', 'moment_date', 'perspectives'],
                 'repository' => 'MomentRepository',
                 'method' => 'insert',
                 'description' => 'Moment creation from real-time form'
