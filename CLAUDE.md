@@ -20,7 +20,10 @@ php scripts/setup_test_database.php sync
 # Validate test database is working
 php scripts/setup_test_database.php validate
 
-# Run tests (no PHPUnit required)
+# Run all tests (no PHPUnit required)
+php scripts/run_all_tests.php
+
+# Run specific test categories
 php scripts/run_simple_tests.php
 ```
 
@@ -38,6 +41,11 @@ php scripts/run_simple_tests.php
 - `Take.php` - Groups of frames from a single recording session
 - `Moment.php` - Significant events during construction
 - `Episode.php` - Larger segments of the animation
+
+**Request Handling** (`classes/`):
+- `RobRequest.php` - Enhanced request object with input validation and JSON response helpers
+- Extends `Mlaphp/Request.php` with `getInt()`, `getString()`, `jsonSuccess()`, `jsonError()` methods
+- Use in AJAX endpoints to eliminate security warnings and reduce boilerplate
 
 **Repository Pattern** (`classes/Database/`):
 - All data access goes through Repository classes
@@ -75,8 +83,9 @@ Use `EDatabaseExceptions.php` for database-specific errors.
 ## Hosting Environment
 
 **Dreamhost Shared Hosting Constraints:**
-- No root access or shell access
-- PHPUnit not available, but custom test runner works
+- No root access (but SSH shell access available)
+- PHPUnit not available system-wide, but custom test runner works
+- Can install composer packages in user directory via SSH
 - Test database must be created manually via Dreamhost panel
 - DBPersistaroo syncs production data to test database automatically
 - Focus on integration testing with real database
@@ -88,19 +97,28 @@ Test database `dbmt3_test` must be created manually via Dreamhost panel with sam
 
 ### Available Testing Tools
 - `scripts/setup_test_database.php` - Syncs production data to test database using DBPersistaroo backups
-- `scripts/run_simple_tests.php` - Custom test runner (no PHPUnit dependency)
+- `scripts/run_all_tests.php` - Comprehensive test runner covering all validation categories
+- `scripts/run_simple_tests.php` - Legacy custom test runner (no PHPUnit dependency)
 - `tests/bootstrap.php` - Test environment bootstrap with TestConfig class
 
-### Critical Bug Prevention
+### Current Test Categories
 Tests validate:
-- Form field `name` attributes match repository parameters (Issue #57)
-- SQL parameter counts match placeholder counts
-- Database schema consistency between production and test
+- Form field `name` attributes match repository parameters (Issue #57/58)
+- SQL parameter counts match placeholder counts  
+- AJAX endpoint security (input validation)
+- Database connectivity and schema consistency
 
 ### Test Workflow
 1. `php scripts/setup_test_database.php sync` - Refresh test data
-2. `php scripts/run_simple_tests.php` - Run validation tests
+2. `php scripts/run_all_tests.php` - Run all validation tests
 3. Manual testing against test database for complex scenarios
+
+### Code Quality TODOs
+- **Linting**: Add PHP linter (PHP_CodeSniffer/PHPStan) - can install on Dreamhost via SSH
+  - Install via SSH: `composer global require squizlabs/php_codesniffer`
+  - Add to PATH: `export PATH="$HOME/.composer/vendor/bin:$PATH"`
+  - Run linting: `phpcs --standard=PSR12 classes/`
+  - Could integrate into existing test runner as additional validation category
 
 ## Development Notes
 
