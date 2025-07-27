@@ -18,9 +18,11 @@ class RepositorySQLParameterValidator
     private int $failed = 0;
     private array $failures = [];
     private array $repositoryFiles = [];
+    private bool $verbose;
 
-    public function __construct()
+    public function __construct(bool $verbose = false)
     {
+        $this->verbose = $verbose;
         $this->findRepositoryFiles();
     }
 
@@ -36,6 +38,12 @@ class RepositorySQLParameterValidator
 
     public function run(): void
     {
+        if ($this->verbose) {
+            echo "=== Repository SQL Parameter Validation Test (Verbose) ===\n";
+        } else {
+            echo "=== Repository SQL Parameter Validation Test ===\n";
+            echo "Quiet mode - only showing issues. Use --verbose for full output.\n";
+        }
         echo "Validating SQL parameters in all Repository classes...\n\n";
 
         foreach ($this->repositoryFiles as $file) {
@@ -43,7 +51,9 @@ class RepositorySQLParameterValidator
         }
 
         // Test specific known methods with manual validation
-        $this->testKnownSQLQueries();
+        if ($this->verbose) {
+            $this->testKnownSQLQueries();
+        }
 
         // Output results
         echo "\n" . str_repeat("=", 60) . "\n";
@@ -65,14 +75,24 @@ class RepositorySQLParameterValidator
         } else {
             echo "❌ SQL parameter mismatches found that could cause runtime errors.\n";
         }
+        
+        if (!$this->verbose && ($this->passed > 0 || empty($this->failures))) {
+            echo "💡 Use --verbose flag to see all validation details.\n";
+        }
     }
 
     private function validateRepositoryFile(string $filePath): void
     {
         $filename = basename($filePath);
-        echo "Checking {$filename}...\n";
-
+        
         $content = file_get_contents($filePath);
+        
+        // Capture output to check for issues
+        ob_start();
+        
+        if ($this->verbose) {
+            echo "Checking {$filename}...\n";
+        }
 
         // Find all executeSQL and fetchResults calls
         $pattern = '/(?:executeSQL|fetchResults)\s*\(\s*["\']([^"\']*)["\'],\s*["\']([^"\']*)["\'],\s*(\[[^\]]*\])/';
@@ -89,9 +109,23 @@ class RepositorySQLParameterValidator
         }
 
         if ($queriesFound === 0) {
-            echo "  ℹ️  No parameterized queries found in {$filename}\n";
+            if ($this->verbose) {
+                echo "  ℹ️  No parameterized queries found in {$filename}\n";
+            }
         } else {
-            echo "  ✓ Checked {$queriesFound} parameterized queries in {$filename}\n";
+            if ($this->verbose) {
+                echo "  ✓ Checked {$queriesFound} parameterized queries in {$filename}\n";
+            }
+        }
+        
+        $output = ob_get_clean();
+        
+        // In quiet mode, only show if there are issues
+        if ($this->verbose || strpos($output, '❌') !== false) {
+            if (!$this->verbose && strpos($output, '❌') !== false) {
+                echo "Checking {$filename}...\n";
+            }
+            echo $output;
         }
     }
 
@@ -111,8 +145,12 @@ class RepositorySQLParameterValidator
         if ($placeholderCount !== $typeCount) {
             $this->failed++;
             $this->failures[] = "{$filename}: SQL placeholders ({$placeholderCount}) ≠ type string length ({$typeCount}) in: {$queryStart}";
+            echo "  ❌ SQL placeholders ({$placeholderCount}) ≠ types ({$typeCount}) in: {$queryStart}\n";
         } else {
             $this->passed++;
+            if ($this->verbose) {
+                echo "  ✅ SQL placeholders ({$placeholderCount}) = types ({$typeCount}) in: {$queryStart}\n";
+            }
         }
     }
 
@@ -163,7 +201,9 @@ class RepositorySQLParameterValidator
 
             if ($allMatch) {
                 $this->passed++;
-                echo "✅ {$query['name']}: SQL placeholders ({$placeholderCount}) = types ({$typeCount}) = params ({$paramCount})\n";
+                if ($this->verbose) {
+                    echo "✅ {$query['name']}: SQL placeholders ({$placeholderCount}) = types ({$typeCount}) = params ({$paramCount})\n";
+                }
             } else {
                 $this->failed++;
                 $this->failures[] = "{$query['name']}: Mismatch - placeholders({$placeholderCount}), types({$typeCount}), params({$paramCount})";
@@ -223,29 +263,35 @@ class AdvancedSQLValidator
     }
 }
 
-// Run the validation
-echo "=== Repository SQL Parameter Validation Test ===\n";
-echo "This test checks all repository classes for SQL parameter/placeholder mismatches\n";
-echo "that could cause runtime errors like those found in Issues #57/#58.\n\n";
+// Parse command line arguments
+$verbose = in_array('--verbose', $argv) || in_array('-v', $argv);
 
-$validator = new RepositorySQLParameterValidator();
+// Run the validation
+if (!$verbose) {
+    echo "This test checks all repository classes for SQL parameter/placeholder mismatches\n";
+    echo "that could cause runtime errors like those found in Issues #57/#58.\n\n";
+}
+
+$validator = new RepositorySQLParameterValidator($verbose);
 $validator->run();
 
-echo "\n=== Advanced Pattern Detection ===\n";
-echo "Scanning for complex SQL patterns that need manual review...\n\n";
+if ($verbose) {
+    echo "\n=== Advanced Pattern Detection ===\n";
+    echo "Scanning for complex SQL patterns that need manual review...\n\n";
 
-$repositoryDir = __DIR__ . '/../classes/Database';
-$repositoryFiles = glob($repositoryDir . '/*Repository.php');
+    $repositoryDir = __DIR__ . '/../classes/Database';
+    $repositoryFiles = glob($repositoryDir . '/*Repository.php');
 
-foreach ($repositoryFiles as $file) {
-    $content = file_get_contents($file);
-    $patterns = AdvancedSQLValidator::findComplexSQLPatterns($content);
+    foreach ($repositoryFiles as $file) {
+        $content = file_get_contents($file);
+        $patterns = AdvancedSQLValidator::findComplexSQLPatterns($content);
 
-    if (!empty($patterns)) {
-        echo "📋 " . basename($file) . " - " . count($patterns) . " complex patterns found\n";
-        foreach ($patterns as $pattern) {
-            $sqlPreview = substr($pattern['sql'], 0, 60) . (strlen($pattern['sql']) > 60 ? '...' : '');
-            echo "  🔍 {$pattern['type']}: {$sqlPreview}\n";
+        if (!empty($patterns)) {
+            echo "📋 " . basename($file) . " - " . count($patterns) . " complex patterns found\n";
+            foreach ($patterns as $pattern) {
+                $sqlPreview = substr($pattern['sql'], 0, 60) . (strlen($pattern['sql']) > 60 ? '...' : '');
+                echo "  🔍 {$pattern['type']}: {$sqlPreview}\n";
+            }
         }
     }
 }
