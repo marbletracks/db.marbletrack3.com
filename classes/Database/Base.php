@@ -30,7 +30,7 @@ class Base{
                 host: $config->dbHost,
                 username: $config->dbUser,
                 passwd: $config->dbPass,
-                dbname: $config->dbName,
+                dbname: $config->testDbName,
                 charEncoding: CONFIG_DATABASE_OUTPUT_ENCODING
             );
         }
