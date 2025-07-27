@@ -11,8 +11,17 @@ This is **Marble Track 3**, a long-term stop motion animation project database a
 ### Database Management
 ```bash
 # Dreamhost shared hosting - no root access
-# No viable testing framework available
+# Test database sync and validation now working
 # Database operations use DBPersistaroo for backups
+
+# Sync test database with production data
+php scripts/setup_test_database.php sync
+
+# Validate test database is working
+php scripts/setup_test_database.php validate
+
+# Run tests (no PHPUnit required)
+php scripts/run_simple_tests.php
 ```
 
 ## Architecture
@@ -67,10 +76,31 @@ Use `EDatabaseExceptions.php` for database-specific errors.
 
 **Dreamhost Shared Hosting Constraints:**
 - No root access or shell access
-- No viable testing framework available  
-- Cannot populate test databases using DBPersistaroo
-- Manual database operations via Dreamhost panel only
-- Focus on careful development and manual validation
+- PHPUnit not available, but custom test runner works
+- Test database must be created manually via Dreamhost panel
+- DBPersistaroo syncs production data to test database automatically
+- Focus on integration testing with real database
+
+## Testing
+
+### Test Database Setup
+Test database `dbmt3_test` must be created manually via Dreamhost panel with same credentials as production.
+
+### Available Testing Tools
+- `scripts/setup_test_database.php` - Syncs production data to test database using DBPersistaroo backups
+- `scripts/run_simple_tests.php` - Custom test runner (no PHPUnit dependency)
+- `tests/bootstrap.php` - Test environment bootstrap with TestConfig class
+
+### Critical Bug Prevention
+Tests validate:
+- Form field `name` attributes match repository parameters (Issue #57)
+- SQL parameter counts match placeholder counts
+- Database schema consistency between production and test
+
+### Test Workflow
+1. `php scripts/setup_test_database.php sync` - Refresh test data
+2. `php scripts/run_simple_tests.php` - Run validation tests
+3. Manual testing against test database for complex scenarios
 
 ## Development Notes
 
@@ -78,5 +108,5 @@ Use `EDatabaseExceptions.php` for database-specific errors.
 - Designed for Dreamhost shared hosting environment
 - No external frameworks - pure PHP with custom abstractions
 - Database schemas in `db_schemas/` organized by feature area
-- Manual validation required due to hosting constraints
+- Test-driven development possible with custom test runner
 - `DBPersistaroo` handles automatic database backups (hourly)
