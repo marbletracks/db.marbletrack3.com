@@ -4,12 +4,16 @@ declare(strict_types=1);
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
 if (!$is_logged_in->isLoggedIn()) {
-    header("HTTP/1.1 403 Forbidden");
+    http_response_code(401);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
     exit;
 }
 
 $q = $_GET['q'] ?? '';
 $exact = isset($_GET['exact']) && $_GET['exact'] === 'true';
+header('Content-Type: application/json');
+
 $langCode = "en";
 $res = [];
 
