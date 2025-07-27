@@ -25,9 +25,11 @@ class AjaxEndpointValidator
     private array $failures = [];
     private array $warnings = [];
     private array $ajaxFiles = [];
+    private bool $verbose;
 
-    public function __construct()
+    public function __construct(bool $verbose = false)
     {
+        $this->verbose = $verbose;
         $this->findAjaxFiles();
     }
 
@@ -39,15 +41,22 @@ class AjaxEndpointValidator
 
     public function run(): void
     {
-        echo "=== AJAX Endpoint Security & Validation Test ===\n";
+        if ($this->verbose) {
+            echo "=== AJAX Endpoint Security & Validation Test (Verbose) ===\n";
+        } else {
+            echo "=== AJAX Endpoint Security & Validation Test ===\n";
+            echo "Quiet mode - only showing issues. Use --verbose for full output.\n";
+        }
         echo "Testing " . count($this->ajaxFiles) . " AJAX endpoints for security and parameter validation...\n\n";
 
         foreach ($this->ajaxFiles as $file) {
             $this->validateAjaxEndpoint($file);
         }
 
-        $this->validateSpecificEndpoints();
-        $this->testParameterSanitization();
+        if ($this->verbose) {
+            $this->validateSpecificEndpoints();
+            $this->testParameterSanitization();
+        }
         $this->testSQLInjectionProtection();
 
         $this->outputResults();
@@ -56,10 +65,16 @@ class AjaxEndpointValidator
     private function validateAjaxEndpoint(string $filePath): void
     {
         $filename = basename($filePath);
-        echo "🔍 Analyzing {$filename}...\n";
+        
+        if ($this->verbose) {
+            echo "🔍 Analyzing {$filename}...\n";
+        }
 
         $content = file_get_contents($filePath);
 
+        // Capture output to check for issues
+        ob_start();
+        
         // Test 1: Authentication Check
         $this->validateAuthentication($filename, $content);
 
@@ -75,7 +90,16 @@ class AjaxEndpointValidator
         // Test 5: Error Handling
         $this->validateErrorHandling($filename, $content);
 
-        echo "\n";
+        $output = ob_get_clean();
+        
+        // In quiet mode, only show if there are issues
+        if ($this->verbose || strpos($output, '❌') !== false || strpos($output, '⚠️') !== false) {
+            if (!$this->verbose) {
+                echo "🔍 Analyzing {$filename}...\n";
+            }
+            echo $output;
+            echo "\n";
+        }
     }
 
     private function validateAuthentication(string $filename, string $content): void
@@ -341,7 +365,10 @@ class AjaxEndpointValidator
             echo "\n❌ Security and validation issues found in AJAX endpoints.\n";
         }
 
-        echo "\n💡 Regular AJAX endpoint security review is recommended.\n";
+        if (!$this->verbose && ($this->passed > 0 || empty($this->failures))) {
+            echo "💡 Use --verbose flag to see all validation details.\n";
+        }
+        echo "💡 Regular AJAX endpoint security review is recommended.\n";
     }
 }
 
@@ -404,11 +431,16 @@ class AjaxFormMappingValidator
     }
 }
 
+// Parse command line arguments
+$verbose = in_array('--verbose', $argv) || in_array('-v', $argv);
+
 // Run all tests
-$validator = new AjaxEndpointValidator();
+$validator = new AjaxEndpointValidator($verbose);
 $validator->run();
 
-AjaxFormMappingValidator::validateFormToRepositoryMapping();
+if ($verbose) {
+    AjaxFormMappingValidator::validateFormToRepositoryMapping();
+}
 
 echo "🔐 AJAX endpoint security validation complete!\n";
 echo "💡 Consider running this test after any AJAX endpoint changes.\n";
