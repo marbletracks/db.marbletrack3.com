@@ -185,7 +185,7 @@ class TestDatabaseSetup
 
         // Add test data markers
         try {
-            $this->testDb->executeSQL("INSERT INTO parts (alias, name, description) VALUES ('test_marker', 'Test Data Marker', 'This part indicates test database is properly set up') ON DUPLICATE KEY UPDATE description = VALUES(description)");
+            $this->testDb->executeSQL("INSERT INTO parts (part_alias, slug) VALUES ('test_marker', 'test-data-marker') ON DUPLICATE KEY UPDATE slug = VALUES(slug)");
             echo "✓ Test data marker added\n";
         } catch (\Exception $e) {
             echo "Note: Could not add test marker: " . $e->getMessage() . "\n";
@@ -199,15 +199,17 @@ class TestDatabaseSetup
     {
         try {
             // Test basic operations
-            $result = $this->testDb->executeSQL("SELECT COUNT(*) as count FROM parts");
-            $row = $result->fetch();
+            $result = $this->testDb->fetchResults("SELECT COUNT(*) as count FROM parts");
+            $result->rewind(); // Start the iterator
+            $row = $result->current();
             $partCount = $row['count'] ?? 0;
 
             echo "✓ Test database contains {$partCount} parts\n";
 
             // Test if our test marker exists
-            $markerResult = $this->testDb->executeSQL("SELECT * FROM parts WHERE alias = 'test_marker'");
-            if ($markerResult && $markerResult->fetch()) {
+            $markerResult = $this->testDb->fetchResults("SELECT * FROM parts WHERE part_alias = 'test_marker'");
+            $markerResult->rewind();
+            if ($markerResult && $markerResult->current()) {
                 echo "✓ Test data marker found\n";
                 return true;
             } else {
