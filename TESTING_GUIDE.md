@@ -8,9 +8,24 @@ The testing system provides both unit tests and integration tests to validate fo
 
 ## Quick Start
 
-### 1. Basic Validation Tests (No Database Required)
+### 1. Comprehensive Test Suite (Recommended)
 
-Run the simple validation tests to check form field mappings and SQL parameter validation:
+Run the full test suite covering all validation categories:
+
+```bash
+php scripts/run_all_tests.php
+```
+
+This runs 5 test categories:
+- ✅ Form Field Validation (Issue #57/58 prevention)
+- ✅ SQL Parameter Validation
+- ✅ AJAX Endpoint Security  
+- ✅ Database Connectivity
+- ✅ Regression prevention tests
+
+### 2. Legacy Simple Tests (No Database Required)
+
+Run basic validation tests for form field mappings and SQL parameter validation:
 
 ```bash
 php scripts/run_simple_tests.php
@@ -22,7 +37,7 @@ These tests verify:
 - ✅ No duplicate `name="notes"` attributes (the bug from #57)
 - ✅ SQL parameter counts match placeholder counts
 
-### 2. Full PHPUnit Tests (Requires Composer)
+### 3. Full PHPUnit Tests (Requires Composer)
 
 If you have composer installed:
 
@@ -42,7 +57,7 @@ php composer.phar run test-integration
 
 **Note**: If you encounter autoloader conflicts with PHPUnit (like `"You call that a file? Unit.php not found"`), this has been fixed in the `classes/Mlaphp/Autoloader.php` to prevent conflicts with PHPUnit's test suite names and classes.
 
-### 3. Database Integration Tests (Requires Test Database)
+### 4. Database Integration Tests (Requires Test Database)
 
 For full integration testing, you need a test database set up:
 
@@ -116,7 +131,15 @@ $sql = "UPDATE moments SET notes = ?, frame_start = ? WHERE id = ?";
 $params = ['note', 100, 1]; // All parameters provided
 ```
 
-### 3. Database Operations
+### 3. AJAX Endpoint Security
+
+Tests validate:
+- Input validation using proper `filter_var()` functions
+- No direct `$_POST` array access warnings
+- Consistent error/success response formatting
+- RobRequest class usage eliminates security warnings
+
+### 4. Database Operations
 
 Integration tests verify:
 - Parts can be created and updated correctly
@@ -190,11 +213,56 @@ public function testNewFeatureFormMapping()
 
 This testing infrastructure provides:
 
-1. **Regression Prevention** - Catches bugs like #57 before they reach production
+1. **Regression Prevention** - Catches bugs like #57/58 before they reach production
 2. **Documentation** - Tests serve as examples of correct usage
 3. **Confidence** - Safe refactoring with automated validation
 4. **Compatibility** - Works within Dreamhost shared hosting constraints
 5. **Gradual Adoption** - Can add tests incrementally as needed
+6. **Security Validation** - AJAX endpoints use proper input validation via RobRequest class
+
+## Code Quality TODOs
+
+### PHP Linting Integration
+**Status**: Ready to implement (can install directly on Dreamhost via SSH)
+
+**Installation (Works on Dreamhost via SSH)**:
+```bash
+# Install PHP_CodeSniffer globally for linting
+composer global require squizlabs/php_codesniffer
+
+# Add composer global bin to PATH (add to ~/.bashrc)
+export PATH="$HOME/.composer/vendor/bin:$PATH"
+
+# Run linting on codebase
+phpcs --standard=PSR12 classes/
+phpcs --standard=PSR12 wwwroot/admin/ajax/
+
+# Fix automatically fixable issues
+phpcbf --standard=PSR12 classes/
+```
+
+**Additional tools available on Dreamhost**:
+- **PHPStan** for static analysis: `composer global require phpstan/phpstan`
+- **Psalm** for advanced static analysis: `composer global require vimeo/psalm`
+- **PHP-CS-Fixer** for automatic formatting: `composer global require friendsofphp/php-cs-fixer`
+
+**Dreamhost Shared Hosting Capabilities**:
+- ✅ **Shell access available** via SSH
+- ✅ Can install composer packages in user directory
+- ✅ Can run command-line tools like `phpcs`
+- ❌ **No root access** for system-wide installations
+- ❌ Cannot install system packages or modify global PHP configuration
+
+**Integration with existing test runner**:
+```bash
+# Could add linting to the comprehensive test suite
+php scripts/run_all_tests.php --include-lint
+
+# Or create dedicated linting script
+php scripts/run_linting.php
+```
+
+Since you have SSH access, you can install and run these tools directly on the server, making linting part of your regular development workflow on Dreamhost.
 
 The key insight is that while shared hosting limits our automation options, we can still achieve effective testing through manual setup and leveraging existing backup systems for data sync.
 
