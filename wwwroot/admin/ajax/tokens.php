@@ -18,24 +18,26 @@ use Database\ColumnsRepository;
 
 $tokensRepo = new TokensRepository($mla_database);
 $columnsRepo = new ColumnsRepository($mla_database);
+$request = new RobRequest();
 
-$action = $_POST['action'] ?? '';
+$action = $request->getAction();
 
 try {
     switch ($action) {
         case 'create_for_worker':
-            $worker_id = (int) ($_POST['worker_id'] ?? 0);
-            $token_string = trim($_POST['token_string'] ?? '');
-            $token_date = trim($_POST['token_date'] ?? '');
-            $token_x_pos = (int) ($_POST['token_x_pos'] ?? 10);
-            $token_y_pos = (int) ($_POST['token_y_pos'] ?? 10);
-            $token_width = (int) ($_POST['token_width'] ?? 100);
-            $token_height = (int) ($_POST['token_height'] ?? 30);
-            $token_color = trim($_POST['token_color'] ?? 'Black');
+            $worker_id = $request->getInt('worker_id');
+            $token_string = $request->getString('token_string');
+            $token_date = $request->getString('token_date');
+            $token_x_pos = $request->getInt('token_x_pos', 10);
+            $token_y_pos = $request->getInt('token_y_pos', 10);
+            $token_width = $request->getInt('token_width', 100);
+            $token_height = $request->getInt('token_height', 30);
+            $token_color = $request->getString('token_color', 'Black');
 
-            if ($worker_id <= 0 || $token_string === '') {
-                throw new Exception('Worker ID and token string are required');
-            }
+            $request->requireFields([
+                'worker_id' => $worker_id > 0,
+                'token_string' => $token_string !== ''
+            ]);
 
             // Find or create a column for this worker
             $column_id = findOrCreateRealtimeColumn($columnsRepo, $worker_id);
@@ -43,44 +45,47 @@ try {
             $tokenId = $tokensRepo->insert($column_id, $token_string, $token_date, $token_x_pos, $token_y_pos, $token_width, $token_height, $token_color);
             $token = $tokensRepo->findById($tokenId);
 
-            echo json_encode(['success' => true, 'token' => $token]);
+            $request->jsonSuccess(['token' => $token]);
             break;
 
         case 'create':
-            $column_id = (int) ($_POST['column_id'] ?? 0);
-            $token_string = trim($_POST['token_string'] ?? '');
-            $token_date = trim($_POST['token_date'] ?? '');
-            $token_x_pos = (int) ($_POST['token_x_pos'] ?? 10);
-            $token_y_pos = (int) ($_POST['token_y_pos'] ?? 10);
-            $token_width = (int) ($_POST['token_width'] ?? 100);
-            $token_height = (int) ($_POST['token_height'] ?? 30);
-            $token_color = trim($_POST['token_color'] ?? 'Black');
+            $column_id = $request->getInt('column_id');
+            $token_string = $request->getString('token_string');
+            $token_date = $request->getString('token_date');
+            $token_x_pos = $request->getInt('token_x_pos', 10);
+            $token_y_pos = $request->getInt('token_y_pos', 10);
+            $token_width = $request->getInt('token_width', 100);
+            $token_height = $request->getInt('token_height', 30);
+            $token_color = $request->getString('token_color', 'Black');
 
-            if ($column_id <= 0 || $token_string === '') {
-                throw new Exception('Column ID and token string are required');
-            }
+            $request->requireFields([
+                'column_id' => $column_id > 0,
+                'token_string' => $token_string !== ''
+            ]);
 
             $tokenId = $tokensRepo->insert($column_id, $token_string, $token_date, $token_x_pos, $token_y_pos, $token_width, $token_height, $token_color);
             $token = $tokensRepo->findById($tokenId);
 
-            echo json_encode(['success' => true, 'token' => $token]);
+            $request->jsonSuccess(['token' => $token]);
             break;
 
         case 'update':
-            $token_id = (int) ($_POST['token_id'] ?? 0);
-            $column_id = (int) ($_POST['column_id'] ?? 0);
-            $token_string = trim($_POST['token_string'] ?? '');
-            $token_date = trim($_POST['token_date'] ?? '');
-            $token_color = trim($_POST['token_color'] ?? 'Black');
+            $token_id = $request->getInt('token_id');
+            $column_id = $request->getInt('column_id');
+            $token_string = $request->getString('token_string');
+            $token_date = $request->getString('token_date');
+            $token_color = $request->getString('token_color', 'Black');
 
-            if ($token_id <= 0 || $column_id <= 0 || $token_string === '') {
-                throw new Exception('Token ID, column ID and token string are required');
-            }
+            $request->requireFields([
+                'token_id' => $token_id > 0,
+                'column_id' => $column_id > 0,
+                'token_string' => $token_string !== ''
+            ]);
 
             // Fetch existing token to get its position and size
             $existingToken = $tokensRepo->findById($token_id);
             if (!$existingToken) {
-                throw new Exception('Token not found');
+                $request->jsonError('Token not found');
             }
 
             $tokensRepo->update(
@@ -97,52 +102,51 @@ try {
 
             $updatedToken = $tokensRepo->findById($token_id);
 
-            echo json_encode(['success' => true, 'token' => $updatedToken]);
+            $request->jsonSuccess(['token' => $updatedToken]);
             break;
 
         case 'update_position':
-            $token_id = (int) ($_POST['token_id'] ?? 0);
-            $x_pos = (int) ($_POST['x_pos'] ?? 0);
-            $y_pos = (int) ($_POST['y_pos'] ?? 0);
+            $token_id = $request->getInt('token_id');
+            $x_pos = $request->getInt('x_pos');
+            $y_pos = $request->getInt('y_pos');
 
-            if ($token_id <= 0) {
-                throw new Exception('Token ID is required');
-            }
+            $request->requireFields([
+                'token_id' => $token_id > 0
+            ]);
 
             $tokensRepo->updatePosition($token_id, $x_pos, $y_pos);
-            echo json_encode(['success' => true]);
+            $request->jsonSuccess();
             break;
 
         case 'update_size':
-            $token_id = (int) ($_POST['token_id'] ?? 0);
-            $width = (int) ($_POST['width'] ?? 100);
-            $height = (int) ($_POST['height'] ?? 50);
+            $token_id = $request->getInt('token_id');
+            $width = $request->getInt('width', 100);
+            $height = $request->getInt('height', 50);
 
-            if ($token_id <= 0) {
-                throw new Exception('Token ID is required');
-            }
+            $request->requireFields([
+                'token_id' => $token_id > 0
+            ]);
 
             $tokensRepo->updateSize($token_id, $width, $height);
-            echo json_encode(['success' => true]);
+            $request->jsonSuccess();
             break;
 
         case 'delete':
-            $token_id = (int) ($_POST['token_id'] ?? 0);
+            $token_id = $request->getInt('token_id');
 
-            if ($token_id <= 0) {
-                throw new Exception('Token ID is required');
-            }
+            $request->requireFields([
+                'token_id' => $token_id > 0
+            ]);
 
             $tokensRepo->delete($token_id);
-            echo json_encode(['success' => true]);
+            $request->jsonSuccess();
             break;
 
         default:
-            throw new Exception('Invalid action');
+            $request->jsonError('Invalid action');
     }
 } catch (Exception $e) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    $request->jsonError($e->getMessage());
 }
 
 /**

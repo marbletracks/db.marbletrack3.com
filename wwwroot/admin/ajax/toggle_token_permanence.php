@@ -16,19 +16,17 @@ header('Content-Type: application/json');
 use Database\TokensRepository;
 
 $tokensRepo = new TokensRepository($mla_database);
+$request = new RobRequest();
 
-$token_id = (int) ($_POST['token_id'] ?? 0);
+$token_id = $request->getInt('token_id');
 
-if ($token_id <= 0) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Invalid Token ID']);
-    exit;
-}
+$request->requireFields([
+    'token_id' => $token_id > 0
+]);
 
 try {
     $new_status = $tokensRepo->togglePermanence($token_id);
-    echo json_encode(['success' => true, 'is_permanent' => $new_status]);
+    $request->jsonSuccess(['is_permanent' => $new_status]);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    $request->jsonError($e->getMessage(), 500);
 }
