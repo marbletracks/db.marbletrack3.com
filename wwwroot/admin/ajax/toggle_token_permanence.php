@@ -5,10 +5,10 @@ declare(strict_types=1);
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+$request = new RobRequest();
+
 if (!$is_logged_in->isLoggedIn()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    $request->jsonError('Unauthorized', 401);
 }
 
 header('Content-Type: application/json');
@@ -16,7 +16,6 @@ header('Content-Type: application/json');
 use Database\TokensRepository;
 
 $tokensRepo = new TokensRepository($mla_database);
-$request = new RobRequest();
 
 $token_id = $request->getInt('token_id');
 
