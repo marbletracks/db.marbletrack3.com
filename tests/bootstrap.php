@@ -57,9 +57,14 @@ if (class_exists('Config')) {
                 }
             }
 
-            // Test-specific settings
-            $this->app_path = __DIR__ . '/..';
+            // Fix Docker path issue - use /app instead of hardcoded production path
+            $this->app_path = '/app';
         }
+    }
+
+    // Override the global config with test config to fix Docker paths
+    if (isset($config) && $config instanceof Config) {
+        $config = new TestConfig();
     }
 
     // Helper function to get test database connection
