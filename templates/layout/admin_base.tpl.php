@@ -29,7 +29,12 @@
             </div>
         </div> |
         <a href="/admin/workers">Workers</a> |
-        <a href="/admin/parts">Parts</a> |
+        <div class="dropdown">
+            <a href="/admin/parts">Parts ▾</a>
+            <div class="dropdown-menu">
+                <a href="/admin/parts/part.php" target="_blank">Create Part</a>
+            </div>
+        </div> |
         <div class="dropdown">
             <a href="/admin/moments">Moments ▾</a>
             <div class="dropdown-menu">
