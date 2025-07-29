@@ -33,6 +33,10 @@ class PHPUnitBridgeTest extends TestCase
 
     public function testRepositorySQLParameters(): void
     {
+        // Set $argv for the included script
+        global $argv;
+        $argv = ['test_repository_sql_parameters.php'];
+        
         ob_start();
         include __DIR__ . '/../../scripts/test_repository_sql_parameters.php';
         $testOutput = ob_get_clean();
@@ -49,6 +53,13 @@ class PHPUnitBridgeTest extends TestCase
 
     public function testAjaxEndpointsHaveNoWarnings(): void
     {
+        // Set globals for the included script
+        global $argv, $_POST, $_GET, $_SERVER;
+        $argv = ['test_ajax_endpoints.php'];
+        $_POST = [];
+        $_GET = [];
+        $_SERVER = $_SERVER ?? [];
+        
         ob_start();
         include __DIR__ . '/../../scripts/test_ajax_endpoints.php';
         $testOutput = ob_get_clean();
