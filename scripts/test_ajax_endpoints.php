@@ -197,13 +197,25 @@ class AjaxEndpointValidator
         $hasErrorHandling = strpos($content, 'try') !== false && strpos($content, 'catch') !== false;
         $hasHttpErrors = strpos($content, 'http_response_code') !== false || strpos($content, 'header(') !== false;
         $hasJsonErrors = strpos($content, 'json_encode') !== false;
+        
+        // Check for RobRequest error handling patterns
+        $hasRobRequestErrors = strpos($content, 'jsonError') !== false || strpos($content, 'jsonSuccess') !== false;
+        $hasRobRequestInstance = strpos($content, 'new RobRequest()') !== false || strpos($content, '$request') !== false;
 
-        if ($hasErrorHandling && $hasHttpErrors && $hasJsonErrors) {
+        if ($hasErrorHandling && ($hasHttpErrors && $hasJsonErrors || $hasRobRequestErrors)) {
             $this->passed++;
-            echo "  ✅ Errors: Comprehensive error handling (try/catch + HTTP + JSON)\n";
-        } else if ($hasJsonErrors && $hasHttpErrors) {
+            if ($hasRobRequestErrors) {
+                echo "  ✅ Errors: Comprehensive error handling (try/catch + RobRequest helpers)\n";
+            } else {
+                echo "  ✅ Errors: Comprehensive error handling (try/catch + HTTP + JSON)\n";
+            }
+        } else if (($hasJsonErrors && $hasHttpErrors) || $hasRobRequestErrors) {
             $this->passed++;
-            echo "  ✅ Errors: Good error handling (HTTP + JSON responses)\n";
+            if ($hasRobRequestErrors) {
+                echo "  ✅ Errors: Good error handling (RobRequest JSON helpers)\n";
+            } else {
+                echo "  ✅ Errors: Good error handling (HTTP + JSON responses)\n";
+            }
         } else if ($hasJsonErrors) {
             echo "  ⚠️  Errors: Basic JSON error responses\n";
         } else {
