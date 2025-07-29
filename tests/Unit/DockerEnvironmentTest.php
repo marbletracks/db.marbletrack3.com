@@ -47,7 +47,7 @@ class DockerEnvironmentTest extends TestCase
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             $this->assertNotEmpty($result, 'Should be able to query test_connection table');
-            $this->assertEquals('Docker MySQL is working!', $result['message']);
+            $this->assertEquals('Docker MySQL is working with full schema!', $result['message']);
         } catch (\PDOException $e) {
             $this->fail("Database connection failed: " . $e->getMessage());
         }

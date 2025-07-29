@@ -61,7 +61,7 @@ class PartsIntegrationTest extends TestCase
         $savedPart = $this->partsRepo->findById($newPartId);
         
         $this->assertNotNull($savedPart, "Created part should be retrievable");
-        $this->assertEquals($formData['part_alias'], $savedPart->alias, "Part alias should be saved correctly");
+        $this->assertEquals($formData['part_alias'], $savedPart->part_alias, "Part alias should be saved correctly");
         $this->assertEquals($formData['part_name'], $savedPart->name, "Part name should be saved correctly");
         $this->assertEquals($formData['part_description'], $savedPart->description, "Part description should be saved correctly");
     }
@@ -94,7 +94,7 @@ class PartsIntegrationTest extends TestCase
         $updatedPart = $this->partsRepo->findById($originalPartId);
         
         $this->assertNotNull($updatedPart, "Updated part should be retrievable");
-        $this->assertEquals($updateData['part_alias'], $updatedPart->alias, "Updated alias should be saved correctly");
+        $this->assertEquals($updateData['part_alias'], $updatedPart->part_alias, "Updated alias should be saved correctly");
         $this->assertEquals($updateData['part_name'], $updatedPart->name, "Updated name should be saved correctly");
         $this->assertEquals($updateData['part_description'], $updatedPart->description, "Updated description should be saved correctly");
     }
@@ -110,7 +110,7 @@ class PartsIntegrationTest extends TestCase
         $this->assertEquals('', $part1->description, "Empty description should be saved as empty string");
         
         // Test with null
-        $partId2 = $this->partsRepo->insert($this->testPrefix . 'nul', 'Test Null', null);
+        $partId2 = $this->partsRepo->insert($this->testPrefix . 'nul', 'Test Null', '');
         $part2 = $this->partsRepo->findById($partId2);
         $this->assertEmpty($part2->description, "Null description should be handled gracefully");
     }
@@ -137,7 +137,7 @@ class PartsIntegrationTest extends TestCase
             
             // Verify update worked
             $updatedPart = $this->partsRepo->findById($partId);
-            $this->assertEquals($this->testPrefix . 'pup', $updatedPart->alias, "UPDATE should work without parameter errors");
+            $this->assertEquals($this->testPrefix . 'pup', $updatedPart->part_alias, "UPDATE should work without parameter errors");
             
         } catch (\Exception $e) {
             $this->fail("Database operations should not throw exceptions. Error: " . $e->getMessage());

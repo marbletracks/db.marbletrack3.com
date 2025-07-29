@@ -20,10 +20,10 @@ class Moment
     ) {
         // Generate a meaningful slug for URL generation
         $slug_parts = [];
-        if ($this->take_id) {
+        if ($this->take_id !== null) {
             $slug_parts[] = "take-{$this->take_id}";
         }
-        if ($this->frame_start) {
+        if ($this->frame_start !== null) {
             $slug_parts[] = "frame-{$this->frame_start}";
         }
         if (empty($slug_parts)) {

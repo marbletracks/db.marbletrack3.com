@@ -19,8 +19,8 @@ class WorkersIntegrationTest extends TestCase
         $this->testDb = getTestDatabase();
         $this->workersRepo = new WorkersRepository($this->testDb, 'en');
         
-        // Create unique test prefix using timestamp and random number
-        $this->testPrefix = 'test_' . time() . '_' . rand(1000, 9999) . '_';
+        // Create unique test prefix using timestamp and random number - short for 10-char worker_alias limit
+        $this->testPrefix = 'w' . substr(time(), -2) . rand(1, 9) . '_';
         
         // Clean up any old test data from previous runs
         $this->cleanupTestData();
@@ -40,6 +40,7 @@ class WorkersIntegrationTest extends TestCase
     {
         // Simulate form data that would be submitted for a worker
         $formData = [
+            'worker_alias' => $this->testPrefix . 'w1',  // Short alias for 10-char limit
             'worker_name' => $this->testPrefix . 'Worker',
             'description' => 'This is a test worker description'
         ];
@@ -48,6 +49,7 @@ class WorkersIntegrationTest extends TestCase
         // Note: Need to check the actual WorkersRepository interface
         try {
             $newWorkerId = $this->workersRepo->insert(
+                $formData['worker_alias'],
                 $formData['worker_name'],
                 $formData['description']
             );
