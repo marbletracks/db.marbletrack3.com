@@ -5,10 +5,10 @@ declare(strict_types=1);
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+$request = new RobRequest();
+
 if (!$is_logged_in->isLoggedIn()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    $request->jsonError('Unauthorized', 401);
 }
 
 header('Content-Type: application/json');
@@ -26,16 +26,14 @@ $workersRepo = new WorkersRepository($mla_database, 'en');
 $partsRepo = new PartsRepository($mla_database, 'en');
 
 
-$action = $_POST['action'] ?? '';
+$action = $request->getAction();
 
 if ($action !== 'create_from_tokens') {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Invalid action']);
-    exit;
+    $request->jsonError('Invalid action', 400);
 }
 
 try {
-    $token_ids = json_decode($_POST['token_ids'] ?? '[]');
+    $token_ids = json_decode($request->getString('token_ids', '[]'));
     if (empty($token_ids)) {
         throw new Exception('No token IDs provided');
     }
@@ -84,9 +82,8 @@ try {
     // 2. Now create the phrase, linking it to the new moment
     $phrase_id = $phrasesRepo->create($phrase_string, $token_ids, $moment_id);
 
-    echo json_encode(['success' => true, 'moment_id' => $moment_id, 'phrase_id' => $phrase_id]);
+    $request->jsonSuccess(['moment_id' => $moment_id, 'phrase_id' => $phrase_id]);
 
 } catch (Exception $e) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    $request->jsonError($e->getMessage(), 400);
 }
