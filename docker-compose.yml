@@ -29,6 +29,7 @@ services:
       - "3307:3306"  # Avoid conflict with local MySQL
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./dbmt3.sql:/docker-entrypoint-initdb.d/00-schema.sql
       - ./docker/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
     networks:
       - mt3_network
