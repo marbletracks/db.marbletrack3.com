@@ -146,7 +146,7 @@ SQL;
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT w.worker_id, w.worker_alias, n.worker_name, n.worker_description
+SELECT w.worker_id, w.worker_alias, w.busy_sort, n.worker_name, n.worker_description
 FROM workers w
 LEFT JOIN worker_names n ON w.worker_id = n.worker_id AND n.language_code = ?
 WHERE w.worker_id = ?
@@ -168,7 +168,7 @@ SQL,
     {
         $results = $this->db->fetchResults(
             <<<SQL
-SELECT w.worker_id, w.worker_alias, n.worker_name, n.worker_description
+SELECT w.worker_id, w.worker_alias, w.busy_sort, n.worker_name, n.worker_description
 FROM workers w
 LEFT JOIN worker_names n ON w.worker_id = n.worker_id AND n.language_code = ?
 WHERE w.worker_alias = ?
