@@ -5,10 +5,10 @@ declare(strict_types=1);
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+$request = new RobRequest();
+
 if (!$is_logged_in->isLoggedIn()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    $request->jsonError('Unauthorized', 401);
 }
 
 header('Content-Type: application/json');
@@ -28,17 +28,15 @@ $partsRepo = new PartsRepository($mla_database, 'en');
 // perspectives[worker][123][note] = "Text"
 // perspectives[worker][123][is_significant] = "1"
 $perspectives = $_POST['perspectives'] ?? [];
-$notes = $_POST['notes'] ?? '';
-$frame_start = !empty($_POST['frame_start']) ? (int)$_POST['frame_start'] : null;
-$frame_end = !empty($_POST['frame_end']) ? (int)$_POST['frame_end'] : null;
-$moment_date = !empty($_POST['moment_date']) ? $_POST['moment_date'] : date('Y-m-d');
-$token_ids = json_decode($_POST['token_ids'] ?? '[]');
-$phrase_string = $_POST['phrase_string'] ?? '';
+$notes = $request->getString('notes');
+$frame_start = $request->getInt('frame_start');
+$frame_end = $request->getInt('frame_end');
+$moment_date = $request->getString('moment_date', date('Y-m-d'));
+$token_ids = json_decode($request->getString('token_ids', '[]'));
+$phrase_string = $request->getString('phrase_string');
 
 if (empty($notes) || empty($token_ids) || empty($phrase_string)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Missing required fields.']);
-    exit;
+    $request->jsonError('Missing required fields.', 400);
 }
 
 $mla_database->beginTransaction();
@@ -54,11 +52,10 @@ try {
     $momentRepo->saveTranslations($moment_id, $perspectives);
 
     $mla_database->commit();
-    echo json_encode(['success' => true, 'moment_id' => $moment_id]);
+    $request->jsonSuccess(['moment_id' => $moment_id]);
 
 } catch (Exception $e) {
     $mla_database->rollBack();
     error_log('Error in save_moment_from_realtime.php: ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'A server error occurred. Please check the logs.']);
+    $request->jsonError('A server error occurred. Please check the logs.', 500);
 }

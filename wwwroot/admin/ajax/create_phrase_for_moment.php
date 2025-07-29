@@ -5,10 +5,10 @@ declare(strict_types=1);
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+$request = new RobRequest();
+
 if (!$is_logged_in->isLoggedIn()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
+    $request->jsonError('Unauthorized', 401);
 }
 
 header('Content-Type: application/json');
@@ -17,14 +17,12 @@ use Database\PhrasesRepository;
 
 $phrasesRepo = new PhrasesRepository($mla_database);
 
-$token_ids = json_decode($_POST['token_ids'] ?? '[]');
-$phrase_string = $_POST['phrase_string'] ?? '';
-$moment_id = filter_input(INPUT_POST, 'moment_id', FILTER_VALIDATE_INT);
+$token_ids = json_decode($request->getString('token_ids', '[]'));
+$phrase_string = $request->getString('phrase_string');
+$moment_id = $request->getInt('moment_id');
 
 if (empty($token_ids) || empty($phrase_string) || !$moment_id) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Missing required parameters.']);
-    exit;
+    $request->jsonError('Missing required parameters.', 400);
 }
 
 try {
@@ -34,9 +32,8 @@ try {
     // The phrase holds the tokens, and tokens are associated with a worker.
     // This logic is a bit indirect. Let's assume for now the UI will handle reloading and showing the correct state.
 
-    echo json_encode(['success' => true, 'phrase_id' => $phrase_id, 'moment_id' => $moment_id]);
+    $request->jsonSuccess(['phrase_id' => $phrase_id, 'moment_id' => $moment_id]);
 
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'An internal error occurred: ' . $e->getMessage()]);
+    $request->jsonError('An internal error occurred: ' . $e->getMessage(), 500);
 }
