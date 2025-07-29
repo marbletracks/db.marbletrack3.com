@@ -15,7 +15,7 @@
 
         <label>
             Description: <br>
-            <textarea id="shortcodey" name="description" rows="16" cols="140"><?= htmlspecialchars($defaultDesc) ?></textarea>
+            <textarea id="shortcodey" class="shortcodey-textarea" name="description" rows="16" cols="140"><?= htmlspecialchars($defaultDesc) ?></textarea>
             <div id="autocomplete"></div>
             </label><br><br>
 
