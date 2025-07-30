@@ -438,6 +438,33 @@ document.addEventListener('DOMContentLoaded', function () {
                     label.style.fontWeight = 'bold';
                     label.textContent = `As ${p.name} (${p.type}):`;
 
+                    // Add unused photos if they exist (for workers)
+                    if (p.type === 'worker' && p.unused_photos && p.unused_photos.length > 0) {
+                        const photosContainer = document.createElement('div');
+                        photosContainer.className = 'unused-photos-container';
+                        photosContainer.style.cssText = 'margin: 5px 0; display: flex; gap: 5px; flex-wrap: wrap;';
+
+                        p.unused_photos.forEach(photo => {
+                            const photoThumb = document.createElement('img');
+                            photoThumb.src = photo.url;
+                            photoThumb.style.cssText = 'width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer;';
+                            photoThumb.title = `Photo ID: ${photo.photo_id} - Click to select for moment`;
+                            photoThumb.dataset.photoId = photo.photo_id;
+                            photoThumb.dataset.photoUrl = photo.url;
+
+                            // TODO: Add click handler to select photo for moment
+                            photoThumb.addEventListener('click', function() {
+                                alert(`TODO: Add photo ${photo.photo_id} to moment`);
+                            });
+
+                            photosContainer.appendChild(photoThumb);
+                        });
+
+                        label.appendChild(photosContainer);
+                    } else if (p.type === 'worker') {
+                        console.log(`Note: Worker ${p.name} has no unused photos:`, p.unused_photos);
+                    }
+
                     const textarea = document.createElement('textarea');
                     textarea.name = `perspectives[${p.type}][${p.id}][note]`;
                     textarea.rows = 3;
