@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Showing Moments on Frontend";
+const SENTIMENTAL_VERSION = "Save Take and Photo URL for Moments";
 
 # write errors to screen
 ini_set('display_errors', 1);
