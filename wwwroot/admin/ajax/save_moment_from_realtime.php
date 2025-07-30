@@ -35,6 +35,7 @@ $take_id = $request->getInt('take_id');
 $moment_date = $request->getString('moment_date', date('Y-m-d'));
 $token_ids = json_decode($request->getString('token_ids', '[]'));
 $phrase_string = $request->getString('phrase_string');
+$image_url = $request->getString('image_url');
 
 if (empty($notes) || empty($token_ids) || empty($phrase_string)) {
     $request->jsonError('Missing required fields.', 400);
@@ -51,6 +52,12 @@ try {
 
     // 3. Save the translations
     $momentRepo->saveTranslations($moment_id, $perspectives);
+
+    // 4. Save image URL if provided
+    if (!empty($image_url)) {
+        $momentRepo->setMomentId($moment_id); // Set ID for HasPhotos trait
+        $momentRepo->savePhotosFromUrls([$image_url]);
+    }
 
     $mla_database->commit();
     $request->jsonSuccess(['moment_id' => $moment_id]);
