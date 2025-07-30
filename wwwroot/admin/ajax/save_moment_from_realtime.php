@@ -31,6 +31,7 @@ $perspectives = $_POST['perspectives'] ?? [];
 $notes = $request->getString('notes');
 $frame_start = $request->getInt('frame_start');
 $frame_end = $request->getInt('frame_end');
+$take_id = $request->getInt('take_id');
 $moment_date = $request->getString('moment_date', date('Y-m-d'));
 $token_ids = json_decode($request->getString('token_ids', '[]'));
 $phrase_string = $request->getString('phrase_string');
@@ -43,7 +44,7 @@ $mla_database->beginTransaction();
 
 try {
     // 1. Create the moment
-    $moment_id = $momentRepo->insert($frame_start, $frame_end, null, $notes, $moment_date);
+    $moment_id = $momentRepo->insert($frame_start, $frame_end, $take_id, $notes, $moment_date);
 
     // 2. Create the phrase
     $phrasesRepo->create($phrase_string, $token_ids, $moment_id);
