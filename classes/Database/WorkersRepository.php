@@ -284,6 +284,42 @@ SQL,
         }
     }
 
+    /**
+     * Get photos that are in workers_2_photos but NOT yet used in moments_2_photos
+     * @param int $worker_id
+     * @return \Media\Photo[]
+     */
+    public function getUnusedPhotos(int $worker_id): array
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT DISTINCT p.photo_id, p.code, p.url
+FROM workers_2_photos w2p
+JOIN photos p ON w2p.photo_id = p.photo_id
+WHERE w2p.worker_id = ?
+  AND w2p.photo_id NOT IN (
+    SELECT photo_id FROM moments_2_photos
+  )
+ORDER BY w2p.photo_sort ASC, p.photo_id ASC
+SQL,
+            'i',
+            [$worker_id]
+        );
+
+        $photos = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $data = $results->data;
+            $photos[] = new \Media\Photo(
+                photo_id: (int) $data['photo_id'],
+                code: $data['code'],
+                url: $data['url']
+            );
+        }
+
+        return $photos;
+    }
+
     private function hydrate(array $row): Worker
     {
         $worker = new Worker(

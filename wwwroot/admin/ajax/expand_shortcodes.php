@@ -32,6 +32,29 @@ try {
     // Extract the perspectives
     $worker_perspectives = $worker_repo->extractShortcodes($text, "worker", $langCode);
     $part_perspectives = $parts_repo->extractShortcodes($text, "part", $langCode);
+
+    // Add unused photos to worker perspectives
+    foreach ($worker_perspectives as &$perspective) {
+        if ($perspective['type'] === 'worker') {
+            $unused_photos = $worker_repo->getUnusedPhotos((int)$perspective['id']);
+            error_log("DEBUG: Worker {$perspective['name']} (ID: {$perspective['id']}) has " . count($unused_photos) . " unused photos");
+
+            // Convert Photo objects to arrays with both thumbnail and full URLs
+            $photo_data = [];
+            foreach ($unused_photos as $photo) {
+                $photo_info = [
+                    'photo_id' => $photo->photo_id,
+                    'thumbnail_url' => $photo->getThumbnailUrl(),
+                    'full_url' => $photo->getUrl()
+                ];
+                $photo_data[] = $photo_info;
+                error_log("  - Photo ID: {$photo->photo_id}, Thumbnail: {$photo_info['thumbnail_url']}, Full: {$photo_info['full_url']}");
+            }
+
+            $perspective['unused_photos'] = $photo_data;
+        }
+    }
+
     $all_perspectives = array_merge($worker_perspectives, $part_perspectives);
 
     echo json_encode([

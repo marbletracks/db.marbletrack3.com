@@ -438,6 +438,47 @@ document.addEventListener('DOMContentLoaded', function () {
                     label.style.fontWeight = 'bold';
                     label.textContent = `As ${p.name} (${p.type}):`;
 
+                    // Add unused photos if they exist (for workers)
+                    if (p.type === 'worker' && p.unused_photos && p.unused_photos.length > 0) {
+                        const photosContainer = document.createElement('div');
+                        photosContainer.className = 'unused-photos-container';
+                        photosContainer.style.cssText = 'margin: 5px 0; display: flex; gap: 5px; flex-wrap: wrap;';
+
+                        p.unused_photos.forEach(photo => {
+                            const photoThumb = document.createElement('img');
+                            photoThumb.src = photo.thumbnail_url; // Use thumbnail for display
+                            photoThumb.style.cssText = 'width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer;';
+                            photoThumb.title = `Photo ID: ${photo.photo_id} - Click to copy full-size URL to clipboard`;
+                            photoThumb.dataset.photoId = photo.photo_id;
+                            photoThumb.dataset.fullUrl = photo.full_url;
+
+                            // Click handler to copy full-size URL to clipboard
+                            photoThumb.addEventListener('click', async function() {
+                                try {
+                                    await navigator.clipboard.writeText(photo.full_url);
+                                    // Visual feedback
+                                    const originalTitle = this.title;
+                                    this.title = 'Copied to clipboard!';
+                                    this.style.border = '2px solid #28a745';
+                                    setTimeout(() => {
+                                        this.title = originalTitle;
+                                        this.style.border = '1px solid #ddd';
+                                    }, 1500);
+                                } catch (err) {
+                                    console.error('Failed to copy to clipboard:', err);
+                                    // Fallback: show the URL in an alert so user can copy manually
+                                    prompt('Copy this URL:', photo.full_url);
+                                }
+                            });
+
+                            photosContainer.appendChild(photoThumb);
+                        });
+
+                        label.appendChild(photosContainer);
+                    } else if (p.type === 'worker') {
+                        console.log(`Note: Worker ${p.name} has no unused photos:`, p.unused_photos);
+                    }
+
                     const textarea = document.createElement('textarea');
                     textarea.name = `perspectives[${p.type}][${p.id}][note]`;
                     textarea.rows = 3;
