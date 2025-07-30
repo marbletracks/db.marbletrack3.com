@@ -146,6 +146,16 @@
                         <div class="perspective-fields" style="margin-top: 20px;"></div>
 
                         <div style="display: flex; gap: 20px; margin-top: 15px;">
+                            <label>Take:
+                                <select name="take_id" style="width: 150px;">
+                                    <option value="">-- Select a Take --</option>
+                                    <?php foreach ($takes as $take): ?>
+                                        <option value="<?= $take->take_id ?>">
+                                            <?= htmlspecialchars($take->take_name) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </label>
                             <label>Frame Start: <input type="number" name="frame_start" style="width: 100px;"></label>
                             <label>Frame End: <input type="number" name="frame_end" style="width: 100px;"></label>
                             <label>Moment Date: <input type="date" name="moment_date"></label>
