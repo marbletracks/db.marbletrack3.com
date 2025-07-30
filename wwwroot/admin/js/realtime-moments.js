@@ -446,15 +446,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         p.unused_photos.forEach(photo => {
                             const photoThumb = document.createElement('img');
-                            photoThumb.src = photo.url;
+                            photoThumb.src = photo.thumbnail_url; // Use thumbnail for display
                             photoThumb.style.cssText = 'width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer;';
-                            photoThumb.title = `Photo ID: ${photo.photo_id} - Click to select for moment`;
+                            photoThumb.title = `Photo ID: ${photo.photo_id} - Click to copy full-size URL to clipboard`;
                             photoThumb.dataset.photoId = photo.photo_id;
-                            photoThumb.dataset.photoUrl = photo.url;
+                            photoThumb.dataset.fullUrl = photo.full_url;
 
-                            // TODO: Add click handler to select photo for moment
-                            photoThumb.addEventListener('click', function() {
-                                alert(`TODO: Add photo ${photo.photo_id} to moment`);
+                            // Click handler to copy full-size URL to clipboard
+                            photoThumb.addEventListener('click', async function() {
+                                try {
+                                    await navigator.clipboard.writeText(photo.full_url);
+                                    // Visual feedback
+                                    const originalTitle = this.title;
+                                    this.title = 'Copied to clipboard!';
+                                    this.style.border = '2px solid #28a745';
+                                    setTimeout(() => {
+                                        this.title = originalTitle;
+                                        this.style.border = '1px solid #ddd';
+                                    }, 1500);
+                                } catch (err) {
+                                    console.error('Failed to copy to clipboard:', err);
+                                    // Fallback: show the URL in an alert so user can copy manually
+                                    prompt('Copy this URL:', photo.full_url);
+                                }
                             });
 
                             photosContainer.appendChild(photoThumb);

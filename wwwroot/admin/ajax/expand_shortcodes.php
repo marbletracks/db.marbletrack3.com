@@ -38,12 +38,20 @@ try {
         if ($perspective['type'] === 'worker') {
             $unused_photos = $worker_repo->getUnusedPhotos((int)$perspective['id']);
             error_log("DEBUG: Worker {$perspective['name']} (ID: {$perspective['id']}) has " . count($unused_photos) . " unused photos");
-            if (!empty($unused_photos)) {
-                foreach ($unused_photos as $photo) {
-                    error_log("  - Photo ID: {$photo->photo_id}, URL: {$photo->getUrl()}");
-                }
+
+            // Convert Photo objects to arrays with both thumbnail and full URLs
+            $photo_data = [];
+            foreach ($unused_photos as $photo) {
+                $photo_info = [
+                    'photo_id' => $photo->photo_id,
+                    'thumbnail_url' => $photo->getThumbnailUrl(),
+                    'full_url' => $photo->getUrl()
+                ];
+                $photo_data[] = $photo_info;
+                error_log("  - Photo ID: {$photo->photo_id}, Thumbnail: {$photo_info['thumbnail_url']}, Full: {$photo_info['full_url']}");
             }
-            $perspective['unused_photos'] = $unused_photos;
+
+            $perspective['unused_photos'] = $photo_data;
         }
     }
 
