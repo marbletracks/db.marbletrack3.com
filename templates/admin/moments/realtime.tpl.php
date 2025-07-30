@@ -67,6 +67,11 @@
                             <?php foreach ($worker->moments as $moment): ?>
                                 <li>
                                     <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>"><?= $moment->moment_id ?></a>
+                                    <?php if ($moment->take_id || $moment->frame_start || $moment->frame_end): ?>
+                                        <span style="color: #007bff; font-weight: bold;">
+                                            T: <?= $moment->take_id ?? '?' ?> <?= $moment->frame_start ?? '?' ?> - <?= $moment->frame_end ?? '?' ?>
+                                        </span>
+                                    <?php endif; ?>
                                     <?= htmlspecialchars($moment->notes) ?>
                                 </li>
                             <?php endforeach; ?>
@@ -146,9 +151,25 @@
                         <div class="perspective-fields" style="margin-top: 20px;"></div>
 
                         <div style="display: flex; gap: 20px; margin-top: 15px;">
+                            <label>Take:
+                                <select name="take_id" style="width: 150px;">
+                                    <option value="">-- Select a Take --</option>
+                                    <?php foreach ($takes as $take): ?>
+                                        <option value="<?= $take->take_id ?>">
+                                            <?= htmlspecialchars($take->take_name) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </label>
                             <label>Frame Start: <input type="number" name="frame_start" style="width: 100px;"></label>
                             <label>Frame End: <input type="number" name="frame_end" style="width: 100px;"></label>
                             <label>Moment Date: <input type="date" name="moment_date"></label>
+                        </div>
+
+                        <div style="margin-top: 15px;">
+                            <label>Image URL:
+                                <input type="url" name="image_url" style="width: 100%; max-width: 500px;" placeholder="Paste image URL here (copied from worker photos above)">
+                            </label>
                         </div>
 
                         <div style="margin-top: 20px;">

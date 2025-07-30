@@ -27,6 +27,21 @@ class TakeRepository
         return $takes;
     }
 
+    public function findSnippets(): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT take_id, take_name FROM takes WHERE take_name LIKE '%Snippet%' ORDER BY take_id DESC"
+        );
+
+        $takes = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $takes[] = $this->hydrate($results->data);
+        }
+
+        return $takes;
+    }
+
     private function hydrate(array $row): Take
     {
         return new Take(
