@@ -67,6 +67,11 @@
                             <?php foreach ($worker->moments as $moment): ?>
                                 <li>
                                     <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>"><?= $moment->moment_id ?></a>
+                                    <?php if ($moment->take_id || $moment->frame_start || $moment->frame_end): ?>
+                                        <span style="color: #007bff; font-weight: bold;">
+                                            T: <?= $moment->take_id ?? '?' ?> <?= $moment->frame_start ?? '?' ?> - <?= $moment->frame_end ?? '?' ?>
+                                        </span>
+                                    <?php endif; ?>
                                     <?= htmlspecialchars($moment->notes) ?>
                                 </li>
                             <?php endforeach; ?>
