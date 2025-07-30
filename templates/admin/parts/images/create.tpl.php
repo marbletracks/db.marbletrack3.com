@@ -64,10 +64,10 @@ $date_prefix = strtolower(date("Y_M_d_"));
         <div style="margin-bottom: 20px;">
             <h3>Upload Images</h3>
             <?php for ($i = 1; $i <= 6; $i++): ?>
-                <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
-                    <div style="min-width: 60px; font-weight: bold;">Image <?= $i ?>:</div>
-                    <input type="file" name="pictures<?= $i ?>" accept="image/*" style="flex: 1;"/>
-                    <input type="text" name="image_name[<?= $i ?>]" placeholder="Image name" style="flex: 1; padding: 5px;"/>
+                <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">Image <?= $i ?>:</div>
+                    <input type="file" name="pictures<?= $i ?>" accept="image/*" style="width: 100%; margin-bottom: 8px;"/>
+                    <input type="text" name="image_name[<?= $i ?>]" placeholder="Image name" style="width: 100%; padding: 5px;"/>
                 </div>
             <?php endfor; ?>
         </div>
