@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Save Take and Photo URL for Moments";
+const SENTIMENTAL_VERSION = "Save Photos for Workers and Parts";
 
 # write errors to screen
 ini_set('display_errors', 1);
