@@ -16,7 +16,7 @@ $date_prefix = strtolower(date("Y_M_d_"));
         <?php endif; ?>
     </div>
 
-    <form id="upload-form" method="POST" action="https://b.robnugen.com/bullet.php" enctype="multipart/form-data" target="_blank">
+    <form id="upload-form" method="POST" action="https://badmin.robnugen.com/bullet.php" enctype="multipart/form-data" target="_blank">
         <input type="hidden" name="MAX_FILE_SIZE" value="10000000"/>
         
         <!-- Authentication -->
