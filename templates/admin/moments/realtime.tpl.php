@@ -166,6 +166,12 @@
                             <label>Moment Date: <input type="date" name="moment_date"></label>
                         </div>
 
+                        <div style="margin-top: 15px;">
+                            <label>Image URL:
+                                <input type="url" name="image_url" style="width: 100%; max-width: 500px;" placeholder="Paste image URL here (copied from worker photos above)">
+                            </label>
+                        </div>
+
                         <div style="margin-top: 20px;">
                             <button type="submit" class="save-moment-btn">Search for Moments</button>
                             <button type="button" class="create-new-moment-btn" style="display:none;">Create New Moment</button>
