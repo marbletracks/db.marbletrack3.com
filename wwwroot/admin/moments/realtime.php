@@ -14,7 +14,7 @@ $moment_repo = new \Database\MomentRepository($mla_database);
 $tokens_repo = new \Database\TokensRepository($mla_database);
 $take_repo = new \Database\TakeRepository($mla_database);
 $workers = $workers_repo->findAll();
-$takes = $take_repo->findAll();
+$takes = $take_repo->findSnippets();
 
 foreach ($workers as $worker) {
     $worker->moments = $moment_repo->findLatestForWorker($worker->worker_id, 2);

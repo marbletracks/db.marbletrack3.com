@@ -22,7 +22,7 @@ $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 $moment_id = (int) ($_GET['id'] ?? 0);
 $moment = $moment_id > 0 ? $moment_repo->findById($moment_id) : null;
 $translations = $moment ? $moment_repo->findTranslations($moment_id) : [];
-$takes = $take_repo->findAll();
+$takes = $take_repo->findSnippets();
 
 if ($submitted) {
     $notes = trim($_POST['notes'] ?? '');
