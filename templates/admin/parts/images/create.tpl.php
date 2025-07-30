@@ -9,14 +9,24 @@ $date_prefix = strtolower(date("Y_M_d_"));
 
     <p><a href="/admin/parts/images/">← Back to Parts List</a></p>
 
-    <form id="upload-form" method="POST" action="https://badmin.robnugen.com/bullet.php" enctype="multipart/form-data" target="_blank">
+    <form id="upload-form" method="POST" action="https://badmin.robnugen.com/bullet.php" enctype="multipart/form-data" target="_blank" autocomplete="on">
         <input type="hidden" name="MAX_FILE_SIZE" value="10000000"/>
 
         <!-- Authentication -->
-        <div style="margin-bottom: 20px;">
-            <label for="password">Password:</label>
-            <input id="password" type="password" name="password" required style="padding: 5px; margin-left: 10px;"/>
-        </div>
+        <fieldset style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <div>
+                <label for="password">Password:</label>
+                <input id="password" type="password" name="password"
+                       autocomplete="current-password"
+                       required style="padding: 5px; margin-left: 10px;"/>
+            </div>
+            <!-- Reveal this and JS at bottom if a device won't save password otherwise.  <div style="margin-top: 10px;">
+                <label for="remember-password" style="font-size: 0.9em;">
+                    <input type="checkbox" id="remember-password" style="margin-right: 5px;">
+                    Remember password on this device
+                </label>
+            </div> -->
+        </fieldset>
 
         <!-- Upload Settings -->
         <div style="margin-bottom: 20px; display: flex; gap: 20px; align-items: center;">
@@ -85,6 +95,42 @@ $date_prefix = strtolower(date("Y_M_d_"));
 </div>
 
 <script>
+// Password localStorage functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('password');
+    // const rememberCheckbox = document.getElementById('remember-password');
+    const storageKey = 'mt3-upload-password';
+
+    // Load saved password on page load
+    const savedPassword = localStorage.getItem(storageKey);
+    // if (savedPassword) {
+        passwordField.value = savedPassword;
+        // rememberCheckbox.checked = true;
+    // }
+
+/*    I hid all this after saving the PW in FF because my Android device refused to save it arghhhh!
+    // Save/clear password when checkbox changes
+    rememberCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            // Save current password
+            if (passwordField.value) {
+                localStorage.setItem(storageKey, passwordField.value);
+            }
+        } else {
+            // Clear saved password
+            localStorage.removeItem(storageKey);
+        }
+    });
+
+    // Update localStorage when password changes (if remember is checked)
+    passwordField.addEventListener('input', function() {
+        if (rememberCheckbox.checked) {
+            localStorage.setItem(storageKey, this.value);
+        }
+    });
+*/
+});
+
 function toggleWorkerButton(checkbox) {
     const button = checkbox.nextElementSibling;
     const alias = checkbox.dataset.alias;
