@@ -5,20 +5,13 @@ $date_prefix = strtolower(date("Y_M_d_"));
 ?>
 
 <div class="PagePanel">
-    <h1>Upload Images for <?= htmlspecialchars($part->name) ?></h1>
-    
+    <h3>Upload Images for <?= htmlspecialchars($part->name) ?></h3>
+
     <p><a href="/admin/parts/images/">← Back to Parts List</a></p>
-    
-    <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-        <strong>Part:</strong> <?= htmlspecialchars($part->name) ?> (<?= htmlspecialchars($part->part_alias) ?>)<br>
-        <?php if (!empty($part->description)): ?>
-            <strong>Description:</strong> <?= nl2br(htmlspecialchars($part->description)) ?>
-        <?php endif; ?>
-    </div>
 
     <form id="upload-form" method="POST" action="https://badmin.robnugen.com/bullet.php" enctype="multipart/form-data" target="_blank">
         <input type="hidden" name="MAX_FILE_SIZE" value="10000000"/>
-        
+
         <!-- Authentication -->
         <div style="margin-bottom: 20px;">
             <label for="password">Password:</label>
@@ -35,12 +28,12 @@ $date_prefix = strtolower(date("Y_M_d_"));
                     <option value="mt3parts" selected>MT3 parts/YYYY</option>
                 </select>
             </div>
-            
+
             <div>
                 <label for="sub_dir">Sub directory:</label>
                 <input type="text" name="sub_dir" id="sub_dir" placeholder="jan_30" style="padding: 5px; margin-left: 10px; width: 120px;"/>
             </div>
-            
+
             <div>
                 <label for="date_prefix">Date prefix:</label>
                 <input type="text" name="date_prefix" id="date_prefix" value="<?= $date_prefix ?>" style="padding: 5px; margin-left: 10px; width: 150px;"/>
@@ -50,7 +43,7 @@ $date_prefix = strtolower(date("Y_M_d_"));
         <!-- Worker Selection UI Options - Show me different styles -->
         <div style="margin-bottom: 30px; border: 2px solid #007bff; border-radius: 8px; padding: 20px;">
             <h3 style="margin-top: 0; color: #007bff;">Worker Selection (Choose UI Style)</h3>
-            
+
             <!-- Option 1: Checkboxes in Grid -->
             <div style="margin-bottom: 25px;">
                 <h4>Option 1: Checkbox Grid</h4>

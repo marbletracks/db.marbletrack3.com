@@ -9,7 +9,7 @@
     <div style="margin-bottom: 20px;">
         <form method="get" action="/admin/parts/images/" style="display: flex; align-items: center; gap: 10px;">
             <label for="filter">Filter parts:</label>
-            <input type="text" id="filter" name="filter" value="<?= htmlspecialchars($filter) ?>" 
+            <input type="text" id="filter" name="filter" value="<?= htmlspecialchars($filter) ?>"
                    placeholder="Search by alias or name..." style="padding: 5px; width: 250px;">
             <button type="submit" style="padding: 5px 10px;">Filter</button>
             <?php if (!empty($filter)): ?>
@@ -18,7 +18,7 @@
         </form>
         <?php if (!empty($filter)): ?>
             <p style="margin-top: 10px; font-style: italic;">
-                Showing results for: <strong><?= htmlspecialchars($filter) ?></strong> 
+                Showing results for: <strong><?= htmlspecialchars($filter) ?></strong>
                 (<?= count($parts) ?> part<?= count($parts) !== 1 ? 's' : '' ?> found)
             </p>
         <?php endif; ?>
@@ -43,9 +43,9 @@
                 </div>
 
                 <div style="margin-left: 20px;">
-                    <a href="/admin/parts/images/create.php?part_id=<?= htmlspecialchars($part->part_id) ?>" 
+                    <a href="/admin/parts/images/create.php?part_id=<?= htmlspecialchars($part->part_id) ?>"
                        style="padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
-                        Upload Images
+                       ⇭
                     </a>
                 </div>
             </li>
