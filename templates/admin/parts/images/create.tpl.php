@@ -40,67 +40,23 @@ $date_prefix = strtolower(date("Y_M_d_"));
             </div>
         </div>
 
-        <!-- Worker Selection UI Options - Show me different styles -->
-        <div style="margin-bottom: 30px; border: 2px solid #007bff; border-radius: 8px; padding: 20px;">
-            <h3 style="margin-top: 0; color: #007bff;">Worker Selection (Choose UI Style)</h3>
-
-            <!-- Option 1: Checkboxes in Grid -->
-            <div style="margin-bottom: 25px;">
-                <h4>Option 1: Checkbox Grid</h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
-                    <?php foreach ($workers as $worker): ?>
-                        <label style="display: flex; align-items: center; font-size: 0.9em;">
-                            <input type="checkbox" name="workers[]" value="<?= $worker->worker_id ?>" style="margin-right: 5px;">
-                            <?= htmlspecialchars($worker->name ?: $worker->worker_alias) ?>
-                        </label>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <!-- Option 2: Horizontal Checkboxes with Photos -->
-            <div style="margin-bottom: 25px;">
-                <h4>Option 2: Photo Checkboxes (Horizontal)</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 15px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
-                    <?php foreach ($workers as $worker): ?>
-                        <label style="display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 8px; border-radius: 5px; border: 2px solid transparent; transition: border-color 0.2s;">
-                            <input type="checkbox" name="workers2[]" value="<?= $worker->worker_id ?>" style="margin-bottom: 5px;" onchange="this.parentElement.style.borderColor = this.checked ? '#007bff' : 'transparent'">
-                            <?php if (!empty($worker->photos[0])): ?>
-                                <img src="<?= htmlspecialchars($worker->photos[0]->getThumbnailUrl()) ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-bottom: 3px;">
-                            <?php else: ?>
-                                <div style="width: 40px; height: 40px; background: #ddd; border-radius: 50%; margin-bottom: 3px;"></div>
-                            <?php endif; ?>
-                            <span style="font-size: 0.8em; text-align: center;"><?= htmlspecialchars($worker->name ?: $worker->worker_alias) ?></span>
-                        </label>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <!-- Option 3: Multi-select Dropdown -->
-            <div style="margin-bottom: 25px;">
-                <h4>Option 3: Multi-select Dropdown</h4>
-                <select name="workers3[]" multiple size="8" style="width: 100%; padding: 5px; background: #f8f9fa;">
-                    <?php foreach ($workers as $worker): ?>
-                        <option value="<?= $worker->worker_id ?>">
-                            <?= htmlspecialchars($worker->name ?: $worker->worker_alias) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <p style="font-size: 0.9em; margin-top: 5px; color: #666;">Hold Ctrl/Cmd to select multiple workers</p>
-            </div>
-
-            <!-- Option 4: Toggle Buttons -->
-            <div>
-                <h4>Option 4: Toggle Buttons</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
-                    <?php foreach ($workers as $worker): ?>
-                        <label style="cursor: pointer;">
-                            <input type="checkbox" name="workers4[]" value="<?= $worker->worker_id ?>" style="display: none;" onchange="toggleButton(this)">
-                            <span class="toggle-button" style="display: inline-block; padding: 6px 12px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9em; transition: all 0.2s;">
-                                <?= htmlspecialchars($worker->name ?: $worker->worker_alias) ?>
-                            </span>
-                        </label>
-                    <?php endforeach; ?>
-                </div>
+        <!-- Worker Selection -->
+        <div style="margin-bottom: 30px;">
+            <h3>Select Workers</h3>
+            <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">Click to select workers associated with these photos. Selected workers show full names.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; background: #f8f9fa; padding: 15px; border-radius: 5px;">
+                <?php foreach ($workers as $worker): ?>
+                    <label style="cursor: pointer;">
+                        <input type="checkbox" name="workers[]" value="<?= $worker->worker_id ?>"
+                               style="display: none;"
+                               onchange="toggleWorkerButton(this)"
+                               data-alias="<?= htmlspecialchars($worker->worker_alias) ?>"
+                               data-name="<?= htmlspecialchars($worker->name ?: $worker->worker_alias) ?>">
+                        <span class="worker-toggle-button" style="display: inline-block; padding: 6px 12px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9em; transition: all 0.2s;">
+                            <?= htmlspecialchars($worker->worker_alias) ?>
+                        </span>
+                    </label>
+                <?php endforeach; ?>
             </div>
         </div>
 
@@ -129,13 +85,20 @@ $date_prefix = strtolower(date("Y_M_d_"));
 </div>
 
 <script>
-function toggleButton(checkbox) {
+function toggleWorkerButton(checkbox) {
     const button = checkbox.nextElementSibling;
+    const alias = checkbox.dataset.alias;
+    const name = checkbox.dataset.name;
+
     if (checkbox.checked) {
+        // Selected: show full name, blue style
+        button.textContent = name;
         button.style.background = '#007bff';
         button.style.color = 'white';
         button.style.borderColor = '#007bff';
     } else {
+        // Deselected: show alias, gray style
+        button.textContent = alias;
         button.style.background = '#e9ecef';
         button.style.color = 'black';
         button.style.borderColor = '#ced4da';
