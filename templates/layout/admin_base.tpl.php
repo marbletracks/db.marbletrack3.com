@@ -32,7 +32,8 @@
         <div class="dropdown">
             <a href="/admin/parts">Parts ▾</a>
             <div class="dropdown-menu">
-                <a href="/admin/parts/part.php" target="_blank">Create Part</a>
+            <a href="/admin/parts/part.php" target="_blank">Create Part</a>
+            <a href="/admin/parts/images">Part Images</a>
             </div>
         </div> |
         <div class="dropdown">
