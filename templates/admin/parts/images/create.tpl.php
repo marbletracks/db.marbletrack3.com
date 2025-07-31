@@ -9,7 +9,7 @@ $date_prefix = strtolower(date("Y_M_d_"));
 
     <p><a href="/admin/parts/images/">← Back to Parts List</a></p>
 
-    <form id="upload-form" method="POST" action="https://badmin.robnugen.com/bullet.php" enctype="multipart/form-data" target="_blank" autocomplete="on">
+    <form id="upload-form" method="POST" action="https://badmin.robnugen.com/bullet.php" enctype="multipart/form-data" autocomplete="on">
         <input type="hidden" name="MAX_FILE_SIZE" value="10000000"/>
 
         <!-- Authentication -->
@@ -84,6 +84,7 @@ $date_prefix = strtolower(date("Y_M_d_"));
 
         <!-- Submit -->
         <div style="margin-top: 30px;">
+            <input type="hidden" name="output" value="json"/>
             <button type="submit" style="padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;">
                 Upload Images to b.robnugen.com
             </button>
