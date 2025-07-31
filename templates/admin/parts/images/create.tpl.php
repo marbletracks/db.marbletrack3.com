@@ -172,9 +172,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(`Upload failed: ${uploadResponse.status}`);
             }
 
-            const imageUrls = await uploadResponse.json();
+            const uploadResult = await uploadResponse.json();
 
-            if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
+            // Parse new JSON format: {data: {photos_processed: 2, urls: [...]}}
+            if (!uploadResult.data || !uploadResult.data.urls || !Array.isArray(uploadResult.data.urls)) {
+                throw new Error('Invalid response format from upload server');
+            }
+
+            const imageUrls = uploadResult.data.urls;
+            const photosProcessed = uploadResult.data.photos_processed;
+
+            if (imageUrls.length === 0) {
                 throw new Error('No images were uploaded successfully');
             }
 
@@ -205,11 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Success!
-            const workerText = selectedWorkers.length > 0
-                ? ` and associated with ${selectedWorkers.length} worker${selectedWorkers.length !== 1 ? 's' : ''}`
+            const workerText = saveResult.workers_associated > 0
+                ? ` and associated with ${saveResult.workers_associated} worker${saveResult.workers_associated !== 1 ? 's' : ''}`
                 : '';
 
-            uploadProgress.innerHTML = `<strong style="color: #2e7d32;">✅ Success!</strong> ${saveResult.data.photos_processed} image${saveResult.data.photos_processed !== 1 ? 's' : ''} uploaded${workerText}.`;
+            uploadProgress.innerHTML = `<strong style="color: #2e7d32;">✅ Success!</strong> ${saveResult.photos_processed} image${saveResult.photos_processed !== 1 ? 's' : ''} uploaded${workerText}.`;
             uploadProgress.style.background = '#e8f5e8';
             uploadProgress.style.borderColor = '#4caf50';
             uploadProgress.style.color = '#2e7d32';
