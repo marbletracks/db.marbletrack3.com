@@ -85,12 +85,14 @@ $date_prefix = strtolower(date("Y_M_d_"));
         <!-- Submit -->
         <div style="margin-top: 30px;">
             <input type="hidden" name="output" value="json"/>
-            <button type="submit" style="padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;">
-                Upload Images to b.robnugen.com
+            <button type="submit" id="upload-button" style="padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;">
+                Upload Images & Save to Database
             </button>
-            <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
-                Note: This will open a new tab with the upload results. Copy the image URLs to add them to this part.
-            </p>
+            <div id="upload-status" style="margin-top: 15px; display: none;">
+                <div id="upload-progress" style="padding: 10px; background: #e3f2fd; border: 1px solid #2196f3; border-radius: 4px; color: #1976d2;">
+                    <strong>Uploading...</strong> Please wait while your images are processed.
+                </div>
+            </div>
         </div>
     </form>
 </div>
@@ -130,6 +132,105 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 */
+    // AJAX form submission
+    const form = document.getElementById('upload-form');
+    const uploadButton = document.getElementById('upload-button');
+    const uploadStatus = document.getElementById('upload-status');
+    const uploadProgress = document.getElementById('upload-progress');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Get selected workers
+        const selectedWorkers = Array.from(document.querySelectorAll('input[name="workers[]"]:checked'))
+            .map(checkbox => parseInt(checkbox.value));
+
+        // Check if any files are selected
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+        const hasFiles = Array.from(fileInputs).some(input => input.files.length > 0);
+
+        if (!hasFiles) {
+            alert('Please select at least one image to upload.');
+            return;
+        }
+
+        // Show progress, disable button
+        uploadStatus.style.display = 'block';
+        uploadButton.disabled = true;
+        uploadButton.textContent = 'Uploading...';
+
+        try {
+            // Step 1: Upload to bullet.php
+            const formData = new FormData(form);
+
+            const uploadResponse = await fetch('https://badmin.robnugen.com/bullet.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!uploadResponse.ok) {
+                throw new Error(`Upload failed: ${uploadResponse.status}`);
+            }
+
+            const imageUrls = await uploadResponse.json();
+
+            if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
+                throw new Error('No images were uploaded successfully');
+            }
+
+            // Update progress
+            uploadProgress.innerHTML = `<strong>Processing ${imageUrls.length} images...</strong> Saving to database.`;
+
+            // Step 2: Save to local database
+            const saveResponse = await fetch('/admin/parts/images/save_photos.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    part_id: <?= $part->part_id ?>,
+                    image_urls: imageUrls,
+                    worker_ids: selectedWorkers
+                })
+            });
+
+            if (!saveResponse.ok) {
+                throw new Error(`Database save failed: ${saveResponse.status}`);
+            }
+
+            const saveResult = await saveResponse.json();
+
+            if (!saveResult.success) {
+                throw new Error(saveResult.error || 'Failed to save to database');
+            }
+
+            // Success!
+            const workerText = selectedWorkers.length > 0
+                ? ` and associated with ${selectedWorkers.length} worker${selectedWorkers.length !== 1 ? 's' : ''}`
+                : '';
+
+            uploadProgress.innerHTML = `<strong style="color: #2e7d32;">✅ Success!</strong> ${saveResult.data.photos_processed} image${saveResult.data.photos_processed !== 1 ? 's' : ''} uploaded${workerText}.`;
+            uploadProgress.style.background = '#e8f5e8';
+            uploadProgress.style.borderColor = '#4caf50';
+            uploadProgress.style.color = '#2e7d32';
+
+            // Redirect after 3 seconds
+            setTimeout(() => {
+                window.location.href = '/admin/parts/images/';
+            }, 3000);
+
+        } catch (error) {
+            console.error('Upload error:', error);
+            uploadProgress.innerHTML = `<strong style="color: #c62828;">❌ Error:</strong> ${error.message}`;
+            uploadProgress.style.background = '#ffebee';
+            uploadProgress.style.borderColor = '#f44336';
+            uploadProgress.style.color = '#c62828';
+
+            // Re-enable button
+            uploadButton.disabled = false;
+            uploadButton.textContent = 'Upload Images & Save to Database';
+        }
+    });
 });
 
 function toggleWorkerButton(checkbox) {
