@@ -74,12 +74,12 @@ try {
 
         // Link photo to part
         $partsRepo->setPartId($part_id);
-        $partsRepo->savePhotos([$photo]);
+        $partsRepo->addPhotos([$photo]);
 
         // Link photo to selected workers
         foreach ($worker_ids as $worker_id) {
             $workersRepo->setWorkerId($worker_id);
-            $workersRepo->savePhotos([$photo]);
+            $workersRepo->addPhotos([$photo]);
         }
     }
 
