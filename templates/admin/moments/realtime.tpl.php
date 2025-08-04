@@ -149,7 +149,7 @@
                     <div id="available-tokens-<?= $worker->worker_id ?>" class="tokens-container available-tokens">
                         <?php if (!empty($worker->tokens)): ?>
                             <?php foreach ($worker->tokens as $token): ?>
-                                <div class="token-item <?= $token->is_permanent ? 'token-permanent' : '' ?>" data-token-id="<?= $token->token_id ?>" data-token-date="<?= htmlspecialchars($token->token_date ?? '') ?>" data-token-color="<?= htmlspecialchars($token->token_color ?? 'Black') ?>" title="Token ID: <?= $token->token_id ?>">
+                                <div class="token-item <?= $token->is_permanent ? 'token-permanent' : '' ?>" data-token-id="<?= $token->token_id ?>" data-column-id="<?= $token->column_id ?>" data-token-date="<?= htmlspecialchars($token->token_date ?? '') ?>" data-token-color="<?= htmlspecialchars($token->token_color ?? 'Black') ?>" title="Token ID: <?= $token->token_id ?>">
                                     <?= htmlspecialchars($token->token_string) ?>
                                     <?php if ($token->token_date): ?>
                                         <br><small class="token-date" style="color: red;"><?= htmlspecialchars($token->token_date) ?></small>

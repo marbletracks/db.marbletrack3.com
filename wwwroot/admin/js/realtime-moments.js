@@ -399,6 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tokenElement.className = 'token-item';
         if (token.is_permanent) tokenElement.classList.add('token-permanent');
         tokenElement.dataset.tokenId = token.token_id;
+        tokenElement.dataset.columnId = token.column_id;
         tokenElement.dataset.tokenDate = token.token_date || '';
         tokenElement.dataset.tokenColor = token.token_color || 'Black';
         tokenElement.title = `Token ID: ${token.token_id}`;
@@ -632,6 +633,9 @@ document.addEventListener('DOMContentLoaded', function () {
         form.querySelector('input[name="token_date"]').value = tokenElement.dataset.tokenDate || '';
         form.querySelector('select[name="token_color"]').value = tokenElement.dataset.tokenColor || 'Black';
 
+        // Store column_id for the update
+        form.dataset.columnId = tokenElement.dataset.columnId;
+
         editForm.style.display = 'block';
         form.querySelector('textarea[name="token_string"]').focus();
     }
@@ -648,6 +652,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateToken(form, workerId) {
         const formData = new FormData(form);
         formData.append('action', 'update');
+        formData.append('column_id', form.dataset.columnId);
 
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
@@ -710,6 +715,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!tokenElement) return;
 
         // Update token data attributes
+        tokenElement.dataset.columnId = token.column_id;
         tokenElement.dataset.tokenDate = token.token_date || '';
         tokenElement.dataset.tokenColor = token.token_color || 'Black';
 
