@@ -26,6 +26,7 @@
         cursor: move;
         font-size: 0.9em;
         user-select: none;
+        position: relative;
     }
     .token-item:active {
         cursor: grabbing;
@@ -44,20 +45,78 @@
         font-size: 0.9em;
         height: fit-content;
     }
+    .worker-toggle-btn {
+        transition: transform 0.2s ease;
+        color: #666;
+    }
+    .worker-toggle-btn:hover {
+        color: #007bff;
+    }
+    .worker-toggle-btn.expanded {
+        transform: rotate(90deg);
+    }
+    .worker-collapsible {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .worker-card {
+        transition: all 0.3s ease;
+        width: 100%;
+        max-width: 800px;
+    }
+    .worker-card.collapsed {
+        width: auto;
+        min-width: 200px;
+        max-width: 300px;
+        padding: 10px 15px;
+    }
+    .worker-card.collapsed .worker-profile-pic {
+        margin-bottom: 0;
+    }
+    .token-controls {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        display: none;
+        z-index: 10;
+    }
+    .token-item:hover .token-controls {
+        display: block;
+    }
+    .edit-token-btn, .delete-token-btn {
+        font-size: 10px;
+        padding: 1px 3px;
+        margin-left: 2px;
+        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+        border-radius: 2px;
+    }
+    .edit-token-btn:hover {
+        background: #007bff;
+        color: white;
+    }
+    .delete-token-btn:hover {
+        background: #dc3545;
+        color: white;
+    }
 </style>
 
 <div class="PagePanel">
     <h1>Realtime Moments</h1>
 
-    <div class="worker-grid" style="display: grid; grid-template-columns: 1fr; gap: 40px;">
+    <div class="worker-grid" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
         <?php foreach ($workers as $worker): ?>
             <div class="worker-card" style="border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
                 <div class="worker-profile-pic" style="display: flex; align-items: center; margin-bottom: 10px;">
                     <?php if (!empty($worker->photos[0])): ?>
                         <img src="<?= htmlspecialchars($worker->photos[0]->getThumbnailUrl()) ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;">
                     <?php endif; ?>
-                    <h3 style="margin: 0;"><?= htmlspecialchars($worker->name) ?></h3>
+                    <h3 style="margin: 0; flex-grow: 1;"><?= htmlspecialchars($worker->name) ?></h3>
+                    <button class="worker-toggle-btn" data-worker-id="<?= $worker->worker_id ?>" style="background: none; border: none; font-size: 16px; cursor: pointer; padding: 5px;">&gt;</button>
                 </div>
+
+                <div class="worker-collapsible" data-worker-id="<?= $worker->worker_id ?>" style="display: none;">
 
                 <!-- Recent Moments (for context) -->
                 <div class="recent-moments" style="margin-top: 15px;">
@@ -90,8 +149,15 @@
                     <div id="available-tokens-<?= $worker->worker_id ?>" class="tokens-container available-tokens">
                         <?php if (!empty($worker->tokens)): ?>
                             <?php foreach ($worker->tokens as $token): ?>
-                                <div class="token-item <?= $token->is_permanent ? 'token-permanent' : '' ?>" data-token-id="<?= $token->token_id ?>" data-token-date="<?= htmlspecialchars($token->token_date ?? '') ?>" title="Token ID: <?= $token->token_id ?>">
+                                <div class="token-item <?= $token->is_permanent ? 'token-permanent' : '' ?>" data-token-id="<?= $token->token_id ?>" data-column-id="<?= $token->column_id ?>" data-token-date="<?= htmlspecialchars($token->token_date ?? '') ?>" data-token-color="<?= htmlspecialchars($token->token_color ?? 'Black') ?>" title="Token ID: <?= $token->token_id ?>">
                                     <?= htmlspecialchars($token->token_string) ?>
+                                    <?php if ($token->token_date): ?>
+                                        <br><small class="token-date" style="color: red;"><?= htmlspecialchars($token->token_date) ?></small>
+                                    <?php endif; ?>
+                                    <div class="token-controls">
+                                        <button class="edit-token-btn" title="Edit token">✏️</button>
+                                        <button class="delete-token-btn" title="Delete token">❌</button>
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -122,6 +188,34 @@
                             <div>
                                 <button type="submit" style="padding: 5px 15px; background-color: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">Save Token</button>
                                 <button type="button" class="cancel-token-btn" data-worker-id="<?= $worker->worker_id ?>" style="padding: 5px 15px; background-color: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer;">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Token Edit Form (hidden by default) -->
+                    <div id="token-edit-form-<?= $worker->worker_id ?>" class="token-edit-form" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: white; border: 2px solid #007bff; border-radius: 8px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); min-width: 400px;">
+                        <h5 style="margin-top: 0; color: #007bff;">Edit Token</h5>
+                        <form class="token-edit-form-inner" data-worker-id="<?= $worker->worker_id ?>">
+                            <input type="hidden" name="token_id">
+                            <label style="display: block; margin-bottom: 10px;">
+                                Token Text:<br>
+                                <textarea name="token_string" rows="3" style="width: 100%; margin-top: 3px; resize: vertical;" required></textarea>
+                            </label>
+                            <label style="display: block; margin-bottom: 10px;">
+                                Date:<br>
+                                <input type="text" name="token_date" style="width: 200px; margin-top: 3px;" placeholder="e.g., 2024-01-15">
+                            </label>
+                            <label style="display: block; margin-bottom: 15px;">
+                                Color:<br>
+                                <select name="token_color" style="margin-top: 3px;">
+                                    <option value="Black">Black</option>
+                                    <option value="Red">Red</option>
+                                    <option value="Blue">Blue</option>
+                                </select>
+                            </label>
+                            <div>
+                                <button type="submit" style="padding: 5px 15px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 10px;">Update Token</button>
+                                <button type="button" class="cancel-token-edit-btn" data-worker-id="<?= $worker->worker_id ?>" style="padding: 5px 15px; background-color: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer;">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -188,6 +282,8 @@
                         <button type="button" class="use-selected-moment-btn" disabled>Use Selected Moment &amp; Create Phrase</button>
                     </div>
                 </div>
+
+                </div> <!-- end worker-collapsible -->
 
             </div>
         <?php endforeach; ?>
