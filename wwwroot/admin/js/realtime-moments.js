@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Initialize Worker Toggle Functionality ---
     initializeWorkerToggles();
 
+    // --- Initialize Token Edit/Delete Functionality ---
+    initializeTokenEditDelete();
+
     // --- Initialize SortableJS for all worker sections ---
     document.querySelectorAll('.worker-card').forEach(card => {
         const workerId = card.querySelector('.create-moment-btn').dataset.workerId;
@@ -397,11 +400,28 @@ document.addEventListener('DOMContentLoaded', function () {
         if (token.is_permanent) tokenElement.classList.add('token-permanent');
         tokenElement.dataset.tokenId = token.token_id;
         tokenElement.dataset.tokenDate = token.token_date || '';
+        tokenElement.dataset.tokenColor = token.token_color || 'Black';
         tokenElement.title = `Token ID: ${token.token_id}`;
-        tokenElement.textContent = token.token_string;
+
+        const tokenDateHtml = token.token_date ? `<br><small class="token-date" style="color: red;">${htmlEscape(token.token_date)}</small>` : '';
+        tokenElement.innerHTML = `
+            ${htmlEscape(token.token_string)}
+            ${tokenDateHtml}
+            <div class="token-controls">
+                <button class="edit-token-btn" title="Edit token">✏️</button>
+                <button class="delete-token-btn" title="Delete token">❌</button>
+            </div>
+        `;
         container.appendChild(tokenElement);
 
         // No need to reinitialize SortableJS as it automatically detects new elements
+    }
+
+    function htmlEscape(str) {
+        if (typeof str !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 
     // --- Perspective Loading Logic ---
@@ -557,5 +577,144 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         });
+    }
+
+    // --- Token Edit/Delete Functionality ---
+    function initializeTokenEditDelete() {
+        // Edit token button click handlers
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('edit-token-btn')) {
+                const tokenElement = e.target.closest('.token-item');
+                const workerId = e.target.closest('.worker-card').querySelector('.worker-toggle-btn').dataset.workerId;
+                showEditTokenForm(tokenElement, workerId);
+            }
+
+            if (e.target.classList.contains('delete-token-btn')) {
+                const tokenElement = e.target.closest('.token-item');
+                if (confirm('Are you sure you want to delete this token?')) {
+                    deleteToken(tokenElement.dataset.tokenId, tokenElement);
+                }
+            }
+        });
+
+        // Cancel edit form buttons
+        document.querySelectorAll('.cancel-token-edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const workerId = this.dataset.workerId;
+                hideEditTokenForm(workerId);
+            });
+        });
+
+        // Edit form submissions
+        document.querySelectorAll('.token-edit-form-inner').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const workerId = this.dataset.workerId;
+                updateToken(this, workerId);
+            });
+        });
+    }
+
+    function showEditTokenForm(tokenElement, workerId) {
+        const editForm = document.getElementById(`token-edit-form-${workerId}`);
+        const form = editForm.querySelector('.token-edit-form-inner');
+
+        // Populate form with current token data
+        form.querySelector('input[name="token_id"]').value = tokenElement.dataset.tokenId;
+        form.querySelector('textarea[name="token_string"]').value = tokenElement.textContent.replace(/✏️❌/g, '').trim();
+        form.querySelector('input[name="token_date"]').value = tokenElement.dataset.tokenDate || '';
+        form.querySelector('select[name="token_color"]').value = tokenElement.dataset.tokenColor || 'Black';
+
+        editForm.style.display = 'block';
+        form.querySelector('textarea[name="token_string"]').focus();
+    }
+
+    function hideEditTokenForm(workerId) {
+        const editForm = document.getElementById(`token-edit-form-${workerId}`);
+        editForm.style.display = 'none';
+
+        // Reset form
+        const form = editForm.querySelector('.token-edit-form-inner');
+        form.reset();
+    }
+
+    function updateToken(form, workerId) {
+        const formData = new FormData(form);
+        formData.append('action', 'update');
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Updating...';
+
+        fetch('/admin/ajax/tokens.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                hideEditTokenForm(workerId);
+                updateTokenInDOM(data.token);
+            } else {
+                alert('Error updating token: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the token.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Update Token';
+        });
+    }
+
+    function deleteToken(tokenId, tokenElement) {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('token_id', tokenId);
+
+        fetch('/admin/ajax/tokens.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                tokenElement.remove();
+
+                // Check if container is now empty and show "No available tokens" message
+                const container = tokenElement.closest('.tokens-container');
+                if (container && container.querySelectorAll('.token-item').length === 0) {
+                    container.innerHTML = '<p style="font-size: 0.85em; color: #888; font-style: italic; margin: 0;">No available tokens.</p>';
+                }
+            } else {
+                alert('Error deleting token: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the token.');
+        });
+    }
+
+    function updateTokenInDOM(token) {
+        const tokenElement = document.querySelector(`.token-item[data-token-id="${token.token_id}"]`);
+        if (!tokenElement) return;
+
+        // Update token data attributes
+        tokenElement.dataset.tokenDate = token.token_date || '';
+        tokenElement.dataset.tokenColor = token.token_color || 'Black';
+
+        // Update token content
+        const tokenDateHtml = token.token_date ? `<br><small class="token-date" style="color: red;">${htmlEscape(token.token_date)}</small>` : '';
+        tokenElement.innerHTML = `
+            ${htmlEscape(token.token_string)}
+            ${tokenDateHtml}
+            <div class="token-controls">
+                <button class="edit-token-btn" title="Edit token">✏️</button>
+                <button class="delete-token-btn" title="Delete token">❌</button>
+            </div>
+        `;
     }
 });
