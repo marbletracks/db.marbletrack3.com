@@ -52,7 +52,7 @@
     <div class="worker-grid" style="display: grid; grid-template-columns: 1fr; gap: 40px;">
         <?php foreach ($workers as $worker): ?>
             <div class="worker-card" style="border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
-                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <div class="worker-profile-pic" style="display: flex; align-items: center; margin-bottom: 10px;">
                     <?php if (!empty($worker->photos[0])): ?>
                         <img src="<?= htmlspecialchars($worker->photos[0]->getThumbnailUrl()) ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;">
                     <?php endif; ?>
