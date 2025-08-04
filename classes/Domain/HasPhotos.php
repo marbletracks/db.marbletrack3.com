@@ -59,7 +59,7 @@ trait HasPhotos
 
         // Get photos from repository (order not guaranteed)
         $photosFromRepo = (new PhotoRepository($this->getDb()))->findByIds($photoIds);
-        
+
         // Create a map to preserve the sort order
         $photoMap = [];
         foreach ($photosFromRepo as $photo) {
@@ -84,28 +84,69 @@ trait HasPhotos
     }
 
     /**
+     * Add photos without deleting existing ones
      * @param Photo[] $photos
      */
-    public function savePhotos(array $photos): void {
-        // echo "<pre>";
+    public function addPhotos(array $photos): void {
         $table = $this->getPhotoLinkingTable();
         $key = $this->getPrimaryKeyColumn();
         $id = $this->getId();
 
-        $this->getDb()->executeSQL("DELETE FROM {$table} WHERE {$key} = ?", 'i', [$id]);
-
-        $sort = 0;
-        // print_rob($photos,false);
-        foreach ($photos as $photo) {
-            // print_rob([$id, $photo->photo_id, $sort, ($photo->isPrimary ? 1 : 0)],false);
-            $this->getDb()->executeSQL(
-                "INSERT INTO {$table} ({$key}, photo_id, photo_sort, is_primary) VALUES (?, ?, ?, ?)",
-                'iiii',
-                [$id, $photo->photo_id, $sort, ($photo->isPrimary ? 1 : 0)]
-            );
-            $sort++;
+        // Get current highest sort value
+        $results = $this->getDb()->fetchResults(
+            "SELECT MAX(photo_sort) as max_sort FROM {$table} WHERE {$key} = ?",
+            'i',
+            [$id]
+        );
+        $maxSort = 0;
+        if ($results->numRows() > 0) {
+            $results->setRow(0);
+            $maxSort = intval($results->data['max_sort'] ?? 0);
         }
 
-        $this->photos = $photos;
+        $sort = $maxSort + 1;
+        foreach ($photos as $photo) {
+            // Check if this photo is already linked to avoid duplicates
+            $existingResults = $this->getDb()->fetchResults(
+                "SELECT photo_id FROM {$table} WHERE {$key} = ? AND photo_id = ?",
+                'ii',
+                [$id, $photo->photo_id]
+            );
+
+            if ($existingResults->numRows() === 0) {
+                // Photo not already linked, add it
+                $this->getDb()->executeSQL(
+                    "INSERT INTO {$table} ({$key}, photo_id, photo_sort, is_primary) VALUES (?, ?, ?, ?)",
+                    'iiii',
+                    [$id, $photo->photo_id, $sort, ($photo->isPrimary ? 1 : 0)]
+                );
+                $sort++;
+            }
+        }
+
+        // Add to in-memory array
+        foreach ($photos as $photo) {
+            $this->addPhoto($photo, $photo->isPrimary ?? false);
+        }
+    }
+
+    /**
+     * Replace all photos (deletes existing, then adds new ones)
+     * @param Photo[] $photos
+     */
+    public function savePhotos(array $photos): void {
+        $table = $this->getPhotoLinkingTable();
+        $key = $this->getPrimaryKeyColumn();
+        $id = $this->getId();
+
+        // Delete all existing photos
+        $this->getDb()->executeSQL("DELETE FROM {$table} WHERE {$key} = ?", 'i', [$id]);
+
+        // Clear in-memory arrays
+        $this->photos = [];
+        $this->primaryPhoto = null;
+
+        // Add new photos (now uses addPhotos for DRY code)
+        $this->addPhotos($photos);
     }
 }
