@@ -523,10 +523,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 collapsibleDiv.style.display = 'block';
                 toggleBtn.textContent = 'v';
                 toggleBtn.classList.add('expanded');
+                card.classList.remove('collapsed');
             } else {
                 collapsibleDiv.style.display = 'none';
                 toggleBtn.textContent = '>';
                 toggleBtn.classList.remove('expanded');
+                card.classList.add('collapsed');
             }
         });
 
@@ -543,12 +545,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     collapsibleDiv.style.display = 'none';
                     this.textContent = '>';
                     this.classList.remove('expanded');
+                    card.classList.add('collapsed');
                     localStorage.setItem(`worker-${workerId}-show-on-realtime-moments`, 'false');
                 } else {
                     // Expand
                     collapsibleDiv.style.display = 'block';
                     this.textContent = 'v';
                     this.classList.add('expanded');
+                    card.classList.remove('collapsed');
                     localStorage.setItem(`worker-${workerId}-show-on-realtime-moments`, 'true');
                 }
             });

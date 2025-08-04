@@ -58,12 +58,26 @@
         transition: all 0.3s ease;
         overflow: hidden;
     }
+    .worker-card {
+        transition: all 0.3s ease;
+        width: 100%;
+        max-width: 800px;
+    }
+    .worker-card.collapsed {
+        width: auto;
+        min-width: 200px;
+        max-width: 300px;
+        padding: 10px 15px;
+    }
+    .worker-card.collapsed .worker-profile-pic {
+        margin-bottom: 0;
+    }
 </style>
 
 <div class="PagePanel">
     <h1>Realtime Moments</h1>
 
-    <div class="worker-grid" style="display: grid; grid-template-columns: 1fr; gap: 40px;">
+    <div class="worker-grid" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
         <?php foreach ($workers as $worker): ?>
             <div class="worker-card" style="border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
                 <div class="worker-profile-pic" style="display: flex; align-items: center; margin-bottom: 10px;">
