@@ -78,7 +78,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const tokenIds = Array.from(tokenItems).map(item => item.dataset.tokenId);
-            const phraseText = Array.from(tokenItems).map(item => item.textContent.trim()).join(' ');
+            const phraseText = Array.from(tokenItems).map(item => {
+                // Extract just the token string text (first text node, excluding date and buttons)
+                const firstTextNode = item.firstChild;
+                if (firstTextNode && firstTextNode.nodeType === Node.TEXT_NODE) {
+                    return firstTextNode.textContent.trim();
+                }
+                return '';
+            }).join(' ');
 
             // --- Prepare Data for Editor ---
             let frame_start = '';
