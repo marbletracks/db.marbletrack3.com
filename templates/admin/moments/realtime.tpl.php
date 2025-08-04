@@ -44,6 +44,20 @@
         font-size: 0.9em;
         height: fit-content;
     }
+    .worker-toggle-btn {
+        transition: transform 0.2s ease;
+        color: #666;
+    }
+    .worker-toggle-btn:hover {
+        color: #007bff;
+    }
+    .worker-toggle-btn.expanded {
+        transform: rotate(90deg);
+    }
+    .worker-collapsible {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
 </style>
 
 <div class="PagePanel">
@@ -56,8 +70,11 @@
                     <?php if (!empty($worker->photos[0])): ?>
                         <img src="<?= htmlspecialchars($worker->photos[0]->getThumbnailUrl()) ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;">
                     <?php endif; ?>
-                    <h3 style="margin: 0;"><?= htmlspecialchars($worker->name) ?></h3>
+                    <h3 style="margin: 0; flex-grow: 1;"><?= htmlspecialchars($worker->name) ?></h3>
+                    <button class="worker-toggle-btn" data-worker-id="<?= $worker->worker_id ?>" style="background: none; border: none; font-size: 16px; cursor: pointer; padding: 5px;">&gt;</button>
                 </div>
+
+                <div class="worker-collapsible" data-worker-id="<?= $worker->worker_id ?>" style="display: none;">
 
                 <!-- Recent Moments (for context) -->
                 <div class="recent-moments" style="margin-top: 15px;">
@@ -188,6 +205,8 @@
                         <button type="button" class="use-selected-moment-btn" disabled>Use Selected Moment &amp; Create Phrase</button>
                     </div>
                 </div>
+
+                </div> <!-- end worker-collapsible -->
 
             </div>
         <?php endforeach; ?>

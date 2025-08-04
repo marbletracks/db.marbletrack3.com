@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // --- Initialize Worker Toggle Functionality ---
+    initializeWorkerToggles();
+
     // --- Initialize SortableJS for all worker sections ---
     document.querySelectorAll('.worker-card').forEach(card => {
         const workerId = card.querySelector('.create-moment-btn').dataset.workerId;
@@ -503,5 +506,52 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => console.error('Fetch error:', error));
+    }
+
+    // --- Worker Toggle Functionality ---
+    function initializeWorkerToggles() {
+        // Load saved states and apply them
+        document.querySelectorAll('.worker-card').forEach(card => {
+            const workerId = card.querySelector('.worker-toggle-btn').dataset.workerId;
+            const collapsibleDiv = card.querySelector('.worker-collapsible');
+            const toggleBtn = card.querySelector('.worker-toggle-btn');
+
+            // Load saved state from localStorage (default is closed/false)
+            const isExpanded = localStorage.getItem(`worker-${workerId}-show-on-realtime-moments`) === 'true';
+
+            if (isExpanded) {
+                collapsibleDiv.style.display = 'block';
+                toggleBtn.textContent = 'v';
+                toggleBtn.classList.add('expanded');
+            } else {
+                collapsibleDiv.style.display = 'none';
+                toggleBtn.textContent = '>';
+                toggleBtn.classList.remove('expanded');
+            }
+        });
+
+        // Add click event listeners
+        document.querySelectorAll('.worker-toggle-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const workerId = this.dataset.workerId;
+                const card = this.closest('.worker-card');
+                const collapsibleDiv = card.querySelector('.worker-collapsible');
+                const isCurrentlyExpanded = collapsibleDiv.style.display !== 'none';
+
+                if (isCurrentlyExpanded) {
+                    // Collapse
+                    collapsibleDiv.style.display = 'none';
+                    this.textContent = '>';
+                    this.classList.remove('expanded');
+                    localStorage.setItem(`worker-${workerId}-show-on-realtime-moments`, 'false');
+                } else {
+                    // Expand
+                    collapsibleDiv.style.display = 'block';
+                    this.textContent = 'v';
+                    this.classList.add('expanded');
+                    localStorage.setItem(`worker-${workerId}-show-on-realtime-moments`, 'true');
+                }
+            });
+        });
     }
 });
