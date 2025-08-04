@@ -619,9 +619,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const editForm = document.getElementById(`token-edit-form-${workerId}`);
         const form = editForm.querySelector('.token-edit-form-inner');
 
+        // Extract just the token string text (first text node, excluding date and buttons)
+        let tokenString = '';
+        const firstTextNode = tokenElement.firstChild;
+        if (firstTextNode && firstTextNode.nodeType === Node.TEXT_NODE) {
+            tokenString = firstTextNode.textContent.trim();
+        }
+
         // Populate form with current token data
         form.querySelector('input[name="token_id"]').value = tokenElement.dataset.tokenId;
-        form.querySelector('textarea[name="token_string"]').value = tokenElement.textContent.replace(/✏️❌/g, '').trim();
+        form.querySelector('textarea[name="token_string"]').value = tokenString;
         form.querySelector('input[name="token_date"]').value = tokenElement.dataset.tokenDate || '';
         form.querySelector('select[name="token_color"]').value = tokenElement.dataset.tokenColor || 'Black';
 
