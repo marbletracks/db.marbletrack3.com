@@ -164,9 +164,12 @@
                 <fieldset style="margin-bottom: 20px; padding: 15px; border: 1px solid #e9ecef;">
                     <legend><strong>Component Parts (<?= count($parts) ?>)</strong></legend>
                     <?php foreach ($parts as $part): ?>
-                        <div style="margin-bottom: 5px;">
+                        <div style="margin-bottom: 8px; display: flex; align-items: center;" data-track-part data-track-id="<?= $track->track_id ?>" data-part-id="<?= $part->part_id ?>">
                             <span style="color: #6c757d; font-size: 0.9em;">[<?= htmlspecialchars($part->role_in_track ?? 'main') ?>]</span>
-                            <a href="/admin/parts/part.php?id=<?= $part->part_id ?>"><?= htmlspecialchars($part->name ?: $part->part_alias) ?></a>
+                            <a href="/admin/parts/part.php?id=<?= $part->part_id ?>" style="margin-left: 5px;"><?= htmlspecialchars($part->name ?: $part->part_alias) ?></a>
+                            <button type="button" class="delete-part-btn" style="margin-left: 10px; padding: 2px 6px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;" title="Remove this part from track">
+                                ✕
+                            </button>
                         </div>
                     <?php endforeach; ?>
                 </fieldset>
@@ -233,6 +236,69 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error:', error);
                 alert('Error deleting connection: ' + error.message);
+                // Re-enable button
+                this.disabled = false;
+                this.textContent = '✕';
+            });
+        });
+    });
+
+    // Handle delete part buttons
+    document.querySelectorAll('.delete-part-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const partDiv = this.closest('[data-track-part]');
+            const trackId = parseInt(partDiv.dataset.trackId);
+            const partId = parseInt(partDiv.dataset.partId);
+
+            if (!confirm('Are you sure you want to remove this part from the track?')) {
+                return;
+            }
+
+            // Disable button during request
+            this.disabled = true;
+            this.textContent = '...';
+
+            fetch('/admin/tracks/delete_part.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    track_id: trackId,
+                    part_id: partId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the part div from the page
+                    partDiv.style.transition = 'opacity 0.3s';
+                    partDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        partDiv.remove();
+
+                        // Update parts count in legend and check if fieldset is now empty
+                        const fieldset = partDiv.closest('fieldset');
+                        const remainingParts = fieldset.querySelectorAll('[data-track-part]');
+                        const legend = fieldset.querySelector('legend strong');
+
+                        if (remainingParts.length === 0) {
+                            fieldset.style.display = 'none';
+                        } else {
+                            // Update count in legend
+                            legend.textContent = `Component Parts (${remainingParts.length})`;
+                        }
+                    }, 300);
+                } else {
+                    alert('Error removing part: ' + (data.error || 'Unknown error'));
+                    // Re-enable button
+                    this.disabled = false;
+                    this.textContent = '✕';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error removing part: ' + error.message);
                 // Re-enable button
                 this.disabled = false;
                 this.textContent = '✕';

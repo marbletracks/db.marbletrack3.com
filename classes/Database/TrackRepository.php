@@ -326,6 +326,15 @@ SQL,
         return $results->data['count'] > 0;
     }
 
+    public function deleteTrackPart(int $track_id, int $part_id): void
+    {
+        $this->db->executeSQL(
+            "DELETE FROM track_parts WHERE track_id = ? AND part_id = ?",
+            'ii',
+            [$track_id, $part_id]
+        );
+    }
+
     public function getDb(): DbInterface
     {
         return $this->db;
