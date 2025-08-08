@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Save space on Realtime Moments index";
+const SENTIMENTAL_VERSION = "Making Tracks out of Parts";
 
 # write errors to screen
 ini_set('display_errors', 1);
