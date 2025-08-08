@@ -74,9 +74,12 @@
                 <fieldset style="margin-bottom: 20px; padding: 15px; border: 1px solid #e9ecef;">
                     <legend><strong>Upstream Tracks (feed into this track)</strong></legend>
                     <?php foreach ($upstream as $up): ?>
-                        <div style="margin-bottom: 8px;">
+                        <div style="margin-bottom: 8px; display: flex; align-items: center;" data-connection="upstream" data-from-track="<?= $up->track_id ?>" data-to-track="<?= $track->track_id ?>">
                             <a href="/admin/tracks/track.php?id=<?= $up->track_id ?>"><?= htmlspecialchars($up->track_name) ?></a>
-                            <span style="color: #6c757d;">→ (<?= htmlspecialchars($up->getMarbleSizesDisplay()) ?>)</span>
+                            <span style="color: #6c757d; margin-left: 10px;">→ (<?= htmlspecialchars($up->getMarbleSizesDisplay()) ?>)</span>
+                            <button type="button" class="delete-connection-btn" style="margin-left: 10px; padding: 2px 6px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;" title="Delete this connection">
+                                ✕
+                            </button>
                         </div>
                     <?php endforeach; ?>
                 </fieldset>
@@ -86,9 +89,12 @@
                 <fieldset style="margin-bottom: 20px; padding: 15px; border: 1px solid #e9ecef;">
                     <legend><strong>Downstream Tracks (this track feeds into)</strong></legend>
                     <?php foreach ($downstream as $down): ?>
-                        <div style="margin-bottom: 8px;">
+                        <div style="margin-bottom: 8px; display: flex; align-items: center;" data-connection="downstream" data-from-track="<?= $track->track_id ?>" data-to-track="<?= $down->track_id ?>">
                             <span style="color: #6c757d;">(<?= htmlspecialchars($down->getMarbleSizesDisplay()) ?>) →</span>
-                            <a href="/admin/tracks/track.php?id=<?= $down->track_id ?>"><?= htmlspecialchars($down->track_name) ?></a>
+                            <a href="/admin/tracks/track.php?id=<?= $down->track_id ?>" style="margin-left: 5px;"><?= htmlspecialchars($down->track_name) ?></a>
+                            <button type="button" class="delete-connection-btn" style="margin-left: 10px; padding: 2px 6px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;" title="Delete this connection">
+                                ✕
+                            </button>
                         </div>
                     <?php endforeach; ?>
                 </fieldset>
@@ -111,3 +117,68 @@
         <a href="/admin/tracks/" style="margin-left: 20px;">Cancel</a>
     </form>
 </div>
+
+<?php if ($track): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete connection buttons
+    document.querySelectorAll('.delete-connection-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const connectionDiv = this.closest('[data-connection]');
+            const fromTrackId = parseInt(connectionDiv.dataset.fromTrack);
+            const toTrackId = parseInt(connectionDiv.dataset.toTrack);
+            const connectionType = connectionDiv.dataset.connection;
+
+            if (!confirm('Are you sure you want to delete this track connection?')) {
+                return;
+            }
+
+            // Disable button during request
+            this.disabled = true;
+            this.textContent = '...';
+
+            fetch('/admin/tracks/delete_connection.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    from_track_id: fromTrackId,
+                    to_track_id: toTrackId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the connection div from the page
+                    connectionDiv.style.transition = 'opacity 0.3s';
+                    connectionDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        connectionDiv.remove();
+
+                        // Check if fieldset is now empty and hide it
+                        const fieldset = connectionDiv.closest('fieldset');
+                        const remainingConnections = fieldset.querySelectorAll('[data-connection]');
+                        if (remainingConnections.length === 0) {
+                            fieldset.style.display = 'none';
+                        }
+                    }, 300);
+                } else {
+                    alert('Error deleting connection: ' + (data.error || 'Unknown error'));
+                    // Re-enable button
+                    this.disabled = false;
+                    this.textContent = '✕';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting connection: ' + error.message);
+                // Re-enable button
+                this.disabled = false;
+                this.textContent = '✕';
+            });
+        });
+    });
+});
+</script>
+<?php endif; ?>

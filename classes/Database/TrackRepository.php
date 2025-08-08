@@ -288,6 +288,15 @@ SQL,
         );
     }
 
+    public function deleteConnection(int $from_track_id, int $to_track_id): void
+    {
+        $this->db->executeSQL(
+            "DELETE FROM track_connections WHERE from_track_id = ? AND to_track_id = ?",
+            'ii',
+            [$from_track_id, $to_track_id]
+        );
+    }
+
     public function getDb(): DbInterface
     {
         return $this->db;
