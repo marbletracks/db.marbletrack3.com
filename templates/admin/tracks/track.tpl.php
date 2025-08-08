@@ -167,6 +167,11 @@
                         <div style="margin-bottom: 8px; display: flex; align-items: center;" data-track-part data-track-id="<?= $track->track_id ?>" data-part-id="<?= $part->part_id ?>">
                             <span style="color: #6c757d; font-size: 0.9em;">[<?= htmlspecialchars($part->role_in_track ?? 'main') ?>]</span>
                             <a href="/admin/parts/part.php?id=<?= $part->part_id ?>" style="margin-left: 5px;"><?= htmlspecialchars($part->name ?: $part->part_alias) ?></a>
+                            <?php if ($part->is_exclusive_to_track ?? false): ?>
+                                <span style="margin-left: 8px; color: #dc3545; font-size: 14px; cursor: pointer;" class="exclusive-toggle-btn" title="This part is exclusive to this track (click to make it reusable)" data-exclusive="true">🔒</span>
+                            <?php else: ?>
+                                <span style="margin-left: 8px; color: #28a745; font-size: 14px; cursor: pointer;" class="exclusive-toggle-btn" title="This part can be used in other tracks (click to make it exclusive)" data-exclusive="false">🌐</span>
+                            <?php endif; ?>
                             <button type="button" class="delete-part-btn" style="margin-left: 10px; padding: 2px 6px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;" title="Remove this part from track">
                                 ✕
                             </button>
@@ -264,6 +269,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Re-enable button
                 this.disabled = false;
                 this.textContent = '✕';
+            });
+        });
+    });
+
+    // Handle exclusive part toggle buttons
+    document.querySelectorAll('.exclusive-toggle-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const partDiv = this.closest('[data-track-part]');
+            const trackId = parseInt(partDiv.dataset.trackId);
+            const partId = parseInt(partDiv.dataset.partId);
+            const currentlyExclusive = this.dataset.exclusive === 'true';
+            const newExclusive = !currentlyExclusive;
+
+            // Disable button during request
+            this.style.opacity = '0.5';
+            this.style.pointerEvents = 'none';
+
+            fetch('/admin/tracks/toggle_part_exclusivity.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    track_id: trackId,
+                    part_id: partId,
+                    is_exclusive: newExclusive
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button appearance
+                    if (data.is_exclusive) {
+                        this.textContent = '🔒';
+                        this.style.color = '#dc3545';
+                        this.title = 'This part is exclusive to this track (click to make it reusable)';
+                        this.dataset.exclusive = 'true';
+                    } else {
+                        this.textContent = '🌐';
+                        this.style.color = '#28a745';
+                        this.title = 'This part can be used in other tracks (click to make it exclusive)';
+                        this.dataset.exclusive = 'false';
+                    }
+                } else {
+                    alert('Error toggling exclusivity: ' + (data.error || 'Unknown error'));
+                }
+
+                // Re-enable button
+                this.style.opacity = '1';
+                this.style.pointerEvents = 'auto';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error toggling exclusivity: ' + error.message);
+                this.style.opacity = '1';
+                this.style.pointerEvents = 'auto';
             });
         });
     });
@@ -422,10 +483,60 @@ document.addEventListener('DOMContentLoaded', function() {
         partDiv.innerHTML = `
             <span style="color: #6c757d; font-size: 0.9em;">[${part.role}]</span>
             <a href="/admin/parts/part.php?id=${part.id}" style="margin-left: 5px;">${part.name}</a>
+            <span style="margin-left: 8px; color: #28a745; font-size: 14px; cursor: pointer;" class="exclusive-toggle-btn" title="This part can be used in other tracks (click to make it exclusive)" data-exclusive="false">🌐</span>
             <button type="button" class="delete-part-btn" style="margin-left: 10px; padding: 2px 6px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;" title="Remove this part from track">
                 ✕
             </button>
         `;
+
+        // Add exclusive toggle functionality to new button
+        partDiv.querySelector('.exclusive-toggle-btn').addEventListener('click', function() {
+            const trackId = parseInt(partDiv.dataset.trackId);
+            const partId = parseInt(partDiv.dataset.partId);
+            const currentlyExclusive = this.dataset.exclusive === 'true';
+            const newExclusive = !currentlyExclusive;
+
+            this.style.opacity = '0.5';
+            this.style.pointerEvents = 'none';
+
+            fetch('/admin/tracks/toggle_part_exclusivity.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    track_id: trackId,
+                    part_id: partId,
+                    is_exclusive: newExclusive
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.is_exclusive) {
+                        this.textContent = '🔒';
+                        this.style.color = '#dc3545';
+                        this.title = 'This part is exclusive to this track (click to make it reusable)';
+                        this.dataset.exclusive = 'true';
+                    } else {
+                        this.textContent = '🌐';
+                        this.style.color = '#28a745';
+                        this.title = 'This part can be used in other tracks (click to make it exclusive)';
+                        this.dataset.exclusive = 'false';
+                    }
+                } else {
+                    alert('Error toggling exclusivity: ' + (data.error || 'Unknown error'));
+                }
+                this.style.opacity = '1';
+                this.style.pointerEvents = 'auto';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error toggling exclusivity: ' + error.message);
+                this.style.opacity = '1';
+                this.style.pointerEvents = 'auto';
+            });
+        });
 
         // Add delete functionality to new button
         partDiv.querySelector('.delete-part-btn').addEventListener('click', function() {

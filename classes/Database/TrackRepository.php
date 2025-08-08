@@ -196,7 +196,8 @@ SELECT p.part_id,
        p.is_rail,
        p.is_support,
        p.is_track,
-       tp.part_role
+       tp.part_role,
+       tp.is_exclusive_to_track
 FROM parts p
 JOIN track_parts tp ON p.part_id = tp.part_id
 LEFT JOIN part_translations pt ON p.part_id = pt.part_id AND pt.language_code = ?
@@ -229,6 +230,7 @@ SQL,
                 is_track: $results->data['is_track']
             );
             $part->role_in_track = $results->data['part_role'];
+            $part->is_exclusive_to_track = (bool) $results->data['is_exclusive_to_track'];
             $parts[] = $part;
         }
         return $parts;
@@ -335,15 +337,16 @@ SQL,
         );
     }
 
-    public function insertTrackPart(int $track_id, int $part_id, string $part_role = 'main'): int
+    public function insertTrackPart(int $track_id, int $part_id, string $part_role = 'main', bool $is_exclusive = false): int
     {
         return $this->db->insertFromRecord(
             'track_parts',
-            'iis',
+            'iisi',
             [
                 'track_id' => $track_id,
                 'part_id' => $part_id,
-                'part_role' => $part_role
+                'part_role' => $part_role,
+                'is_exclusive_to_track' => $is_exclusive
             ]
         );
     }
@@ -358,6 +361,29 @@ SQL,
 
         $results->setRow(0);
         return $results->data['count'] > 0;
+    }
+
+    public function updateTrackPartExclusivity(int $track_id, int $part_id, bool $is_exclusive): void
+    {
+        $this->db->executeSQL(
+            "UPDATE track_parts SET is_exclusive_to_track = ? WHERE track_id = ? AND part_id = ?",
+            'iii',
+            [$is_exclusive, $track_id, $part_id]
+        );
+    }
+
+    public function findExclusivePartIds(): array
+    {
+        $results = $this->db->fetchResults(
+            "SELECT DISTINCT part_id FROM track_parts WHERE is_exclusive_to_track = TRUE"
+        );
+
+        $part_ids = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $part_ids[] = $results->data['part_id'];
+        }
+        return $part_ids;
     }
 
     public function getDb(): DbInterface

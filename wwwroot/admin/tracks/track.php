@@ -97,10 +97,20 @@ if ($track) {
 
     // Get all parts for the add part dropdown
     $all_parts = $partsRepo->findAll();
+    // Get parts that are exclusive to other tracks
+    $exclusive_part_ids = $repo->findExclusivePartIds();
     // Filter out parts that are already in this track
     $current_part_ids = array_map(function($p) { return $p->part_id; }, $parts);
-    $available_parts = array_filter($all_parts, function($p) use ($current_part_ids) {
-        return !in_array($p->part_id, $current_part_ids);
+    $available_parts = array_filter($all_parts, function($p) use ($current_part_ids, $exclusive_part_ids) {
+        // Exclude if already in this track
+        if (in_array($p->part_id, $current_part_ids)) {
+            return false;
+        }
+        // Exclude if exclusive to another track
+        if (in_array($p->part_id, $exclusive_part_ids)) {
+            return false;
+        }
+        return true;
     });
 
     // Sort available parts alphabetically
