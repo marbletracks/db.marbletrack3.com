@@ -16,8 +16,9 @@ $repo = new \Database\PartsRepository(
     langCode: 'en',
 );
 
-// Get filter parameter
+// Get filter parameters
 $filter = trim($_GET['filter'] ?? '');
+$status = $_GET['status'] ?? 'all';
 
 // Fetch parts (filtered if filter provided)
 if (!empty($filter)) {
@@ -26,10 +27,22 @@ if (!empty($filter)) {
     $parts = $repo->findAll();
 }
 
+// Apply status filter
+if ($status === 'needs_work') {
+    $parts = array_filter($parts, function($part) {
+        return trim($part->description) === '' || trim($part->description) === trim($part->name);
+    });
+} elseif ($status === 'complete') {
+    $parts = array_filter($parts, function($part) {
+        return trim($part->description) !== '' && trim($part->description) !== trim($part->name);
+    });
+}
+
 $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/parts/index.tpl.php");
 $page->set(name: "parts", value: $parts);
 $page->set(name: "filter", value: $filter);
+$page->set(name: "status", value: $status);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template(config: $config);
