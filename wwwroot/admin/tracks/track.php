@@ -102,6 +102,13 @@ if ($track) {
     $available_parts = array_filter($all_parts, function($p) use ($current_part_ids) {
         return !in_array($p->part_id, $current_part_ids);
     });
+
+    // Sort available parts alphabetically
+    usort($available_parts, function($a, $b) {
+        $name_a = $a->name ?: $a->part_alias;
+        $name_b = $b->name ?: $b->part_alias;
+        return strcasecmp($name_a, $name_b);
+    });
 }
 
 $page = new \Template($config);
