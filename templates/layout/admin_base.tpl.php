@@ -29,6 +29,7 @@
             </div>
         </div> |
         <a href="/admin/workers">Workers</a> |
+        <a href="/admin/tracks">Tracks</a> |
         <div class="dropdown">
             <a href="/admin/parts">Parts ▾</a>
             <div class="dropdown-menu">
