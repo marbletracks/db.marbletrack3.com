@@ -25,7 +25,9 @@ SELECT t.track_id,
        t.marble_sizes_accepted,
        t.is_transport,
        t.is_splitter,
-       t.is_landing_zone
+       t.is_landing_zone,
+       t.entity_type,
+       t.entity_type
 FROM tracks t
 WHERE t.track_id = ?
 SQL,
@@ -52,7 +54,8 @@ SELECT t.track_id,
        t.marble_sizes_accepted,
        t.is_transport,
        t.is_splitter,
-       t.is_landing_zone
+       t.is_landing_zone,
+       t.entity_type
 FROM tracks t
 WHERE t.track_alias = ?
 SQL,
@@ -79,7 +82,8 @@ SELECT t.track_id,
        t.marble_sizes_accepted,
        t.is_transport,
        t.is_splitter,
-       t.is_landing_zone
+       t.is_landing_zone,
+       t.entity_type
 FROM tracks t
 ORDER BY
     t.is_landing_zone DESC,  -- Landing zones first
@@ -106,9 +110,93 @@ SELECT t.track_id,
        t.marble_sizes_accepted,
        t.is_transport,
        t.is_splitter,
-       t.is_landing_zone
+       t.is_landing_zone,
+       t.entity_type
 FROM tracks t
 WHERE t.is_landing_zone = TRUE
+ORDER BY t.track_name ASC
+SQL
+        );
+
+        $tracks = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $tracks[] = $this->hydrate($results->data);
+        }
+        return $tracks;
+    }
+
+    public function findByEntityType(string $entity_type): array
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT t.track_id,
+       t.track_alias,
+       t.track_name,
+       t.track_description,
+       t.marble_sizes_accepted,
+       t.is_transport,
+       t.is_splitter,
+       t.is_landing_zone,
+       t.entity_type
+FROM tracks t
+WHERE t.entity_type = ?
+ORDER BY t.track_name ASC
+SQL,
+            's',
+            [$entity_type]
+        );
+
+        $tracks = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $tracks[] = $this->hydrate($results->data);
+        }
+        return $tracks;
+    }
+
+    public function findMarbleTracks(): array
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT t.track_id,
+       t.track_alias,
+       t.track_name,
+       t.track_description,
+       t.marble_sizes_accepted,
+       t.is_transport,
+       t.is_splitter,
+       t.is_landing_zone,
+       t.entity_type
+FROM tracks t
+WHERE t.entity_type IN ('marble', 'mixed')
+ORDER BY t.track_name ASC
+SQL
+        );
+
+        $tracks = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $tracks[] = $this->hydrate($results->data);
+        }
+        return $tracks;
+    }
+
+    public function findWorkerTracks(): array
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT t.track_id,
+       t.track_alias,
+       t.track_name,
+       t.track_description,
+       t.marble_sizes_accepted,
+       t.is_transport,
+       t.is_splitter,
+       t.is_landing_zone,
+       t.entity_type
+FROM tracks t
+WHERE t.entity_type IN ('worker', 'mixed')
 ORDER BY t.track_name ASC
 SQL
         );
@@ -133,6 +221,7 @@ SELECT t.track_id,
        t.is_transport,
        t.is_splitter,
        t.is_landing_zone,
+       t.entity_type,
        tc.marble_sizes as connection_marble_sizes,
        tc.connection_type,
        tc.connection_description
@@ -165,6 +254,7 @@ SELECT t.track_id,
        t.is_transport,
        t.is_splitter,
        t.is_landing_zone,
+       t.entity_type,
        tc.marble_sizes as connection_marble_sizes,
        tc.connection_type,
        tc.connection_description
@@ -251,17 +341,18 @@ SQL,
             marble_sizes_accepted: $marble_sizes,
             is_transport: (bool) $data['is_transport'],
             is_splitter: (bool) $data['is_splitter'],
-            is_landing_zone: (bool) $data['is_landing_zone']
+            is_landing_zone: (bool) $data['is_landing_zone'],
+            entity_type: $data['entity_type'] ?? 'marble'
         );
     }
 
-    public function insert(string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone): int
+    public function insert(string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone, string $entity_type = 'marble'): int
     {
         $marble_sizes_str = implode(',', $marble_sizes);
 
         return $this->db->insertFromRecord(
             'tracks',
-            'ssssiii',
+            'ssssiiis',
             [
                 'track_alias' => $alias,
                 'track_name' => $name,
@@ -269,12 +360,13 @@ SQL,
                 'marble_sizes_accepted' => $marble_sizes_str,
                 'is_transport' => $is_transport,
                 'is_splitter' => $is_splitter,
-                'is_landing_zone' => $is_landing_zone
+                'is_landing_zone' => $is_landing_zone,
+                'entity_type' => $entity_type
             ]
         );
     }
 
-    public function update(int $track_id, string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone): void
+    public function update(int $track_id, string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone, string $entity_type = 'marble'): void
     {
         $marble_sizes_str = implode(',', $marble_sizes);
 
@@ -282,11 +374,11 @@ SQL,
             <<<SQL
 UPDATE tracks
 SET track_alias = ?, track_name = ?, track_description = ?, marble_sizes_accepted = ?,
-    is_transport = ?, is_splitter = ?, is_landing_zone = ?
+    is_transport = ?, is_splitter = ?, is_landing_zone = ?, entity_type = ?
 WHERE track_id = ?
 SQL,
-            'ssssiiii',
-            [$alias, $name, $description, $marble_sizes_str, $is_transport, $is_splitter, $is_landing_zone, $track_id]
+            'ssssiissi',
+            [$alias, $name, $description, $marble_sizes_str, $is_transport, $is_splitter, $is_landing_zone, $entity_type, $track_id]
         );
     }
 
@@ -398,6 +490,7 @@ SELECT t.track_id,
        t.is_transport,
        t.is_splitter,
        t.is_landing_zone,
+       t.entity_type,
        tp.part_role,
        tp.is_exclusive_to_track
 FROM tracks t

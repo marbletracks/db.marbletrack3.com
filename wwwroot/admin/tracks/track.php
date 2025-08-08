@@ -26,6 +26,7 @@ if ($submitted) {
     $is_transport = !empty($_POST['is_transport']);
     $is_splitter = !empty($_POST['is_splitter']);
     $is_landing_zone = !empty($_POST['is_landing_zone']);
+    $entity_type = $_POST['entity_type'] ?? 'marble';
 
     // Validation
     if ($alias === '') {
@@ -34,11 +35,16 @@ if ($submitted) {
     if ($name === '') {
         $errors[] = "Name is required.";
     }
-    if (empty($marble_sizes)) {
-        $errors[] = "At least one marble size must be selected.";
+    if ($entity_type === 'marble' || $entity_type === 'mixed') {
+        if (empty($marble_sizes)) {
+            $errors[] = "Marble tracks must accept at least one marble size.";
+        }
     }
     if (!$is_transport && !$is_splitter && !$is_landing_zone) {
         $errors[] = "At least one track type must be selected.";
+    }
+    if (!in_array($entity_type, ['marble', 'worker', 'mixed'])) {
+        $errors[] = "Invalid entity type selected.";
     }
 
     // Check for duplicate alias
@@ -59,7 +65,8 @@ if ($submitted) {
                 marble_sizes: $marble_sizes,
                 is_transport: $is_transport,
                 is_splitter: $is_splitter,
-                is_landing_zone: $is_landing_zone
+                is_landing_zone: $is_landing_zone,
+                entity_type: $entity_type
             );
         } else {
             $repo->insert(
@@ -69,7 +76,8 @@ if ($submitted) {
                 marble_sizes: $marble_sizes,
                 is_transport: $is_transport,
                 is_splitter: $is_splitter,
-                is_landing_zone: $is_landing_zone
+                is_landing_zone: $is_landing_zone,
+                entity_type: $entity_type
             );
         }
 

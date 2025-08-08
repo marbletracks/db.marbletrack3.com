@@ -31,6 +31,25 @@
         </label><br><br>
 
         <fieldset style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc;">
+            <legend><strong>Entity Type</strong></legend>
+            <label style="display: block; margin-bottom: 10px;">
+                <input type="radio" name="entity_type" value="marble"
+                       <?= ($track->entity_type ?? 'marble') === 'marble' ? 'checked' : '' ?>>
+                <span style="color: #dc3545;"><strong>🔴 Marble Track</strong></span> - Gravity-fed marble transport
+            </label>
+            <label style="display: block; margin-bottom: 10px;">
+                <input type="radio" name="entity_type" value="worker"
+                       <?= ($track->entity_type ?? 'marble') === 'worker' ? 'checked' : '' ?>>
+                <span style="color: #17a2b8;"><strong>👷 Worker Track</strong></span> - Worker-navigated transport (bridges, ramps)
+            </label>
+            <label style="display: block; margin-bottom: 10px;">
+                <input type="radio" name="entity_type" value="mixed"
+                       <?= ($track->entity_type ?? 'marble') === 'mixed' ? 'checked' : '' ?>>
+                <span style="color: #28a745;"><strong>🔄 Mixed Track</strong></span> - Both marbles and workers can use
+            </label>
+        </fieldset>
+
+        <fieldset id="marble-sizes-fieldset" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc;">
             <legend><strong>Marble Sizes Accepted</strong></legend>
             <label style="display: block; margin-bottom: 10px;">
                 <input type="checkbox" name="marble_sizes[]" value="small"
@@ -843,6 +862,38 @@ document.addEventListener('DOMContentLoaded', function() {
             connectionDiv.style.opacity = '1';
         }, 10);
     }
+});
+
+// Handle entity type changes - show/hide marble sizes fieldset
+document.querySelectorAll('input[name="entity_type"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const marbleSizesFieldset = document.getElementById('marble-sizes-fieldset');
+        const descriptionTextarea = document.querySelector('textarea[name="track_description"]');
+
+        if (this.value === 'worker') {
+            marbleSizesFieldset.style.display = 'none';
+            if (!descriptionTextarea.value) {
+                descriptionTextarea.placeholder = 'What does this worker track do? How do workers navigate it?';
+            }
+        } else {
+            marbleSizesFieldset.style.display = 'block';
+            if (!descriptionTextarea.value) {
+                if (this.value === 'mixed') {
+                    descriptionTextarea.placeholder = 'What does this track do? How does it transport marbles and workers?';
+                } else {
+                    descriptionTextarea.placeholder = 'What does this track do? How does it transport or route marbles?';
+                }
+            }
+        }
+    });
+});
+
+// Set initial state
+const selectedEntityType = document.querySelector('input[name="entity_type"]:checked');
+if (selectedEntityType) {
+    selectedEntityType.dispatchEvent(new Event('change'));
+}
+
 });
 </script>
 <?php endif; ?>

@@ -14,16 +14,17 @@ final class Track
 
     /**
      * Represents a logical track made up of multiple physical parts.
-     * Tracks transport marbles via gravity and can split or merge marble flow.
+     * Tracks can transport marbles (gravity-fed), workers (worker-navigated), or both.
      *
      * @param int $track_id db:tracks.track_id
      * @param string $track_alias db:tracks.track_alias - URL-safe identifier
      * @param string $track_name db:tracks.track_name - Human-readable name
      * @param string $track_description db:tracks.track_description
      * @param array $marble_sizes_accepted db:tracks.marble_sizes_accepted as array
-     * @param bool $is_transport Track transports marbles along its length
-     * @param bool $is_splitter Track splits marble flow by size or direction
+     * @param bool $is_transport Track transports entities along its length
+     * @param bool $is_splitter Track splits entity flow by size or direction
      * @param bool $is_landing_zone Track is a terminal destination
+     * @param string $entity_type What uses this track: 'marble', 'worker', or 'mixed'
      */
     public function __construct(
         public int $track_id,
@@ -34,6 +35,7 @@ final class Track
         public bool $is_transport = false,
         public bool $is_splitter = false,
         public bool $is_landing_zone = false,
+        public string $entity_type = 'marble',
     ) {
         $this->slug = \Utilities::slugify($track_name);
     }
@@ -65,5 +67,47 @@ final class Track
         if ($this->isLandingZone()) $types[] = 'Landing Zone';
 
         return implode(' + ', $types);
+    }
+
+    /**
+     * Check if this track is for marble transport
+     */
+    public function isMarbleTrack(): bool
+    {
+        return in_array($this->entity_type, ['marble', 'mixed']);
+    }
+
+    /**
+     * Check if this track is for worker transport
+     */
+    public function isWorkerTrack(): bool
+    {
+        return in_array($this->entity_type, ['worker', 'mixed']);
+    }
+
+    /**
+     * Get entity type description for display
+     */
+    public function getEntityTypeDescription(): string
+    {
+        return match($this->entity_type) {
+            'marble' => 'Marble Track',
+            'worker' => 'Worker Track',
+            'mixed' => 'Mixed Track',
+            default => 'Unknown Track'
+        };
+    }
+
+    /**
+     * Get entity type emoji for display
+     */
+    public function getEntityTypeEmoji(): string
+    {
+        return match($this->entity_type) {
+            'marble' => '🔴',
+            'worker' => '👷',
+            'mixed' => '🔄',
+            default => '❓'
+        };
     }
 }

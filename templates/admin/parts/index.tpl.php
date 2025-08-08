@@ -98,6 +98,7 @@
                         <strong>Tracks:</strong>
                         <?php foreach ($tracks as $i => $track): ?>
                             <?php if ($i > 0) echo ', '; ?>
+                            <span title="<?= htmlspecialchars($track->getEntityTypeDescription()) ?>"><?= $track->getEntityTypeEmoji() ?></span>
                             <a href="/admin/tracks/track.php?id=<?= $track->track_id ?>" style="text-decoration: none;">
                                 <?= htmlspecialchars($track->track_name) ?>
                             </a>
