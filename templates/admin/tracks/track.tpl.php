@@ -361,20 +361,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Helper function to add connection to DOM
     function addConnectionToList(type, fromTrack, toTrack, marbleSizesDisplay) {
         const fieldsetLegend = type === 'upstream' ? 'Upstream Tracks (feed into this track)' : 'Downstream Tracks (this track feeds into)';
-        let fieldset = document.querySelector(`legend:contains("${fieldsetLegend}")`);
+        // Find existing fieldset by looking for legend text
+        let fieldset = null;
+        const legends = document.querySelectorAll('legend');
+        for (let legend of legends) {
+            if (legend.textContent.includes(fieldsetLegend)) {
+                fieldset = legend.closest('fieldset');
+                break;
+            }
+        }
 
         if (!fieldset) {
             // Create fieldset if it doesn't exist
             const container = type === 'upstream' ?
-                document.getElementById('upstream-track-select').closest('div').previousElementSibling :
-                document.getElementById('downstream-track-select').closest('div').previousElementSibling;
+                document.getElementById('upstream-track-select').closest('div') :
+                document.getElementById('downstream-track-select').closest('div');
 
             fieldset = document.createElement('fieldset');
             fieldset.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #e9ecef;';
             fieldset.innerHTML = `<legend><strong>${fieldsetLegend}</strong></legend>`;
             container.parentNode.insertBefore(fieldset, container);
         } else {
-            fieldset = fieldset.closest('fieldset');
             fieldset.style.display = 'block';
         }
 
