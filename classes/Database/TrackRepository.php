@@ -253,6 +253,41 @@ SQL,
         );
     }
 
+    public function insert(string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone): int
+    {
+        $marble_sizes_str = implode(',', $marble_sizes);
+
+        return $this->db->insertFromRecord(
+            'tracks',
+            'ssssiii',
+            [
+                'track_alias' => $alias,
+                'track_name' => $name,
+                'track_description' => $description,
+                'marble_sizes_accepted' => $marble_sizes_str,
+                'is_transport' => $is_transport,
+                'is_splitter' => $is_splitter,
+                'is_landing_zone' => $is_landing_zone
+            ]
+        );
+    }
+
+    public function update(int $track_id, string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone): void
+    {
+        $marble_sizes_str = implode(',', $marble_sizes);
+
+        $this->db->executeSQL(
+            <<<SQL
+UPDATE tracks
+SET track_alias = ?, track_name = ?, track_description = ?, marble_sizes_accepted = ?,
+    is_transport = ?, is_splitter = ?, is_landing_zone = ?
+WHERE track_id = ?
+SQL,
+            'ssssiiii',
+            [$alias, $name, $description, $marble_sizes_str, $is_transport, $is_splitter, $is_landing_zone, $track_id]
+        );
+    }
+
     public function getDb(): DbInterface
     {
         return $this->db;
