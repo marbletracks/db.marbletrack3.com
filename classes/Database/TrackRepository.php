@@ -335,6 +335,31 @@ SQL,
         );
     }
 
+    public function insertTrackPart(int $track_id, int $part_id, string $part_role = 'main'): int
+    {
+        return $this->db->insertFromRecord(
+            'track_parts',
+            'iis',
+            [
+                'track_id' => $track_id,
+                'part_id' => $part_id,
+                'part_role' => $part_role
+            ]
+        );
+    }
+
+    public function trackPartExists(int $track_id, int $part_id): bool
+    {
+        $results = $this->db->fetchResults(
+            "SELECT COUNT(*) as count FROM track_parts WHERE track_id = ? AND part_id = ?",
+            'ii',
+            [$track_id, $part_id]
+        );
+
+        $results->setRow(0);
+        return $results->data['count'] > 0;
+    }
+
     public function getDb(): DbInterface
     {
         return $this->db;

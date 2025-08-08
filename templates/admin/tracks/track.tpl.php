@@ -174,6 +174,31 @@
                     <?php endforeach; ?>
                 </fieldset>
             <?php endif; ?>
+
+            <!-- Add Component Part Form -->
+            <div style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border: 1px dashed #dee2e6; border-radius: 5px;">
+                <strong>Add Component Part</strong>
+                <div style="margin-top: 10px;">
+                    <select id="part-select" style="margin-right: 10px; padding: 5px; min-width: 200px;">
+                        <option value="">Select a part to add to this track...</option>
+                        <?php foreach ($available_parts as $avail_part): ?>
+                            <option value="<?= $avail_part->part_id ?>"><?= htmlspecialchars($avail_part->name ?: $avail_part->part_alias) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <select id="part-role-select" style="margin-right: 10px; padding: 5px;">
+                        <option value="main">Main</option>
+                        <option value="rail">Rail</option>
+                        <option value="support">Support</option>
+                        <option value="connector">Connector</option>
+                        <option value="guide">Guide</option>
+                    </select>
+
+                    <button type="button" id="add-part-btn" style="padding: 5px 10px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                        Add Part
+                    </button>
+                </div>
+            </div>
         <?php endif; ?>
 
         <button type="submit"><?= $track ? 'Update Track' : 'Create Track' ?></button>
@@ -305,6 +330,178 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // Handle add part button
+    document.getElementById('add-part-btn').addEventListener('click', function() {
+        const partSelect = document.getElementById('part-select');
+        const roleSelect = document.getElementById('part-role-select');
+        const selectedPartId = parseInt(partSelect.value);
+        const selectedRole = roleSelect.value;
+
+        if (!selectedPartId) {
+            alert('Please select a part to add');
+            return;
+        }
+
+        // Disable button during request
+        this.disabled = true;
+        this.textContent = 'Adding...';
+
+        fetch('/admin/tracks/add_part.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                track_id: <?= $track->track_id ?>,
+                part_id: selectedPartId,
+                part_role: selectedRole
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Add new part to component parts list
+                addPartToList(data.part);
+
+                // Remove part from dropdown
+                const optionToRemove = partSelect.querySelector(`option[value="${selectedPartId}"]`);
+                if (optionToRemove) {
+                    optionToRemove.remove();
+                }
+
+                // Reset form
+                partSelect.value = '';
+                roleSelect.value = 'main';
+            } else {
+                alert('Error adding part: ' + (data.error || 'Unknown error'));
+            }
+
+            // Re-enable button
+            this.disabled = false;
+            this.textContent = 'Add Part';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error adding part: ' + error.message);
+            this.disabled = false;
+            this.textContent = 'Add Part';
+        });
+    });
+
+    // Helper function to add part to DOM
+    function addPartToList(part) {
+        // Find or create component parts fieldset
+        let fieldset = null;
+        const legends = document.querySelectorAll('legend');
+        for (let legend of legends) {
+            if (legend.textContent.includes('Component Parts')) {
+                fieldset = legend.closest('fieldset');
+                break;
+            }
+        }
+
+        if (!fieldset) {
+            // Create fieldset if it doesn't exist
+            const container = document.getElementById('part-select').closest('div');
+            fieldset = document.createElement('fieldset');
+            fieldset.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #e9ecef;';
+            fieldset.innerHTML = '<legend><strong>Component Parts (0)</strong></legend>';
+            container.parentNode.insertBefore(fieldset, container);
+        } else {
+            fieldset.style.display = 'block';
+        }
+
+        // Create part div
+        const partDiv = document.createElement('div');
+        partDiv.style.cssText = 'margin-bottom: 8px; display: flex; align-items: center;';
+        partDiv.setAttribute('data-track-part', '');
+        partDiv.setAttribute('data-track-id', '<?= $track->track_id ?>');
+        partDiv.setAttribute('data-part-id', part.id);
+
+        partDiv.innerHTML = `
+            <span style="color: #6c757d; font-size: 0.9em;">[${part.role}]</span>
+            <a href="/admin/parts/part.php?id=${part.id}" style="margin-left: 5px;">${part.name}</a>
+            <button type="button" class="delete-part-btn" style="margin-left: 10px; padding: 2px 6px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;" title="Remove this part from track">
+                ✕
+            </button>
+        `;
+
+        // Add delete functionality to new button
+        partDiv.querySelector('.delete-part-btn').addEventListener('click', function() {
+            const trackId = parseInt(partDiv.dataset.trackId);
+            const partId = parseInt(partDiv.dataset.partId);
+
+            if (!confirm('Are you sure you want to remove this part from the track?')) {
+                return;
+            }
+
+            this.disabled = true;
+            this.textContent = '...';
+
+            fetch('/admin/tracks/delete_part.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    track_id: trackId,
+                    part_id: partId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    partDiv.style.transition = 'opacity 0.3s';
+                    partDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        // Add part back to dropdown
+                        const partSelect = document.getElementById('part-select');
+                        const option = document.createElement('option');
+                        option.value = partId;
+                        option.textContent = part.name;
+                        partSelect.appendChild(option);
+
+                        partDiv.remove();
+
+                        // Update parts count
+                        const remainingParts = fieldset.querySelectorAll('[data-track-part]');
+                        const legend = fieldset.querySelector('legend strong');
+
+                        if (remainingParts.length === 0) {
+                            fieldset.style.display = 'none';
+                        } else {
+                            legend.textContent = `Component Parts (${remainingParts.length})`;
+                        }
+                    }, 300);
+                } else {
+                    alert('Error removing part: ' + (data.error || 'Unknown error'));
+                    this.disabled = false;
+                    this.textContent = '✕';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error removing part: ' + error.message);
+                this.disabled = false;
+                this.textContent = '✕';
+            });
+        });
+
+        fieldset.appendChild(partDiv);
+
+        // Update count in legend
+        const remainingParts = fieldset.querySelectorAll('[data-track-part]');
+        const legend = fieldset.querySelector('legend strong');
+        legend.textContent = `Component Parts (${remainingParts.length})`;
+
+        // Animate in
+        partDiv.style.opacity = '0';
+        setTimeout(() => {
+            partDiv.style.transition = 'opacity 0.3s';
+            partDiv.style.opacity = '1';
+        }, 10);
+    }
 
     // Handle add upstream connection
     document.getElementById('add-upstream-btn').addEventListener('click', function() {
