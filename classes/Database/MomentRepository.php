@@ -8,13 +8,15 @@ class MomentRepository
 {
     use HasPhotos;
     private DbInterface $db;
+    private string $langCode;
     private string $photoLinkingTable = 'moments_2_photos';
     private string $primaryKeyColumn = 'moment_id';
     private int $moment_id;  // Must be set when the Moment is loaded
 
-    public function __construct(DbInterface $db)
+    public function __construct(DbInterface $db, string $langCode = 'en')
     {
         $this->db = $db;
+        $this->langCode = $langCode;
     }
     public function getId(): int
     {

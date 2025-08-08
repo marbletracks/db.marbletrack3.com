@@ -34,7 +34,7 @@
         <div class="part-moments">
             <ul>
                 <?php foreach ($part->moments as $moment): ?>
-                    <li><?= htmlspecialchars($moment->notes ?? '') ?></li>
+                    <li><?= $moment->take_id ?>:<?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?><?= htmlspecialchars($moment->notes ?? '') ?></li>
                 <?php endforeach; ?>
             </ul>
         </div>
