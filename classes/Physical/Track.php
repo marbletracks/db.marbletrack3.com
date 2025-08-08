@@ -6,7 +6,7 @@ use Domain\TrackHasTypes;
 final class Track
 {
     use TrackHasTypes;
-    
+
     public string $slug;
     public array $parts = [];         // added by Repository during hydrate
     public array $upstream_tracks = []; // tracks that feed into this track
@@ -63,7 +63,7 @@ final class Track
         if ($this->isTransport()) $types[] = 'Transport';
         if ($this->isSplitter()) $types[] = 'Splitter';
         if ($this->isLandingZone()) $types[] = 'Landing Zone';
-        
+
         return implode(' + ', $types);
     }
 }

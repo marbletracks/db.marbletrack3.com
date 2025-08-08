@@ -81,7 +81,7 @@ SELECT t.track_id,
        t.is_splitter,
        t.is_landing_zone
 FROM tracks t
-ORDER BY 
+ORDER BY
     t.is_landing_zone DESC,  -- Landing zones first
     t.track_name ASC
 SQL
@@ -201,13 +201,13 @@ FROM parts p
 JOIN track_parts tp ON p.part_id = tp.part_id
 LEFT JOIN part_translations pt ON p.part_id = pt.part_id AND pt.language_code = ?
 WHERE tp.track_id = ?
-ORDER BY 
-    CASE tp.part_role 
-        WHEN 'main' THEN 1 
-        WHEN 'connector' THEN 2 
-        WHEN 'guide' THEN 3 
-        WHEN 'support' THEN 4 
-        ELSE 5 
+ORDER BY
+    CASE tp.part_role
+        WHEN 'main' THEN 1
+        WHEN 'connector' THEN 2
+        WHEN 'guide' THEN 3
+        WHEN 'support' THEN 4
+        ELSE 5
     END,
     pt.part_name ASC
 SQL,
@@ -237,8 +237,8 @@ SQL,
     private function hydrate(array $data): Track
     {
         // Convert SET field to array
-        $marble_sizes = !empty($data['marble_sizes_accepted']) 
-            ? explode(',', $data['marble_sizes_accepted']) 
+        $marble_sizes = !empty($data['marble_sizes_accepted'])
+            ? explode(',', $data['marble_sizes_accepted'])
             : [];
 
         return new Track(

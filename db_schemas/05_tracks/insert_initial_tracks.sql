@@ -14,27 +14,27 @@ INSERT INTO tracks (track_alias, track_name, track_description, is_transport, is
 -- Create track-to-track connections showing marble flow
 INSERT INTO track_connections (from_track_id, to_track_id, marble_sizes, connection_type, connection_description) VALUES
 -- Outer Spiral feeds into Triple Splitter System
-((SELECT track_id FROM tracks WHERE track_alias = 'outer_spiral'), 
- (SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'), 
+((SELECT track_id FROM tracks WHERE track_alias = 'outer_spiral'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
  'medium,large', 'direct', 'Outer Spiral feeds medium and large marbles into Triple Splitter'),
 
 -- Triple Splitter System splits to landing zones
-((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'), 
- (SELECT track_id FROM tracks WHERE track_alias = 'tft'), 
+((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'tft'),
  'large', 'split', 'Large marbles go to The First Track'),
 
-((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'), 
- (SELECT track_id FROM tracks WHERE track_alias = 'lsslz'), 
+((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'lsslz'),
  'small', 'split', 'Some small marbles go to Left Side Small Landing Zone'),
 
-((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'), 
- (SELECT track_id FROM tracks WHERE track_alias = 'rsslz'), 
+((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'rsslz'),
  'small', 'split', 'Some small marbles go to Right Side Small Landing Zone'),
 
-((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'), 
- (SELECT track_id FROM tracks WHERE track_alias = 'brmlz'), 
+((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'brmlz'),
  'medium', 'split', 'Some medium marbles go to Back Right Medium Landing Zone'),
 
-((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'), 
- (SELECT track_id FROM tracks WHERE track_alias = 'flmlz'), 
+((SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'flmlz'),
  'medium', 'split', 'Some medium marbles go to Front Left Medium Landing Zone');
