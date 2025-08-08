@@ -297,6 +297,35 @@ SQL,
         );
     }
 
+    public function insertConnection(int $from_track_id, int $to_track_id, array $marble_sizes, string $connection_type = 'direct', string $description = ''): int
+    {
+        $marble_sizes_str = implode(',', $marble_sizes);
+
+        return $this->db->insertFromRecord(
+            'track_connections',
+            'iisss',
+            [
+                'from_track_id' => $from_track_id,
+                'to_track_id' => $to_track_id,
+                'marble_sizes' => $marble_sizes_str,
+                'connection_type' => $connection_type,
+                'connection_description' => $description
+            ]
+        );
+    }
+
+    public function connectionExists(int $from_track_id, int $to_track_id): bool
+    {
+        $results = $this->db->fetchResults(
+            "SELECT COUNT(*) as count FROM track_connections WHERE from_track_id = ? AND to_track_id = ?",
+            'ii',
+            [$from_track_id, $to_track_id]
+        );
+
+        $results->setRow(0);
+        return $results->data['count'] > 0;
+    }
+
     public function getDb(): DbInterface
     {
         return $this->db;

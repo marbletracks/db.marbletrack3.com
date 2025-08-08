@@ -80,10 +80,17 @@ if ($submitted) {
 $upstream = [];
 $downstream = [];
 $parts = [];
+$available_tracks = [];
 if ($track) {
     $upstream = $repo->findUpstreamTracks($track->track_id);
     $downstream = $repo->findDownstreamTracks($track->track_id);
     $parts = $repo->findPartsByTrackId($track->track_id);
+
+    // Get all tracks except the current one for the connection dropdowns
+    $all_tracks = $repo->findAll();
+    $available_tracks = array_filter($all_tracks, function($t) use ($track) {
+        return $t->track_id !== $track->track_id;
+    });
 }
 
 $page = new \Template($config);
@@ -93,6 +100,7 @@ $page->set("track", $track);
 $page->set("upstream", $upstream);
 $page->set("downstream", $downstream);
 $page->set("parts", $parts);
+$page->set("available_tracks", $available_tracks);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);
