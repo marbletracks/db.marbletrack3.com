@@ -175,7 +175,8 @@ class DBExistaroo {
             // print_rob($version, false);
             $create_files = glob("$schema_dir/create_*.sql");
             $add_files = glob("$schema_dir/add_*.sql");
-            $sql_files = array_merge($create_files, $add_files);
+            $insert_files = glob("$schema_dir/insert_*.sql");
+            $sql_files = array_merge($create_files, $add_files, $insert_files);
 
             foreach ($sql_files as $file) {
                 $key = "$version/" . basename($file);
