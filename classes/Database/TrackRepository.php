@@ -26,7 +26,6 @@ SELECT t.track_id,
        t.is_transport,
        t.is_splitter,
        t.is_landing_zone,
-       t.entity_type,
        t.entity_type
 FROM tracks t
 WHERE t.track_id = ?

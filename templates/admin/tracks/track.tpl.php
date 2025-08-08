@@ -894,6 +894,5 @@ if (selectedEntityType) {
     selectedEntityType.dispatchEvent(new Event('change'));
 }
 
-});
 </script>
 <?php endif; ?>
