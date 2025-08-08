@@ -386,6 +386,40 @@ SQL,
         return $part_ids;
     }
 
+    public function findTracksByPartId(int $part_id): array
+    {
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT t.track_id,
+       t.track_alias,
+       t.track_name,
+       t.track_description,
+       t.marble_sizes_accepted,
+       t.is_transport,
+       t.is_splitter,
+       t.is_landing_zone,
+       tp.part_role,
+       tp.is_exclusive_to_track
+FROM tracks t
+JOIN track_parts tp ON t.track_id = tp.track_id
+WHERE tp.part_id = ?
+ORDER BY t.track_name ASC
+SQL,
+            'i',
+            [$part_id]
+        );
+
+        $tracks = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $track = $this->hydrate($results->data);
+            $track->part_role = $results->data['part_role'];
+            $track->part_is_exclusive = (bool) $results->data['is_exclusive_to_track'];
+            $tracks[] = $track;
+        }
+        return $tracks;
+    }
+
     public function getDb(): DbInterface
     {
         return $this->db;

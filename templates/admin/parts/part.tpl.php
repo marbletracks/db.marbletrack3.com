@@ -28,6 +28,36 @@
             <div id="autocomplete"></div>
         </label><br><br>
 
+        <?php if ($part && !empty($tracks)): ?>
+        <fieldset style="margin-bottom: 20px; padding: 15px; border: 1px solid #e9ecef;">
+            <?php if (count($tracks) > 1): ?>
+                <legend><strong>Used in <?= count($tracks) ?> Tracks</strong></legend>
+            <?php endif; ?>
+            <?php foreach ($tracks as $track): ?>
+                <div style="margin-bottom: 8px; display: flex; align-items: center;">
+                    <span style="color: #6c757d; font-size: 0.9em;">[<?= htmlspecialchars($track->part_role ?? 'main') ?>]</span>
+                    <a href="/admin/tracks/track.php?id=<?= $track->track_id ?>" style="margin-left: 5px;"><?= htmlspecialchars($track->track_name) ?></a>
+                    <?php if ($track->part_is_exclusive ?? false): ?>
+                        <span style="margin-left: 8px; color: #dc3545; font-size: 14px;" title="This part is exclusive to this track">🔒</span>
+                    <?php else: ?>
+                        <span style="margin-left: 8px; color: #28a745; font-size: 14px;" title="This part can be used in other tracks">🌐</span>
+                    <?php endif; ?>
+                    <span style="margin-left: 10px; color: #6c757d; font-size: 0.9em;">
+                        <?= htmlspecialchars($track->getMarbleSizesDisplay()) ?>
+                        <?php
+                        $types = [];
+                        if ($track->is_transport) $types[] = 'Transport';
+                        if ($track->is_splitter) $types[] = 'Splitter';
+                        if ($track->is_landing_zone) $types[] = 'Landing Zone';
+                        if (!empty($types)): ?>
+                            | <?= implode(', ', $types) ?>
+                        <?php endif; ?>
+                    </span>
+                </div>
+            <?php endforeach; ?>
+        </fieldset>
+        <?php endif; ?>
+
         <?php if ($part && !empty($part->moments)): ?>
         <h2>Associated Moments</h2>
         <h4>(Oldest on top)</h4>
