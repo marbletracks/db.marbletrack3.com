@@ -15,6 +15,7 @@ $repo = new \Database\PartsRepository(
     db: $mla_database,
     langCode: 'en',
 );
+$trackRepo = new \Database\TrackRepository($mla_database);
 
 // Get filter parameters
 $filter = trim($_GET['filter'] ?? '');
@@ -27,14 +28,26 @@ if (!empty($filter)) {
     $parts = $repo->findAll();
 }
 
+// Get track associations for all parts
+$partTracks = [];
+foreach ($parts as $part) {
+    $partTracks[$part->part_id] = $trackRepo->findTracksByPartId($part->part_id);
+}
+
 // Apply status filter
 if ($status === 'needs_work') {
     $parts = array_filter($parts, function($part) {
         return trim($part->description) === '' || trim($part->description) === trim($part->name);
     });
+} elseif ($status === 'unassigned') {
+    $parts = array_filter($parts, function($part) use ($partTracks) {
+        return empty($partTracks[$part->part_id]);
+    });
 } elseif ($status === 'complete') {
-    $parts = array_filter($parts, function($part) {
-        return trim($part->description) !== '' && trim($part->description) !== trim($part->name);
+    $parts = array_filter($parts, function($part) use ($partTracks) {
+        $hasGoodDescription = trim($part->description) !== '' && trim($part->description) !== trim($part->name);
+        $hasTrackAssignment = !empty($partTracks[$part->part_id]);
+        return $hasGoodDescription && $hasTrackAssignment;
     });
 }
 
@@ -43,6 +56,7 @@ $page->setTemplate(template_file: "admin/parts/index.tpl.php");
 $page->set(name: "parts", value: $parts);
 $page->set(name: "filter", value: $filter);
 $page->set(name: "status", value: $status);
+$page->set(name: "partTracks", value: $partTracks);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template(config: $config);

@@ -14,6 +14,10 @@
                style="padding: 5px 12px; margin-left: 10px; text-decoration: none; border-radius: 4px; <?= $status === 'needs_work' ? 'background: #dc3545; color: white;' : 'background: #f8f9fa; border: 1px solid #dee2e6; color: #dc3545;' ?>">
                 🚨 Needs Work
             </a>
+            <a href="/admin/parts/?status=unassigned<?= !empty($filter) ? '&filter=' . urlencode($filter) : '' ?>"
+               style="padding: 5px 12px; margin-left: 5px; text-decoration: none; border-radius: 4px; <?= $status === 'unassigned' ? 'background: #fd7e14; color: white;' : 'background: #f8f9fa; border: 1px solid #dee2e6; color: #fd7e14;' ?>">
+                🔗 Unassigned
+            </a>
             <a href="/admin/parts/?status=complete<?= !empty($filter) ? '&filter=' . urlencode($filter) : '' ?>"
                style="padding: 5px 12px; margin-left: 5px; text-decoration: none; border-radius: 4px; <?= $status === 'complete' ? 'background: #28a745; color: white;' : 'background: #f8f9fa; border: 1px solid #dee2e6; color: #28a745;' ?>">
                 ✅ Complete
@@ -42,7 +46,7 @@
                 <?php if (!empty($filter)): ?>
                     Searching: <strong><?= htmlspecialchars($filter) ?></strong> |
                 <?php endif; ?>
-                Filter: <strong><?= $status === 'needs_work' ? 'Needs Work' : ($status === 'complete' ? 'Complete' : 'All Parts') ?></strong> |
+                Filter: <strong><?= $status === 'needs_work' ? 'Needs Work' : ($status === 'unassigned' ? 'Unassigned' : ($status === 'complete' ? 'Complete' : 'All Parts')) ?></strong> |
                 <strong><?= count($parts) ?></strong> part<?= count($parts) !== 1 ? 's' : '' ?> found
             </p>
         <?php endif; ?>
@@ -85,6 +89,30 @@
                         <?php endif; ?>
                     <?php else: ?>
                         <em style="color: #dc3545;">[Needs description]</em><br>
+                    <?php endif; ?>
+
+                    <?php
+                    $tracks = $partTracks[$part->part_id] ?? [];
+                    ?>
+                    <?php if (!empty($tracks)): ?>
+                        <strong>Tracks:</strong>
+                        <?php foreach ($tracks as $i => $track): ?>
+                            <?php if ($i > 0) echo ', '; ?>
+                            <a href="/admin/tracks/track.php?id=<?= $track->track_id ?>" style="text-decoration: none;">
+                                <?= htmlspecialchars($track->track_name) ?>
+                            </a>
+                            <span style="font-size: 0.9em; color: #6c757d;">
+                                (<?= htmlspecialchars($track->part_role ?? 'main') ?>)
+                            </span>
+                            <?php if ($track->part_is_exclusive ?? false): ?>
+                                <span style="color: #dc3545;" title="Exclusive to this track">🔒</span>
+                            <?php else: ?>
+                                <span style="color: #28a745;" title="Available to other tracks">🌐</span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        <br>
+                    <?php else: ?>
+                        <em style="color: #fd7e14;"><strong>Tracks:</strong> [Unassigned]</em><br>
                     <?php endif; ?>
 
                     <em>Alias:</em> <a href="<?= $part->frontend_link; ?>"><?= htmlspecialchars($part->part_alias ?? '—') ?></a><br>
