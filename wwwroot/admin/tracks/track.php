@@ -8,8 +8,10 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 use Database\TrackRepository;
+use Database\PartsRepository;
 
 $repo = new TrackRepository($mla_database);
+$partsRepo = new PartsRepository($mla_database, 'en');
 $errors = [];
 $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
@@ -80,10 +82,26 @@ if ($submitted) {
 $upstream = [];
 $downstream = [];
 $parts = [];
+$available_tracks = [];
+$available_parts = [];
 if ($track) {
     $upstream = $repo->findUpstreamTracks($track->track_id);
     $downstream = $repo->findDownstreamTracks($track->track_id);
     $parts = $repo->findPartsByTrackId($track->track_id);
+
+    // Get all tracks except the current one for the connection dropdowns
+    $all_tracks = $repo->findAll();
+    $available_tracks = array_filter($all_tracks, function($t) use ($track) {
+        return $t->track_id !== $track->track_id;
+    });
+
+    // Get all parts for the add part dropdown
+    $all_parts = $partsRepo->findAll();
+    // Filter out parts that are already in this track
+    $current_part_ids = array_map(function($p) { return $p->part_id; }, $parts);
+    $available_parts = array_filter($all_parts, function($p) use ($current_part_ids) {
+        return !in_array($p->part_id, $current_part_ids);
+    });
 }
 
 $page = new \Template($config);
@@ -93,6 +111,8 @@ $page->set("track", $track);
 $page->set("upstream", $upstream);
 $page->set("downstream", $downstream);
 $page->set("parts", $parts);
+$page->set("available_tracks", $available_tracks);
+$page->set("available_parts", $available_parts);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template($config);

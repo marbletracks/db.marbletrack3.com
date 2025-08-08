@@ -288,6 +288,78 @@ SQL,
         );
     }
 
+    public function deleteConnection(int $from_track_id, int $to_track_id): void
+    {
+        $this->db->executeSQL(
+            "DELETE FROM track_connections WHERE from_track_id = ? AND to_track_id = ?",
+            'ii',
+            [$from_track_id, $to_track_id]
+        );
+    }
+
+    public function insertConnection(int $from_track_id, int $to_track_id, array $marble_sizes, string $connection_type = 'direct', string $description = ''): int
+    {
+        $marble_sizes_str = implode(',', $marble_sizes);
+
+        return $this->db->insertFromRecord(
+            'track_connections',
+            'iisss',
+            [
+                'from_track_id' => $from_track_id,
+                'to_track_id' => $to_track_id,
+                'marble_sizes' => $marble_sizes_str,
+                'connection_type' => $connection_type,
+                'connection_description' => $description
+            ]
+        );
+    }
+
+    public function connectionExists(int $from_track_id, int $to_track_id): bool
+    {
+        $results = $this->db->fetchResults(
+            "SELECT COUNT(*) as count FROM track_connections WHERE from_track_id = ? AND to_track_id = ?",
+            'ii',
+            [$from_track_id, $to_track_id]
+        );
+
+        $results->setRow(0);
+        return $results->data['count'] > 0;
+    }
+
+    public function deleteTrackPart(int $track_id, int $part_id): void
+    {
+        $this->db->executeSQL(
+            "DELETE FROM track_parts WHERE track_id = ? AND part_id = ?",
+            'ii',
+            [$track_id, $part_id]
+        );
+    }
+
+    public function insertTrackPart(int $track_id, int $part_id, string $part_role = 'main'): int
+    {
+        return $this->db->insertFromRecord(
+            'track_parts',
+            'iis',
+            [
+                'track_id' => $track_id,
+                'part_id' => $part_id,
+                'part_role' => $part_role
+            ]
+        );
+    }
+
+    public function trackPartExists(int $track_id, int $part_id): bool
+    {
+        $results = $this->db->fetchResults(
+            "SELECT COUNT(*) as count FROM track_parts WHERE track_id = ? AND part_id = ?",
+            'ii',
+            [$track_id, $part_id]
+        );
+
+        $results->setRow(0);
+        return $results->data['count'] > 0;
+    }
+
     public function getDb(): DbInterface
     {
         return $this->db;
