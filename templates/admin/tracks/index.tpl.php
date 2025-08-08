@@ -15,31 +15,6 @@
     $other_tracks = array_filter($tracks, fn($track) => !$track->isLandingZone());
     ?>
 
-    <?php if (!empty($landing_zones)): ?>
-        <h2>Landing Zones (Terminal Destinations)</h2>
-        <ul style="list-style: none; padding: 0; margin-bottom: 30px;">
-            <?php foreach ($landing_zones as $track): ?>
-                <li style="display: flex; align-items: flex-start; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-left: 4px solid #28a745;">
-                    <div>
-                        <strong><?= htmlspecialchars($track->track_name) ?></strong>
-                        <span style="color: #6c757d; margin-left: 10px;">(<?= htmlspecialchars($track->getMarbleSizesDisplay()) ?>)</span><br>
-
-                        <?php if (!empty($track->track_description)): ?>
-                            <?= nl2br(htmlspecialchars($track->track_description)) ?><br>
-                        <?php endif; ?>
-
-                        <em>Alias:</em> <?= htmlspecialchars($track->track_alias) ?> |
-                        <em>Type:</em> <?= htmlspecialchars($track->getTypeDescription()) ?><br>
-
-                        <a href="/admin/tracks/track.php?id=<?= htmlspecialchars($track->track_id) ?>">
-                            Edit (id=<?= htmlspecialchars($track->track_id) ?>)
-                        </a>
-                    </div>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
     <?php if (!empty($other_tracks)): ?>
         <h2>Transport & Splitter Tracks</h2>
         <ul style="list-style: none; padding: 0;">
@@ -79,4 +54,30 @@
     </div>
 
     <p style="margin-top: 20px;"><a href="/admin/tracks/track.php">Create New Track</a></p>
+
+    <?php if (!empty($landing_zones)): ?>
+        <h2>Landing Zones (Terminal Destinations)</h2>
+        <ul style="list-style: none; padding: 0; margin-bottom: 30px;">
+            <?php foreach ($landing_zones as $track): ?>
+                <li style="display: flex; align-items: flex-start; margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-left: 4px solid #28a745;">
+                    <div>
+                        <strong><?= htmlspecialchars($track->track_name) ?></strong>
+                        <span style="color: #6c757d; margin-left: 10px;">(<?= htmlspecialchars($track->getMarbleSizesDisplay()) ?>)</span><br>
+
+                        <?php if (!empty($track->track_description)): ?>
+                            <?= nl2br(htmlspecialchars($track->track_description)) ?><br>
+                        <?php endif; ?>
+
+                        <em>Alias:</em> <?= htmlspecialchars($track->track_alias) ?> |
+                        <em>Type:</em> <?= htmlspecialchars($track->getTypeDescription()) ?><br>
+
+                        <a href="/admin/tracks/track.php?id=<?= htmlspecialchars($track->track_id) ?>">
+                            Edit (id=<?= htmlspecialchars($track->track_id) ?>)
+                        </a>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
 </div>
