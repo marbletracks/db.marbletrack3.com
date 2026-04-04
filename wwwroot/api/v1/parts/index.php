@@ -156,6 +156,7 @@ function partToArray(\Physical\Part $part, array $tracks, bool $detail = false):
     $data = [
         'part_id'    => $part->part_id,
         'part_alias' => $part->part_alias,
+        'slug'       => $part->slug,
         'name'       => $part->name,
         'has_description' => ($part->description !== '' && $part->description !== $part->name),
         'photo_count'     => count($part->photos),

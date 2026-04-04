@@ -13,6 +13,47 @@ $method = $_SERVER['REQUEST_METHOD'];
 $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $sub = trim(preg_replace('#^/api/v1/moments#', '', $uri_path), '/');
 
+// ── PATCH /api/v1/moments/{id} — update moment ──────────────────────────────
+if ($method === 'PATCH' && $sub !== '') {
+    require_write();
+
+    if (!ctype_digit($sub)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Moment ID must be numeric']);
+        exit;
+    }
+
+    $moment = $repo->findById((int) $sub);
+    if (!$moment) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Moment not found', 'moment_id' => (int) $sub]);
+        exit;
+    }
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid JSON body']);
+        exit;
+    }
+
+    $repo->update(
+        moment_id: $moment->moment_id,
+        frame_start: array_key_exists('frame_start', $input) ? $input['frame_start'] : $moment->frame_start,
+        frame_end: array_key_exists('frame_end', $input) ? $input['frame_end'] : $moment->frame_end,
+        take_id: array_key_exists('take_id', $input) ? $input['take_id'] : $moment->take_id,
+        notes: $input['notes'] ?? $moment->notes,
+        moment_date: $input['moment_date'] ?? $moment->moment_date
+    );
+
+    $updated = $repo->findById($moment->moment_id);
+    $data = momentToArray($updated);
+    $data['translations'] = $repo->findTranslations($updated->moment_id);
+
+    echo json_encode($data);
+    exit;
+}
+
 // ── POST /api/v1/moments — create moment ─────────────────────────────────────
 if ($method === 'POST' && $sub === '') {
     require_write();

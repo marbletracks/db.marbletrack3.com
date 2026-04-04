@@ -313,6 +313,15 @@ class MomentRepository
         return $moments;
     }
 
+    public function update(int $moment_id, ?int $frame_start = null, ?int $frame_end = null, ?int $take_id = null, ?string $notes = null, ?string $moment_date = null): void
+    {
+        $this->db->executeSQL(
+            "UPDATE moments SET frame_start = ?, frame_end = ?, take_id = ?, notes = ?, moment_date = ? WHERE moment_id = ?",
+            'iiissi',
+            [$frame_start, $frame_end, $take_id, $notes, $moment_date, $moment_id]
+        );
+    }
+
     public function insert(int $frame_start = null, int $frame_end = null, int $take_id = null, string $notes = null, string $moment_date = null): int
     {
         return $this->db->insertFromRecord(

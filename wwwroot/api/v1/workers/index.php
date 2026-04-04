@@ -41,6 +41,7 @@ function workerToArray(\Physical\Worker $worker, bool $detail = false): array
     $data = [
         'worker_id'    => $worker->worker_id,
         'worker_alias' => $worker->worker_alias,
+        'slug'         => $worker->slug,
         'name'         => $worker->name,
         'photo_count'  => count($worker->photos),
         'moment_count' => count($worker->moments),
