@@ -291,6 +291,17 @@ class MomentRepository
         );
     }
 
+    public function updateTranslationNote(int $moment_id, int $perspective_id, string $perspective_type, string $translated_note): bool
+    {
+        $this->db->executeSQL(
+            "UPDATE moment_translations SET translated_note = ? WHERE moment_id = ? AND perspective_entity_id = ? AND perspective_entity_type = ?",
+            'siis',
+            [$translated_note, $moment_id, $perspective_id, $perspective_type]
+        );
+
+        return $this->db->getAffectedRows() > 0;
+    }
+
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(

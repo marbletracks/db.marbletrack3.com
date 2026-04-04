@@ -15,6 +15,47 @@ $method = $_SERVER['REQUEST_METHOD'];
 $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $sub = trim(preg_replace('#^/api/v1/moments#', '', $uri_path), '/');
 
+// ── PATCH /api/v1/moments/{id}/translations — update perspective notes ───────
+if ($method === 'PATCH' && preg_match('#^(\d+)/translations$#', $sub, $m)) {
+    require_write();
+
+    $moment_id = (int) $m[1];
+    $moment = $repo->findById($moment_id);
+    if (!$moment) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Moment not found', 'moment_id' => $moment_id]);
+        exit;
+    }
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input || !isset($input['translations']) || !is_array($input['translations'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Expected {"translations": [{"entity_type": "worker", "entity_id": 4, "note": "..."}]}']);
+        exit;
+    }
+
+    $updated = 0;
+    foreach ($input['translations'] as $t) {
+        if (empty($t['entity_type']) || empty($t['entity_id']) || !isset($t['note'])) {
+            continue;
+        }
+        $ok = $repo->updateTranslationNote(
+            $moment_id,
+            (int) $t['entity_id'],
+            $t['entity_type'],
+            $t['note']
+        );
+        if ($ok) $updated++;
+    }
+
+    $data = momentToArray($repo->findById($moment_id));
+    $data['translations'] = $repo->findTranslations($moment_id);
+    $data['translations_updated'] = $updated;
+
+    echo json_encode($data);
+    exit;
+}
+
 // ── PATCH /api/v1/moments/{id} — update moment ──────────────────────────────
 if ($method === 'PATCH' && $sub !== '') {
     require_write();
