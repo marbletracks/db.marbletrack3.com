@@ -14,9 +14,18 @@ if ($sub === '') {
     $tracks = $repo->findAll();
 
     $output = [];
-    for ($i = 0; $i < $tracks->numRows(); $i++) {
-        $tracks->setRow($i);
-        $output[] = $tracks->data;
+    foreach ($tracks as $track) {
+        $output[] = [
+            'track_id'              => $track->track_id,
+            'track_alias'           => $track->track_alias,
+            'track_name'            => $track->track_name,
+            'track_description'     => $track->track_description,
+            'marble_sizes_accepted' => $track->marble_sizes_accepted,
+            'is_transport'          => (bool) $track->is_transport,
+            'is_splitter'           => (bool) $track->is_splitter,
+            'is_landing_zone'       => (bool) $track->is_landing_zone,
+            'entity_type'           => $track->entity_type,
+        ];
     }
 
     echo json_encode(['tracks' => $output, 'total' => count($output)]);
