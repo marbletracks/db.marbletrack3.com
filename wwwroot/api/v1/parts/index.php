@@ -60,10 +60,10 @@ function partToArray(\Physical\Part $part, array $tracks, bool $detail = false):
         'moment_count'    => count($part->moments),
         'tracks' => array_map(function ($t) {
             return [
-                'track_id'   => $t['track_id'] ?? $t->track_id ?? null,
-                'track_name' => $t['track_name'] ?? $t->track_name ?? null,
-                'part_role'  => $t['part_role'] ?? null,
-                'is_exclusive' => (bool) ($t['is_exclusive_to_track'] ?? false),
+                'track_id'     => $t->track_id,
+                'track_name'   => $t->track_name,
+                'part_role'    => $t->part_role ?? null,
+                'is_exclusive' => (bool) ($t->part_is_exclusive ?? false),
             ];
         }, $tracks),
     ];
