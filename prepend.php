@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Connecting Tracks to Tracks and Parts";
+const SENTIMENTAL_VERSION = "Making an API for Claude to help me";
 
 # write errors to screen
 ini_set('display_errors', 1);
