@@ -315,11 +315,24 @@ class MomentRepository
 
     public function update(int $moment_id, ?int $frame_start = null, ?int $frame_end = null, ?int $take_id = null, ?string $notes = null, ?string $moment_date = null): void
     {
+        // Grab old notes before updating, so we can update matching translations
+        $old = $this->findById($moment_id);
+        $old_notes = $old ? $old->notes : null;
+
         $this->db->executeSQL(
             "UPDATE moments SET frame_start = ?, frame_end = ?, take_id = ?, notes = ?, moment_date = ? WHERE moment_id = ?",
             'iiissi',
             [$frame_start, $frame_end, $take_id, $notes, $moment_date, $moment_id]
         );
+
+        // Update translations that still match the old notes (preserve manually edited ones)
+        if ($notes !== null && $old_notes !== null && $notes !== $old_notes) {
+            $this->db->executeSQL(
+                "UPDATE moment_translations SET translated_note = ? WHERE moment_id = ? AND translated_note = ?",
+                'sis',
+                [$notes, $moment_id, $old_notes]
+            );
+        }
     }
 
     public function insert(int $frame_start = null, int $frame_end = null, int $take_id = null, string $notes = null, string $moment_date = null): int
