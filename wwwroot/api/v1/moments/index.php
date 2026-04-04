@@ -1,9 +1,11 @@
 <?php
 /**
- * GET  /api/v1/moments          — list all moments
- * GET  /api/v1/moments?take_id= — filter by take
- * GET  /api/v1/moments/42       — single moment by ID with translations
- * POST /api/v1/moments          — create a new moment
+ * GET  /api/v1/moments                   — list all moments
+ * GET  /api/v1/moments?take_id=          — filter by take
+ * GET  /api/v1/moments?needs_perspective=1 — only moments with identical/missing translations
+ * GET  /api/v1/moments/42                — single moment by ID with translations
+ * PATCH /api/v1/moments/42               — update moment notes/dates
+ * POST /api/v1/moments                   — create a new moment
  */
 require_once __DIR__ . '/../_auth.php';
 
@@ -97,6 +99,38 @@ if ($method === 'POST' && $sub === '') {
 // ── GET /api/v1/moments — list ───────────────────────────────────────────────
 if ($method === 'GET' && $sub === '') {
     $take_id = isset($_GET['take_id']) ? (int) $_GET['take_id'] : null;
+    $needs_perspective = isset($_GET['needs_perspective']) && $_GET['needs_perspective'] === '1';
+
+    if ($needs_perspective) {
+        // Find moments where at least one translation note is identical to moments.notes
+        $results = $mla_database->fetchResults(
+            "SELECT DISTINCT m.moment_id, m.frame_start, m.frame_end, m.take_id, m.notes, m.moment_date
+             FROM moments m
+             JOIN moment_translations mt ON m.moment_id = mt.moment_id
+             WHERE mt.translated_note = m.notes
+             ORDER BY m.moment_id ASC"
+        );
+
+        $output = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $row = $results->data;
+            $moment_id = (int) $row['moment_id'];
+            $data = [
+                'moment_id'   => $moment_id,
+                'moment_date' => $row['moment_date'],
+                'frame_start' => $row['frame_start'] !== null ? (int) $row['frame_start'] : null,
+                'frame_end'   => $row['frame_end'] !== null ? (int) $row['frame_end'] : null,
+                'take_id'     => $row['take_id'] !== null ? (int) $row['take_id'] : null,
+                'notes'       => $row['notes'],
+            ];
+            $data['translations'] = $repo->findTranslations($moment_id);
+            $output[] = $data;
+        }
+
+        echo json_encode(['moments' => $output, 'total' => count($output)]);
+        exit;
+    }
 
     if ($take_id) {
         $moments = $repo->findWithinTakeId($take_id);
