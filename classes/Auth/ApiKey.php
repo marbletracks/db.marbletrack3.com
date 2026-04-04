@@ -10,6 +10,7 @@ use Database\DbInterface;
 class ApiKey
 {
     private ?int $last_key_id = null;
+    private bool $last_key_can_write = false;
 
     public function __construct(
         private DbInterface $db,
@@ -24,7 +25,7 @@ class ApiKey
         $key_hash = hash('sha256', $raw_key);
 
         $results = $this->db->fetchResults(
-            "SELECT key_id, user_id FROM api_keys WHERE api_key_hash = ? AND is_active = 1 LIMIT 1",
+            "SELECT key_id, user_id, can_write FROM api_keys WHERE api_key_hash = ? AND is_active = 1 LIMIT 1",
             's',
             [$key_hash]
         );
@@ -37,6 +38,7 @@ class ApiKey
         $row = $results->data;
 
         $this->last_key_id = (int) $row['key_id'];
+        $this->last_key_can_write = (bool) ($row['can_write'] ?? false);
 
         $this->db->executeSQL(
             "UPDATE api_keys SET last_used = NOW() WHERE key_id = ?",
@@ -53,6 +55,14 @@ class ApiKey
     public function getLastKeyId(): ?int
     {
         return $this->last_key_id;
+    }
+
+    /**
+     * Returns whether the last validated key has write permission.
+     */
+    public function canWrite(): bool
+    {
+        return $this->last_key_can_write;
     }
 
     /**

@@ -18,6 +18,7 @@ $sub = trim(preg_replace('#^/api/v1/parts#', '', $uri_path), '/');
 
 // ── PATCH /api/v1/parts/{id or alias} — update part description ──────────────
 if ($method === 'PATCH' && $sub !== '') {
+    require_write();
     $part = findPart($repo, $sub);
     if (!$part) {
         http_response_code(404);
@@ -52,6 +53,7 @@ if ($method === 'PATCH' && $sub !== '') {
 
 // ── POST /api/v1/parts/{id or alias}/tracks — assign to track ────────────────
 if ($method === 'POST' && preg_match('#^([^/]+)/tracks$#', $sub, $m)) {
+    require_write();
     $part = findPart($repo, $m[1]);
     if (!$part) {
         http_response_code(404);
