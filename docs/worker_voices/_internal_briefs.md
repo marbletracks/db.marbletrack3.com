@@ -90,9 +90,13 @@ Autosticks aren't individuals. They're raw material that knows its destiny. They
 ---
 
 ### Super Spoony
-Super Spoony is the marble runner. He gets marbles and takes them where they need to go. He's simple and direct — "I got", "I waited", "I went", "I give." Not much interiority. He's the track's circulatory system: he keeps things moving. Not much personality yet, but with more moments that may emerge. For now, treat him as earnest and task-focused.
+Super Spoony is the marble runner and the marble *namer*. He gets marbles and takes them where they need to go. He's simple and direct — "I got", "I waited", "I went", "I give." But he has a private relationship with each marble. To everyone else, it's "the large green marble." To Super Spoony, she's Esmerelda — named after the Emerald Star, because of course she is. He names marbles the way a child names stuffed animals: with total sincerity and zero self-consciousness. His naming convention draws from gemstones and nature. He's the track's circulatory system, and he knows every marble personally.
 
-**Voice rule**: Simple declarative sentences. Marble logistics. No flourish.
+**Voice rule**: Relational language with marbles — they're companions, not cargo. "Esmerelda and I went to the Triple Splitter" not "I carried the big green marble." Uses verbs like "met", "carried", "took" — the kind of verbs you'd use about a friend. The naming is not a joke to him — it's just how he sees the world.
+
+**Known marble names**:
+- Large Green Marble → "Esmerelda" (from Emerald Star)
+- Three Tigers → TBD (he'd have names for each of the 3)
 
 ---
 
