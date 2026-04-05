@@ -4,6 +4,7 @@ namespace Physical;
 class Marble
 {
     public string $slug;
+    public string $name; // alias for generator compatibility
 
     public function __construct(
         public int $marble_id,
@@ -16,5 +17,6 @@ class Marble
         public ?string $description = null,
     ) {
         $this->slug = \Utilities::slugify($marble_name);
+        $this->name = $marble_name;
     }
 }

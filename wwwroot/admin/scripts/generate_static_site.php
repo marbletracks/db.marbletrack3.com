@@ -63,10 +63,12 @@ function expandShortcodesForFrontend(Database\DbInterface $mla_database, string 
 
     $worker_repo = new \Database\WorkersRepository($mla_database, $langCode);
     $parts_repo = new \Database\PartsRepository($mla_database, $langCode);
+    $marbles_repo = new \Database\MarblesRepository($mla_database);
     $expand_workers = $worker_repo->expandShortcodesForFrontend($text, "worker", $langCode);
     $expand_parts = $parts_repo->expandShortcodesForFrontend($expand_workers, "part", $langCode);
+    $expand_marbles = $marbles_repo->expandShortcodesForFrontend($expand_parts, "marble", $langCode);
 
-    return $expand_parts;
+    return $expand_marbles;
 }
 
 $config_data = function_exists('yaml_parse_file') ? yaml_parse_file($configFile) : simple_yaml_parse(file_get_contents($configFile));

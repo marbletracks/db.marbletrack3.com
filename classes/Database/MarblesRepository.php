@@ -11,7 +11,7 @@ class MarblesRepository
 
     private DbInterface $db;
 
-    public function __construct(DbInterface $db)
+    public function __construct(DbInterface $db, string $langCode = 'en')
     {
         $this->db = $db;
     }
