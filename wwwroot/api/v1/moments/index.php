@@ -39,6 +39,8 @@ if ($method === 'PATCH' && preg_match('#^(\d+)/translations$#', $sub, $m)) {
         if (empty($t['entity_type']) || empty($t['entity_id']) || !isset($t['note'])) {
             continue;
         }
+        // Create if doesn't exist, then update with the desired note
+        $repo->createTranslationIfNotExists($moment_id, (int) $t['entity_id'], $t['entity_type']);
         $ok = $repo->updateTranslationNote(
             $moment_id,
             (int) $t['entity_id'],
