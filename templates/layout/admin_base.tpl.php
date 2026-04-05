@@ -51,6 +51,7 @@
             <a href="/admin/notebooks/pages">Pages</a>
           </div>
         </div> |
+        <a href="/admin/settings/api_keys.php">API Keys</a> |
     </div>
     <div class="PageWrapper">
         <?= $page_content ?>
