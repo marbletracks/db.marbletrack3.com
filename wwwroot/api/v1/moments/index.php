@@ -127,6 +127,11 @@ if ($method === 'POST' && $sub === '') {
             $repo->createTranslationIfNotExists($moment_id, (int) $worker_id, 'worker');
         }
     }
+    if (!empty($input['marble_ids'])) {
+        foreach ($input['marble_ids'] as $marble_id) {
+            $repo->createTranslationIfNotExists($moment_id, (int) $marble_id, 'marble');
+        }
+    }
 
     $moment = $repo->findById($moment_id);
     $data = momentToArray($moment);
