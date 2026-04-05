@@ -27,7 +27,7 @@
                             (<?= htmlspecialchars($moment->moment_date) ?>)
                         <?php endif; ?>
                         <?php if ($moment->take_id): ?>
-                            <?= $moment->take_id ?>:<?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>
+                            <?= $moment->take_id ?>:<?= $moment->frame_start ?>-<?= $moment->frame_end ?>
                         <?php endif; ?>
                         <?= htmlspecialchars($moment->notes ?? '') ?>
                     </li>
