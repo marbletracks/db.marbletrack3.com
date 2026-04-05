@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Making an API for Claude to help me";
+const SENTIMENTAL_VERSION = "Found My Marbles";
 
 # write errors to screen
 ini_set('display_errors', 1);
