@@ -20,6 +20,7 @@ class MarblesRepository
 
     public function getSELECTExactAlias(): string
     {
+        // First param (?) is lang code from HasShortcodes trait — unused but must accept it
         return <<<SQL
 SELECT
     m.marble_id AS id,
@@ -27,15 +28,16 @@ SELECT
     m.slug,
     m.marble_name AS name
 FROM marbles m
-WHERE m.marble_alias = ?
-  OR m.marble_name = ?
-  OR m.marble_name = ?
+WHERE ? IS NOT NULL
+  AND (m.marble_alias = ?
+  OR m.marble_name = ?)
 LIMIT ?
 SQL;
     }
 
     public function getSELECTLikeAlias(): string
     {
+        // First param (?) is lang code from HasShortcodes trait — unused but must accept it
         return <<<SQL
 SELECT
     m.marble_id AS id,
@@ -43,9 +45,9 @@ SELECT
     m.slug,
     m.marble_name AS name
 FROM marbles m
-WHERE m.marble_alias LIKE ?
-  OR m.marble_name LIKE ?
-  OR m.marble_name LIKE ?
+WHERE ? IS NOT NULL
+  AND (m.marble_alias LIKE ?
+  OR m.marble_name LIKE ?)
 LIMIT ?
 SQL;
     }
