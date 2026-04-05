@@ -4,7 +4,7 @@
 First person, task-focused. Super Spoony gets marbles and delivers them. Simple, direct lines. He is the marble namer — he gives each marble a personal name based on gemstone/nature associations. Everyone else calls them by color and size; Super Spoony uses their real names.
 
 ## Marble Names (Super Spoony only)
-- Large Green Marble → **"Esmerelda"** (from "Emerald Star")
+- Emerald Star → **"Esmerelda"** (his pet name for her)
 - Three Tigers → TBD (Super Spoony would have names for each of the 3)
 
 ## Patterns
