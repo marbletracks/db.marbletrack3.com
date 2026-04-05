@@ -3,13 +3,17 @@ namespace Database;
 
 use Database\DbInterface;
 use Domain\HasShortcodes;
+use Domain\HasMoments;
 use Physical\Marble;
 
 class MarblesRepository
 {
     use HasShortcodes;
+    use HasMoments;
 
     private DbInterface $db;
+    private string $primaryKeyColumn = 'marble_id';
+    private int $marble_id;
 
     public function __construct(DbInterface $db, string $langCode = 'en')
     {
@@ -72,6 +76,21 @@ SQL;
     public function getTableAlias(): string
     {
         return 'm';
+    }
+
+    public function getPrimaryKeyColumn(): string
+    {
+        return $this->primaryKeyColumn;
+    }
+
+    public function getId(): int
+    {
+        return $this->marble_id;
+    }
+
+    public function getMomentLinkingTable(): string
+    {
+        return '';
     }
 
     public function getDb(): DbInterface
@@ -165,7 +184,7 @@ SQL;
 
     private function hydrate(array $row): Marble
     {
-        return new Marble(
+        $marble = new Marble(
             marble_id: (int) $row['marble_id'],
             marble_alias: $row['marble_alias'],
             marble_name: $row['marble_name'],
@@ -175,5 +194,11 @@ SQL;
             quantity: (int) $row['quantity'],
             description: $row['description'] ?? null,
         );
+
+        $this->marble_id = $marble->marble_id;
+        $this->loadMoments($marble);
+        $marble->moments = $this->getMoments();
+
+        return $marble;
     }
 }

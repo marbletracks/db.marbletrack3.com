@@ -36,6 +36,9 @@ trait HasMoments
             } elseif ($perspective instanceof \Physical\Part) {
                 $perspective_type = 'part';
                 $perspective_id = $perspective->part_id;
+            } elseif ($perspective instanceof \Physical\Marble) {
+                $perspective_type = 'marble';
+                $perspective_id = $perspective->marble_id;
             }
         }
 

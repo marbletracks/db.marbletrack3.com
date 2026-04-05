@@ -5,6 +5,7 @@ class Marble
 {
     public string $slug;
     public string $name; // alias for generator compatibility
+    public array $moments = [];
 
     public function __construct(
         public int $marble_id,

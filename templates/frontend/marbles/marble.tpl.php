@@ -16,4 +16,23 @@
         <h2>About</h2>
         <p><?= nl2br(htmlspecialchars($marble->description)) ?></p>
     <?php endif; ?>
+
+    <?php if (!empty($marble->moments)): ?>
+        <h2>History</h2>
+        <div class="marble-moments">
+            <ul>
+                <?php foreach ($marble->moments as $moment): ?>
+                    <li>
+                        <?php if ($moment->moment_date): ?>
+                            (<?= htmlspecialchars($moment->moment_date) ?>)
+                        <?php endif; ?>
+                        <?php if ($moment->take_id): ?>
+                            <?= $moment->take_id ?>:<?= $moment->frame_start ?? '?' ?>-<?= $moment->frame_end ?? '?' ?>
+                        <?php endif; ?>
+                        <?= htmlspecialchars($moment->notes ?? '') ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 </div>
