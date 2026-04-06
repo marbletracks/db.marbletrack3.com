@@ -56,12 +56,11 @@ INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VAL
  (SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
  2, 'Split off early — small marbles take the quick exit.'),
 ((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'tsplit'),
+ 3, 'Slip out of the Triple Splitter before anyone notices!'),
+((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
  (SELECT track_id FROM tracks WHERE track_alias = 'wiggly'),
  4, 'The wiggly track! A fun little wobble on your way down.'),
 ((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
  (SELECT track_id FROM tracks WHERE track_alias = 'rsslz'),
  5, 'Land safely on the Right Side Small Landing Zone.');
-
--- Note: Small Marble Catcher track does not exist yet.
--- Once created, insert it as sequence_order 3 for small_thrill
--- (between Triple Splitter and Little Wiggly Track).
