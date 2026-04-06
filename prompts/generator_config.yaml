@@ -52,13 +52,18 @@ entities:
     repository: "MarblesRepository"
     template: "frontend/marbles/marble.tpl.php"
     path_schema: "/marbles/{slug}/index.html"
+  Ride:
+    description: "A named end-to-end marble journey through multiple tracks."
+    repository: "RideRepository"
+    template: "frontend/rides/ride.tpl.php"
+    path_schema: "/rides/{slug}/index.html"
 
 # -----------------------------------------
 # Index Page Definitions
 # -----------------------------------------
 indexes:
   WorkersIndex: # Use a map key instead of a list item
-    name: "Workers Index"
+    name: "Our Crew"
     entity: "Worker"
     template: "frontend/workers/index.tpl.php" # This is the existing template
     path: "/workers/index.html"
@@ -73,7 +78,12 @@ indexes:
     template: "frontend/moments/index.tpl.php"
     path: "/moments/index.html"
   MarblesIndex:
-    name: "Marbles Index"
+    name: "Residents"
     entity: "Marble"
     template: "frontend/marbles/index.tpl.php"
     path: "/marbles/index.html"
+  RidesIndex:
+    name: "Rides"
+    entity: "Ride"
+    template: "frontend/rides/index.tpl.php"
+    path: "/rides/index.html"

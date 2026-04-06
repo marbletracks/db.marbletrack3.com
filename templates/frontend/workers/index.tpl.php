@@ -1,4 +1,5 @@
-<h1>Meet the Workers of Marble Track 3</h1>
+<h1>Our Crew</h1>
+<p>The team that built your rides.</p>
 
 <div class="worker-grid">
     <?php foreach ($workers as $worker): ?>

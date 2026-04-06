@@ -46,3 +46,79 @@ body {
     text-align: right;
     color: #555;
 }
+
+.SiteFooter {
+    max-width: 900px;
+    margin: 1em auto;
+    padding: 1em;
+    text-align: center;
+    font-size: 0.85em;
+    color: #888;
+}
+
+.SiteFooter a {
+    color: #888;
+    text-decoration: none;
+}
+
+.SiteFooter a:hover {
+    text-decoration: underline;
+    color: #555;
+}
+
+.hero-tagline {
+    font-size: 1.3em;
+    color: #555;
+    text-align: center;
+}
+
+.hero-stats {
+    text-align: center;
+    margin-bottom: 2em;
+    color: #666;
+}
+
+.hero-stats a {
+    color: #0366a8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.hero-cta {
+    text-align: center;
+}
+
+.hero-cta h2 {
+    margin-bottom: 1em;
+}
+
+.ride-preview {
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ride-badge {
+    display: block;
+    padding: 1em 1.5em;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    min-width: 180px;
+}
+
+.ride-badge:hover {
+    opacity: 0.9;
+}
+
+.ride-badge small {
+    font-weight: normal;
+    opacity: 0.9;
+}
+
+.ride-large { background-color: #c0392b; }
+.ride-medium { background-color: #d4a017; }
+.ride-small { background-color: #27ae60; }

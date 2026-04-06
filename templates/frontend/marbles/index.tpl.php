@@ -1,4 +1,5 @@
-<h1>Marbles of Marble Track 3</h1>
+<h1>Residents</h1>
+<p>The marbles who call this track home.</p>
 
 <div class="marble-grid">
     <?php foreach ($marbles as $marble): ?>

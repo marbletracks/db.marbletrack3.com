@@ -1,32 +1,25 @@
-<div class="PagePanel">
-    <?php if (!empty($username)): ?>
-        Welcome back <?= $username ?>! <br />
-    <?php else: ?>
-        Welcome to MarbleTrack3! <br />
-    <?php endif; ?>
+<h1>Welcome to Marble Track 3!</h1>
+<p class="hero-tagline">The ultimate gravity-powered theme park for marbles.</p>
+
+<div class="hero-stats">
+    <a href="/rides/">3 Rides</a> &middot;
+    <a href="/workers/">Our Crew</a> &middot;
+    <a href="/marbles/">Residents</a>
+    <br>
+    Open since 2017. Still expanding.
 </div>
-<h1>Welcome to MarbleTrack3</h1>
-<p>This is the MarbleTrack3 database and community site for marble track enthusiasts.</p>
+
+<div class="PagePanel hero-cta">
+    <h2>Choose your size, pick your ride, and roll!</h2>
+    <div class="ride-preview">
+        <a href="/rides/the-grand-spiral/" class="ride-badge ride-large">The Grand Spiral<br><small>Large only</small></a>
+        <a href="/rides/the-medium-descent/" class="ride-badge ride-medium">The Medium Descent<br><small>Medium only</small></a>
+        <a href="/rides/the-triple-sneak-right/" class="ride-badge ride-small">The Triple Sneak-Right<br><small>Small only</small></a>
+    </div>
+</div>
 
 <?php if (!empty($username)): ?>
-    <div class="PagePanel">
-        <h3>Your Account</h3>
-        <p>You are logged in as <?= $username ?>.</p>
-        <p><a href="/admin/">Go to Admin Dashboard</a></p>
-        <p><a href="/logout/">Logout</a></p>
-    </div>
-<?php else: ?>
-    <div class="PagePanel">
-        <h3>Join the Community</h3>
-        <p><a href="/login/">Login</a> to access more features and manage content.</p>
+    <div class="fix">
+        <a href="/admin/">Admin</a> | <a href="/logout/">Logout</a>
     </div>
 <?php endif; ?>
-
-<div class="PagePanel">
-    <h3>Explore</h3>
-    <p><a href="/workers/">Browse Workers</a> - See all the marble track workers</p>
-</div>
-
-<div class="fix">
-    <p>Sentimental version: <?= $site_version ?></p>
-</div>
