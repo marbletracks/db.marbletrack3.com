@@ -43,6 +43,10 @@ if ($method === 'PATCH' && $sub !== '') {
         description: $description
     );
 
+    if (array_key_exists('no_track', $input)) {
+        $repo->setNoTrack($part->part_id, (bool) $input['no_track']);
+    }
+
     if (!empty($input['photo_urls'])) {
         $repo->setPartId($part->part_id);
         $repo->addPhotosFromUrls($input['photo_urls']);

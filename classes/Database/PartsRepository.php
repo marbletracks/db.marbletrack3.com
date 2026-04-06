@@ -437,6 +437,15 @@ SQL,
         }
     }
 
+    public function setNoTrack(int $part_id, bool $no_track): void
+    {
+        $this->db->executeSQL(
+            "UPDATE parts SET no_track = ? WHERE part_id = ?",
+            'ii',
+            [$no_track ? 1 : 0, $part_id]
+        );
+    }
+
     private function hydrate(array $row): Part
     {
         $part = new Part(
