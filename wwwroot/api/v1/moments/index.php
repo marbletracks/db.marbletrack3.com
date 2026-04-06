@@ -4,8 +4,8 @@
  * GET  /api/v1/moments?take_id=          — filter by take
  * GET  /api/v1/moments?needs_perspective=1 — only moments with identical/missing translations
  * GET  /api/v1/moments/42                — single moment by ID with translations
- * PATCH /api/v1/moments/42               — update moment notes/dates
- * POST /api/v1/moments                   — create a new moment
+ * PATCH /api/v1/moments/42               — update moment notes/dates/photos
+ * POST /api/v1/moments                   — create a new moment (with optional photos)
  */
 require_once __DIR__ . '/../_auth.php';
 
@@ -91,9 +91,17 @@ if ($method === 'PATCH' && $sub !== '') {
         moment_date: $input['moment_date'] ?? $moment->moment_date
     );
 
+    if (!empty($input['photo_urls'])) {
+        $repo->setMomentId($moment->moment_id);
+        $repo->addPhotosFromUrls($input['photo_urls']);
+    }
+
     $updated = $repo->findById($moment->moment_id);
     $data = momentToArray($updated);
     $data['translations'] = $repo->findTranslations($updated->moment_id);
+    $data['photos'] = array_map(function ($photo) {
+        return ['photo_id' => $photo->photo_id, 'url' => $photo->url];
+    }, $updated->photos);
 
     echo json_encode($data);
     exit;
@@ -135,9 +143,17 @@ if ($method === 'POST' && $sub === '') {
         }
     }
 
+    if (!empty($input['photo_urls'])) {
+        $repo->setMomentId($moment_id);
+        $repo->addPhotosFromUrls($input['photo_urls']);
+    }
+
     $moment = $repo->findById($moment_id);
     $data = momentToArray($moment);
     $data['translations'] = $repo->findTranslations($moment_id);
+    $data['photos'] = array_map(function ($photo) {
+        return ['photo_id' => $photo->photo_id, 'url' => $photo->url];
+    }, $moment->photos);
 
     http_response_code(201);
     echo json_encode($data);
