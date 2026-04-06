@@ -24,14 +24,17 @@ if (empty($text)) {
 try {
     $worker_repo = new \Database\WorkersRepository($mla_database, $langCode);
     $parts_repo = new \Database\PartsRepository($mla_database, $langCode);
+    $marbles_repo = new \Database\MarblesRepository($mla_database);
 
-    // First expand workers, then parts on the result of the first expansion
+    // Expand workers, then parts, then marbles
     $expanded_with_workers = $worker_repo->expandShortcodesForBackend($text, "worker", $langCode);
-    $fully_expanded = $parts_repo->expandShortcodesForBackend($expanded_with_workers, "part", $langCode);
+    $expanded_with_parts = $parts_repo->expandShortcodesForBackend($expanded_with_workers, "part", $langCode);
+    $fully_expanded = $marbles_repo->expandShortcodesForBackend($expanded_with_parts, "marble", $langCode);
 
     // Extract the perspectives
     $worker_perspectives = $worker_repo->extractShortcodes($text, "worker", $langCode);
     $part_perspectives = $parts_repo->extractShortcodes($text, "part", $langCode);
+    $marble_perspectives = $marbles_repo->extractShortcodes($text, "marble", $langCode);
 
     // Add unused photos to worker perspectives
     foreach ($worker_perspectives as &$perspective) {
@@ -55,7 +58,7 @@ try {
         }
     }
 
-    $all_perspectives = array_merge($worker_perspectives, $part_perspectives);
+    $all_perspectives = array_merge($worker_perspectives, $part_perspectives, $marble_perspectives);
 
     echo json_encode([
         'expanded_text' => $fully_expanded,

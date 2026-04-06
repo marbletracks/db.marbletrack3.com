@@ -63,14 +63,15 @@ trait HasShortcodes
      */
     public function expandShortcodesForFrontend(string $text, string $type, string $langCode): string
     {
-        // This regex finds all occurrences of [part:some_slug]
-        preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
+        // Match [type:slug] and [type:slug|Display Name]
+        preg_match_all("/\\[{$type}:([\\w-]+)(?:\\|([^\\]]+))?\\]/", $text, $matches, PREG_SET_ORDER);
 
-        if (empty($matches[1])) {
+        if (empty($matches)) {
             return $text;
         }
 
-        $slugs = array_unique($matches[1]);
+        // Collect unique slugs for DB lookup
+        $slugs = array_unique(array_map(fn($m) => $m[1], $matches));
         $placeholders = [];
         $params = [];
 
@@ -87,14 +88,27 @@ trait HasShortcodes
 
         $res = $db->fetchResults($sql, str_repeat('s', count($params)), $params);
 
-        $replacements = [];
+        // Build slug → name lookup
+        $nameMap = [];
         for ($i = 0; $i < $res->numRows(); $i++) {
             $res->setRow($i);
-            $name = $res->data['name'];
-            $slug = $res->data['slug'];
+            $nameMap[$res->data['slug']] = $res->data['name'];
+        }
+
+        // Build replacements for each match (including display name overrides)
+        $replacements = [];
+        foreach ($matches as $match) {
+            $fullMatch = $match[0];
+            $slug = $match[1];
+            $displayName = $match[2] ?? null;
+
+            if (!isset($nameMap[$slug])) {
+                continue;
+            }
 
             $url = "/{$type}s/{$slug}/";
-            $replacements["[{$type}:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
+            $label = $displayName ?? $nameMap[$slug];
+            $replacements[$fullMatch] = "<a href=\"{$url}\">{$label}</a>";
         }
 
         return strtr($text, $replacements);
@@ -102,14 +116,14 @@ trait HasShortcodes
 
     public function expandShortcodesForBackend(string $text, string $type, string $langCode): string
     {
-        // This regex finds all occurrences of [part:some_slug]
-        preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
+        // Match [type:slug] and [type:slug|Display Name]
+        preg_match_all("/\\[{$type}:([\\w-]+)(?:\\|([^\\]]+))?\\]/", $text, $matches, PREG_SET_ORDER);
 
-        if (empty($matches[1])) {
+        if (empty($matches)) {
             return $text;
         }
 
-        $slugs = array_unique($matches[1]);
+        $slugs = array_unique(array_map(fn($m) => $m[1], $matches));
         $placeholders = [];
         $params = [];
 
@@ -126,15 +140,27 @@ trait HasShortcodes
 
         $res = $db->fetchResults($sql, str_repeat('s', count($params)), $params);
 
-        $replacements = [];
+        $idMap = [];
+        $nameMap = [];
         for ($i = 0; $i < $res->numRows(); $i++) {
             $res->setRow($i);
-            $id = $res->data['id'];
-            $name = $res->data['name'];
-            $slug = $res->data['slug'];
+            $idMap[$res->data['slug']] = $res->data['id'];
+            $nameMap[$res->data['slug']] = $res->data['name'];
+        }
 
-            $url = "/admin/{$type}s/{$type}.php?id={$id}";
-            $replacements["[{$type}:{$slug}]"] = "<a href=\"{$url}\">{$name}</a>";
+        $replacements = [];
+        foreach ($matches as $match) {
+            $fullMatch = $match[0];
+            $slug = $match[1];
+            $displayName = $match[2] ?? null;
+
+            if (!isset($idMap[$slug])) {
+                continue;
+            }
+
+            $url = "/admin/{$type}s/{$type}.php?id={$idMap[$slug]}";
+            $label = $displayName ?? $nameMap[$slug];
+            $replacements[$fullMatch] = "<a href=\"{$url}\">{$label}</a>";
         }
 
         return strtr($text, $replacements);
@@ -142,7 +168,7 @@ trait HasShortcodes
 
     public function extractShortcodes(string $text, string $type, string $langCode): array
     {
-        preg_match_all("/\\[{$type}:([\\w-]+)\\]/", $text, $matches);
+        preg_match_all("/\\[{$type}:([\\w-]+)(?:\\|[^\\]]+)?\\]/", $text, $matches);
 
         if (empty($matches[1])) {
             return [];

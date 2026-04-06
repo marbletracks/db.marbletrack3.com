@@ -39,6 +39,8 @@ if ($method === 'PATCH' && preg_match('#^(\d+)/translations$#', $sub, $m)) {
         if (empty($t['entity_type']) || empty($t['entity_id']) || !isset($t['note'])) {
             continue;
         }
+        // Create if doesn't exist, then update with the desired note
+        $repo->createTranslationIfNotExists($moment_id, (int) $t['entity_id'], $t['entity_type']);
         $ok = $repo->updateTranslationNote(
             $moment_id,
             (int) $t['entity_id'],
@@ -125,6 +127,11 @@ if ($method === 'POST' && $sub === '') {
     if (!empty($input['worker_ids'])) {
         foreach ($input['worker_ids'] as $worker_id) {
             $repo->createTranslationIfNotExists($moment_id, (int) $worker_id, 'worker');
+        }
+    }
+    if (!empty($input['marble_ids'])) {
+        foreach ($input['marble_ids'] as $marble_id) {
+            $repo->createTranslationIfNotExists($moment_id, (int) $marble_id, 'marble');
         }
     }
 

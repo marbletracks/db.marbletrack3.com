@@ -47,6 +47,11 @@ entities:
         join_table: "moments_2_photos"
         local_key: "moment_id"
         foreign_key: "photo_id"
+  Marble:
+    description: "A marble that exists in the MT3 universe."
+    repository: "MarblesRepository"
+    template: "frontend/marbles/marble.tpl.php"
+    path_schema: "/marbles/{slug}/index.html"
 
 # -----------------------------------------
 # Index Page Definitions
@@ -67,3 +72,8 @@ indexes:
     entity: "Moment"
     template: "frontend/moments/index.tpl.php"
     path: "/moments/index.html"
+  MarblesIndex:
+    name: "Marbles Index"
+    entity: "Marble"
+    template: "frontend/marbles/index.tpl.php"
+    path: "/marbles/index.html"
