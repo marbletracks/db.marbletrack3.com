@@ -3,7 +3,7 @@
 -- which will eventually release small marbles onto a future track.
 INSERT INTO tracks (track_alias, track_name, track_description, is_transport, is_splitter, is_landing_zone, marble_sizes_accepted)
 VALUES ('llu', 'Lowest Largest U-Turn',
-  'After lifting el Lifty Lever and clearing the way for the little ones, large marbles make their final U-turn before cruising home on The First Track.',
+  'After lifting el Lifty Lever and waving a flag for the little ones to know you are almost back, large marbles make their final U-turn before cruising home on The First Track.',
   TRUE, FALSE, FALSE, 'large');
 
 -- Link parts to the track

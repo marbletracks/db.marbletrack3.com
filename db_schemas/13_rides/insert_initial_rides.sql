@@ -30,7 +30,7 @@ INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VAL
  4, 'Cruise back along a chopstick-and-popsicle-stick rail.'),
 ((SELECT ride_id FROM rides WHERE ride_alias = 'grand_spiral'),
  (SELECT track_id FROM tracks WHERE track_alias = 'llu'),
- 5, 'After lifting el Lifty Lever and clearing the way for the little ones, make your final U-turn.'),
+ 5, 'After lifting el Lifty Lever and waving a flag for the little ones to know you are almost back, make your final U-turn.'),
 ((SELECT ride_id FROM rides WHERE ride_alias = 'grand_spiral'),
  (SELECT track_id FROM tracks WHERE track_alias = 'tft'),
  6, 'The original. Where it all began. Roll to a gentle stop.');
