@@ -27,6 +27,7 @@ final class Part
         public bool $is_rail = false,
         public bool $is_support = false,
         public bool $is_track = false,
+        public bool $no_track = false,
     ) {
         $this->slug = \Utilities::slugify($name);
     }

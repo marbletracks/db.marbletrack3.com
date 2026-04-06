@@ -3,28 +3,23 @@
 <a href="https://west1-phpmyadmin.dreamhost.com/signon.php?pma_servername=eich.robnugen.com" _target="_blank">Eich</a>
 <script>
     function applyMigration(migration) {
-        if (confirm("Are you sure you want to apply this migration?\n\n" + migration)) {
-            // AJAX request to apply the migration
-            fetch('/admin/apply_migration.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ migration: migration })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("Migration applied successfully!");
-                    location.reload(); // Reload the page to see the changes
-                } else {
-                    alert("Failed to apply migration. Please try again.");
-                }
-            })
-            .catch(error => {
-                console.error("Error applying migration:", error);
-                alert("An error occurred while applying the migration.");
-            });
-        }
+        fetch('/admin/apply_migration.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ migration: migration })
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                console.error("Failed to apply migration:", migration);
+            }
+        })
+        .catch(error => {
+            console.error("Error applying migration:", error);
+        });
     }
 </script>
 <?php

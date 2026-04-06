@@ -162,7 +162,8 @@ SELECT p.part_id,
        t.part_description,
        p.is_rail,
        p.is_support,
-       p.is_track
+       p.is_track,
+       p.no_track
 FROM parts p
 LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
 WHERE p.part_id = ?
@@ -191,7 +192,8 @@ SELECT p.part_id,
        t.part_description,
        p.is_rail,
        p.is_support,
-       p.is_track
+       p.is_track,
+       p.no_track
 FROM parts p
 LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
 WHERE p.part_alias = ?
@@ -221,7 +223,8 @@ SELECT p.part_id,
        t.part_description,
        p.is_rail,
        p.is_support,
-       p.is_track
+       p.is_track,
+       p.no_track
 FROM parts p
 LEFT JOIN part_translations t ON p.part_id = t.part_id AND t.language_code = ?
 WHERE p.slug = ?
@@ -250,6 +253,7 @@ SELECT p.part_id,
        p.is_rail,
        p.is_support,
        p.is_track,
+       p.no_track,
        t.part_name,
        t.part_description
 FROM parts p
@@ -291,6 +295,7 @@ SELECT p.part_id,
        p.is_rail,
        p.is_support,
        p.is_track,
+       p.no_track,
        t.part_name,
        t.part_description,
        CASE 
@@ -432,6 +437,15 @@ SQL,
         }
     }
 
+    public function setNoTrack(int $part_id, bool $no_track): void
+    {
+        $this->db->executeSQL(
+            "UPDATE parts SET no_track = ? WHERE part_id = ?",
+            'ii',
+            [$no_track ? 1 : 0, $part_id]
+        );
+    }
+
     private function hydrate(array $row): Part
     {
         $part = new Part(
@@ -441,7 +455,8 @@ SQL,
             description: $row['part_description'] ?? '',
             is_rail: (bool) ($row['is_rail'] ?? false),
             is_support: (bool) ($row['is_support'] ?? false),
-            is_track: (bool) ($row['is_track'] ?? false)
+            is_track: (bool) ($row['is_track'] ?? false),
+            no_track: (bool) ($row['no_track'] ?? false)
         );
 
         // Load and attach photos via HasPhotos trait

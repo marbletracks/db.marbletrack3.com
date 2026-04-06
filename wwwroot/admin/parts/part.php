@@ -9,9 +9,11 @@ if (!$is_logged_in->isLoggedIn()) {
 
 use Database\PartsRepository;
 use Database\MomentRepository;
+use Database\TrackRepository;
 
 $repo = new PartsRepository($mla_database, 'en');
 $moment_repo = new MomentRepository($mla_database);
+$track_repo = new TrackRepository($mla_database);
 $errors = [];
 $submitted = $_SERVER['REQUEST_METHOD'] === 'POST';
 
@@ -20,9 +22,11 @@ $part = $part_id > 0 ? $repo->findById($part_id) : null;
 
 if ($part) {
     [$prioritized_moments, $other_moments] = $moment_repo->findAllForEntity($part->name, $part->part_alias);
+    $tracks = $track_repo->findTracksByPartId($part->part_id);
 } else {
     $prioritized_moments = [];
     $other_moments = $moment_repo->findAll();
+    $tracks = [];
 }
 
 
@@ -67,6 +71,7 @@ $page = new \Template($config);
 $page->setTemplate("admin/parts/part.tpl.php");
 $page->set("errors", $errors);
 $page->set("part", $part);
+$page->set("tracks", $tracks);
 $page->set("prioritized_moments", $prioritized_moments);
 $page->set("other_moments", $other_moments);
 $inner = $page->grabTheGoods();

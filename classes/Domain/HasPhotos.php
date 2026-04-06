@@ -83,6 +83,13 @@ trait HasPhotos
         $this->savePhotos($photos);
     }
 
+    public function addPhotosFromUrls(array $urls): void
+    {
+        $photoRepo = new PhotoRepository($this->getDb());
+        $photos = $photoRepo->findOrCreateByUrls($urls);
+        $this->addPhotos($photos);
+    }
+
     /**
      * Add photos without deleting existing ones
      * @param Photo[] $photos

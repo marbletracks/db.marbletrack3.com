@@ -29,6 +29,7 @@
             </div>
         </div> |
         <a href="/admin/workers">Workers</a> |
+        <a href="/admin/tracks">Tracks</a> |
         <div class="dropdown">
             <a href="/admin/parts">Parts ▾</a>
             <div class="dropdown-menu">
@@ -43,6 +44,7 @@
             </div>
         </div> |
         <a href="/admin/parts/oss">Outer Spiral Supports</a> |
+        <a href="/admin/marbles">Marbles</a> |
         <!-- dropdown -->
         <div class="dropdown">
           <a href="/admin/notebooks">Notebooks ▾</a>
@@ -50,6 +52,7 @@
             <a href="/admin/notebooks/pages">Pages</a>
           </div>
         </div> |
+        <a href="/admin/settings/api_keys.php">API Keys</a> |
     </div>
     <div class="PageWrapper">
         <?= $page_content ?>

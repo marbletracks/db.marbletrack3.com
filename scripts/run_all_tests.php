@@ -117,7 +117,20 @@ $result = runTest(
 $testsRun++;
 if ($result['passed']) $testsPassed++; else $testsFailed++;
 
-// Test 5: Database connectivity (unless --fast)
+// Test 5: API Key authentication (unless --fast)
+if (!$fast) {
+    $result = runTest(
+        'API Key Auth',
+        'php ' . __DIR__ . '/test_api_key.php' . $verboseFlag,
+        false
+    );
+    $testsRun++;
+    if ($result['passed']) $testsPassed++; else $testsFailed++;
+} else {
+    echo "⏩ Skipping API Key tests (--fast mode)\n";
+}
+
+// Test 6: Database connectivity (unless --fast)
 if (!$fast) {
     $result = runTest(
         'Test Database Connectivity',

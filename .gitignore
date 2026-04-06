@@ -1,6 +1,7 @@
 .plandex/
 .aider*
 scp_files_to_dh.sh
+phpmyadmin-open.sh
 .env
 
 # Testing artifacts
@@ -13,3 +14,9 @@ scp_files_to_dh.sh
 
 # Config files with credentials
 /classes/Config.php
+.dh-diag
+db_backup*
+db_backups/
+wwwroot/.dh-diag
+wwwroot/favicon.gif
+wwwroot/favicon.ico
