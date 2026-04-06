@@ -181,6 +181,7 @@ function partToArray(\Physical\Part $part, array $tracks, bool $detail = false):
         $data['is_rail']     = $part->is_rail;
         $data['is_support']  = $part->is_support;
         $data['is_track']    = $part->is_track;
+        $data['no_track']    = $part->no_track;
         $data['photos']      = array_map(function ($photo) {
             return [
                 'photo_id' => $photo->photo_id,
