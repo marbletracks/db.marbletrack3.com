@@ -47,7 +47,7 @@ INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VAL
  (SELECT track_id FROM tracks WHERE track_alias = 'brmlz'),
  3, 'Arrive at the Back Right Medium Landing Zone. Journey complete.');
 
--- The Small Thrill: Small marbles
+-- The Triple Sneak-Right: Small marbles
 INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VALUES
 ((SELECT ride_id FROM rides WHERE ride_alias = 'triple_sneak_right'),
  (SELECT track_id FROM tracks WHERE track_alias = 'ttssf'),
