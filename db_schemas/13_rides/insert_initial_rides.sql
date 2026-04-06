@@ -23,7 +23,7 @@ INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VAL
  (SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
  2, 'The big one. Three lanes for three sizes — you take the widest lane all the way to the bottom.'),
 ((SELECT ride_id FROM rides WHERE ride_alias = 'grand_spiral'),
- (SELECT track_id FROM tracks WHERE track_alias = 'snake_plate_u_turn'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'sput'),
  3, 'Hairpin turn! The berm keeps you on track as you reverse direction at speed.'),
 ((SELECT ride_id FROM rides WHERE ride_alias = 'grand_spiral'),
  (SELECT track_id FROM tracks WHERE track_alias = 'lowest_largest_backtrack'),
