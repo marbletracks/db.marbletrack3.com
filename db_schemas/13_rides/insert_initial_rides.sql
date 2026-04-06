@@ -29,11 +29,11 @@ INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VAL
  (SELECT track_id FROM tracks WHERE track_alias = 'lowest_largest_backtrack'),
  4, 'Cruise back along a chopstick-and-popsicle-stick rail.'),
 ((SELECT ride_id FROM rides WHERE ride_alias = 'grand_spiral'),
+ (SELECT track_id FROM tracks WHERE track_alias = 'llu'),
+ 5, 'After lifting el Lifty Lever and clearing the way for the little ones, make your final U-turn.'),
+((SELECT ride_id FROM rides WHERE ride_alias = 'grand_spiral'),
  (SELECT track_id FROM tracks WHERE track_alias = 'tft'),
  6, 'The original. Where it all began. Roll to a gentle stop.');
-
--- Note: Lowest Largest U-Turn track does not exist yet.
--- Once created, insert it as sequence_order 5 for grand_spiral.
 
 -- The Medium Descent: Medium marbles
 INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VALUES
