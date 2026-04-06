@@ -4,7 +4,7 @@
  * GET  /api/v1/parts?search=  — search by name or alias
  * GET  /api/v1/parts/42       — single part by ID
  * GET  /api/v1/parts/5poss    — single part by alias
- * PATCH /api/v1/parts/42      — update description (and optionally name)
+ * PATCH /api/v1/parts/42      — update description, name, and/or photos
  * POST /api/v1/parts/42/tracks — assign part to a track
  */
 require_once __DIR__ . '/../_auth.php';
@@ -42,6 +42,11 @@ if ($method === 'PATCH' && $sub !== '') {
         name: $name,
         description: $description
     );
+
+    if (!empty($input['photo_urls'])) {
+        $repo->setPartId($part->part_id);
+        $repo->addPhotosFromUrls($input['photo_urls']);
+    }
 
     // Re-fetch to confirm
     $updated = $repo->findById($part->part_id);
