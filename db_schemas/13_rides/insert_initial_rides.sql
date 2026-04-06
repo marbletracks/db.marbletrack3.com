@@ -9,9 +9,9 @@ INSERT INTO rides (ride_alias, ride_name, ride_description, ride_tagline, marble
   'A smooth ride from the Outer Spiral, splitting halfway down the Triple Splitter to your landing zone.',
   'A quick but scenic roll.',
   'medium', FALSE),
-('small_thrill', 'The Small Thrill',
-  'Feed in from the top, split off early, catch the wiggly track, and land safe on the right side.',
-  'Perfect for the little ones.',
+('triple_sneak_right', 'The Triple Sneak-Right',
+  'Feed in from the top, sneak out of the Triple Splitter before the big marbles notice, catch the wiggly track, and land safe on the right side.',
+  'Slip away to the right before anyone notices!',
   'small', FALSE);
 
 -- The Grand Spiral: Large marbles
@@ -49,18 +49,18 @@ INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VAL
 
 -- The Small Thrill: Small marbles
 INSERT INTO ride_tracks (ride_id, track_id, sequence_order, experience_note) VALUES
-((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
+((SELECT ride_id FROM rides WHERE ride_alias = 'triple_sneak_right'),
  (SELECT track_id FROM tracks WHERE track_alias = 'ttssf'),
  1, 'Feed in from the top on the Triple Splitter Small Feeder.'),
-((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
+((SELECT ride_id FROM rides WHERE ride_alias = 'triple_sneak_right'),
  (SELECT track_id FROM tracks WHERE track_alias = 'triple_splitter_system'),
  2, 'Split off early — small marbles take the quick exit.'),
-((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
+((SELECT ride_id FROM rides WHERE ride_alias = 'triple_sneak_right'),
  (SELECT track_id FROM tracks WHERE track_alias = 'tsplit'),
  3, 'Slip out of the Triple Splitter before anyone notices!'),
-((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
+((SELECT ride_id FROM rides WHERE ride_alias = 'triple_sneak_right'),
  (SELECT track_id FROM tracks WHERE track_alias = 'wiggly'),
  4, 'The wiggly track! A fun little wobble on your way down.'),
-((SELECT ride_id FROM rides WHERE ride_alias = 'small_thrill'),
+((SELECT ride_id FROM rides WHERE ride_alias = 'triple_sneak_right'),
  (SELECT track_id FROM tracks WHERE track_alias = 'rsslz'),
  5, 'Land safely on the Right Side Small Landing Zone.');
