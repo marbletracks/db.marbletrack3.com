@@ -9,4 +9,4 @@ RewriteRule ^ - [L]
 
 # Otherwise, route to the index.php in the deepest matching directory
 # e.g. /api/v1/parts/42/moments → /api/v1/parts/index.php (with PATH_INFO)
-RewriteRule ^(parts|tracks|workers|moments|oss|takes|marbles)(/.*)?$ $1/index.php [L,QSA]
+RewriteRule ^(parts|tracks|workers|moments|oss|takes|marbles|rides)(/.*)?$ $1/index.php [L,QSA]
