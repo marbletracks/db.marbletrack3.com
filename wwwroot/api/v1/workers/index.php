@@ -1,17 +1,53 @@
 <?php
 /**
- * GET /api/v1/workers          — list all workers
- * GET /api/v1/workers/3        — single worker by ID
- * GET /api/v1/workers/gc       — single worker by alias
+ * GET   /api/v1/workers          — list all workers
+ * GET   /api/v1/workers/3        — single worker by ID
+ * GET   /api/v1/workers/gc       — single worker by alias
+ * PATCH /api/v1/workers/gc       — update worker (photo_urls)
  */
 require_once __DIR__ . '/../_auth.php';
 
 $repo = new \Database\WorkersRepository($mla_database, 'en');
+$method = $_SERVER['REQUEST_METHOD'];
 
 $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $sub = trim(preg_replace('#^/api/v1/workers#', '', $uri_path), '/');
 
-if ($sub === '') {
+// ── PATCH /api/v1/workers/{id or alias} — update worker ─────────────────────
+if ($method === 'PATCH' && $sub !== '') {
+    require_write();
+
+    if (ctype_digit($sub)) {
+        $worker = $repo->findById((int) $sub);
+    } else {
+        $worker = $repo->findByAlias($sub);
+    }
+
+    if (!$worker) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Worker not found', 'query' => $sub]);
+        exit;
+    }
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid JSON body']);
+        exit;
+    }
+
+    if (!empty($input['photo_urls'])) {
+        $repo->setWorkerId($worker->worker_id);
+        $repo->addPhotosFromUrls($input['photo_urls']);
+    }
+
+    $updated = $repo->findById($worker->worker_id);
+    echo json_encode(workerToArray($updated, true));
+    exit;
+}
+
+// ── GET /api/v1/workers — list ──────────────────────────────────────────────
+if ($method === 'GET' && $sub === '') {
     $workers = $repo->findAll();
 
     $output = [];
@@ -20,7 +56,11 @@ if ($sub === '') {
     }
 
     echo json_encode(['workers' => $output, 'total' => count($output)]);
-} else {
+    exit;
+}
+
+// ── GET /api/v1/workers/{id or alias} — single worker ───────────────────────
+if ($method === 'GET' && $sub !== '') {
     if (ctype_digit($sub)) {
         $worker = $repo->findById((int) $sub);
     } else {
@@ -34,7 +74,11 @@ if ($sub === '') {
     }
 
     echo json_encode(workerToArray($worker, true));
+    exit;
 }
+
+http_response_code(405);
+echo json_encode(['error' => 'Method not allowed']);
 
 function workerToArray(\Physical\Worker $worker, bool $detail = false): array
 {
