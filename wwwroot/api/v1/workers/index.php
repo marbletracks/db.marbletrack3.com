@@ -36,11 +36,12 @@ if ($method === 'PATCH' && $sub !== '') {
         exit;
     }
 
-    if (array_key_exists('description', $input)) {
+    if (array_key_exists('description', $input) || array_key_exists('name', $input)) {
         $repo->update(
             worker_id: $worker->worker_id,
-            alias: $worker->worker_alias,
-            description: $input['description']
+            alias: $input['alias'] ?? $worker->worker_alias,
+            name: $input['name'] ?? '',
+            description: $input['description'] ?? ''
         );
     }
 
