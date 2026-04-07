@@ -18,9 +18,5 @@
     <div class="PageWrapper">
         <?= $page_content ?>
     </div>
-    <footer class="SiteFooter">
-        <a href="/parts/">Technical Archive</a> |
-        <a href="/moments/">Construction History</a>
-    </footer>
 </body>
 </html>
