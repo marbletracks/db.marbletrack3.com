@@ -36,6 +36,14 @@ if ($method === 'PATCH' && $sub !== '') {
         exit;
     }
 
+    if (array_key_exists('description', $input)) {
+        $repo->update(
+            worker_id: $worker->worker_id,
+            alias: $worker->worker_alias,
+            description: $input['description']
+        );
+    }
+
     if (!empty($input['photo_urls'])) {
         $repo->setWorkerId($worker->worker_id);
         $repo->addPhotosFromUrls($input['photo_urls']);
