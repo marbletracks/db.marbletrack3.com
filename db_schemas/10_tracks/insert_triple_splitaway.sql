@@ -2,7 +2,7 @@
 UPDATE parts SET part_alias = 'tsplit' WHERE part_alias = 'ttssmc';
 
 -- The Triple Splitaway: small marble catcher track between Triple Splitter and Little Wiggly Track
-INSERT INTO tracks (track_alias, track_name, track_description, is_transport, is_splitter, is_landing_zone, marble_sizes_accepted)
+INSERT INTO tracks (track_alias, track_name, technical_description, is_transport, is_splitter, is_landing_zone, marble_sizes_accepted)
 VALUES ('tsplit', 'The Triple Splitaway',
   'Slip out of the Triple Splitter before anyone notices! This secret exit catches small marbles and sends them toward the Little Wiggly Track.',
   TRUE, FALSE, FALSE, 'small');

@@ -25,9 +25,15 @@
         </label><br><br>
 
         <label>
-            Description:<br>
-            <textarea name="track_description" rows="8" cols="80"><?= htmlspecialchars($track->track_description ?? '') ?></textarea>
+            Technical Description:<br>
+            <textarea name="technical_description" rows="8" cols="80"><?= htmlspecialchars($track->technical_description ?? '') ?></textarea>
             <small>What does this track do? How does it transport or route marbles?</small>
+        </label><br><br>
+
+        <label>
+            Visitor Description:<br>
+            <textarea name="visitor_description" rows="8" cols="80"><?= htmlspecialchars($track->visitor_description ?? '') ?></textarea>
+            <small>Marble-friendly theme park description of the experience.</small>
         </label><br><br>
 
         <fieldset style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc;">
@@ -868,7 +874,7 @@ document.addEventListener('DOMContentLoaded', function() {
 document.querySelectorAll('input[name="entity_type"]').forEach(radio => {
     radio.addEventListener('change', function() {
         const marbleSizesFieldset = document.getElementById('marble-sizes-fieldset');
-        const descriptionTextarea = document.querySelector('textarea[name="track_description"]');
+        const descriptionTextarea = document.querySelector('textarea[name="technical_description"]');
 
         if (this.value === 'worker') {
             marbleSizesFieldset.style.display = 'none';

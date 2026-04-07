@@ -19,7 +19,8 @@ final class Track
      * @param int $track_id db:tracks.track_id
      * @param string $track_alias db:tracks.track_alias - URL-safe identifier
      * @param string $track_name db:tracks.track_name - Human-readable name
-     * @param string $track_description db:tracks.track_description
+     * @param string $technical_description db:tracks.technical_description
+     * @param string $visitor_description db:tracks.visitor_description
      * @param array $marble_sizes_accepted db:tracks.marble_sizes_accepted as array
      * @param bool $is_transport Track transports entities along its length
      * @param bool $is_splitter Track splits entity flow by size or direction
@@ -30,7 +31,8 @@ final class Track
         public int $track_id,
         public string $track_alias,
         public string $track_name = "",
-        public string $track_description = "",
+        public string $technical_description = "",
+        public string $visitor_description = "",
         public array $marble_sizes_accepted = [],
         public bool $is_transport = false,
         public bool $is_splitter = false,

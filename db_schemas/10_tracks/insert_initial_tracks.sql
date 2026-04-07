@@ -1,5 +1,5 @@
 -- Insert the five landing zones first
-INSERT INTO tracks (track_alias, track_name, track_description, is_transport, is_splitter, is_landing_zone, marble_sizes_accepted) VALUES
+INSERT INTO tracks (track_alias, track_name, technical_description, is_transport, is_splitter, is_landing_zone, marble_sizes_accepted) VALUES
 ('tft', 'The First Track', 'Terminal destination that receives all large marbles', FALSE, FALSE, TRUE, 'large'),
 ('lsslz', 'Left Side Small Landing Zone', 'Terminal destination for small marbles on the left side', FALSE, FALSE, TRUE, 'small'),
 ('rsslz', 'Right Side Small Landing Zone', 'Terminal destination for small marbles on the right side', FALSE, FALSE, TRUE, 'small'),
@@ -7,7 +7,7 @@ INSERT INTO tracks (track_alias, track_name, track_description, is_transport, is
 ('flmlz', 'Front Left Medium Landing Zone', 'Terminal destination for medium marbles in the front left', FALSE, FALSE, TRUE, 'medium');
 
 -- Insert major track systems
-INSERT INTO tracks (track_alias, track_name, track_description, is_transport, is_splitter, is_landing_zone, marble_sizes_accepted) VALUES
+INSERT INTO tracks (track_alias, track_name, technical_description, is_transport, is_splitter, is_landing_zone, marble_sizes_accepted) VALUES
 ('outer_spiral', 'Outer Spiral', 'Transports medium and large marbles around the perimeter of the stage', TRUE, FALSE, FALSE, 'medium,large'),
 ('triple_splitter_system', 'Triple Splitter System', 'Transports marbles and splits them by size into different paths', TRUE, TRUE, FALSE, 'small,medium,large');
 

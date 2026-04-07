@@ -21,7 +21,7 @@ $track = $track_id > 0 ? $repo->findById($track_id) : null;
 if ($submitted) {
     $alias = trim($_POST['track_alias'] ?? '');
     $name = trim($_POST['track_name'] ?? '');
-    $description = trim($_POST['track_description'] ?? '');
+    $description = trim($_POST['technical_description'] ?? '');
     $marble_sizes = $_POST['marble_sizes'] ?? [];
     $is_transport = !empty($_POST['is_transport']);
     $is_splitter = !empty($_POST['is_splitter']);

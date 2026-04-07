@@ -49,7 +49,7 @@ class RideRepository
     {
         $results = $this->db->fetchResults(
             "SELECT rt.sequence_order, rt.experience_note,
-                    t.track_id, t.track_alias, t.track_name, t.track_description,
+                    t.track_id, t.track_alias, t.track_name, t.technical_description, t.visitor_description,
                     t.marble_sizes_accepted
              FROM ride_tracks rt
              JOIN tracks t ON rt.track_id = t.track_id
@@ -66,7 +66,8 @@ class RideRepository
                 'track_id'              => (int) $results->data['track_id'],
                 'track_alias'           => $results->data['track_alias'],
                 'track_name'            => $results->data['track_name'],
-                'track_description'     => $results->data['track_description'],
+                'technical_description'  => $results->data['technical_description'],
+                'visitor_description'   => $results->data['visitor_description'],
                 'experience_note'       => $results->data['experience_note'],
                 'marble_sizes_accepted' => $results->data['marble_sizes_accepted'],
             ];

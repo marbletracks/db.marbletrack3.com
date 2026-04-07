@@ -65,7 +65,7 @@ if ($method === 'GET' && $sub !== '') {
     // Get track sequence
     $trackResults = $mla_database->fetchResults(
         "SELECT rt.sequence_order, rt.experience_note,
-                t.track_id, t.track_alias, t.track_name, t.track_description,
+                t.track_id, t.track_alias, t.track_name, t.technical_description, t.visitor_description,
                 t.marble_sizes_accepted
          FROM ride_tracks rt
          JOIN tracks t ON rt.track_id = t.track_id

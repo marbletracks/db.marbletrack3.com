@@ -24,8 +24,8 @@
                         <strong><?= htmlspecialchars($track->track_name) ?></strong>
                         <span style="color: #6c757d; margin-left: 10px;">(<?= htmlspecialchars($track->getMarbleSizesDisplay()) ?>)</span><br>
 
-                        <?php if (!empty($track->track_description)): ?>
-                            <?= nl2br(htmlspecialchars($track->track_description)) ?><br>
+                        <?php if (!empty($track->technical_description)): ?>
+                            <?= nl2br(htmlspecialchars($track->technical_description)) ?><br>
                         <?php endif; ?>
 
                         <em>Alias:</em> <?= htmlspecialchars($track->track_alias) ?> |
@@ -64,8 +64,8 @@
                         <strong><?= htmlspecialchars($track->track_name) ?></strong>
                         <span style="color: #6c757d; margin-left: 10px;">(<?= htmlspecialchars($track->getMarbleSizesDisplay()) ?>)</span><br>
 
-                        <?php if (!empty($track->track_description)): ?>
-                            <?= nl2br(htmlspecialchars($track->track_description)) ?><br>
+                        <?php if (!empty($track->technical_description)): ?>
+                            <?= nl2br(htmlspecialchars($track->technical_description)) ?><br>
                         <?php endif; ?>
 
                         <em>Alias:</em> <?= htmlspecialchars($track->track_alias) ?> |
