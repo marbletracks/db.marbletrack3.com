@@ -25,8 +25,8 @@
             <p class="ride-tagline"><?= htmlspecialchars($ride->tagline) ?></p>
             <p class="ride-route">
                 <?php
-                $trackNames = array_map(fn($t) => $t->track_name, $ride->tracks);
-                echo htmlspecialchars(implode(' &rarr; ', $trackNames));
+                $trackNames = array_map(fn($t) => htmlspecialchars($t->track_name), $ride->tracks);
+                echo implode(' &rarr; ', $trackNames);
                 ?>
             </p>
             <p class="ride-meta">
