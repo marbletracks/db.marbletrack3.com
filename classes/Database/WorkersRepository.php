@@ -275,11 +275,23 @@ SQL,
         }
 
         // Update translations
-        if ($name || $description) {
+        if ($name && $description) {
             $this->db->executeSQL(
                 "UPDATE worker_names SET worker_name = ?, worker_description = ? WHERE worker_id = ? AND language_code = ?",
                 'ssis',
                 [$name, $description, $worker_id, $this->langCode]
+            );
+        } elseif ($name) {
+            $this->db->executeSQL(
+                "UPDATE worker_names SET worker_name = ? WHERE worker_id = ? AND language_code = ?",
+                'sis',
+                [$name, $worker_id, $this->langCode]
+            );
+        } elseif ($description) {
+            $this->db->executeSQL(
+                "UPDATE worker_names SET worker_description = ? WHERE worker_id = ? AND language_code = ?",
+                'sis',
+                [$description, $worker_id, $this->langCode]
             );
         }
     }
