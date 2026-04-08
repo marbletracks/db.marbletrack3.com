@@ -2,16 +2,19 @@
 namespace Database;
 
 use Database\DbInterface;
+use Domain\HasPhotos;
 use Domain\HasShortcodes;
 use Domain\HasMoments;
 use Physical\Marble;
 
 class MarblesRepository
 {
+    use HasPhotos;
     use HasShortcodes;
     use HasMoments;
 
     private DbInterface $db;
+    private string $photoLinkingTable = 'marbles_2_photos';
     private string $primaryKeyColumn = 'marble_id';
     private int $marble_id;
 
@@ -86,6 +89,16 @@ SQL;
     public function getId(): int
     {
         return $this->marble_id;
+    }
+
+    public function getPhotoLinkingTable(): string
+    {
+        return $this->photoLinkingTable;
+    }
+
+    public function setMarbleId(int $marble_id): void
+    {
+        $this->marble_id = $marble_id;
     }
 
     public function getMomentLinkingTable(): string
@@ -198,6 +211,9 @@ SQL;
         $this->marble_id = $marble->marble_id;
         $this->loadMoments($marble);
         $marble->moments = $this->getMoments();
+
+        $this->loadPhotos();
+        $marble->photos = $this->getPhotos();
 
         return $marble;
     }

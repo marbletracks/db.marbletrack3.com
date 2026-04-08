@@ -57,6 +57,16 @@ if ($submitted) {
             );
         }
 
+        // Save photos
+        $photo_urls_raw = trim($_POST['photo_urls'] ?? '');
+        $photo_urls = array_filter(array_map('trim', explode("\n", $photo_urls_raw)));
+        $repo->setMarbleId($marble_id);
+        if (!empty($photo_urls)) {
+            $repo->savePhotosFromUrls($photo_urls);
+        } else {
+            $repo->savePhotos([]);
+        }
+
         header("Location: /admin/marbles/index.php");
         exit;
     }

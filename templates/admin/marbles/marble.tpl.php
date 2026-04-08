@@ -49,6 +49,15 @@
             <textarea name="description" rows="5" cols="80"><?= htmlspecialchars($marble->description ?? '') ?></textarea>
         </label><br><br>
 
+        <label>
+            Photo URLs (one per line):<br>
+            <textarea name="photo_urls" rows="4" cols="80"><?php
+                if ($marble && !empty($marble->photos)) {
+                    echo htmlspecialchars(implode("\n", array_map(fn($p) => $p->getUrl(), $marble->photos)));
+                }
+            ?></textarea>
+        </label><br><br>
+
         <button type="submit">Save</button>
     </form>
 

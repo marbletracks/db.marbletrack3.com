@@ -124,6 +124,11 @@ function findMarble(\Database\MarblesRepository $repo, string $sub): ?\Physical\
 
 function marbleToArray(\Physical\Marble $marble): array
 {
+    $photos = array_map(fn($p) => [
+        'photo_id' => $p->photo_id,
+        'url'      => $p->getUrl(),
+    ], $marble->photos);
+
     return [
         'marble_id'    => $marble->marble_id,
         'marble_alias' => $marble->marble_alias,
@@ -134,5 +139,6 @@ function marbleToArray(\Physical\Marble $marble): array
         'color'        => $marble->color,
         'quantity'     => $marble->quantity,
         'description'  => $marble->description,
+        'photos'       => $photos,
     ];
 }

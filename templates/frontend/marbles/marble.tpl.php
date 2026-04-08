@@ -1,6 +1,14 @@
 <div class="PagePanel">
     <h1><?= htmlspecialchars($marble->marble_name ?? '') ?></h1>
 
+    <?php if (!empty($marble->photos)): ?>
+        <div class="marble-photos">
+            <?php foreach ($marble->photos as $photo): ?>
+                <img src="<?= htmlspecialchars($photo->getUrl()) ?>" alt="<?= htmlspecialchars($marble->marble_name) ?>" style="max-width: 400px;">
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
     <p>
         <strong>Size:</strong> <?= htmlspecialchars(ucfirst($marble->size)) ?><br>
         <strong>Color:</strong> <?= htmlspecialchars($marble->color) ?>
