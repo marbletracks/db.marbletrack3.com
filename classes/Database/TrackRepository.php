@@ -101,6 +101,38 @@ SQL
         return $tracks;
     }
 
+    public function findByFilter(string $filter): array
+    {
+        $like = '%' . $filter . '%';
+        $results = $this->db->fetchResults(
+            <<<SQL
+SELECT t.track_id,
+       t.track_alias,
+       t.track_name,
+       t.technical_description,
+       t.visitor_description,
+       t.marble_sizes_accepted,
+       t.is_transport,
+       t.is_splitter,
+       t.is_landing_zone,
+       t.entity_type
+FROM tracks t
+WHERE t.track_alias LIKE ?
+   OR t.track_name LIKE ?
+ORDER BY t.track_name ASC
+SQL,
+            'ss',
+            [$like, $like]
+        );
+
+        $tracks = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $tracks[] = $this->hydrate($results->data);
+        }
+        return $tracks;
+    }
+
     public function findLandingZones(): array
     {
         $results = $this->db->fetchResults(

@@ -13,12 +13,33 @@ if (!$is_logged_in->isLoggedIn()) {
 // Repository knows how to connect to the database
 $repo = new \Database\TrackRepository(db: $mla_database);
 
-// Fetch all tracks
-$tracks = $repo->findAll();
+// Get filter parameters
+$filter = trim($_GET['filter'] ?? '');
+$type = $_GET['type'] ?? 'all';
+
+// Fetch tracks (filtered if text search provided)
+if (!empty($filter)) {
+    $tracks = $repo->findByFilter($filter);
+} else {
+    $tracks = $repo->findAll();
+}
+
+// Apply type filter
+if ($type === 'marble') {
+    $tracks = array_filter($tracks, fn($t) => $t->entity_type === 'marble');
+} elseif ($type === 'worker') {
+    $tracks = array_filter($tracks, fn($t) => $t->entity_type === 'worker');
+} elseif ($type === 'mixed') {
+    $tracks = array_filter($tracks, fn($t) => $t->entity_type === 'mixed');
+} elseif ($type === 'landing') {
+    $tracks = array_filter($tracks, fn($t) => $t->isLandingZone());
+}
 
 $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/tracks/index.tpl.php");
 $page->set(name: "tracks", value: $tracks);
+$page->set(name: "filter", value: $filter);
+$page->set(name: "type", value: $type);
 $inner = $page->grabTheGoods();
 
 $layout = new \Template(config: $config);
