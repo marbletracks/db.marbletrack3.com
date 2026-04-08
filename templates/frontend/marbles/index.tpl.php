@@ -4,6 +4,20 @@
 <div class="marble-grid">
     <?php foreach ($marbles as $marble): ?>
         <div class="marble-card">
+            <?php
+                $primary = null;
+                foreach ($marble->photos as $p) {
+                    if ($p->isPrimary) { $primary = $p; break; }
+                }
+                if (!$primary && !empty($marble->photos)) {
+                    $primary = $marble->photos[0];
+                }
+            ?>
+            <?php if ($primary): ?>
+                <a href="/marbles/<?= htmlspecialchars($marble->slug) ?>/">
+                    <img src="<?= htmlspecialchars($primary->getUrl()) ?>" alt="<?= htmlspecialchars($marble->marble_name) ?>" style="max-width: 100%; border-radius: 4px;">
+                </a>
+            <?php endif; ?>
             <h2>
                 <a href="/marbles/<?= htmlspecialchars($marble->slug) ?>/">
                     <?= htmlspecialchars($marble->marble_name) ?>
