@@ -78,6 +78,15 @@ if ($method === 'PATCH' && $sub !== '') {
         description: array_key_exists('description', $input) ? $input['description'] : $marble->description
     );
 
+    // Handle photo_urls: add photos without removing existing ones
+    if (array_key_exists('photo_urls', $input) && is_array($input['photo_urls'])) {
+        $repo->setMarbleId($marble->marble_id);
+        $urls = array_filter(array_map('trim', $input['photo_urls']));
+        if (!empty($urls)) {
+            $repo->addPhotosFromUrls($urls);
+        }
+    }
+
     $updated = $repo->findById($marble->marble_id);
     echo json_encode(marbleToArray($updated));
     exit;
