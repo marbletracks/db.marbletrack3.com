@@ -11,24 +11,22 @@ if (!$is_logged_in->isLoggedIn()) {
 $take_id = intval(value: $mla_request->get['take_id']) ?? 0;
 $filter = trim($_GET['filter'] ?? '');
 
+// Missing-data checkboxes (multi-select); whitelist enforced in repo
+$missing = [];
+if (isset($_GET['missing']) && is_array($_GET['missing'])) {
+    $missing = array_values(array_filter($_GET['missing'], 'is_string'));
+}
+
+// Sort param; whitelist enforced in repo
+$sort = trim($_GET['sort'] ?? '');
+
 $partRepo = new \Database\PartsRepository($mla_database, "en");
 $workerRepo = new \Database\WorkersRepository($mla_database, "en");
 
 $repo = new \Database\MomentRepository($mla_database);
-$moments = [];
-if($take_id > 0 && !empty($filter)) {
-    // Both take_id and filter provided - filter within the specific take
-    $moments = $repo->findByFilter($filter, $take_id);
-} elseif($take_id > 0) {
-    // Only take_id provided
-    $moments = $repo->findWithinTakeId(take_id: $take_id);
-} elseif (!empty($filter)) {
-    // Only filter provided
-    $moments = $repo->findByFilter($filter);
-} else {
-    // Neither provided - get all moments
-    $moments = $repo->findAll();
-}
+$result = $repo->findFiltered($filter, $take_id, $missing, $sort);
+$moments = $result['moments'];
+$total = $result['total'];
 
 foreach ($moments as $key => $moment) {
     $moment->notes = $partRepo->expandShortcodesForBackend($moment->notes, "part", "en");
@@ -39,6 +37,9 @@ $page->setTemplate(template_file: "admin/moments/index.tpl.php");
 $page->set(name: "moments", value: $moments);
 $page->set(name: "take_id", value: $take_id);
 $page->set(name: "filter", value: $filter);
+$page->set(name: "missing", value: $missing);
+$page->set(name: "sort", value: $sort);
+$page->set(name: "total", value: $total);
 $page->set(name: "page_title", value: "Moment Index");
 $inner = $page->grabTheGoods();
 

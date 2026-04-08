@@ -2,26 +2,69 @@
     <h1>All Moments</h1>
     <p><a href="/admin/moments/moment.php">Create New Moment</a></p>
 
+    <?php
+    $missing = $missing ?? [];
+    $sort = $sort ?? '';
+    $total = $total ?? count($moments);
+    $missingOptions = [
+        'photo'        => 'Photo',
+        'frame'        => 'Frame',
+        'date'         => 'Date',
+        'phrase'       => 'Phrase',
+        'take'         => 'Take',
+        'perspectives' => 'Perspectives',
+    ];
+    $hasAnyFilter = !empty($filter) || !empty($missing) || $sort !== '';
+    ?>
     <div style="margin-bottom: 20px;">
-        <form method="get" action="/admin/moments/" style="display: flex; align-items: center; gap: 10px;">
+        <form method="get" action="/admin/moments/" style="display: flex; flex-direction: column; gap: 10px;">
             <?php if ($take_id > 0): ?>
                 <input type="hidden" name="take_id" value="<?= $take_id ?>">
             <?php endif; ?>
-            <label for="filter">Filter moments:</label>
-            <input type="text" id="filter" name="filter" value="<?= htmlspecialchars($filter) ?>"
-                   placeholder="Search in notes..." style="padding: 5px; width: 250px;">
-            <button type="submit" style="padding: 5px 10px;">Filter</button>
-            <?php if (!empty($filter)): ?>
-                <a href="/admin/moments/<?= $take_id > 0 ? '?take_id=' . $take_id : '' ?>" style="padding: 5px 10px; text-decoration: none; background: #f0f0f0; border: 1px solid #ccc;">Clear</a>
+            <?php if ($sort !== ''): ?>
+                <input type="hidden" name="sort" value="<?= htmlspecialchars($sort) ?>">
             <?php endif; ?>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="filter">Filter moments:</label>
+                <input type="text" id="filter" name="filter" value="<?= htmlspecialchars($filter) ?>"
+                       placeholder="Search in notes..." style="padding: 5px; width: 250px;">
+                <button type="submit" style="padding: 5px 10px;">Filter</button>
+                <?php if ($hasAnyFilter): ?>
+                    <a href="/admin/moments/<?= $take_id > 0 ? '?take_id=' . $take_id : '' ?>" style="padding: 5px 10px; text-decoration: none; background: #f0f0f0; border: 1px solid #ccc;">Clear</a>
+                <?php endif; ?>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                <strong>Missing:</strong>
+                <?php foreach ($missingOptions as $key => $label): ?>
+                    <label style="display: inline-flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" name="missing[]" value="<?= $key ?>"
+                               <?= in_array($key, $missing, true) ? 'checked' : '' ?>
+                               onchange="this.form.submit()">
+                        <?= $label ?>
+                    </label>
+                <?php endforeach; ?>
+            </div>
         </form>
-        <?php if (!empty($filter)): ?>
-            <p style="margin-top: 10px; font-style: italic;">
-                Showing results for: <strong><?= htmlspecialchars($filter) ?></strong>
-                (<?= count($moments) ?> moment<?= count($moments) !== 1 ? 's' : '' ?> found)
-            </p>
-        <?php endif; ?>
+        <p style="margin-top: 10px; font-style: italic;">
+            Showing <?= count($moments) ?> of <?= $total ?> moment<?= $total !== 1 ? 's' : '' ?>
+            <?php if (!empty($filter)): ?>
+                matching <strong><?= htmlspecialchars($filter) ?></strong>
+            <?php endif; ?>
+        </p>
     </div>
+
+    <?php
+    // Build a query string for the date sort link, preserving current state
+    $sortQuery = [];
+    if ($take_id > 0)        { $sortQuery['take_id'] = $take_id; }
+    if (!empty($filter))     { $sortQuery['filter']  = $filter; }
+    foreach ($missing as $m) { $sortQuery['missing[]'][] = $m; }
+    $nextSort = ($sort === 'date_asc') ? 'date_desc' : 'date_asc';
+    $sortArrow = ($sort === 'date_asc') ? ' ▲' : (($sort === 'date_desc') ? ' ▼' : '');
+    $sortQuery['sort'] = $nextSort;
+    // http_build_query handles the missing[] array properly
+    $sortHref = '/admin/moments/?' . http_build_query($sortQuery);
+    ?>
 
     <?php if ($take_id > 0): ?>
         <p>
@@ -36,7 +79,7 @@
                 <th>Photo</th>
                 <th>Notes</th>
                 <th>Frames</th>
-                <th>Date</th>
+                <th><a href="<?= htmlspecialchars($sortHref) ?>" style="text-decoration: none; color: inherit;">Date<?= $sortArrow ?></a></th>
                 <th>Phrase ID</th>
                 <th>Edit</th>
             </tr>

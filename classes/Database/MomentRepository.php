@@ -174,6 +174,113 @@ class MomentRepository
         return $moments;
     }
 
+    /**
+     * Unified filter/search/sort for the admin moments index.
+     *
+     * @param string   $filter   Free-text search of m.notes / mt.translated_note
+     * @param int      $take_id  Restrict to a take (0 = no restriction)
+     * @param string[] $missing  Subset of {photo, frame, date, phrase, take, perspectives}
+     * @param string   $sort     One of: '', 'date_asc', 'date_desc'
+     * @return array{moments: Moment[], total: int}
+     */
+    public function findFiltered(string $filter = '', int $take_id = 0, array $missing = [], string $sort = ''): array
+    {
+        $filter = trim($filter);
+        $where = [];
+        $params = [];
+        $types = '';
+
+        if ($filter !== '') {
+            // Search both moments.notes and any translated_note for this moment
+            $where[] = "(m.notes LIKE ? OR EXISTS (
+                SELECT 1 FROM moment_translations mtf
+                WHERE mtf.moment_id = m.moment_id AND mtf.translated_note LIKE ?
+            ))";
+            $params[] = '%' . $filter . '%';
+            $params[] = '%' . $filter . '%';
+            $types .= 'ss';
+        }
+
+        if ($take_id > 0) {
+            $where[] = "m.take_id = ?";
+            $params[] = $take_id;
+            $types .= 'i';
+        }
+
+        $allowedMissing = ['photo', 'frame', 'date', 'phrase', 'take', 'perspectives'];
+        foreach ($missing as $m) {
+            if (!in_array($m, $allowedMissing, true)) {
+                continue;
+            }
+            switch ($m) {
+                case 'photo':
+                    $where[] = "NOT EXISTS (SELECT 1 FROM moments_2_photos m2p WHERE m2p.moment_id = m.moment_id)";
+                    break;
+                case 'frame':
+                    $where[] = "(m.frame_start IS NULL OR m.frame_end IS NULL)";
+                    break;
+                case 'date':
+                    $where[] = "m.moment_date IS NULL";
+                    break;
+                case 'phrase':
+                    $where[] = "m.phrase_id IS NULL";
+                    break;
+                case 'take':
+                    $where[] = "m.take_id IS NULL";
+                    break;
+                case 'perspectives':
+                    $where[] = "NOT EXISTS (SELECT 1 FROM moment_translations mtp WHERE mtp.moment_id = m.moment_id)";
+                    break;
+            }
+        }
+
+        $whereSql = empty($where) ? '' : 'WHERE ' . implode(' AND ', $where);
+
+        switch ($sort) {
+            case 'date_asc':
+                // NULLs last so dated rows lead
+                $orderSql = 'ORDER BY m.moment_date IS NULL, m.moment_date ASC, m.take_id ASC, m.frame_start ASC';
+                break;
+            case 'date_desc':
+                $orderSql = 'ORDER BY m.moment_date IS NULL, m.moment_date DESC, m.take_id DESC, m.frame_start DESC';
+                break;
+            default:
+                $orderSql = 'ORDER BY m.take_id ASC, m.frame_start ASC';
+                break;
+        }
+
+        $sql = "SELECT
+                    m.moment_id,
+                    m.frame_start,
+                    m.frame_end,
+                    m.take_id,
+                    m.notes,
+                    m.moment_date
+                FROM moments m
+                $whereSql
+                $orderSql";
+
+        if (empty($params)) {
+            $results = $this->db->fetchResults(sql: $sql);
+        } else {
+            $results = $this->db->fetchResults(sql: $sql, paramtypes: $types, var1: $params);
+        }
+
+        $moments = [];
+        for ($i = 0; $i < $results->numRows(); $i++) {
+            $results->setRow($i);
+            $this->moment_id = (int) $results->data['moment_id'];
+            $moments[] = $this->hydrate($results->data);
+        }
+
+        // Total count of all moments (denominator for "showing N of M")
+        $totalResults = $this->db->fetchResults(sql: "SELECT COUNT(*) AS n FROM moments");
+        $totalResults->setRow(0);
+        $total = (int) $totalResults->data['n'];
+
+        return ['moments' => $moments, 'total' => $total];
+    }
+
     public function findAllForEntity(string $name, string $alias): array
     {
         $allMoments = $this->findAll();
