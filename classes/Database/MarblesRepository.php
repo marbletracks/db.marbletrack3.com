@@ -190,7 +190,7 @@ SQL;
 
         $this->db->executeSQL(
             "UPDATE marbles SET marble_alias = ?, marble_name = ?, slug = ?, team_name = ?, size = ?, color = ?, quantity = ?, description = ? WHERE marble_id = ?",
-            'ssssssisl',
+            'ssssssisi',
             [$alias, $name, $slug, $team_name, $size, $color, $quantity, $description, $marble_id]
         );
     }
