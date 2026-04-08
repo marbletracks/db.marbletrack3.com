@@ -22,6 +22,7 @@ $sort = trim($_GET['sort'] ?? '');
 
 $partRepo = new \Database\PartsRepository($mla_database, "en");
 $workerRepo = new \Database\WorkersRepository($mla_database, "en");
+$marbleRepo = new \Database\MarblesRepository($mla_database);
 
 $repo = new \Database\MomentRepository($mla_database);
 $result = $repo->findFiltered($filter, $take_id, $missing, $sort);
@@ -31,6 +32,7 @@ $total = $result['total'];
 foreach ($moments as $key => $moment) {
     $moment->notes = $partRepo->expandShortcodesForBackend($moment->notes, "part", "en");
     $moment->notes = $workerRepo->expandShortcodesForBackend($moment->notes, "worker", "en");
+    $moment->notes = $marbleRepo->expandShortcodesForBackend($moment->notes, "marble", "en");
 }
 $page = new \Template(config: $config);
 $page->setTemplate(template_file: "admin/moments/index.tpl.php");
