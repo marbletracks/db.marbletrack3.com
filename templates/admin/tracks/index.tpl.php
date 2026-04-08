@@ -22,6 +22,10 @@
                style="padding: 5px 12px; margin-left: 5px; text-decoration: none; border-radius: 4px; <?= $type === 'mixed' ? 'background: #17a2b8; color: white;' : 'background: #f8f9fa; border: 1px solid #dee2e6; color: #17a2b8;' ?>">
                 🔄 Mixed
             </a>
+            <a href="/admin/tracks/?type=splitter<?= !empty($filter) ? '&filter=' . urlencode($filter) : '' ?>"
+               style="padding: 5px 12px; margin-left: 5px; text-decoration: none; border-radius: 4px; <?= $type === 'splitter' ? 'background: #ffc107; color: white;' : 'background: #f8f9fa; border: 1px solid #dee2e6; color: #b8860b;' ?>">
+                🔀 Splitters
+            </a>
             <a href="/admin/tracks/?type=landing<?= !empty($filter) ? '&filter=' . urlencode($filter) : '' ?>"
                style="padding: 5px 12px; margin-left: 5px; text-decoration: none; border-radius: 4px; <?= $type === 'landing' ? 'background: #28a745; color: white;' : 'background: #f8f9fa; border: 1px solid #dee2e6; color: #28a745;' ?>">
                 🎯 Landing Zones
@@ -55,6 +59,7 @@
                         'marble' => '🔴 Marble',
                         'worker' => '👷 Worker',
                         'mixed' => '🔄 Mixed',
+                        'splitter' => '🔀 Splitters',
                         'landing' => '🎯 Landing Zones',
                         'all' => '📋 All Tracks',
                     ];

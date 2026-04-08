@@ -31,6 +31,8 @@ if ($type === 'marble') {
     $tracks = array_filter($tracks, fn($t) => $t->entity_type === 'worker');
 } elseif ($type === 'mixed') {
     $tracks = array_filter($tracks, fn($t) => $t->entity_type === 'mixed');
+} elseif ($type === 'splitter') {
+    $tracks = array_filter($tracks, fn($t) => $t->isSplitter());
 } elseif ($type === 'landing') {
     $tracks = array_filter($tracks, fn($t) => $t->isLandingZone());
 }
