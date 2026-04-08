@@ -207,7 +207,7 @@ class MomentRepository
             $types .= 'i';
         }
 
-        $allowedMissing = ['photo', 'frame', 'date', 'phrase', 'take', 'perspectives'];
+        $allowedMissing = ['photo', 'frame', 'date', 'take', 'perspectives'];
         foreach ($missing as $m) {
             if (!in_array($m, $allowedMissing, true)) {
                 continue;
@@ -221,9 +221,6 @@ class MomentRepository
                     break;
                 case 'date':
                     $where[] = "m.moment_date IS NULL";
-                    break;
-                case 'phrase':
-                    $where[] = "m.phrase_id IS NULL";
                     break;
                 case 'take':
                     $where[] = "m.take_id IS NULL";

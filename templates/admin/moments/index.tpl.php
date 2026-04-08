@@ -10,7 +10,6 @@
         'photo'        => 'Photo',
         'frame'        => 'Frame',
         'date'         => 'Date',
-        'phrase'       => 'Phrase',
         'take'         => 'Take',
         'perspectives' => 'Perspectives',
     ];
@@ -80,7 +79,6 @@
                 <th>Notes</th>
                 <th>Frames</th>
                 <th><a href="<?= htmlspecialchars($sortHref) ?>" style="text-decoration: none; color: inherit;">Date<?= $sortArrow ?></a></th>
-                <th>Phrase ID</th>
                 <th>Edit</th>
             </tr>
         </thead>
@@ -103,7 +101,6 @@
                         <?php endif; ?>
                     </td>
                     <td><?= htmlspecialchars($moment->moment_date ?? '') ?></td>
-                    <td><?= htmlspecialchars((string)$moment->phrase_id ?? '') ?></td>
                     <td>
                         <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>">
                             Edit
