@@ -241,6 +241,12 @@ class MomentRepository
             case 'date_desc':
                 $orderSql = 'ORDER BY m.moment_date IS NULL, m.moment_date DESC, m.take_id DESC, m.frame_start DESC';
                 break;
+            case 'perspectives_asc':
+                $orderSql = 'ORDER BY perspective_count ASC, m.take_id ASC, m.frame_start ASC';
+                break;
+            case 'perspectives_desc':
+                $orderSql = 'ORDER BY perspective_count DESC, m.take_id ASC, m.frame_start ASC';
+                break;
             default:
                 $orderSql = 'ORDER BY m.take_id ASC, m.frame_start ASC';
                 break;
@@ -252,7 +258,9 @@ class MomentRepository
                     m.frame_end,
                     m.take_id,
                     m.notes,
-                    m.moment_date
+                    m.moment_date,
+                    (SELECT COUNT(*) FROM moment_translations mt
+                     WHERE mt.moment_id = m.moment_id) AS perspective_count
                 FROM moments m
                 $whereSql
                 $orderSql";
@@ -267,7 +275,9 @@ class MomentRepository
         for ($i = 0; $i < $results->numRows(); $i++) {
             $results->setRow($i);
             $this->moment_id = (int) $results->data['moment_id'];
-            $moments[] = $this->hydrate($results->data);
+            $moment = $this->hydrate($results->data);
+            $moment->perspective_count = (int) ($results->data['perspective_count'] ?? 0);
+            $moments[] = $moment;
         }
 
         // Total count of all moments (denominator for "showing N of M")

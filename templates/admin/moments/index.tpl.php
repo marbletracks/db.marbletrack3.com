@@ -53,16 +53,21 @@
     </div>
 
     <?php
-    // Build a query string for the date sort link, preserving current state
-    $sortQuery = [];
-    if ($take_id > 0)        { $sortQuery['take_id'] = $take_id; }
-    if (!empty($filter))     { $sortQuery['filter']  = $filter; }
-    foreach ($missing as $m) { $sortQuery['missing[]'][] = $m; }
-    $nextSort = ($sort === 'date_asc') ? 'date_desc' : 'date_asc';
-    $sortArrow = ($sort === 'date_asc') ? ' ▲' : (($sort === 'date_desc') ? ' ▼' : '');
-    $sortQuery['sort'] = $nextSort;
-    // http_build_query handles the missing[] array properly
-    $sortHref = '/admin/moments/?' . http_build_query($sortQuery);
+    // Build a sortable column header. Toggles asc/desc on repeat clicks.
+    $makeSortHeader = function (string $label, string $key) use ($take_id, $filter, $missing, $sort): string {
+        $asc  = $key . '_asc';
+        $desc = $key . '_desc';
+        $nextSort = ($sort === $asc) ? $desc : $asc;
+        $arrow = ($sort === $asc) ? ' ▲' : (($sort === $desc) ? ' ▼' : '');
+        $q = [];
+        if ($take_id > 0)        { $q['take_id'] = $take_id; }
+        if (!empty($filter))     { $q['filter']  = $filter; }
+        foreach ($missing as $m) { $q['missing[]'][] = $m; }
+        $q['sort'] = $nextSort;
+        $href = '/admin/moments/?' . http_build_query($q);
+        return '<a href="' . htmlspecialchars($href) . '" style="text-decoration: none; color: inherit;">'
+             . htmlspecialchars($label) . $arrow . '</a>';
+    };
     ?>
 
     <?php if ($take_id > 0): ?>
@@ -78,7 +83,8 @@
                 <th>Photo</th>
                 <th>Notes</th>
                 <th>Frames</th>
-                <th><a href="<?= htmlspecialchars($sortHref) ?>" style="text-decoration: none; color: inherit;">Date<?= $sortArrow ?></a></th>
+                <th><?= $makeSortHeader('Date', 'date') ?></th>
+                <th><?= $makeSortHeader('Perspectives', 'perspectives') ?></th>
                 <th>Edit</th>
             </tr>
         </thead>
@@ -101,6 +107,7 @@
                         <?php endif; ?>
                     </td>
                     <td><?= htmlspecialchars($moment->moment_date ?? '') ?></td>
+                    <td style="text-align: right;"><?= (int) $moment->perspective_count ?></td>
                     <td>
                         <a href="/admin/moments/moment.php?id=<?= $moment->moment_id ?>">
                             Edit

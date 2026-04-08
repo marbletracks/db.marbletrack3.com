@@ -9,6 +9,7 @@ class Moment
 {
     public array $photos = [];
     public string $slug;
+    public int $perspective_count = 0;
     
     public function __construct(
         public int $moment_id,
