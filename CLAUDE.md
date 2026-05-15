@@ -146,3 +146,4 @@ Tests validate:
 - Database schemas in `db_schemas/` organized by feature area
 - Test-driven development possible with custom test runner
 - `DBPersistaroo` handles automatic database backups (hourly)
+- `scripts/render_reel.py` renders Reels (Dragonframe → ffmpeg `.mov`); see dbmt3k memory `project_mt3_render_reel` for invocation
