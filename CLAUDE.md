@@ -146,4 +146,7 @@ Tests validate:
 - Database schemas in `db_schemas/` organized by feature area
 - Test-driven development possible with custom test runner
 - `DBPersistaroo` handles automatic database backups (hourly)
-- `scripts/render_reel.py` renders Reels (Dragonframe → ffmpeg `.mov`); see dbmt3k memory `project_mt3_render_reel` for invocation
+
+## Reel rendering (video output)
+
+Turning MT3 source frames into a `.mov` (a single Moment, a cross-Take Reel, or the Final Movie) is **owned by dbmt3k**. Other agents should not reimplement it — request a render via jikan inbox to dbmt3k (aiu_id 28) with either a Moment ID, or `(take_id, vframe_start, vframe_end)`. The pipeline lives in dbmt3k's private memory.
