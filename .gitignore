@@ -20,3 +20,4 @@ db_backups/
 wwwroot/.dh-diag
 wwwroot/favicon.gif
 wwwroot/favicon.ico
+scripts/__pycache__/
