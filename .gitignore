@@ -14,6 +14,8 @@ phpmyadmin-open.sh
 
 # Config files with credentials
 /classes/Config.php
+/config/marble_track_vids_robs_main_YT_account.json
+/config/post_mt3_vids_to_YT_mt3_account.json
 .dh-diag
 db_backup*
 db_backups/
