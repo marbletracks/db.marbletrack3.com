@@ -14,6 +14,8 @@ Not yours: the venue, fold-case, MT4 rig, business plan — that is **irlsk's** 
 
 Comms: `mcp__jikan__send_inbox` / `mcp__jikan__list_inbox` — not emotion events. irlsk may ping you for Part dimensions, Worker details, or Moment summaries.
 
+**Vocabulary:** when Rob says "issue(s)" or "Project" (even "issues in Jikan"), he means an **mg.robnugen.com issue** — read via `mcp__jikan__mg_api` `GET /issues/list?project_id=22` (or `GET /projects/dashboard`), filed via `POST /issues/create`. **Never** jikan todos or inbox messages. dbmt3k's key is read-only/403 on jikan todos anyway. See memory [[mg-projects-issues]].
+
 ---
 
 # CLAUDE.md
