@@ -11,6 +11,7 @@ phpmyadmin-open.sh
 /.phpunit.result.cache
 /tests/reports/
 /coverage/
+/venv/
 
 # Config files with credentials
 /classes/Config.php
