@@ -22,6 +22,7 @@ from pathlib import Path
 
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 CONFIG_ROOT = Path(__file__).resolve().parent.parent / "config"
 
@@ -87,20 +88,29 @@ def main() -> None:
         sys.exit("No refresh_token returned. Re-run; ensure you fully approve "
                  "the consent screen.")
 
-    # Confirm WHICH channel was authorized so a wrong login is caught now,
-    # not after a video lands on the wrong account.
-    yt = build("youtube", "v3", credentials=creds)
-    resp = yt.channels().list(part="snippet", mine=True).execute()
-    items = resp.get("items", [])
-    channel = items[0]["snippet"]["title"] if items else "(no channel on this account)"
-
+    # Persist the token FIRST — it is the whole point of this script and must
+    # not be lost to a later non-fatal error.
     cfg["refresh_token"] = creds.refresh_token
     path.write_text(json.dumps(cfg, indent=2) + "\n")
-
     print(f"\n✓ refresh_token written to {path.name}")
-    print(f"  Authorized channel: {channel}")
-    print(f"  If that is NOT the intended '{args.account}' channel, delete the "
-          f"refresh_token in that file and re-run logged into the right account.")
+
+    # Best-effort channel confirmation. The youtube.upload scope alone cannot
+    # read channels.list (403 insufficient scopes), so this is informational
+    # only and never fatal — the token is already safely written above.
+    try:
+        yt = build("youtube", "v3", credentials=creds)
+        resp = yt.channels().list(part="snippet", mine=True).execute()
+        items = resp.get("items", [])
+        channel = items[0]["snippet"]["title"] if items else "(no channel)"
+        print(f"  Authorized channel: {channel}")
+        print(f"  If that is NOT the intended '{args.account}' channel, clear "
+              f"the refresh_token in that file and re-run with the right login.")
+    except HttpError as e:
+        if e.resp.status == 403:
+            print("  (Channel name unavailable — upload-only scope can't read "
+                  "channels. Be sure you logged into the intended account.)")
+        else:
+            print(f"  (Channel check skipped: {e})")
 
 
 if __name__ == "__main__":
