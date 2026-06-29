@@ -105,6 +105,24 @@ def upload(args: argparse.Namespace) -> None:
     print(f"\n✓ Uploaded: https://youtu.be/{video_id}")
     print(f"  Studio:   https://studio.youtube.com/video/{video_id}/edit")
 
+    # Optional sidecar caption track (.srt). Needs the youtube.force-ssl scope;
+    # no-op when --caption is absent, so upload-only accounts are unaffected.
+    if args.caption:
+        cap = Path(args.caption).expanduser()
+        if not cap.is_file():
+            print(f"  ! caption file not found, skipped: {cap}")
+        else:
+            cap_media = MediaFileUpload(str(cap), mimetype="application/octet-stream",
+                                        resumable=False)
+            yt.captions().insert(
+                part="snippet",
+                body={"snippet": {"videoId": video_id,
+                                  "language": args.caption_language,
+                                  "name": ""}},
+                media_body=cap_media,
+            ).execute()
+            print(f"  ✓ Caption [{args.caption_language}] attached from {cap.name}")
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -118,6 +136,10 @@ def main() -> None:
     parser.add_argument("--tags", default="", help="Comma-separated tags.")
     parser.add_argument("--category", default="1",
                         help="YouTube categoryId; default 1 = Film & Animation.")
+    parser.add_argument("--caption", default="",
+                        help="Optional .srt sidecar to attach (needs force-ssl scope).")
+    parser.add_argument("--caption-language", default="en",
+                        help="BCP-47 language for --caption; default 'en'.")
     args = parser.parse_args()
 
     try:
