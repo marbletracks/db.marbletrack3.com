@@ -36,6 +36,7 @@ CONFIG_ROOT = Path(__file__).resolve().parent.parent / "config"
 ACCOUNTS = {
     "robs_main": CONFIG_ROOT / "marble_track_vids_robs_main_YT_account.json",
     "mt3_account": CONFIG_ROOT / "post_mt3_vids_to_YT_mt3_account.json",
+    "thunderrabbit": CONFIG_ROOT / "thunderrabbit_YT_account.json",
 }
 
 PRIVACY = ("private", "unlisted", "public")

@@ -17,6 +17,7 @@ phpmyadmin-open.sh
 /classes/Config.php
 /config/marble_track_vids_robs_main_YT_account.json
 /config/post_mt3_vids_to_YT_mt3_account.json
+/config/thunderrabbit_YT_account.json
 .dh-diag
 db_backup*
 db_backups/
