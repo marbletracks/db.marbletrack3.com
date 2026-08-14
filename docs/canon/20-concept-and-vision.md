@@ -136,6 +136,29 @@ Three things follow:
 This gives the Patreon milestone series an ending to point at. Every backdated post
 is a step toward a party the reader could actually be invited to.
 
+### Who gets the track — honestly
+
+`marbletrack3.com/content/support.md` currently promises the physical track to
+whoever has given the most support. Rob's position as of 2026-08-14 is warmer and
+much less settled than that sentence implies:
+
+> "My mom has given me over $1,000 toward the project, so if anyone gives more then
+> we can have a conversation, but I'm happy to give it to them legally and then have
+> it in the museum... but I'm way out over my skis as to what can actually be done.
+> I'm in the middle of just trying to create the project, much less trying to figure
+> out where it will go."
+
+**Not for publication:** the $1,000 figure and the fact that Rob's mother is
+currently the largest supporter are private context, not website copy.
+
+What *is* publishable: the track will end up somewhere it can be seen, the
+biggest supporter gets a conversation rather than a contractual prize, and Rob
+gives his marble tracks away — MT1 and MT2 are already in Houston.
+
+**Action:** the `support.md` sentence needs a graceful edit before any traffic is
+pointed at Patreon. Rob's instruction: *"that line should be edited but done in a
+graceful way that acknowledges it will be given away to a museum or something."*
+
 ## Why this matters for Patreon
 
 The support pitch follows directly from the thesis and does not need to beg:
