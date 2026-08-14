@@ -17,11 +17,12 @@ bit over a second, at twelve frames per second — of blue fabric on my desk.
 That's the field. Nothing is on it yet.
 
 Meanwhile, in the story: this is a plot of land where a park is going to be built.
-The crew hasn't arrived. The residents haven't moved in. Squarehead is about to walk
-in backwards, dragging the base behind him.
+The crew hasn't arrived. The residents haven't moved in. A small square-headed
+fellow is about to walk in backwards, leading an enormous rabbit who is dragging the
+base behind him. Neither of them has a name yet.
 
 7 July 2017. Six years after the first attempt, four years after the third, and a
-few weeks after I decided that this time the stage would rotate.
+few months after I decided that this time the stage would rotate.
 
 Fourteen frames of nothing is a strange thing to be proud of. But it is still the
 only day the track was ever empty.
@@ -38,11 +39,10 @@ empty backdrop, and a short post is the joke.
 `GET /api/v1/moments/1/`. 12fps confirmed by you. "The field" is the blue fabric,
 also confirmed by you.
 
-**Small continuity check:** moment 2 has Squarehead leading Rabby in with the base
-on 2017-07-09, and its own note says the date is a guess. Your fill-in says
-Squarehead was "dragging the base behind him" — I've used your version. Whether
-Squarehead leads Rabby or drags the base himself is worth settling, since it's the
-first action in the entire film.
+**Continuity settled:** Squarehead leads, Rabby drags the base. And your detail that
+neither had a name yet is now doing real work in the post — naming them here would be
+retroactive, so they're described rather than named. It also quietly sets up that
+these characters were people before they were characters.
 
 **Media:** still none. A single frame of the empty blue field would be a genuinely
 funny image to open a campaign with.

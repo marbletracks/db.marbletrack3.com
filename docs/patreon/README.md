@@ -22,7 +22,7 @@ verifying what went out (`published_at`, `is_public`).
 | Everything else | Possibly public too. Open. |
 | If anything is patron-only | Artifacts, not writing — deleted frames, early snippets, all frames. Rob promised exactly these in 2018. Lore recruits; artifacts reward. |
 | Scope | ~10–20 milestone posts, richer than the DB currently holds. |
-| Rollout | Drip, one every few days. |
+| Rollout | **Write all 10–20 first, then drip them out over about a year** (Rob, 2026-08-14). At 15 posts that's roughly one every three and a half weeks. Supersedes the earlier "one every few days". |
 | Dates | **Backdated correctly** to when the milestone actually happened. |
 | Notifications | **On.** |
 
@@ -77,6 +77,21 @@ browsable as one thing.
 10. Verify while logged out that the post is publicly visible and the date reads correctly.
 
 **Do the first post together, with Rob watching**, before automating any of it.
+
+## Sequencing
+
+1. Write all 10–20 posts first. Nothing publishes until the set is drafted and Rob
+   has approved it.
+2. Then release over roughly a year — about one every three and a half weeks at 15
+   posts.
+
+Because each post is backdated to when its events happened, the drip order controls
+only what the notifications say and in what order friends encounter the story. The
+archive fills in behind them at historical positions regardless.
+
+A year-long release also means **the campaign stays alive without Rob having to
+film** — which matters, since the track has been under plastic for at least nine
+months.
 
 ## Draft front matter
 

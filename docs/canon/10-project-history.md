@@ -50,6 +50,7 @@ year**, except the MT2 upload, which he knows exactly.
 | **2011** | **First MT3 attempt.** Tripod built for a waterproof camera; glue dried; a piece of wood placed; some frames shot. |
 | *unknown* | **Second attempt** — Rob has no memory of it whatsoever |
 | **2013-05** | **Third attempt** — video labelled "Third attempt" (`kSdHNDlQ1x8`), 1 minute 9 seconds |
+| **2017 early** | The lazy-Susan bearing and three wooden platters bought at a home centre. MT3 as we know it becomes possible. |
 | **2017 summer** | Rob and **Lin** buy a house with no plans to move; he decides to start again |
 | **2017-07-07** | First frame of MT3 shot — moment 1, take 3, frames 1–14 |
 | **2022-05** | Production stops |
@@ -97,8 +98,16 @@ Two causes, and the second one is the best disaster story in the project.
 > was so afraid someone would steal the hard work! I was sure I was smart enough to
 > keep a password safe."
 
-Months of frames, sealed permanently by their own author, out of fear that someone
-might steal them. Nobody stole them. Nobody can look at them either.
+**The backup was online**, not a local drive — so the frames are, presumably, still
+sitting on somebody's servers, encrypted, indefinitely. Sealed permanently by their
+own author out of fear that someone might steal them. Nobody stole them. Nobody can
+look at them either.
+
+**Ordering note:** the bearing was bought in **early 2017** and the house in
+**summer 2017**, which puts the purchase *before* the move — while Rob's written
+account tells it the other way round ("after Lin and I had bought a house... I went
+to a home centre"). Both dates are his; the sequence is unpinned. Posts should avoid
+claiming which came first.
 
 ### Why 2017 worked
 

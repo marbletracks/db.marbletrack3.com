@@ -1,5 +1,5 @@
 ---
-publish_date: 2017-07-01T12:00:00+09:00   # APPROXIMATE — "summer 2017", must precede 2017-07-07
+publish_date: 2017-03-01T12:00:00+09:00   # APPROXIMATE — "early 2017"
 title: The stage has to rotate
 visibility: public
 notify: true
@@ -7,23 +7,26 @@ collection: null
 source_moments: []
 source_episodes: []
 media:
-  - https://youtu.be/Ak3lfk20XD0   # assembling the skeleton
-  - https://youtu.be/M8msxdFzXeo
-  - https://www.youtube.com/watch?v=aHiUTkYGOvo   # testing the rotation
+  - url: https://youtu.be/Ak3lfk20XD0
+    caption: Building the skeleton, session one — the hips
+  - url: https://youtu.be/M8msxdFzXeo
+    caption: Session two — torso, legs and arms
+  - url: https://www.youtube.com/watch?v=aHiUTkYGOvo
+    caption: Testing the rotation
 patreon_url: null
 status: draft
 ---
 
-In the summer of 2017, Lin and I bought a house. No plans to move!
+In 2017, Lin and I bought a house. No plans to move!
 
 That turned out to be the thing that made Marble Track 3 possible. A stop-motion set
 can't be tidied away between sessions — every character has to stay exactly where it
 is, sometimes for months, or the frames won't match. You need a room that isn't
 going anywhere.
 
-I had one clear idea: the stage needed to rotate. The first three attempts had all
-been fixed to a table, and I could never reach the back without knocking something
-over.
+I also had one clear idea: the stage needed to rotate. The first three attempts had
+all been fixed to a table, and I could never reach the back without knocking
+something over.
 
 How? I went to a home centre and looked at what they had available. I found round
 wooden platters and a lazy susan type bearing — the kind that goes under a Chinese
@@ -41,7 +44,8 @@ move it. My friend Mayumi had given me a skeleton toy made out of plastic that I
 to put together — so I decided he could be the radio operator who brings the bearing
 in.
 
-Assembling him took 84 seconds of video all by itself.
+Assembling him took two sessions and 84 seconds of video all by itself. The first
+video is the hips. The second is his torso, legs and arms.
 
 That's Garinoppi. He exists, and he has a job title, because a bearing was too heavy
 for pipe cleaners.
@@ -50,16 +54,17 @@ for pipe cleaners.
 
 ## Notes for Rob — not part of the post
 
-**Date is approximate** — "summer 2017", and it has to precede the first frame on
-7 July. Adjust if you can place the home-centre trip properly.
+**Date changed to early 2017** per your answer, superseding the earlier "2012".
+Renamed the file to match; the old `2017-07-01-` version is gone.
 
-**UNRESOLVED, and this post can't ship without it:** you dated the bearing purchase
-to **2012** in the timeline, but this account puts it in **summer 2017**. The post
-currently implies 2017. Two trips, or a mis-dating?
+**Ordering is deliberately vague.** Early 2017 for the bearing and summer 2017 for
+the house puts the shopping trip *before* the move, but your written account tells it
+the other way round. The post now says "I also had one clear idea" rather than
+claiming either came first. If you can pin the sequence, it's a one-line fix.
 
-**Two URLs were malformed** in your fill-in — `https://www.youtu.be/...` isn't a
-valid host. I've rewritten them as `https://youtu.be/...`. Worth checking they load.
-I also don't know which of the first two videos is which; captions needed.
+**URLs fixed** — the two `www.youtu.be` hosts were invalid and are now `youtu.be`.
+Captions added from your description of the two sessions. Still unverified that the
+IDs load; worth a click.
 
 **Why this is the strongest recruiting post of the four:** it's the clearest case of
 the pattern that runs through everything — a beloved character existing purely

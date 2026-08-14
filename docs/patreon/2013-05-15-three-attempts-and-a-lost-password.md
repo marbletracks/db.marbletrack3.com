@@ -32,11 +32,10 @@ give up because the frames were inaccessible — I had encrypted the backup, and
 I lost the password. I was so afraid someone would steal the hard work! I was sure I
 was smart enough to keep a password safe.
 
-Nobody stole them. Nobody can look at them either.
+The backup was online, so as far as I know those frames are still sitting on
+somebody's servers right now, perfectly preserved and permanently unreadable.
 
-**[NEED: does that drive still exist somewhere, or is it long gone? "The frames are
-still sitting on a hard drive in a drawer, sealed" is a much better ending than "they
-went away" — but only if it's true.]**
+Nobody stole them. Nobody can look at them either.
 
 ---
 
@@ -50,6 +49,10 @@ mid-May. If you know the upload date, it should use that instead.
 
 **Check the link resolves** — `kSdHNDlQ1x8` came from your text, and I haven't
 verified it.
+
+**Ending updated:** you confirmed the backup was online rather than a local drive,
+which is a better ending than the one I'd hoped for — the frames aren't lost, they're
+being carefully preserved by a company on Rob's behalf, forever, unreadable.
 
 **Deliberately left out:** the 2011 attempt is also the one Pinky was present for.
 That's her introduction and it's worth its own moment later — mentioning it here

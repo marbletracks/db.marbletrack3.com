@@ -45,10 +45,10 @@ Two platters, plus a spare. (The buying-extra habit again — see the two thousa
 craft sticks.) They are **far too big for the characters to move**, which turned out
 to drive casting; see `40-in-universe.md`.
 
-**Date conflict to resolve:** Rob dated the bearing purchase to **2012** when giving
-the timeline, but his written account places the home-centre trip in **summer 2017**,
-after buying the house. Possibly two trips, possibly a mis-dating. Worth settling
-before any post claims a year.
+**Date settled:** the home-centre trip was **early 2017** (Rob, superseding an
+earlier off-the-cuff "2012"). Note this places it *before* the house purchase in
+summer 2017, whereas his narrative tells it the other way round — so the order of
+those two events remains unpinned.
 
 ### The bearing
 

@@ -70,6 +70,16 @@ What it settles:
   orange marbles with a lot of energy and mobility!"*) are canon voices, not
   decoration.
 
+## The characters were not named at the start
+
+Rob, on the opening scene: *"Squarehead is leading Rabby, although Squarehead did not
+have a name at that time."*
+
+The cast acquired names as they went. Anything written about the earliest frames
+should describe rather than name them — calling a figure "Squarehead" in July 2017 is
+retroactive. It also means the crew existed as *objects* before they existed as
+*people*, which is a quietly lovely thing and worth using once, carefully.
+
 ## Casting is decided by weight
 
 The most elegant interlock between the two worlds: **who appears in a scene is
