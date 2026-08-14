@@ -34,6 +34,36 @@ So the scale of MT3 — popsicle sticks, toothpicks, marbles — is a direct
 consequence of how Rob's eyes work. That is worth saying out loud somewhere public;
 it explains the whole project's texture.
 
+## Dated timeline
+
+Given by Rob 2026-08-14. **1984 is accurate within two years; the rest within one
+year**, except the MT2 upload, which he knows exactly.
+
+| Year | Event |
+|---|---|
+| **1984** (±2) | MT1 started — 7th grade, popsicle sticks on a square wooden slab |
+| **2001** | MT1 last added to |
+| **2002** | Rob leaves the USA for Japan; Maggie becomes MT1's caretaker |
+| **2007-06-28** | **MT2 uploaded to YouTube** — "Marble Track 2 basically finished" (`mlUqu6QE7bw`). Dates MT2's completion exactly. |
+| **2007** | Rob carries MT2 to Houston in a custom box; gives Maggie MT2 and formally MT1 |
+| **2011** | First MT3 attempt — no rotating stage. Pinky is present. Later lost entirely. |
+| **2012** | The lazy-Susan bearing is bought. MT3 as we know it becomes possible. |
+| **2017-07-07** | First frame of MT3 shot — moment 1, take 3, frames 1–14 |
+| **2022-05** | Production stops |
+| **2025-06-02** | "First livestream in 3+ years" |
+| **2026-04-06** | Most recent moment in the DB |
+
+**MT1 took seventeen years** (1984–2001). MT3 is nine years in and unfinished. The
+series has been running for over four decades.
+
+Small discrepancies to resolve eventually, neither urgent:
+
+- Rob first said he left for Japan in **2003**, then dated it **2002**. Within his
+  stated ±1 year either way.
+- He described MT1 as built *"until a couple of years after high school
+  graduation,"* but dates its last addition to **2001**. Graduation year not yet
+  given, so the two may simply be loose rather than contradictory.
+
 ## The lineage
 
 ### Before MT1: LEGO
