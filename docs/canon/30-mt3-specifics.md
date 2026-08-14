@@ -84,6 +84,13 @@ Two thousand craft sticks bought. **At most about fifty used, in nine years.** O
 box has never been opened at all. (Product:
 `https://www.robnugen.com/en/sayonara/items/creatology-wood-craft-sticks/`)
 
+The reasoning at the time was ordinary and is the funniest part:
+
+> "I was thinking that I would use them in a sane amount of time before I would
+> organically get back to an art supply store."
+
+He bought two thousand sticks to avoid an inconvenient second trip to the shop.
+
 Together with the spare slab, this is the same joke told twice in physical objects:
 Rob equipped himself for a series of marble tracks and has not yet finished one.
 MT3 is 95% of one box of sticks.
