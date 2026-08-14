@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Found My Marbles";
+const SENTIMENTAL_VERSION = "Interview Rob for Patreon";
 
 # write errors to screen
 ini_set('display_errors', 1);
