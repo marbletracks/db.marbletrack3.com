@@ -44,6 +44,34 @@ The stage rotates; the desk does not. Any Worker hanging on a thread — G Chopp
 flying, anyone suspended — pins the stage in place until they're down. Two systems
 that each solve a problem, quietly fighting each other.
 
+## The first version is gone
+
+The original non-rotating MT3 — the one **Pinky** worked on, dated to 2011 in
+`docs/worker_descriptions_archive_2026_04_07.md` — no longer exists:
+
+> "The original track that Pinky worked on does not exist anywhere that I'm aware
+> of."
+
+Not dismantled and stored, not photographed into an archive. Gone. Pinky is
+therefore the only Worker who has been through both attempts, and the only surviving
+witness to a track nobody else has seen. Squarehead's "day one" is 2017; hers is six
+years earlier.
+
+### The spare slab
+
+One physical object does survive from that era, and it's the best single artefact in
+the whole story:
+
+> "I do have a piece of wood that I bought at the same time, thinking that I would
+> make a set of tracks — but I had no idea it would take a million years to finish
+> even one."
+
+He bought lumber for a **series**. One slab became MT3. The other is still a plain
+piece of wood, holding the place of a track that hasn't been started. It is the
+ambition and the reality sitting next to each other in the same room.
+
+*(Open: is that slab earmarked for MT4?)*
+
 ## The pattern: every distinctive feature is a workaround
 
 This keeps recurring, and it may be the truest single thing about MT3. Nothing that
