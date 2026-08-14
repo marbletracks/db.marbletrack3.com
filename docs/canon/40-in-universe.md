@@ -70,6 +70,60 @@ What it settles:
   orange marbles with a lot of energy and mobility!"*) are canon voices, not
   decoration.
 
+## Casting is decided by weight
+
+The most elegant interlock between the two worlds: **who appears in a scene is
+determined by what the props physically weigh.**
+
+- The wooden platters are far too big for ordinary Workers to move. So **Rabby**
+  moved the stage in the third attempt, and **François** moves the second stage in
+  the current film — the two biggest, strongest figures.
+- The bearing was too heavy even for them:
+
+> "Even the bearing was too heavy for the characters but I didn't have anyone else
+> who could move it.. My friend Mayumi had given me a skeleton toy made out of
+> plastic that I had to put together, so I decided he could be the radio operator to
+> bring in the bearing."
+
+That skeleton is **Garinoppi**, whose DB description reads *"I flew the stage
+rotation bearing into place. I work as a radio operator for the track."* A character
+exists — with a job title — because a plastic toy was rigid enough to carry a
+bearing when pipe cleaners weren't. Assembling him took **84 seconds of video on its
+own**.
+
+So the crew's physiology is real and consequential. Strength is not a personality
+trait assigned for fun; it's the reason a given figure is in a given shot.
+
+## The camera exists, but nobody is watching it
+
+Rabby knocking the camera over (moment 4, 2017-07-13) is **not** a fourth-wall break.
+It was a staging solution:
+
+> "Rabby was very floppy and hard to work with and was so big he was headed right to
+> the camera. Should he look inside? Nah, too difficult to film. But I have to get
+> him past the camera somehow! Ah! He can knock the camera out of the way. That took
+> hours of filming to get the camera *back* into the correct spot."
+
+The camera is a physical obstacle in the world, the way a chair is. Rabby collides
+with it because he's large and floppy and had to exit somehow. He does not look into
+it, and Rob explicitly rejected having him do so. **Objects from the studio may exist
+in their world; awareness of being filmed may not.**
+
+Postscript, and very quotable: *"Lin suggested I cut it but I was like 'no way!'
+after I spent so long filming it."*
+
+## Workers are indestructible, and that's the joke
+
+Rabby also crushes Squarehead on his way out:
+
+> "Why? No one knows, but I thought it was funny to have a big animal innocently
+> crush the guy — even funnier that he could just get up again and be okay."
+
+Establishes a comedy rule: **Workers take physical punishment and are fine.** No
+injury, no consequence, no drama. The humour is in the innocence of the perpetrator
+and the resilience of the victim — which is exactly the Rabby/Squarehead dynamic the
+voice profiles already describe.
+
 ## Where the making-of goes: commentary, not fiction
 
 The real labour is told happily — just never *inside* the story. Rob's example:

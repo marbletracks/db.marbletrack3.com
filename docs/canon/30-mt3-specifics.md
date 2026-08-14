@@ -17,6 +17,39 @@ In progress — interviews with Rob, 2026-08-14 onward. Quotes are his exact wor
 So the single most distinctive thing about MT3's rig — a marble track that turns —
 exists because Rob's arms couldn't reach the back.
 
+### 12 frames per second
+
+Confirmed by Rob, and the reasoning is characteristically practical:
+
+> "The movie runs at 12 fps. I chose it arbitrarily to be fast enough to look like
+> animation and not so many frames to make me die."
+
+Every time-arithmetic claim in the project depends on this: 3 frames = ¼ second,
+14 frames ≈ 1.2 seconds, an hour of setup ≈ ⅓ second of movie.
+
+### "The field" is blue fabric
+
+The opening shot — moment 1, *"In the beginning, there was a field"* — is literally
+the **blue fabric on Rob's desk**, glued down so it cannot shift. The field is the
+backdrop, seen before anything is placed on it.
+
+### The platters
+
+The stage itself came from the same home-centre trip as the bearing:
+
+> "I found round wooden platters and a lazy susan type bearing. This should work. I
+> bought two wooden platters knowing I would need them, and a third one just in
+> case."
+
+Two platters, plus a spare. (The buying-extra habit again — see the two thousand
+craft sticks.) They are **far too big for the characters to move**, which turned out
+to drive casting; see `40-in-universe.md`.
+
+**Date conflict to resolve:** Rob dated the bearing purchase to **2012** when giving
+the timeline, but his written account places the home-centre trip in **summer 2017**,
+after buying the house. Possibly two trips, possibly a mis-dating. Worth settling
+before any post claims a year.
+
 ### The bearing
 
 Bought at a home centre. It is a **Chinese restaurant table turntable bearing** (a

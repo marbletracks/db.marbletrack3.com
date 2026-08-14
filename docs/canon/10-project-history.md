@@ -43,11 +43,14 @@ year**, except the MT2 upload, which he knows exactly.
 |---|---|
 | **1984** (±2) | MT1 started — 7th grade, popsicle sticks on a square wooden slab |
 | **2001** | MT1 last added to |
-| **2002** | Rob leaves the USA for Japan; Maggie becomes MT1's caretaker |
+| **2002** | Rob gives MT1 to Maggie — **before** travelling extensively in the USA, not on the way out |
+| **2003-03-26** | Rob leaves the USA for Japan (exact date) |
 | **2007-06-28** | **MT2 uploaded to YouTube** — "Marble Track 2 basically finished" (`mlUqu6QE7bw`). Dates MT2's completion exactly. |
 | **2007** | Rob carries MT2 to Houston in a custom box; gives Maggie MT2 and formally MT1 |
-| **2011** | First MT3 attempt — no rotating stage. Pinky is present. Later lost entirely. |
-| **2012** | The lazy-Susan bearing is bought. MT3 as we know it becomes possible. |
+| **2011** | **First MT3 attempt.** Tripod built for a waterproof camera; glue dried; a piece of wood placed; some frames shot. |
+| *unknown* | **Second attempt** — Rob has no memory of it whatsoever |
+| **2013-05** | **Third attempt** — video labelled "Third attempt" (`kSdHNDlQ1x8`), 1 minute 9 seconds |
+| **2017 summer** | Rob and **Lin** buy a house with no plans to move; he decides to start again |
 | **2017-07-07** | First frame of MT3 shot — moment 1, take 3, frames 1–14 |
 | **2022-05** | Production stops |
 | **2025-06-02** | "First livestream in 3+ years" |
@@ -56,13 +59,58 @@ year**, except the MT2 upload, which he knows exactly.
 **MT1 took seventeen years** (1984–2001). MT3 is nine years in and unfinished. The
 series has been running for over four decades.
 
-Small discrepancies to resolve eventually, neither urgent:
+The 2002/2003 wobble is resolved: **two separate events.** Rob gave MT1 to Maggie in
+2002, then travelled extensively around the USA, and only left for Japan on
+**26 March 2003**. The handover was not a farewell-at-the-airport moment.
 
-- Rob first said he left for Japan in **2003**, then dated it **2002**. Within his
-  stated ±1 year either way.
-- He described MT1 as built *"until a couple of years after high school
-  graduation,"* but dates its last addition to **2001**. Graduation year not yet
-  given, so the two may simply be loose rather than contradictory.
+Still loose: he described MT1 as built *"until a couple of years after high school
+graduation"* but dates its last addition to **2001**; graduation year not yet given.
+
+## The three failed attempts (2011 – 2013)
+
+Before the MT3 that exists, there were three that didn't.
+
+- **2011, first attempt.** Rob built a tripod for his waterproof camera, waited for
+  glue to dry, put down a piece of wood, shot some frames. This is the one Pinky
+  was present for.
+- **Second attempt.** *"There was apparently a second attempt but I have no
+  biological memory of it."*
+- **2013-05, third attempt.** Survives as a video labelled "Third attempt"
+  (`https://youtu.be/kSdHNDlQ1x8`) — *"I still only made a minute and 9 seconds of
+  video, but it was a great start!"* Rabby moved the stage into place in this one,
+  which makes him older than the current film.
+
+### Why they died
+
+Two causes, and the second one is the best disaster story in the project.
+
+**1. He couldn't reach the back.**
+
+> "The first three versions of Marble Track 3 were too difficult to work with
+> because it was fixed on the table and I couldn't easily reach to the back without
+> knocking something over."
+
+**2. He encrypted the backup and lost the password.**
+
+> "On one of the above attempts, I had to give up because the frames of video were
+> inaccessible after I encrypted the backup and subsequently lost the password. I
+> was so afraid someone would steal the hard work! I was sure I was smart enough to
+> keep a password safe."
+
+Months of frames, sealed permanently by their own author, out of fear that someone
+might steal them. Nobody stole them. Nobody can look at them either.
+
+### Why 2017 worked
+
+> "Finally, in summer of 2017, after Lin and I had bought a house, and no plans to
+> move! I decided to start the project again... Now that we had a house, I was more
+> confident I could settle in for a big project. Soon enough I had blown past however
+> many frames I had lost before."
+
+**Stability was the precondition.** A stop-motion set cannot be moved — everything
+must stay exactly where it is between sessions. Owning a house with no plans to move
+is what made a nine-year set possible. The fourth attempt succeeded because the
+furniture stopped moving.
 
 ## The lineage
 
