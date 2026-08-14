@@ -26,22 +26,31 @@ verifying what went out (`published_at`, `is_public`).
 | Dates | **Backdated correctly** to when the milestone actually happened. |
 | Notifications | **On.** |
 
-## The artifact perk already exists — as a by-product of failure
+## The patron perk is NOT out-takes (Rob, 2026-08-14)
 
-Worth noticing: the exclusive material Rob promised patrons in 2018 is generated
-automatically by the thing that breaks his brain.
+An earlier draft of this file claimed deleted frames constitute a standing supply of
+bonus footage. Rob corrected it:
 
-- Continuity errors force deletions — *"I forgot to move Pinky! Do I delete these
-  four frames which erase the entirety of what I filmed today?"*
-- Balance failures force double-shooting, with and without the character.
+> "Outtakes are not piling up... Even if I deleted six frames that took me 2 days to
+> build, that's only one half of one second of video deleted, so it's nothing like
+> an 'outtake'."
 
-So there is a standing supply of frames that exist, are real work, and will never
-appear in the movie. That is exactly what
-`content/episode/2018/11/01mr-greene-ghosts.md` already offered — *"I had to delete
-three images, which are available to Patrons!"*
+At 12fps, deletions are fractions of a second. There is no reel. The 2018 promise in
+`content/episode/2018/11/01mr-greene-ghosts.md` was about three images, and that was
+the right scale for it.
 
-No new production is needed to have something to give patrons. The out-takes are the
-perk, and each one comes with a story about how the afternoon went wrong.
+What *is* available:
+
+> "We could possibly extract info by carefully analyzing the deleted frames in
+> Dragonframe."
+
+Technically feasible — Dragonframe flags deleted vframes as hidden in the EDL
+(`file & 2^30`) so playback skips them, but **the JPEG stays on disk**. The material
+exists and is recoverable; it's just unindexed. The value would be the *story* each
+deletion tells (what went wrong that day), not the footage.
+
+**Open: what the patron perk actually is.** Not decided. Candidates: early snippet
+access, all frames, the museum party invitation (see below).
 
 ## Backdating
 

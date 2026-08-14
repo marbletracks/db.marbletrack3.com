@@ -100,6 +100,42 @@ Pipe-cleaner figures do not reliably stand where physics is asked to put them. T
 fallback — shoot the frame twice, with and without the figure, composite afterwards
 — means some finished shots contain a Worker who was never actually standing there.
 
+## There is no second take
+
+The movie's pace is not a choice that can be revisited. It is a permanent property
+of the object:
+
+> "The whole movie moves too fast and it's baked in because I cannot reshoot things
+> once the glue has been glued. The only way to reshoot would be to literally
+> recreate the entire thing, which is also impossible because pieces have been
+> custom cut including breaking along organic lines, and glued at organic angles."
+
+This is the hardest fact in the whole project and probably its best story. The track
+is not reproducible — not because it would be expensive, but because the pieces
+broke the way they broke. A snapped popsicle stick has an organic fracture line that
+cannot be cut again. Every shot is a single take of an unrepeatable object.
+
+So: the movie is too fast, forever, and the only alternative was not existing.
+
+## The ending: the museum party
+
+The finish line is an event, not an artifact.
+
+> "Inviting patrons to a museum party would signal the end of the project. The
+> museum party would be the actual end of Marble Track 3 and the beginning of
+> Marble Track 4 inauguration."
+
+Three things follow:
+
+1. **The museum room is real and is the ending** — not a daydream in the README.
+2. **Patrons are the guest list.** That is a materially better perk than any
+   digital bonus, and it costs nothing to promise now.
+3. **MT4 begins where MT3 ends**, at the same party. The lineage isn't retrospective
+   mythology; it's a running series with a scheduled handover.
+
+This gives the Patreon milestone series an ending to point at. Every backdated post
+is a step toward a party the reader could actually be invited to.
+
 ## Why this matters for Patreon
 
 The support pitch follows directly from the thesis and does not need to beg:
@@ -114,9 +150,9 @@ receipt for time already spent.
 
 ## Open questions
 
-- What does "finished" mean, and does the museum room (see `README.md`: glass case,
-  surrounding monitors with staggered playback) belong to MT3 or to the larger
-  project?
-- If the movie is "far too fast," what's the right pace — and is that fixable in
-  the edit, or does it change how future scenes get shot?
-- Where does Marble Track 4 sit in the vision?
+- What **is** Marble Track 4 — and how much of it is already designed? (The MT4 rig,
+  the venue, and the fold-case are irlsk's territory in `~/work/rob/irl_studios/`,
+  not this repo's.)
+- MT1 and MT2: when, what were they made of, what happened to them?
+- Is the museum party a real planned event with a venue in mind, or still a shape?
+- Does "the end of MT3" mean the track is finished, the movie is released, or both?
