@@ -52,11 +52,38 @@ deletion tells (what went wrong that day), not the footage.
 **Open: what the patron perk actually is.** Not decided. Candidates: early snippet
 access, all frames, the museum party invitation (see below).
 
-## Backdating
+## Backdating — CONFIRMED WORKING (2026-08-14)
 
-Supported natively in the post editor: toggle **Set publish date** and pick a past
-date and time. A separate control, **Allow members to be notified when this post is
-published**, governs notification — we leave it ON.
+Proven in practice, not just in the help docs. Rob published
+`third-attempt-166643582` on 2026-08-14 with a publish date of **19 May 2013**, and
+it now sits as the **oldest post in the campaign**, five years before the
+next-oldest (Sept 2018). Patreon accepts arbitrary past dates and files the post
+historically.
+
+Mechanics observed in the editor:
+
+- The **Set publish date** switch is a section toggle in the settings sidebar; the
+  heading is an `<h3>`, and the switch sits on the same row to its right.
+- Toggling it reveals `input[type="date"]` and `input[type="time"]` (default: tomorrow
+  at 16:00). **Neither has a `min` or `max` attribute** — nothing blocks past dates.
+- The primary button relabels itself: **"Schedule"** for a future date, **"Publish"**
+  for a past one. That relabel is a reliable signal that a backdate has registered.
+- Setting the field by synthetic JS events updates the display but did **not** survive
+  a draft reload. Drive this control by real UI interaction, not by injecting values.
+- **Audience defaults to "Paid access."** It must be switched to **Free access**
+  (`input[type=radio][value=public]`) for every post in this series.
+- **Allow members to be notified when this post is published** lives under "Emails and
+  notifications" and defaults to ON, which is what we want.
+
+## The campaign is not empty
+
+36 posts already exist, **Sept 2018 → May 2022**, ending exactly when production
+stopped. Titles include "Sometimes photos have to go", "Secret video!",
+"Q&A for Patrons", "Traffic Jam at Caret Splitter", "Mr Greene ghosts".
+
+Two consequences: new posts must not duplicate old ones, and those 36 are the best
+available sample of Rob's *Patreon* voice, which is a different register from the
+website's episode posts.
 
 Consequence to remember: a post dated 2019 lands in the feed *at* 2019, below
 everything newer. The notification fires, but the campaign's front page won't

@@ -1,5 +1,5 @@
 ---
-publish_date: 2013-05-15T12:00:00+09:00   # APPROXIMATE — "Third attempt" video is May 2013
+publish_date: 2013-05-19T12:00:00+09:00
 title: Third attempt, May 2013
 visibility: public
 notify: true
@@ -8,8 +8,8 @@ source_moments: []
 source_episodes: []
 media:
   - https://youtu.be/kSdHNDlQ1x8   # "Third attempt", May 2013, 1:09
-patreon_url: null
-status: draft
+patreon_url: https://www.patreon.com/marbletrack3/posts/third-attempt-166643582
+status: posted        # published by Rob 2026-08-14, backdated to 2013-05-19
 ---
 
 I had three failed attempts to make an animation of the construction of Marble Track 3. Above is the third one, a minute and 9 seconds!

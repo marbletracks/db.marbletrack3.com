@@ -7,15 +7,30 @@ In progress — interviews with Rob, 2026-08-14 onward. Quotes are his exact wor
 
 ## The rotating stage
 
-**The first version of MT3 did not rotate.** That is why there is a second version.
+**The first three versions of MT3 did not rotate.** That is why there is a fourth.
+
+The reason is usually told as ergonomics:
 
 > "Because there was no rotation of stage, I quickly found that I could not easily
 > reach the back of the project, which meant that I would have to move the entire
 > thing or work in a very uncomfortable position. So to make the final iteration, I
 > knew fundamentally that the stage has to rotate."
 
-So the single most distinctive thing about MT3's rig — a marble track that turns —
-exists because Rob's arms couldn't reach the back.
+But the deeper reason is **continuity**, and Rob put it better himself
+(2026-08-14, rewriting the first Patreon post):
+
+> "In all of these, I came to the same fundamental problem: the stages couldn't
+> rotate as part of the movie. In their world, the stage is fixed; if I wanted to
+> move it between frames, I would have to place it back in just the right spot, and
+> re-place all the characters. I can't just yell 'places, everyone!'"
+
+That's the real trap. Turning a fixed stage by hand isn't just awkward — it breaks
+the film, because the frames never lie. Every manual rotation has to be undone
+*exactly*, and every character restored. Building rotation into the rig makes the
+turning **diegetic**: the stage can move because in the story it moves.
+
+So the single most distinctive thing about MT3's rig exists to solve a continuity
+problem that killed three earlier attempts.
 
 ### 12 frames per second
 
