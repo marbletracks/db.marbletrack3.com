@@ -2,7 +2,7 @@
 
 ## 🎬 Project Overview
 - **Marble Track 3** is a long-term stop motion animation project.
-- Started in **2017** and paused in 2022, active again in 2025.
+- Started in **2017** and paused in 2022, active sparadically since 2025.
 - Filmed using **Dragonframe**, livestreamed with **OBS**.
 - Workers (mostly pipe cleaner figures) build a physical marble track.
 - Thousands of frames are organized into **snippets**, which will be compiled into a full-length movie.
@@ -66,7 +66,7 @@ For complete testing setup instructions, see [TESTING_GUIDE.md](TESTING_GUIDE.md
 ### What Our Tests Catch
 
 - ✅ Form field mapping issues (duplicate `name` attributes)
-- ✅ SQL parameter count mismatches  
+- ✅ SQL parameter count mismatches
 - ✅ Database operation errors
 - ✅ Form submission workflow bugs
 
