@@ -49,6 +49,57 @@ number of frames:
 
 Three frames is a quarter of a second of movie. That ratio is the project.
 
+## What keeps him going: the laughter
+
+Asked what vision he holds at the rig to keep placing frames, Rob's answer was not
+the finished movie, the glass case, or the museum. It was the joke landing:
+
+> "The thing that keeps me going is the laughter, omg it's so hilarious and makes
+> perfect sense that G Choppy would do that, or that Squarehead would drop that."
+
+Note *"makes perfect sense that"* — the comedy is **character-driven and
+consistency-driven**. It's funny because it's exactly what that Worker would do.
+That is why `docs/worker_voices/` matters beyond the website: the voice profiles
+are the machinery the humour runs on. A Worker who behaves inconsistently isn't
+just off-model, he isn't funny.
+
+He also volunteered a note against his own instincts:
+
+> "It's okay to take lots of frames; overall the whole movie is *far too fast!*"
+
+## What breaks the brain: N timescales at once
+
+The lock-up Rob described earlier has a specific cause — holding several
+incompatible clocks in mind simultaneously:
+
+> "The thing that breaks my brain is having to think in N different timescales at
+> once. E.g. 'How long has G Choppy been holding his arm up? It seems like a long
+> time..' (e.g. it could be an hour or a few months of stasis)."
+
+A Worker's raised arm is a fraction of a second on screen, an hour of Rob's
+afternoon, and possibly *months* of real elapsed time if the shot spans a pause in
+production. All three are true at once, and only one of them is visible.
+
+### "The frames never lie"
+
+Rob's phrase, and the discipline the whole thing runs on. The corollary is brutal:
+
+> "Oh crap, speaking of frames not lying, I forgot to move Pinky! Do I delete these
+> four frames which erase the entirety of what I filmed today?"
+
+A continuity error is not fixable in the edit — it is only deletable. An afternoon's
+work can evaporate because one character stood still while the world moved.
+
+### The other brain-breaker: balance
+
+> "Also brain breaking are when characters won't balance where I want them and the
+> video looks all janky, or requires me to double-shoot frames with and without
+> character and merge in post production."
+
+Pipe-cleaner figures do not reliably stand where physics is asked to put them. The
+fallback — shoot the frame twice, with and without the figure, composite afterwards
+— means some finished shots contain a Worker who was never actually standing there.
+
 ## Why this matters for Patreon
 
 The support pitch follows directly from the thesis and does not need to beg:
@@ -63,10 +114,9 @@ receipt for time already spent.
 
 ## Open questions
 
-- The **big vision** Rob holds at the rig to keep going — what is it concretely?
-  The finished movie? The physical track in its case? The museum room? Someone
-  watching it?
 - What does "finished" mean, and does the museum room (see `README.md`: glass case,
   surrounding monitors with staggered playback) belong to MT3 or to the larger
   project?
+- If the movie is "far too fast," what's the right pace — and is that fixable in
+  the edit, or does it change how future scenes get shot?
 - Where does Marble Track 4 sit in the vision?

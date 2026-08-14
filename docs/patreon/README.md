@@ -26,6 +26,23 @@ verifying what went out (`published_at`, `is_public`).
 | Dates | **Backdated correctly** to when the milestone actually happened. |
 | Notifications | **On.** |
 
+## The artifact perk already exists — as a by-product of failure
+
+Worth noticing: the exclusive material Rob promised patrons in 2018 is generated
+automatically by the thing that breaks his brain.
+
+- Continuity errors force deletions — *"I forgot to move Pinky! Do I delete these
+  four frames which erase the entirety of what I filmed today?"*
+- Balance failures force double-shooting, with and without the character.
+
+So there is a standing supply of frames that exist, are real work, and will never
+appear in the movie. That is exactly what
+`content/episode/2018/11/01mr-greene-ghosts.md` already offered — *"I had to delete
+three images, which are available to Patrons!"*
+
+No new production is needed to have something to give patrons. The out-takes are the
+perk, and each one comes with a story about how the afternoon went wrong.
+
 ## Backdating
 
 Supported natively in the post editor: toggle **Set publish date** and pick a past
