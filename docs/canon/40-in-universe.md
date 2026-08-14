@@ -101,16 +101,58 @@ about the screws. He never will.
 visible drift between two frames. Strong candidate for the milestone list; it
 demonstrates the whole two-worlds structure in a single beat.
 
+## Who the park is for — and how far the lore goes
+
+**François's "You are welcome" is addressed to the other Workers**, not to a client.
+He is not being thanked; he is accepting credit in advance. Rob:
+
+> "François is just talking to the workers (he didn't thank anyone, he said 'you are
+> welcome' to the workers). The workers couldn't have possibly moved the stage
+> because it's hundreds of times heavier than they are."
+
+So it's a swagger, and it also establishes scale: **the stage is hundreds of times
+heavier than a Worker.** Moving it is beyond the crew entirely, which is why
+François doing it is worth boasting about.
+
+### The marbles live there now
+
+> "In the story, the marbles currently live on track and do whatever they want, but
+> I don't have the capacity to film them except when the workers are testing the
+> track."
+
+The residents are genuinely resident — autonomous, present, doing as they please in
+a half-built park. Their absence from the footage is a **production limitation**, not
+a fact about the world. This does not contradict Rule 3: nobody has a *secret* life
+that switches on when the animator leaves. The marbles simply live openly and mostly
+off-camera, because there is one animator and he is busy.
+
+### The commissioner: deliberately thin
+
+> "I guess a mythical mayor of the non-existent City requested the MT3 park or
+> something, but I don't have a backstory for this. I'm not JRR Tolkien so I'm not
+> going to go that far. probably"
+
+**This is a boundary, and it is to be respected.** A mayor of a city that doesn't
+exist commissioned the park. That is the entire backstory and it does not need
+another sentence. Do not invent civic history, politics, geography, or a name for
+the city. When a Patreon post needs a reason the park is being built, the reason is:
+somebody official wanted one.
+
+(Rob's "probably" is doing real work at the end of that quote — the door is ajar,
+but walking through it is his call, not the writer's.)
+
 ## Open questions
 
+**Left deliberately unanswered** (per the Tolkien boundary above): the city, the
+mayor, civic history, whether Workers are paid, where anyone sleeps. Don't resolve
+these in posts; write around them.
+
+Still genuinely open:
+
 - Do the Workers know they're building a **theme park**, or just a track?
-- Who **commissioned** it? Is there an owner or authority above Doctor Sugar, or is
-  the crew self-directing? (Rob confirms Doctor Sugar manages and knows where every
-  piece goes, and that Candy Mama likewise "knows everything.")
-- Are the marbles **already resident** while it's under construction, or do they
-  arrive when it opens? The frontend says "Residents," which implies they live there
-  now — in a park that isn't finished.
-- Are the Workers paid? Do they live there too?
+- How does a **new Worker arrive** in-universe? Ms McGlue "came to help when he fell
+  behind schedule" — the phrasing implies someone noticed a backlog.
+- Do Workers leave? Y Slider is "no longer with the crew."
 - How does a **new Worker arrive** in-universe? Ms McGlue "came to help when he fell
   behind schedule" — who hired her?
 - Do Workers age, retire, or leave? Y Slider is "no longer with the crew."
