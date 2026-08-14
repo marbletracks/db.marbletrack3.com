@@ -45,6 +45,31 @@ Explicitly **not** the secret-life-of-objects genre. The Workers do not have a
 hidden existence that resumes when Rob leaves the room. There is no off-camera life
 to speculate about, and Patreon posts should not invent one.
 
+## Rule 4: The theme park is canon
+
+Decided 2026-08-14. The framing built into the frontend in April 2026 — *"the
+ultimate gravity-powered theme park for marbles,"* with **Rides**, **Our Crew**, and
+**Residents** — is not merely website copy. It is the truth of the world.
+
+> "I think the theme park should be canon. I mean, the whole project is so silly
+> that we might as well make it make sense."
+
+That sentence is the project's governing design principle, and it reaches past this
+one decision: **given absurd premises, follow them rigorously.** Silliness is not a
+licence for incoherence; it's the reason coherence is worth the trouble.
+
+What it settles:
+
+- The Workers are **crew**. The marbles are **residents and guests**.
+- The track is **public infrastructure** — a park being built for a population.
+- Pinky isn't poking at a mechanism; she's running **safety inspections before the
+  ride opens**. Her "uh oh, small marbles can fall off" is a safety finding.
+- Super Spoony isn't hauling cargo; he's **escorting residents**, which is why he
+  knows all their names.
+- The marbles' first-person DB descriptions (Three Tigers: *"We are three small
+  orange marbles with a lot of energy and mobility!"*) are canon voices, not
+  decoration.
+
 ## Where the making-of goes: commentary, not fiction
 
 The real labour is told happily — just never *inside* the story. Rob's example:
@@ -64,9 +89,11 @@ into place, exactly centred, so it can rotate. Out-of-universe: an hour of drill
 under the stage, and you can see the seam if you look. The two are told side by side
 and never mixed — which is exactly what the website voice already does.
 
-Cross-reference: François's own DB description reads *"I brought the upper base into
+Cross-reference: François's `description` field in the database (worker_id 10,
+verified via `GET /api/v1/workers/francois/`) reads *"I brought the upper base into
 place. I kicked it to be exactly centered so it could rotate properly. You are
-welcome."* He has no idea about the screws. He never will.
+welcome."* Text only — there is no audio anywhere in the project. He has no idea
+about the screws. He never will.
 
 ## Milestone candidate
 
@@ -76,11 +103,14 @@ demonstrates the whole two-worlds structure in a single beat.
 
 ## Open questions
 
-- Do the Workers know **what** they're building, and why? Does anyone brief them?
-- Doctor Sugar "manages the project" — is there an in-universe hierarchy, and does
-  anyone employ them?
-- **Marbles**: characters or cargo? Super Spoony names them ("Esmerelda"); Three
-  Tigers speaks in the DB in first person plural. Are marbles people to the Workers?
+- Do the Workers know they're building a **theme park**, or just a track?
+- Who **commissioned** it? Is there an owner or authority above Doctor Sugar, or is
+  the crew self-directing? (Rob confirms Doctor Sugar manages and knows where every
+  piece goes, and that Candy Mama likewise "knows everything.")
+- Are the marbles **already resident** while it's under construction, or do they
+  arrive when it opens? The frontend says "Residents," which implies they live there
+  now — in a park that isn't finished.
+- Are the Workers paid? Do they live there too?
 - How does a **new Worker arrive** in-universe? Ms McGlue "came to help when he fell
   behind schedule" — who hired her?
 - Do Workers age, retire, or leave? Y Slider is "no longer with the crew."
