@@ -14,11 +14,13 @@ trait PhotoFixtures
 {
     private string $prefix;
     private array $tracked = [];
+    private int $seq = 0;
 
     protected function fixturesUp(): void
     {
         $this->prefix = 'rs' . substr((string) time(), -4) . random_int(10, 99) . '_';
         $this->tracked = [];
+        $this->seq = 0;
     }
 
     protected function db(): \Database\Database
@@ -35,7 +37,7 @@ trait PhotoFixtures
     {
         $db = $this->db();
         $p = $this->prefix;
-        $n = random_int(100, 999);
+        $n = ++$this->seq;
         switch ($kind) {
             case 'notebook':
                 $id = (new NotebookRepository($db))->insert("{$p}nb{$n}", date('Y-m-d H:i:s'));
