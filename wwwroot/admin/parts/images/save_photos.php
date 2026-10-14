@@ -73,8 +73,7 @@ try {
         $photos_processed++;
 
         // Link photo to part
-        $partsRepo->setPartId($part_id);
-        $partsRepo->addPhotos([$photo]);
+        $partsRepo->addPhotos($part_id, [$photo]);
 
         // Link photo to selected workers
         foreach ($worker_ids as $worker_id) {

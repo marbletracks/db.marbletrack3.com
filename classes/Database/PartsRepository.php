@@ -2,29 +2,25 @@
 namespace Database;
 
 use Database\DbInterface;
-use Domain\HasPhotos;
-use Domain\HasMoments;
 use Domain\HasShortcodes;
 use Physical\Part;
 
 class PartsRepository
 {
-    use HasPhotos;
-    use HasMoments;
     use HasShortcodes;
 
     private DbInterface $db;
     private string $langCode;
 
-    // Configuration for HasPhotos trait
-    private string $photoLinkingTable = 'parts_2_photos';
-    private string $primaryKeyColumn = 'part_id';
-    private int $part_id;  // Must be set before loading/saving photos
+    private PhotoLinks $photoLinks;
+    private PerspectiveMoments $perspectiveMoments;
 
     public function __construct(DbInterface $db, string $langCode)
     {
         $this->db = $db;
         $this->langCode = $langCode;
+        $this->photoLinks = new PhotoLinks($db, 'parts', 'parts_2_photos', 'part_id');
+        $this->perspectiveMoments = new PerspectiveMoments($db);
     }
 
     public function getSELECTExactAlias(): string
@@ -96,17 +92,6 @@ SQL;
         return $this->db;
     }
 
-    public function getPhotoLinkingTable(): string
-    {
-        return $this->photoLinkingTable;
-    }
-
-    public function getMomentLinkingTable(): string
-    {
-        // This is deprecated for Parts, as we now use moment_translations as the source of truth.
-        return '';
-    }
-
     /**
      * Used by wwwroot/admin/parts/part.php to save Moments with Parts.
      * Created by Gemini, based on Workers (created by Gemini)
@@ -137,21 +122,6 @@ SQL;
         }
     }
 
-    public function getPrimaryKeyColumn(): string
-    {
-        return $this->primaryKeyColumn;
-    }
-
-    public function getId(): int
-    {
-        return $this->part_id;
-    }
-
-    public function setPartId(int $part_id): void
-    {
-        $this->part_id = $part_id;
-    }
-
     public function findById(int $part_id): ?Part
     {
         $results = $this->db->fetchResults(
@@ -176,10 +146,7 @@ SQL,
             return null;
         }
 
-        $results->setRow(0);
-        $this->setPartId($part_id);
-
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findByAlias(string $alias): ?Part
@@ -206,11 +173,7 @@ SQL,
             return null;
         }
 
-        $results->setRow(0);
-        $part_id = (int) $results->data['part_id'];
-        $this->setPartId($part_id);
-
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findBySlug(string $slug): ?Part
@@ -237,11 +200,7 @@ SQL,
             return null;
         }
 
-        $results->setRow(0);
-        $part_id = (int) $results->data['part_id'];
-        $this->setPartId($part_id);
-
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findAll(): array
@@ -265,14 +224,7 @@ SQL,
             var1: [$this->langCode]
         );
 
-        $parts = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->setPartId((int) $results->data['part_id']);
-            $parts[] = $this->hydrate($results->data);
-        }
-
-        return $parts;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function findByFilter(string $filter): array
@@ -327,14 +279,7 @@ SQL,
             ]
         );
 
-        $parts = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->setPartId((int) $results->data['part_id']);
-            $parts[] = $this->hydrate($results->data);
-        }
-
-        return $parts;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function findPossParts(): array
@@ -351,14 +296,7 @@ SQL,
             [$this->langCode]
         );
 
-        $parts = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->setPartId(part_id: (int) $results->data['part_id']);
-            $parts[] = $this->hydrate($results->data);
-        }
-
-        return $parts;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function insert(string $alias, string $name = '', string $description = ''): int
@@ -446,6 +384,43 @@ SQL,
         );
     }
 
+    /**
+     * @param int[]    $loadedPhotoIds photo IDs the edit form showed when it loaded
+     * @param string[] $urls           the form's photo URLs, in screen order
+     */
+    public function savePhotosFromForm(int $part_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($part_id, $loadedPhotoIds, $urls);
+    }
+
+    /** Append photos, keeping any already linked. Used by the API. */
+    public function addPhotosFromUrls(int $part_id, array $urls): void
+    {
+        $this->photoLinks->addUrls($part_id, $urls);
+    }
+
+    /** @param \Media\Photo[] $photos */
+    public function addPhotos(int $part_id, array $photos): void
+    {
+        $this->photoLinks->add($part_id, $photos);
+    }
+
+    /** @return Part[] */
+    private function hydrateAll(array $rows): array
+    {
+        $ids = array_map(fn (array $row) => (int) $row['part_id'], $rows);
+        $photos = $this->photoLinks->forIds($ids);
+        $moments = $this->perspectiveMoments->forPerspectives('part', $ids);
+        $parts = [];
+        foreach ($rows as $row) {
+            $part = $this->hydrate($row);
+            $part->photos = $photos[$part->part_id] ?? [];
+            $part->moments = $moments[$part->part_id] ?? [];
+            $parts[] = $part;
+        }
+        return $parts;
+    }
+
     private function hydrate(array $row): Part
     {
         $part = new Part(
@@ -458,14 +433,6 @@ SQL,
             is_track: (bool) ($row['is_track'] ?? false),
             no_track: (bool) ($row['no_track'] ?? false)
         );
-
-        // Load and attach photos via HasPhotos trait
-        $this->loadPhotos();
-        $part->photos = $this->getPhotos();
-
-        // Load and attach moments via HasMoments trait
-        $this->loadMoments($part);
-        $part->moments = $this->getMoments();
 
         if($part->name == $part->description) {
             // quickly get the source of the data.  Not needed once all Parts on this site have detailed info

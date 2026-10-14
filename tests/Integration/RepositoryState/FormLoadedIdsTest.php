@@ -125,4 +125,22 @@ class FormLoadedIdsTest extends TestCase
 
         $this->assertPostsLoadedIds($html, [$a, $b]);
     }
+
+    public function testPartForm(): void
+    {
+        $id = $this->makeRow('part');
+        [$a, $b] = [$this->makePhoto('a'), $this->makePhoto('b')];
+        $this->link('parts_2_photos', 'part_id', $id, $a, 1);
+        $this->link('parts_2_photos', 'part_id', $id, $b, 2);
+
+        $html = $this->renders('admin/parts/part.tpl.php', [
+            'errors' => [],
+            'part' => (new \Database\PartsRepository($this->db(), 'en'))->findById($id),
+            'tracks' => [],
+            'prioritized_moments' => [],
+            'other_moments' => [],
+        ]);
+
+        $this->assertPostsLoadedIds($html, [$a, $b]);
+    }
 }
