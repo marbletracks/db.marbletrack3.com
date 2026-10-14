@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Stateless Repositories";
+const SENTIMENTAL_VERSION = "Stateless Notebooks";
 
 # write errors to screen
 ini_set('display_errors', 1);
