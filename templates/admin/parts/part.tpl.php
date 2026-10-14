@@ -142,7 +142,11 @@
         </label><br><br>
 
         <label>
-            Image URLs:<br>
+            Image URLs:
+            <?php if ($part): ?>
+                <a href="https://badmint.robnugen.com/mt3/?part=<?= (int) $part->part_id ?>" target="_blank">📷 Upload &amp; crop…</a>
+            <?php endif; ?>
+            <br>
             <div id="image-url-fields">
 <?php if (!empty($part->photos)):foreach ($part->photos ?? [''] as $photo): ?>
     <a href="<?= $photo->getUrl() ?>"><img src="<?= $photo->getThumbnailUrl() ?>" alt="Image preview"></a><br>
