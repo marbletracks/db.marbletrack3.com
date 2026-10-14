@@ -13,6 +13,9 @@
     <?php endif; ?>
 
     <form action="" method="post">
+<?php foreach ($page->photos ?? [] as $photo): ?>
+        <input type="hidden" name="loaded_photo_ids[]" value="<?= (int) $photo->photo_id ?>">
+<?php endforeach; ?>
         <label>
             Notebook ID:<br>
             <input type="text" name="notebook_id" value="<?= htmlspecialchars($page->notebook_id ?? '1') ?>">
