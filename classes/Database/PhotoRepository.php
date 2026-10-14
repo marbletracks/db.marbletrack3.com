@@ -6,8 +6,8 @@ use Media\Photo;
 
 /**
  * PhotoRepository saves photos for workers, parts, and notebooks, etc.
- * It does *not* itself have photos (yet) so does not use trait HasPhotos.
- * But trait HasPhotos will use this class I think.
+ * It does *not* itself have photos. PhotoLinks uses this class to resolve
+ * photo URLs and IDs for the per-kind link tables.
  */
 class PhotoRepository
 {

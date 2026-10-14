@@ -5,7 +5,6 @@ use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/Support/PhotoFixtures.php';
 require_once __DIR__ . '/Support/FailingDb.php';
 
-/** @group step0 */
 class Step0AtomicSaveTest extends TestCase
 {
     use PhotoFixtures;
