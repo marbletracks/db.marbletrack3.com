@@ -1,45 +1,18 @@
 <?php
 namespace Database;
 
-use Domain\HasPhotos;
 use Physical\Notebook;
 
 class NotebookRepository
 {
-    use HasPhotos;
     private DbInterface $db;
-    private string $photoLinkingTable = 'notebooks_2_photos';
-    private string $primaryKeyColumn = 'notebook_id';
-    private int $notebook_id;  // Must be set when the Notebook is loaded
+    private PhotoLinks $photoLinks;
 
     public function __construct(DbInterface $db)
     {
         $this->db = $db;
+        $this->photoLinks = new PhotoLinks($db, 'notebooks', 'notebooks_2_photos', 'notebook_id');
     }
-    public function getId(): int
-    {
-        return $this->notebook_id;
-    }
-    // must do this before saving photos
-    // so that HasPhotos knows which notebook to save photos for
-    public function setNotebookId(int $notebook_id): void
-    {
-        $this->notebook_id = $notebook_id;
-    }
-    public function getDb(): DbInterface
-    {
-        return $this->db;
-    }
-    public function getPhotoLinkingTable(): string
-    {
-        return $this->photoLinkingTable;
-    }
-    public function getPrimaryKeyColumn(): string
-    {
-        return $this->primaryKeyColumn;
-    }
-
-
 
     public function findById(int $notebook_id): ?Notebook
     {
@@ -52,10 +25,8 @@ class NotebookRepository
         if ($results->numRows() === 0) {
             return null;
         }
-        $this->notebook_id = $notebook_id; // Set the notebook_id for HasPhotos
 
-        $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findAll(): array
@@ -64,14 +35,7 @@ class NotebookRepository
             "SELECT notebook_id, title, created_at FROM notebooks ORDER BY notebook_id ASC"
         );
 
-        $notebooks = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->notebook_id = (int) $results->data['notebook_id']; // Set the notebook_id for HasPhotos
-            $notebooks[] = $this->hydrate($results->data);
-        }
-
-        return $notebooks;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function insert(string $title = null, string $created_at = null): int
@@ -86,15 +50,34 @@ class NotebookRepository
         );
     }
 
+    /**
+     * @param int[]    $loadedPhotoIds photo IDs the edit form showed when it loaded
+     * @param string[] $urls           the form's photo URLs, in screen order
+     */
+    public function savePhotosFromForm(int $notebook_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($notebook_id, $loadedPhotoIds, $urls);
+    }
+
+    /** @return Notebook[] */
+    private function hydrateAll(array $rows): array
+    {
+        $photos = $this->photoLinks->forIds(array_column($rows, 'notebook_id'));
+        $notebooks = [];
+        foreach ($rows as $row) {
+            $notebook = $this->hydrate($row);
+            $notebook->photos = $photos[$notebook->notebook_id] ?? [];
+            $notebooks[] = $notebook;
+        }
+        return $notebooks;
+    }
+
     private function hydrate(array $row): Notebook
     {
-        $notebook = new Notebook(
+        return new Notebook(
             notebook_id: (int) $row['notebook_id'],
             title: $row['title'] ?? null,
             created_at: $row['created_at'] ?? null
         );
-        $this->loadPhotos();  // defined in HasPhotos trait
-        $notebook->photos = $this->getPhotos();  // return an array of photos
-        return $notebook;
     }
 }

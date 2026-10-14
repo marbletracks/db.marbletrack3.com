@@ -30,10 +30,9 @@ class Step0AtomicSaveTest extends TestCase
         $this->link('notebooks_2_photos', 'notebook_id', $notebook, $two, 2);
 
         $repo = new \Database\NotebookRepository(new FailingDb($this->db(), 2));
-        $repo->setNotebookId($notebook);
         try {
             // Rob removed photo one and added photo three; the second write dies.
-            $repo->savePhotosFromUrls([$this->url('two'), $this->url('three')]);
+            $repo->savePhotosFromForm($notebook, [$one, $two], [$this->url('two'), $this->url('three')]);
         } catch (\Database\EDatabaseException $e) {
         }
 
