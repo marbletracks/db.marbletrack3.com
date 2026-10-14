@@ -48,8 +48,7 @@ if ($submitted) {
                 name: $name,
                 description: $description
             );
-            $repo->setWorkerId($worker_id);
-            $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->savePhotosFromForm($worker_id, \Utilities::postedIds('loaded_photo_ids'), $image_urls);
             $repo->syncMomentsFromTranslations(worker_id: $worker_id, submitted_moment_ids: $moment_ids);
         } else {
             $worker_id = $repo->insert(
@@ -57,8 +56,7 @@ if ($submitted) {
                 name: $name,
                 description: $description
             );
-            $repo->setWorkerId($worker_id);
-            $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->savePhotosFromForm($worker_id, [], $image_urls);
             $repo->syncMomentsFromTranslations(worker_id: $worker_id, submitted_moment_ids: $moment_ids);
         }
 
