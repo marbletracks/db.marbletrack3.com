@@ -10,6 +10,9 @@
     <?php endif; ?>
 
     <form action="" method="post">
+<?php foreach ($moment->photos ?? [] as $photo): ?>
+        <input type="hidden" name="loaded_photo_ids[]" value="<?= (int) $photo->photo_id ?>">
+<?php endforeach; ?>
         <label>
             Notes:<br>
             <textarea id="shortcodey" name="notes" class="shortcodey-textarea" rows="15" cols="100"><?= htmlspecialchars($moment->notes ?? '') ?></textarea>

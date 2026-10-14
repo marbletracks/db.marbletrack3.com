@@ -89,4 +89,23 @@ class FormLoadedIdsTest extends TestCase
 
         $this->assertPostsLoadedIds($html, [$a, $b]);
     }
+
+    public function testMomentForm(): void
+    {
+        $id = $this->makeRow('moment');
+        [$a, $b] = [$this->makePhoto('a'), $this->makePhoto('b')];
+        $this->link('moments_2_photos', 'moment_id', $id, $a, 1);
+        $this->link('moments_2_photos', 'moment_id', $id, $b, 2);
+
+        $html = $this->renders('admin/moments/moment.tpl.php', [
+            'errors' => [],
+            'moment' => (new \Database\MomentRepository($this->db()))->findById($id),
+            'default_frame_start' => '',
+            'default_take_id' => '',
+            'translations' => [],
+            'takes' => [],
+        ]);
+
+        $this->assertPostsLoadedIds($html, [$a, $b]);
+    }
 }
