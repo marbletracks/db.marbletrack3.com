@@ -7,6 +7,7 @@ use Database\NotebookRepository;
 use Database\PageRepository;
 use Database\PartsRepository;
 use Database\PhotoRepository;
+use Database\TrackRepository;
 use Database\WorkersRepository;
 
 /** Creates throwaway rows in dbmt3_test and removes exactly those rows afterwards. */
@@ -77,6 +78,10 @@ trait PhotoFixtures
                 $id = (new MarblesRepository($db))->insert("{$p}m{$n}", "{$p}Marble {$n}", 'small', 'blue');
                 $this->track('marbles', 'marble_id', $id);
                 return $id;
+            case 'track':
+                $id = (new TrackRepository($db))->insert("{$p}t{$n}", "{$p}Track {$n}", 'fixture', ['small'], true, false, false);
+                $this->track('tracks', 'track_id', $id);
+                return $id;
         }
         throw new \InvalidArgumentException("Unknown kind {$kind}");
     }
@@ -128,7 +133,7 @@ trait PhotoFixtures
             'notebooks_2_photos' => 'notebook_id', 'pages_2_photos' => 'page_id',
             'episodes_2_photos' => 'episode_id', 'moments_2_photos' => 'moment_id',
             'workers_2_photos' => 'worker_id', 'parts_2_photos' => 'part_id',
-            'marbles_2_photos' => 'marble_id',
+            'marbles_2_photos' => 'marble_id', 'tracks_2_photos' => 'track_id',
         ];
         $childTables = [
             'moments' => ['moment_translations'],
