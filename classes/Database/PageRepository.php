@@ -2,58 +2,23 @@
 
 namespace Database;
 
-use Domain\HasPhotos;
 use Physical\Page;
 
 class PageRepository
 {
-    use HasPhotos;
-
     private DbInterface $db;
-    private string $photoLinkingTable = 'pages_2_photos';
-    private string $primaryKeyColumn = 'page_id';
-    private int $page_id;
+    private PhotoLinks $photoLinks;
 
     public function __construct(DbInterface $db)
     {
         $this->db = $db;
-    }
-
-    public function getId(): int
-    {
-        return $this->page_id;
-    }
-
-    public function setPageId(int $page_id): void
-    {
-        $this->page_id = $page_id;
-    }
-
-    public function getDb(): DbInterface
-    {
-        return $this->db;
-    }
-
-    public function getPhotoLinkingTable(): string
-    {
-        return $this->photoLinkingTable;
-    }
-
-    public function getPrimaryKeyColumn(): string
-    {
-        return $this->primaryKeyColumn;
+        $this->photoLinks = new PhotoLinks($db, 'pages', 'pages_2_photos', 'page_id');
     }
 
     public function findAll(): array
     {
         $results = $this->db->fetchResults("SELECT * FROM pages ORDER BY created_at DESC");
-        $pages = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->page_id = (int) $results->data['page_id'];
-            $pages[] = $this->hydrate($results->data);
-        }
-        return $pages;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function findById(int $page_id): ?Page
@@ -67,9 +32,7 @@ class PageRepository
         if ($results->numRows() === 0) {
             return null;
         }
-        $this->page_id = $page_id;
-        $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function insert(int $notebook_id, string $number, string $created_at): int
@@ -91,17 +54,36 @@ class PageRepository
         );
     }
 
+    /**
+     * @param int[]    $loadedPhotoIds photo IDs the edit form showed when it loaded
+     * @param string[] $urls           the form's photo URLs, in screen order
+     */
+    public function savePhotosFromForm(int $page_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($page_id, $loadedPhotoIds, $urls);
+    }
+
+    /** @return Page[] */
+    private function hydrateAll(array $rows): array
+    {
+        $photos = $this->photoLinks->forIds(array_column($rows, 'page_id'));
+        $pages = [];
+        foreach ($rows as $row) {
+            $page = $this->hydrate($row);
+            $page->photos = $photos[$page->page_id] ?? [];
+            $page->primaryPhoto = PhotoLinks::primaryOf($page->photos);
+            $pages[] = $page;
+        }
+        return $pages;
+    }
+
     private function hydrate(array $row): Page
     {
-        $page = new Page(
+        return new Page(
             page_id: (int) $row['page_id'],
             notebook_id: (int) $row['notebook_id'],
             number: $row['number'] ?? '',
             created_at: $row['created_at'] ?? ''
         );
-        $this->loadPhotos();
-        $page->photos = $this->getPhotos();
-        $page->primaryPhoto = $this->getPrimaryPhoto();
-        return $page;
     }
 }
