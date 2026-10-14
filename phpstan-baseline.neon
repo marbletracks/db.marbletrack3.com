@@ -1,0 +1,1753 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^PHPDoc tag @return with type bool is incompatible with native type int\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: classes/Auth/IsLoggedIn.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 2
+			path: classes/Database/Database.php
+
+		-
+			message: '#^Readonly property Database\\Database\:\:\$charEncoding is assigned outside of the constructor\.$#'
+			identifier: property.readOnlyAssignNotInConstructor
+			count: 1
+			path: classes/Database/Database.php
+
+		-
+			message: '#^Constructor of class Database\\MarblesRepository has an unused parameter \$langCode\.$#'
+			identifier: constructor.unusedParameter
+			count: 1
+			path: classes/Database/MarblesRepository.php
+
+		-
+			message: '#^Property Database\\MomentRepository\:\:\$langCode is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: classes/Database/MomentRepository.php
+
+		-
+			message: '#^Constructor of class Database\\RideRepository has an unused parameter \$langCode\.$#'
+			identifier: constructor.unusedParameter
+			count: 1
+			path: classes/Database/RideRepository.php
+
+		-
+			message: '#^Property Physical\\Part\:\:\$is_rail \(bool\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/Domain/PartHasRoles.php
+
+		-
+			message: '#^Property Physical\\Part\:\:\$is_support \(bool\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/Domain/PartHasRoles.php
+
+		-
+			message: '#^Property Physical\\Part\:\:\$is_track \(bool\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/Domain/PartHasRoles.php
+
+		-
+			message: '#^Property Physical\\Track\:\:\$is_landing_zone \(bool\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/Domain/TrackHasTypes.php
+
+		-
+			message: '#^Property Physical\\Track\:\:\$is_splitter \(bool\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/Domain/TrackHasTypes.php
+
+		-
+			message: '#^Property Physical\\Track\:\:\$is_transport \(bool\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 1
+			path: classes/Domain/TrackHasTypes.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$property$#'
+			identifier: parameter.notFound
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^Variable \$_COOKIE in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^Variable \$_ENV in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^Variable \$_FILES in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^Variable \$_GET in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^Variable \$_POST in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^Variable \$_REQUEST in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^Variable \$_SERVER in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: classes/Mlaphp/Request.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$primary_thumbnail$#'
+			identifier: parameter.notFound
+			count: 1
+			path: classes/Physical/Part.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 1
+			path: classes/Physical/PhraseBuilder.php
+
+		-
+			message: '#^PHPDoc tag @return with type bool\|string is not subtype of native type string\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: classes/Template.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: classes/Template.php
+
+		-
+			message: '#^PHPDoc tag @return with type bool\|string is not subtype of native type string\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: classes/Utilities.php
+
+		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: prepend.php
+
+		-
+			message: '#^Offset ''part_alias'' on array\{part_alias\: ''test_part'', part_name\: ''Test Part'', notes\: ''This is the…'', image_urls\: array\{\}\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: scripts/demonstrate_bug_prevention.php
+
+		-
+			message: '#^Offset ''part_description'' on array\{part_alias\: ''test_part'', part_name\: ''Test Part'', notes\: ''This is the…'', image_urls\: array\{\}\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: scripts/demonstrate_bug_prevention.php
+
+		-
+			message: '#^Offset ''part_description'' on array\{part_alias\: ''test_part'', part_name\: ''Test Part'', part_description\: ''This is the…'', image_urls\: array\{\}\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: scripts/demonstrate_bug_prevention.php
+
+		-
+			message: '#^Offset ''part_name'' on array\{part_alias\: ''test_part'', part_name\: ''Test Part'', notes\: ''This is the…'', image_urls\: array\{\}\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: scripts/demonstrate_bug_prevention.php
+
+		-
+			message: '#^Property TestDatabaseSetup\:\:\$prodDb is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: scripts/setup_test_database.php
+
+		-
+			message: '#^Part \$_POST \(array\<mixed\>\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 3
+			path: scripts/test_ajax_endpoints.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: scripts/test_api_key.php
+
+		-
+			message: '#^Variable \$tableCount might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: scripts/test_database_config_logic.php
+
+		-
+			message: '#^Offset ''part_description'' on array\{part_alias\: ''test_part_after_fix'', part_name\: ''Test Part After Fix'', part_description\: ''This description…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: scripts/test_issues_57_58.php
+
+		-
+			message: '#^Method RepositorySQLParameterValidator\:\:assert\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: scripts/test_repository_sql_parameters.php
+
+		-
+			message: '#^Variable \$defaultDesc might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/episodes/episode.tpl.php
+
+		-
+			message: '#^Variable \$defaultLivestreamId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/episodes/episode.tpl.php
+
+		-
+			message: '#^Variable \$defaultTitle might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/episodes/episode.tpl.php
+
+		-
+			message: '#^Variable \$episode might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/episodes/episode.tpl.php
+
+		-
+			message: '#^Variable \$episode_frames might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/episodes/episode.tpl.php
+
+		-
+			message: '#^Variable \$streamCode might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/episodes/episode.tpl.php
+
+		-
+			message: '#^Variable \$episodes might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/episodes/index.tpl.php
+
+		-
+			message: '#^Variable \$log_output might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/generate_site_output.tpl.php
+
+		-
+			message: '#^Variable \$backup_count might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/index.tpl.php
+
+		-
+			message: '#^Variable \$has_pending_migrations might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/index.tpl.php
+
+		-
+			message: '#^Variable \$latest_backup_time might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/index.tpl.php
+
+		-
+			message: '#^Variable \$site_version might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/index.tpl.php
+
+		-
+			message: '#^Variable \$username might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/index.tpl.php
+
+		-
+			message: '#^Variable \$livestreams might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/livestreams/index.tpl.php
+
+		-
+			message: '#^Variable \$marble might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/marbles/marble.tpl.php
+
+		-
+			message: '#^Variable \$has_pending_migrations might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/migrate_tables.tpl.php
+
+		-
+			message: '#^Variable \$pending_migrations might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/migrate_tables.tpl.php
+
+		-
+			message: '#^Variable \$filter might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/index.tpl.php
+
+		-
+			message: '#^Variable \$moments might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: templates/admin/moments/index.tpl.php
+
+		-
+			message: '#^Variable \$take_id might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/index.tpl.php
+
+		-
+			message: '#^Variable \$default_frame_start might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/moment.tpl.php
+
+		-
+			message: '#^Variable \$default_take_id might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/moment.tpl.php
+
+		-
+			message: '#^Variable \$moment might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/moment.tpl.php
+
+		-
+			message: '#^Variable \$takes might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/moment.tpl.php
+
+		-
+			message: '#^Variable \$takes might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/realtime.tpl.php
+
+		-
+			message: '#^Variable \$workers might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/moments/realtime.tpl.php
+
+		-
+			message: '#^Variable \$notebooks might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/notebooks/index.tpl.php
+
+		-
+			message: '#^Variable \$notebook might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/notebooks/notebook.tpl.php
+
+		-
+			message: '#^Variable \$column might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/notebooks/pages/columns/column.tpl.php
+
+		-
+			message: '#^Variable \$page might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/notebooks/pages/columns/column.tpl.php
+
+		-
+			message: '#^Variable \$tokens might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/notebooks/pages/columns/column.tpl.php
+
+		-
+			message: '#^Variable \$pages might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/notebooks/pages/index.tpl.php
+
+		-
+			message: '#^Variable \$page might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/notebooks/pages/page.tpl.php
+
+		-
+			message: '#^Variable \$filter might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/images/index.tpl.php
+
+		-
+			message: '#^Variable \$parts might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: templates/admin/parts/images/index.tpl.php
+
+		-
+			message: '#^Variable \$parts might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: templates/admin/parts/index.tpl.php
+
+		-
+			message: '#^Variable \$status might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/index.tpl.php
+
+		-
+			message: '#^Variable \$ossParts might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/oss/index.tpl.php
+
+		-
+			message: '#^Variable \$possParts might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/oss/oss.tpl.php
+
+		-
+			message: '#^Variable \$prefill_ssop_mm might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: templates/admin/parts/oss/oss.tpl.php
+
+		-
+			message: '#^Variable \$status might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/oss/oss.tpl.php
+
+		-
+			message: '#^Variable \$other_moments might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/part.tpl.php
+
+		-
+			message: '#^Variable \$part might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/part.tpl.php
+
+		-
+			message: '#^Variable \$prioritized_moments might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/parts/part.tpl.php
+
+		-
+			message: '#^Variable \$photos might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/photos/index.tpl.php
+
+		-
+			message: '#^Variable \$photo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/photos/photo.tpl.php
+
+		-
+			message: '#^Variable \$platform might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: templates/admin/poll/livestream_poll_results.tpl.php
+
+		-
+			message: '#^Variable \$tracks might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: templates/admin/tracks/index.tpl.php
+
+		-
+			message: '#^Variable \$type might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/tracks/index.tpl.php
+
+		-
+			message: '#^Variable \$available_parts might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/tracks/track.tpl.php
+
+		-
+			message: '#^Variable \$available_tracks might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/tracks/track.tpl.php
+
+		-
+			message: '#^Variable \$track might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/tracks/track.tpl.php
+
+		-
+			message: '#^Variable \$workers might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/workers/index.tpl.php
+
+		-
+			message: '#^Variable \$other_moments might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/workers/worker.tpl.php
+
+		-
+			message: '#^Variable \$prioritized_moments might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/workers/worker.tpl.php
+
+		-
+			message: '#^Variable \$worker might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/admin/workers/worker.tpl.php
+
+		-
+			message: '#^Variable \$marbles might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/frontend/marbles/index.tpl.php
+
+		-
+			message: '#^Variable \$marble might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: templates/frontend/marbles/marble.tpl.php
+
+		-
+			message: '#^Variable \$moments might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/frontend/moments/index.tpl.php
+
+		-
+			message: '#^Variable \$moment might not be defined\.$#'
+			identifier: variable.undefined
+			count: 16
+			path: templates/frontend/moments/moment.tpl.php
+
+		-
+			message: '#^Variable \$parts might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/frontend/parts/index.tpl.php
+
+		-
+			message: '#^Variable \$rides might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/frontend/rides/index.tpl.php
+
+		-
+			message: '#^Variable \$ride might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: templates/frontend/rides/ride.tpl.php
+
+		-
+			message: '#^Variable \$workers might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/frontend/workers/index.tpl.php
+
+		-
+			message: '#^Variable \$page_content might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/layout/admin_base.tpl.php
+
+		-
+			message: '#^Variable \$page_content might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: templates/layout/frontend_base.tpl.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTForShortco…'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Functional/ShortcodeWorkflowTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''This test catches…'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Functional/ShortcodeWorkflowTest.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Functional/ShortcodeWorkflowTest.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Integration/DatabaseSecurityTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\{\} and ''Image URLs should…'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\{\} and ''Moment IDs should…'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Offset ''image_urls'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Offset ''moment_ids'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Offset ''part_alias'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Offset ''part_description'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Offset ''part_name'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\{\}\) to function array_filter is empty, call has no effect\.$#'
+			identifier: arrayFilter.empty
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Ternary operator condition is always false\.$#'
+			identifier: ternary.alwaysFalse
+			count: 1
+			path: tests/Integration/PartsIntegrationTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with int will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/RepositoryState/MomentFindersTest.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: tests/Integration/RepositoryState/PhotoLoadingCharacterisationTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTExactAlias'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/TemplateRegressionTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTForShortco…'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/TemplateRegressionTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTLikeAlias'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/TemplateRegressionTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''Template regression…'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/TemplateRegressionTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''This test prevents…'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Integration/TemplateRegressionTest.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Integration/TemplateRegressionTest.php
+
+		-
+			message: '#^Offset ''description'' on array\{worker_name\: non\-falsy\-string, description\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/WorkersIntegrationTest.php
+
+		-
+			message: '#^Offset ''description'' on array\{worker_name\: non\-falsy\-string, description\: ''This worker was…''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/WorkersIntegrationTest.php
+
+		-
+			message: '#^Offset ''worker_name'' on array\{worker_name\: non\-falsy\-string, description\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/WorkersIntegrationTest.php
+
+		-
+			message: '#^Offset ''worker_name'' on array\{worker_name\: non\-falsy\-string, description\: ''This worker was…''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Integration/WorkersIntegrationTest.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Integration/WorkersIntegrationTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 2
+			path: tests/Integration/WorkersIntegrationTest.php
+
+		-
+			message: '#^Offset ''part_alias'' on array\{part_alias\: ''test_part_fix_57'', part_name\: ''Test Part for Issue…'', part_description\: ''This description…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Unit/Issue57and58Test.php
+
+		-
+			message: '#^Offset ''part_description'' on array\{part_alias\: ''test_part_fix_57'', part_name\: ''Test Part for Issue…'', part_description\: ''This description…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Unit/Issue57and58Test.php
+
+		-
+			message: '#^Offset ''part_name'' on array\{part_alias\: ''test_part_fix_57'', part_name\: ''Test Part for Issue…'', part_description\: ''This description…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Unit/Issue57and58Test.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/MomentClassTest.php
+
+		-
+			message: '#^Offset ''filter'' on array\{filter\: ''  test string  ''\|''test string'', expected\: ''test string''\}\|array\{filter\: '''', expected\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: tests/Unit/MomentFilterTest.php
+
+		-
+			message: '#^Offset ''notes'' on array\{notes\: ''contains test string'', translated_note\: ''also contains test…''\|null, expected_priority\: 1\}\|array\{notes\: ''no match'', translated_note\: ''contains test string'', expected_priority\: 2\}\|array\{notes\: ''no match'', translated_note\: ''no match'', expected_priority\: 3\} in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.offset
+			count: 1
+			path: tests/Unit/MomentFilterTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\{1, 2, 3\} will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/PHPUnitSimpleTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsString\(\) with ''hello'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/PHPUnitSimpleTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''PHPUnit is working\!'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/PHPUnitSimpleTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertSame\(\) with array\{\} and array\{\} will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/PostedIdsTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with RobRequest and ''jsonError'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/RobRequestTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with RobRequest and ''jsonSuccess'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/RobRequestTest.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/create_moment_from_tokens.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: wwwroot/admin/ajax/create_moment_from_tokens.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/create_phrase_for_moment.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/create_phrase_for_moment.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/expand_shortcodes.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/ajax/expand_shortcodes.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/save_moment_from_realtime.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 7
+			path: wwwroot/admin/ajax/save_moment_from_realtime.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/search_moments.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/search_moments.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/shortcode_filter.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/ajax/shortcode_filter.php
+
+		-
+			message: '#^Variable \$unique_results might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/shortcode_filter.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/toggle_token_permanence.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/toggle_token_permanence.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/tokens.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/ajax/tokens.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/update_moment_significance.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/ajax/update_moment_significance.php
+
+		-
+			message: '#^Variable \$dbExistaroo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/apply_migration.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/apply_migration.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between int and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: wwwroot/admin/episodes/episode.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/episodes/episode.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/episodes/episode.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/episodes/episode.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/episodes/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/episodes/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/episodes/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/index.php
+
+		-
+			message: '#^Variable \$dbExistaroo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/livestreams/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/livestreams/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/livestreams/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/marbles/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/marbles/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/marbles/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/marbles/marble.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/marbles/marble.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/marbles/marble.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/migrate_tables.php
+
+		-
+			message: '#^Variable \$dbExistaroo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/migrate_tables.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/migrate_tables.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: wwwroot/admin/moments/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/moments/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/moments/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/admin/moments/index.php
+
+		-
+			message: '#^Variable \$mla_request might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/moments/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/moments/moment.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/moments/moment.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/moments/moment.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/moments/realtime.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/moments/realtime.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/admin/moments/realtime.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/notebooks/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/notebooks/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/notebooks/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/notebooks/notebook.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/notebooks/notebook.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/admin/notebooks/notebook.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/notebooks/pages/columns/column.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/notebooks/pages/columns/column.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/admin/notebooks/pages/columns/column.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/notebooks/pages/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/notebooks/pages/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/notebooks/pages/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/notebooks/pages/page.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/notebooks/pages/page.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/notebooks/pages/page.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/images/create.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/images/create.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/parts/images/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/images/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/images/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/parts/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/parts/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/oss/get_best_height.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/oss/get_best_ssop.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/parts/oss/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/oss/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/oss/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/parts/oss/oss.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/oss/oss.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/parts/oss/oss.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/parts/part.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/parts/part.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/parts/part.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/photos/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/photos/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/photos/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/photos/photo.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/photos/photo.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/photos/photo.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/poll/twitch_livestreams.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/admin/poll/twitch_livestreams.php
+
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
+			count: 1
+			path: wwwroot/admin/poll/youtube_livestreams.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/poll/youtube_livestreams.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/admin/poll/youtube_livestreams.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 8
+			path: wwwroot/admin/scripts/generate_static_site.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/scripts/generate_static_site.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/admin/scripts/generate_static_site.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/settings/api_keys.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/settings/api_keys.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/settings/api_keys.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/add_connection.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/add_connection.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/add_part.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/tracks/add_part.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/delete_connection.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/delete_connection.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/delete_part.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/delete_part.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/tracks/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/toggle_part_exclusivity.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/toggle_part_exclusivity.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/tracks/track.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/tracks/track.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/tracks/track.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/workers/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/workers/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/workers/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/workers/worker.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/admin/workers/worker.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/admin/workers/worker.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/api/v1/_auth.php
+
+		-
+			message: '#^Variable \$auth_user_id might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/api/v1/index.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: wwwroot/api/v1/marbles/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/api/v1/marbles/index.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: wwwroot/api/v1/moments/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/api/v1/moments/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/api/v1/oss/index.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: wwwroot/api/v1/parts/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/api/v1/parts/index.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: wwwroot/api/v1/rides/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/api/v1/rides/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/api/v1/takes/index.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: wwwroot/api/v1/tracks/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: wwwroot/api/v1/tracks/index.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: wwwroot/api/v1/workers/index.php
+
+		-
+			message: '#^Variable \$mla_database might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/api/v1/workers/index.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: wwwroot/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: wwwroot/index.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: wwwroot/login/index.php
+
+		-
+			message: '#^Variable \$config might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/login/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: wwwroot/login/index.php
+
+		-
+			message: '#^Variable \$is_logged_in might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: wwwroot/logout/index.php

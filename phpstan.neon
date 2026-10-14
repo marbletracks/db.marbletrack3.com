@@ -1,0 +1,39 @@
+# Static analysis, run in Docker by ~/work/rob/standards-mcp/run-phpstan.sh.
+# Starts at level 5 with today's errors in the baseline, so only new errors
+# fail; raise the level a rung at a time and shrink the baseline as it goes.
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    # DreamHost runs 8.3 today; the code must also hold on 8.5 before
+    # db.marbletrack3.com is switched over.
+    phpVersion:
+        min: 80300
+        max: 80500
+    paths:
+        - classes
+        - wwwroot
+        - templates
+        - scripts
+        - tests
+        - prepend.php
+    excludePaths:
+        analyseAndScan:
+            # Gitignored per-server credentials; ConfigSample declares the same class.
+            - classes/Config.php (?)
+    ignoreErrors:
+        # Entry scripts include prepend.php by its absolute DreamHost path,
+        # which exists on the server and nowhere else.
+        -
+            identifier: includeOnce.fileNotFound
+            message: '#"/home/dh_fbrdk3/db\.marbletrack3\.com/#'
+        # CLI scripts always have $argv. PHPStan doubts it on some PHP builds
+        # and not others, so the entry may go unmatched.
+        -
+            identifier: variable.undefined
+            message: '#^Variable \$argv might not be defined\.$#'
+            path: scripts/*
+            reportUnmatched: false
+    bootstrapFiles:
+        - vendor/autoload.php
