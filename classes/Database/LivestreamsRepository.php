@@ -94,8 +94,6 @@ SQL,
 
     public function saveDurationToDatabase(LocalLivestream $livestream): bool
     {
-        $this->errors = [];
-
         if (empty($livestream->livestream_id)) {
             echo "No livestream_id set to save duration to database<br>";
             return false;
