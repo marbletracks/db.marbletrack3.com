@@ -33,11 +33,13 @@ class Step0ApiPhotoSurvivesFormTest extends TestCase
         $loaded = $form->findById($part);            // Rob opens the edit form
 
         $api = new \Database\PartsRepository($this->db(), 'en');
-        $api->setPartId($part);                       // the API attaches a photo meanwhile
-        $api->addPhotosFromUrls([$this->url('three')]);
+        $api->addPhotosFromUrls($part, [$this->url('three')]);   // the API attaches a photo meanwhile
 
-        $form->setPartId($part);                      // Rob saves without touching photos
-        $form->savePhotosFromUrls(array_map(fn ($p) => $p->getUrl(), $loaded->photos));
+        $form->savePhotosFromForm(                                 // Rob saves without touching photos
+            $part,
+            array_map(fn ($p) => $p->photo_id, $loaded->photos),
+            array_map(fn ($p) => $p->getUrl(), $loaded->photos)
+        );
 
         $this->assertContains($three, $this->linkedIds('parts_2_photos', 'part_id', $part));
     }
