@@ -57,7 +57,6 @@ function fetchYouTube($url)
     }
 
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     if ($http_code !== 200) {
         print_rob(object: "Response: " . substr($response, 0, 2000) . "...", exit: false);
