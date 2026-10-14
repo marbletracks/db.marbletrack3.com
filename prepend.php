@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Stateless Pages";
+const SENTIMENTAL_VERSION = "Stateless Episodes";
 
 # write errors to screen
 ini_set('display_errors', 1);
