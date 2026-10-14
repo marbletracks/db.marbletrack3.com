@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Interview Rob for Patreon";
+const SENTIMENTAL_VERSION = "Stateless Repositories";
 
 # write errors to screen
 ini_set('display_errors', 1);
