@@ -53,6 +53,21 @@ class Utilities {
     }
 
     /**
+     * IDs posted as name="field[]". Anything that is not a positive integer is
+     * dropped, and a missing field reads as no IDs.
+     *
+     * @return int[]
+     */
+    public static function postedIds(string $field): array
+    {
+        $raw = $_POST[$field] ?? [];
+        if (!is_array($raw)) {
+            return [];
+        }
+        return array_values(array_filter(array_map('intval', $raw), fn (int $id) => $id > 0));
+    }
+
+    /**
      * Used in DBExistaroo::applyMigration() as
      * $path = \Utilities::getSchemaFilePath($this->config->app_path, $versionWithFile);
      *

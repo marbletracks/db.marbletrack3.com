@@ -42,12 +42,12 @@ class DockerEnvironmentTest extends TestCase
             $pdo = new \PDO("mysql:host=$host;port=$port;dbname=$dbname", $username, $password);
             $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-            // Test basic query
-            $stmt = $pdo->query("SELECT message FROM test_connection LIMIT 1");
-            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            // The real production schema must have loaded
+            $count = (int) $pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE()")->fetchColumn();
+            $this->assertGreaterThanOrEqual(40, $count, 'Docker DB should have the full production schema');
 
-            $this->assertNotEmpty($result, 'Should be able to query test_connection table');
-            $this->assertEquals('Docker MySQL is working with full schema!', $result['message']);
+            // An empty result is fine; it just must not throw
+            $pdo->query("SELECT 1 FROM photos LIMIT 1")->fetchAll();
         } catch (\PDOException $e) {
             $this->fail("Database connection failed: " . $e->getMessage());
         }
