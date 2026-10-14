@@ -8,6 +8,7 @@ class Database implements DbInterface {
     private $dbObj;
     private $tz_offset = false;
     private $affected_rows;
+    private bool $inTransaction = false;
 
     public function __construct(
         private readonly string $host,
@@ -310,15 +311,24 @@ class Database implements DbInterface {
     {
         $this->connect();
         $this->dbObj->begin_transaction();
+        $this->inTransaction = true;
     }
 
     public function commit(): void
     {
         $this->dbObj->commit();
+        $this->inTransaction = false;
     }
 
     public function rollBack(): void
     {
         $this->dbObj->rollback();
+        $this->inTransaction = false;
+    }
+
+    /** MySQL silently commits an open transaction on a second BEGIN, so writers check this first. */
+    public function inTransaction(): bool
+    {
+        return $this->inTransaction;
     }
 }

@@ -59,4 +59,9 @@ class CountingDb implements DbInterface
     {
         $this->inner->rollBack();
     }
+
+    public function inTransaction(): bool
+    {
+        return $this->inner->inTransaction();
+    }
 }
