@@ -38,7 +38,7 @@ class NotebookRepository
         return $this->hydrateAll($results->toArray());
     }
 
-    public function insert(string $title = null, string $created_at = null): int
+    public function insert(?string $title = null, ?string $created_at = null): int
     {
         return $this->db->insertFromRecord(
             'notebooks',

@@ -399,7 +399,7 @@ class MomentRepository
         }
     }
 
-    public function insert(int $frame_start = null, int $frame_end = null, int $take_id = null, string $notes = null, string $moment_date = null): int
+    public function insert(?int $frame_start = null, ?int $frame_end = null, ?int $take_id = null, ?string $notes = null, ?string $moment_date = null): int
     {
         return $this->db->insertFromRecord(
             'moments',
