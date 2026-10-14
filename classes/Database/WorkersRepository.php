@@ -2,28 +2,25 @@
 namespace Database;
 
 use Database\DbInterface;
-use Domain\HasPhotos;
-use Domain\HasMoments;
 use Domain\HasShortcodes;
 use Physical\Worker;
 
 class WorkersRepository
 {
-    use HasPhotos;
-    use HasMoments;
     use HasShortcodes;
     private DbInterface $db;
     private string $langCode;
 
-    private string $photoLinkingTable = 'workers_2_photos';
-    private string $primaryKeyColumn = 'worker_id';
-    private int $worker_id;  // Must be set when the Worker is loaded
+    private PhotoLinks $photoLinks;
+    private PerspectiveMoments $perspectiveMoments;
 
 
     public function __construct(DbInterface $db, string $langCode)
     {
         $this->db = $db;
         $this->langCode = $langCode;
+        $this->photoLinks = new PhotoLinks($db, 'workers', 'workers_2_photos', 'worker_id');
+        $this->perspectiveMoments = new PerspectiveMoments($db);
     }
 
     public function getSELECTExactAlias(): string
@@ -95,16 +92,6 @@ SQL;
     {
         return $this->db;
     }
-    public function getPhotoLinkingTable(): string
-    {
-        return $this->photoLinkingTable;
-    }
-    public function getMomentLinkingTable(): string
-    {
-        // This is deprecated for Workers, as we now use moment_translations as the source of truth.
-        return '';
-    }
-
     public function syncMomentsFromTranslations(int $worker_id, array $submitted_moment_ids): void
     {
         $moment_repo = new MomentRepository($this->getDb());
@@ -128,20 +115,6 @@ SQL;
         }
     }
 
-    public function getPrimaryKeyColumn(): string
-    {
-        return $this->primaryKeyColumn;
-    }
-    public function getId(): int
-    {
-        return $this->worker_id;
-    }
-    // must do this before saving photos
-    // so that HasPhotos knows which worker to save photos for
-    public function setWorkerId(int $worker_id): void
-    {
-        $this->worker_id = $worker_id;
-    }
     public function findById(int $worker_id): ?Worker
     {
         $results = $this->db->fetchResults(
@@ -158,10 +131,7 @@ SQL,
         if ($results->numRows() === 0) {
             return null;
         }
-        $this->worker_id = $worker_id; // Set the worker_id for HasPhotos
-
-        $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findByAlias(string $alias): ?Worker
@@ -181,9 +151,7 @@ SQL,
             return null;
         }
 
-        $results->setRow(0);
-        $this->worker_id = (int)$results->data['worker_id']; // Set the worker_id for HasPhotos
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findAll(): array
@@ -203,14 +171,7 @@ SQL,
             var1: [$this->langCode]
         );
 
-        $workers = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->worker_id = (int)$results->data['worker_id']; // Set the worker_id for HasPhotos
-            $workers[] = $this->hydrate($results->data);
-        }
-
-        return $workers;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function insert(string $alias, string $name = '', string $description = ''): int
@@ -332,20 +293,51 @@ SQL,
         return $photos;
     }
 
+    /**
+     * @param int[]    $loadedPhotoIds photo IDs the edit form showed when it loaded
+     * @param string[] $urls           the form's photo URLs, in screen order
+     */
+    public function savePhotosFromForm(int $worker_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($worker_id, $loadedPhotoIds, $urls);
+    }
+
+    /** Append photos, keeping any already linked. Used by the API. */
+    public function addPhotosFromUrls(int $worker_id, array $urls): void
+    {
+        $this->photoLinks->addUrls($worker_id, $urls);
+    }
+
+    /** @param \Media\Photo[] $photos */
+    public function addPhotos(int $worker_id, array $photos): void
+    {
+        $this->photoLinks->add($worker_id, $photos);
+    }
+
+    /** @return Worker[] */
+    private function hydrateAll(array $rows): array
+    {
+        $ids = array_map(fn (array $row) => (int) $row['worker_id'], $rows);
+        $photos = $this->photoLinks->forIds($ids);
+        $moments = $this->perspectiveMoments->forPerspectives('worker', $ids);
+        $workers = [];
+        foreach ($rows as $row) {
+            $worker = $this->hydrate($row);
+            $worker->photos = $photos[$worker->worker_id] ?? [];
+            $worker->moments = $moments[$worker->worker_id] ?? [];
+            $workers[] = $worker;
+        }
+        return $workers;
+    }
+
     private function hydrate(array $row): Worker
     {
-        $worker = new Worker(
+        return new Worker(
             worker_id: (int) $row['worker_id'],
             worker_alias: $row['worker_alias'],
             busy_sort: (int) $row['busy_sort'],
             name: $row['worker_name'] ?? '',
             description: $row['worker_description'] ?? ''
         );
-        $this->loadPhotos();  // defined in HasPhotos trait
-        $worker->photos = $this->getPhotos(); // Get photos from HasPhotos trait
-
-        $this->loadMoments($worker);
-        $worker->moments = $this->getMoments();
-        return $worker;
     }
 }
