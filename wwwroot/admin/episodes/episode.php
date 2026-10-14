@@ -54,8 +54,7 @@ if ($submitted) {
                 episode_frames: $episode_frames,
                 livestreamId: $postLivestreamId ?: null
             );
-            $epRepo->setEpisodeId($episode_id);
-            $epRepo->savePhotosFromUrls(urls: $image_urls);
+            $epRepo->savePhotosFromForm($episode_id, \Utilities::postedIds('loaded_photo_ids'), $image_urls);
 
             if (!$success) {
                 $errors[] = 'Failed to update episode. Please try again.';
@@ -71,8 +70,7 @@ if ($submitted) {
                 episode_frames: $episode_frames,
                 livestreamId: $postLivestreamId ?: null
             );
-            $epRepo->setEpisodeId($newId);
-            $epRepo->savePhotosFromUrls(urls: $image_urls);
+            $epRepo->savePhotosFromForm($newId, [], $image_urls);
             if ($newId === false) {
                 $errors[] = 'Failed to create episode. Please try again.';
             } else {
