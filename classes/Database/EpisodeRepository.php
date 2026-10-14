@@ -2,46 +2,19 @@
 namespace Database;
 
 use Database\DbInterface;
-use Domain\HasPhotos;
 use Media\Episode;
 
 class EpisodeRepository
 {
-    use HasPhotos;
     private DbInterface $db;
-
-    private string $photoLinkingTable = 'episodes_2_photos';
-    private string $primaryKeyColumn = 'episode_id';
-    private int $episode_id;
+    private PhotoLinks $photoLinks;
 
     public function __construct(DbInterface $db)
     {
         $this->db = $db;
+        $this->photoLinks = new PhotoLinks($db, 'episodes', 'episodes_2_photos', 'episode_id');
     }
 
-    public function getId(): int
-    {
-        return $this->episode_id;
-    }
-    public function setEpisodeId(int $episode_id): void
-    {
-        $this->episode_id = $episode_id;
-    }
-
-    public function getDb(): DbInterface
-    {
-        return $this->db;
-    }
-
-    public function getPhotoLinkingTable(): string
-    {
-        return $this->photoLinkingTable;
-    }
-
-    public function getPrimaryKeyColumn(): string
-    {
-        return $this->primaryKeyColumn;
-    }
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -57,14 +30,7 @@ ORDER BY created_at DESC
 SQL
         );
 
-        $episodes = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->episode_id = (int) $results->data['episode_id'];
-            $episodes[] = $this->hydrate($results->data);
-        }
-
-        return $episodes;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function findById(int $episode_id): ?Episode
@@ -87,9 +53,7 @@ SQL
             return null;
         }
 
-        $this->episode_id = $episode_id;
-        $results->setRow(0);
-        return $this->hydrate(row: $results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findByLivestreamId(int $livestream_id): ?Episode
@@ -112,9 +76,7 @@ SQL
             return null;
         }
 
-        $results->setRow(0);
-        $this->episode_id = (int) $results->data['episode_id'];
-        return $this->hydrate(row: $results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function update(
@@ -157,9 +119,31 @@ SQL
         );
     }
 
+    /**
+     * @param int[]    $loadedPhotoIds photo IDs the edit form showed when it loaded
+     * @param string[] $urls           the form's photo URLs, in screen order
+     */
+    public function savePhotosFromForm(int $episode_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($episode_id, $loadedPhotoIds, $urls);
+    }
+
+    /** @return Episode[] */
+    private function hydrateAll(array $rows): array
+    {
+        $photos = $this->photoLinks->forIds(array_column($rows, 'episode_id'));
+        $episodes = [];
+        foreach ($rows as $row) {
+            $episode = $this->hydrate($row);
+            $episode->photos = $photos[$episode->episode_id] ?? [];
+            $episodes[] = $episode;
+        }
+        return $episodes;
+    }
+
     private function hydrate(array $row): Episode
     {
-        $episode = new Episode(
+        return new Episode(
             episode_id: (int) $row['episode_id'],
             title: $row['title'] ?? '',
             episode_english_description: $row['episode_english_description'] ?? '',
@@ -167,8 +151,5 @@ SQL
             livestream_id: isset($row['livestream_id']) ? (int) $row['livestream_id'] : null,
             created_at: $row['created_at']
         );
-        $this->loadPhotos();
-        $episode->photos = $this->getPhotos();
-        return $episode;
     }
 }
