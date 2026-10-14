@@ -78,8 +78,7 @@ try {
 
         // Link photo to selected workers
         foreach ($worker_ids as $worker_id) {
-            $workersRepo->setWorkerId($worker_id);
-            $workersRepo->addPhotos([$photo]);
+            $workersRepo->addPhotos($worker_id, [$photo]);
         }
     }
 

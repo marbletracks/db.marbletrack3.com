@@ -108,4 +108,21 @@ class FormLoadedIdsTest extends TestCase
 
         $this->assertPostsLoadedIds($html, [$a, $b]);
     }
+
+    public function testWorkerForm(): void
+    {
+        $id = $this->makeRow('worker');
+        [$a, $b] = [$this->makePhoto('a'), $this->makePhoto('b')];
+        $this->link('workers_2_photos', 'worker_id', $id, $a, 1);
+        $this->link('workers_2_photos', 'worker_id', $id, $b, 2);
+
+        $html = $this->renders('admin/workers/worker.tpl.php', [
+            'errors' => [],
+            'worker' => (new \Database\WorkersRepository($this->db(), 'en'))->findById($id),
+            'prioritized_moments' => [],
+            'other_moments' => [],
+        ]);
+
+        $this->assertPostsLoadedIds($html, [$a, $b]);
+    }
 }

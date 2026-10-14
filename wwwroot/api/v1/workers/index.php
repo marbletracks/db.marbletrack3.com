@@ -46,8 +46,7 @@ if ($method === 'PATCH' && $sub !== '') {
     }
 
     if (!empty($input['photo_urls'])) {
-        $repo->setWorkerId($worker->worker_id);
-        $repo->addPhotosFromUrls($input['photo_urls']);
+        $repo->addPhotosFromUrls($worker->worker_id, $input['photo_urls']);
     }
 
     $updated = $repo->findById($worker->worker_id);

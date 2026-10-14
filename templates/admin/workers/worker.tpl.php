@@ -10,6 +10,9 @@
     <?php endif; ?>
 
     <form action="" method="post">
+<?php foreach ($worker->photos ?? [] as $photo): ?>
+        <input type="hidden" name="loaded_photo_ids[]" value="<?= (int) $photo->photo_id ?>">
+<?php endforeach; ?>
         <label>
             Name:<br>
             <input type="text" name="name" value="<?= htmlspecialchars($worker->name ?? '') ?>">
