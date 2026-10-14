@@ -26,7 +26,7 @@ class Database implements DbInterface {
 
     public function connect() {
         //If we're already connected return true;
-        if (!is_object($this->dbObj) || !$this->dbObj->ping()) {
+        if (!$this->isAlive()) {
 
             // A rebuilt connection has no open transaction.
             $this->inTransaction = false;
@@ -42,6 +42,19 @@ class Database implements DbInterface {
         }
         $this->setTimezone();
         return true;
+    }
+
+    // mysqli::ping() is deprecated since PHP 8.4; a trivial query tells us
+    // the same thing: whether the server is still on the other end.
+    private function isAlive(): bool {
+        if (!$this->dbObj instanceof \mysqli) {
+            return false;
+        }
+        try {
+            return $this->dbObj->query("SELECT 1") !== false;
+        } catch (\mysqli_sql_exception $e) {
+            return false;
+        }
     }
 
     public function setTimezone(){
