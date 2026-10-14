@@ -10,6 +10,9 @@
     <?php endif; ?>
 
     <form action="" method="post">
+<?php foreach ($marble->photos ?? [] as $photo): ?>
+        <input type="hidden" name="loaded_photo_ids[]" value="<?= (int) $photo->photo_id ?>">
+<?php endforeach; ?>
         <label>
             Alias (shortcode trigger, e.g. <code>Lb</code> for Large blue):<br>
             <input type="text" name="marble_alias" value="<?= htmlspecialchars($marble->marble_alias ?? '') ?>">

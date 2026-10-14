@@ -143,4 +143,19 @@ class FormLoadedIdsTest extends TestCase
 
         $this->assertPostsLoadedIds($html, [$a, $b]);
     }
+
+    public function testMarbleForm(): void
+    {
+        $id = $this->makeRow('marble');
+        [$a, $b] = [$this->makePhoto('a'), $this->makePhoto('b')];
+        $this->link('marbles_2_photos', 'marble_id', $id, $a, 1);
+        $this->link('marbles_2_photos', 'marble_id', $id, $b, 2);
+
+        $html = $this->renders('admin/marbles/marble.tpl.php', [
+            'errors' => [],
+            'marble' => (new \Database\MarblesRepository($this->db()))->findById($id),
+        ]);
+
+        $this->assertPostsLoadedIds($html, [$a, $b]);
+    }
 }
