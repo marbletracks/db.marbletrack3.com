@@ -48,8 +48,7 @@ if ($method === 'PATCH' && $sub !== '') {
     }
 
     if (!empty($input['photo_urls'])) {
-        $repo->setPartId($part->part_id);
-        $repo->addPhotosFromUrls($input['photo_urls']);
+        $repo->addPhotosFromUrls($part->part_id, $input['photo_urls']);
     }
 
     // Re-fetch to confirm
