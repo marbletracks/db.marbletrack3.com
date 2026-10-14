@@ -134,8 +134,10 @@ Other callers:
 
 ## Rollout
 
-A chain of merge bubbles, each branched from the previous bubble's closed tip, each checked by
-Claude plus the Docker test suite. Rob merges master to the final tip once all are done.
+A chain of merge bubbles, each branched from the previous bubble's closed tip. Each bubble is
+closed, then its branch is deployed straight to production with `/deploy` (push the branch,
+`ssh db_mt3_deploy <branch>`) and checked there before the next bubble starts. Master is never
+merged or touched by Claude; advancing it is Rob's job, on his own schedule.
 
 1. `stateless-repositories` — Step 0, schema dump, characterisation tests, `inTransaction()`,
    `RobRequest::getIntArray()`, `PhotoLinks`, `PerspectiveMoments`
@@ -151,16 +153,19 @@ Claude plus the Docker test suite. Rob merges master to the final tip once all a
 Within a kind's bubble: repository switch → form template + handler → API/other callers, each
 an atomic commit. Characterisation tests stay green throughout.
 
-Per-bubble done: Docker suite green, including that kind's Step 0 tests now passing.
+Per-bubble done: Docker suite green (including that kind's Step 0 tests now passing), bubble
+closed, branch deployed, production check passed. A failed production check stops the chain:
+redeploy the previous bubble's branch, then fix.
 
-## Production check (once, around Rob's deploy)
+## Production check (after every bubble's deploy)
 
 `scripts/photo_links_snapshot.php`, run on Dreamhost over SSH, SELECT-only:
 
 - writes `{table: {id: [photo_ids in sort order]}}` for every `*_2_photos` table
 - `--diff before.json after.json` prints rows whose list changed
 
-Procedure: snapshot before Rob deploys; snapshot after; diff must be empty. Then fetch each
-kind's admin list page and 3 sample detail pages (admin cookie from Rob, or API key where an
-endpoint exists): 200 and photo counts matching the snapshot. Finally, one real reorder-only
-form edit on one row; the diff must show exactly that change.
+Procedure per bubble: snapshot before the deploy; deploy; snapshot after; diff must be empty.
+Then fetch the converted kind's admin list page and 3 sample detail pages (admin cookie from
+Rob, or API key where an endpoint exists): 200 and photo counts matching the snapshot. Finally,
+for kinds whose form changed, one real reorder-only form edit on one row; the diff must show
+exactly that change. Bubble 1 (no kind converted) gets the snapshot diff and page loads only.
