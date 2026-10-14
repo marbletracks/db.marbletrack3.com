@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Photos from badmint";
+const SENTIMENTAL_VERSION = "PHPStan toward PHP 8.5";
 
 # write errors to screen
 ini_set('display_errors', 1);
