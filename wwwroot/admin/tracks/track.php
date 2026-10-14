@@ -27,6 +27,7 @@ if ($submitted) {
     $is_splitter = !empty($_POST['is_splitter']);
     $is_landing_zone = !empty($_POST['is_landing_zone']);
     $entity_type = $_POST['entity_type'] ?? 'marble';
+    $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
 
     // Validation
     if ($alias === '') {
@@ -68,8 +69,9 @@ if ($submitted) {
                 is_landing_zone: $is_landing_zone,
                 entity_type: $entity_type
             );
+            $repo->savePhotosFromForm($track->track_id, \Utilities::postedIds('loaded_photo_ids'), $image_urls);
         } else {
-            $repo->insert(
+            $new_track_id = $repo->insert(
                 alias: $alias,
                 name: $name,
                 description: $description,
@@ -79,6 +81,7 @@ if ($submitted) {
                 is_landing_zone: $is_landing_zone,
                 entity_type: $entity_type
             );
+            $repo->savePhotosFromForm($new_track_id, [], $image_urls);
         }
 
         header("Location: /admin/tracks/index.php");

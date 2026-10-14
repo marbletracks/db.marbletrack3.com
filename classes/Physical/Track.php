@@ -9,6 +9,7 @@ final class Track
 
     public string $slug;
     public array $parts = [];         // added by Repository during hydrate
+    public array $photos = [];        // Media\Photo[]; filled by findById, findByAlias and findAll
     public array $upstream_tracks = []; // tracks that feed into this track
     public array $downstream_tracks = []; // tracks this track feeds into
 

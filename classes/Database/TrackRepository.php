@@ -8,10 +8,12 @@ use Physical\Part;
 class TrackRepository
 {
     private DbInterface $db;
+    private PhotoLinks $photoLinks;
 
     public function __construct(DbInterface $db)
     {
         $this->db = $db;
+        $this->photoLinks = new PhotoLinks($db, 'tracks', 'tracks_2_photos', 'track_id');
     }
 
     public function findById(int $track_id): ?Track
@@ -40,7 +42,7 @@ SQL,
         }
 
         $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->withPhotos([$this->hydrate($results->data)])[0];
     }
 
     public function findByAlias(string $alias): ?Track
@@ -69,7 +71,7 @@ SQL,
         }
 
         $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->withPhotos([$this->hydrate($results->data)])[0];
     }
 
     public function findAll(): array
@@ -98,7 +100,32 @@ SQL
             $results->setRow($i);
             $tracks[] = $this->hydrate($results->data);
         }
+        return $this->withPhotos($tracks);
+    }
+
+    /**
+     * @param Track[] $tracks
+     * @return Track[] the same objects, photos filled in two queries
+     */
+    private function withPhotos(array $tracks): array
+    {
+        $photos = $this->photoLinks->forIds(array_map(fn (Track $t) => $t->track_id, $tracks));
+        foreach ($tracks as $track) {
+            $track->photos = $photos[$track->track_id] ?? [];
+        }
         return $tracks;
+    }
+
+    /** The admin form's photo list: removes only what the form loaded and dropped. */
+    public function savePhotosFromForm(int $track_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($track_id, $loadedPhotoIds, $urls);
+    }
+
+    /** Append, skipping URLs already linked; what the API and badmint use. */
+    public function addPhotosFromUrls(int $track_id, array $urls): void
+    {
+        $this->photoLinks->addUrls($track_id, $urls);
     }
 
     public function findByFilter(string $filter): array

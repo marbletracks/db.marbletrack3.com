@@ -107,7 +107,11 @@
         </label><br><br>
 
         <label>
-            Image URLs:<br>
+            Image URLs:
+            <?php if ($worker): ?>
+                <a href="https://badmint.robnugen.com/mt3/?worker=<?= (int) $worker->worker_id ?>" target="_blank">📷 Upload &amp; crop…</a>
+            <?php endif; ?>
+            <br>
             <div id="image-url-fields">
                 <?php if(!empty($worker->photos)):foreach ($worker->photos ?? [''] as $photo): ?>
                     <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"><br>

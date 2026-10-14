@@ -2,7 +2,7 @@
 /**
  * GET   /api/v1/tracks       — list all tracks
  * GET   /api/v1/tracks/6     — single track by ID with component parts
- * PATCH /api/v1/tracks/6     — update track descriptions
+ * PATCH /api/v1/tracks/6     — update track descriptions and/or add photo_urls
  */
 require_once __DIR__ . '/../_auth.php';
 
@@ -48,9 +48,12 @@ if ($method === 'PATCH' && $sub !== '') {
             'si', [$input['technical_description'], $track->track_id]
         );
     }
+    if (!empty($input['photo_urls']) && is_array($input['photo_urls'])) {
+        $repo->addPhotosFromUrls($track->track_id, $input['photo_urls']);
+    }
 
     $updated = $repo->findById($track->track_id);
-    echo json_encode($updated);
+    echo json_encode(trackToArray($updated));
     exit;
 }
 
@@ -94,9 +97,21 @@ if ($method === 'GET' && $sub !== '') {
         exit;
     }
 
-    echo json_encode($track);
+    echo json_encode(trackToArray($track));
     exit;
 }
 
 http_response_code(405);
 echo json_encode(['error' => 'Method not allowed']);
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function trackToArray(\Physical\Track $track): array
+{
+    $data = get_object_vars($track);
+    $data['photos'] = array_map(fn (\Media\Photo $photo) => [
+        'photo_id' => $photo->photo_id,
+        'url'      => $photo->getUrl(),
+    ], $track->photos);
+    return $data;
+}

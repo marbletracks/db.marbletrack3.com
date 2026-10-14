@@ -62,6 +62,18 @@ counts, AJAX input validation, schema/connectivity.
 - SQL: prepared statements only; placeholder count must equal param count.
 - DB errors use `classes/Database/EDatabaseExceptions.php`.
 
+## Photos from badmint (mg #709)
+
+Photos of Parts, Tracks and Workers are uploaded, straightened and cropped on
+`https://badmint.robnugen.com/mt3/`, which files them on b.robnugen.com and attaches
+the `_1000` URL here through the keyed API (`PATCH /api/v1/{parts,tracks,workers,moments}/<id>`
+with `photo_urls`; append-only, deduped). The Part, Track and Worker edit pages link there
+with `?part=`, `?track=`, `?worker=`. The Moment form opens it with `?for=moment` and the
+Part and Workers from the Notes; `wwwroot/admin/js/mt3-photos.js` takes each saved photo back
+by `postMessage` (origin `https://badmint.robnugen.com` only) as an Image URL row, and the
+form's own Save links it. Nothing in MT3 posts to badmin's `bullet.php` any more
+(`tests/Unit/NothingPostsToBadminTest.php`).
+
 ## Reel rendering (video output)
 
 Turning MT3 source frames into a `.mov` (a single Moment, a cross-Take Reel, or the Final Movie) is **owned by dbmt3k**. Other agents should not reimplement it — request a render via jikan inbox to dbmt3k (aiu_id 28) with either a Moment ID, or `(take_id, vframe_start, vframe_end)`. The pipeline lives in dbmt3k's private memory.

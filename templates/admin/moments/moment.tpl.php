@@ -68,6 +68,10 @@ else { $selected = false; }
             <input type="date" name="moment_date" value="<?= htmlspecialchars($moment->moment_date ?? '') ?>">
         </label><br><br>
 
+        <p>
+            <button type="button" id="mt3-photos-open" data-moment-id="<?= (int) ($moment->moment_id ?? 0) ?: '' ?>">📷 Upload &amp; crop…</button>
+            <span id="mt3-photos-note"></span>
+        </p>
         <label>
             Image URLs:<br>
             <div id="image-url-fields">
@@ -97,6 +101,7 @@ else { $selected = false; }
 </div>
 <link rel="stylesheet" href="/admin/css/autocomplete.css">
 <script src="/admin/js/autocomplete.js" defer></script>
+<script src="/admin/js/mt3-photos.js" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const notesTextarea = document.getElementById('shortcodey');
@@ -116,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             previewDiv.innerHTML = data.expanded_text || '';
+            if (window.mt3PhotosPerspectives) window.mt3PhotosPerspectives(data.perspectives || []);
             perspectivesDiv.innerHTML = '';
 
             if (data.perspectives && data.perspectives.length > 0) {

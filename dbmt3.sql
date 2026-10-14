@@ -1074,6 +1074,26 @@ CREATE TABLE `tracks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tracks_2_photos`
+--
+
+DROP TABLE IF EXISTS `tracks_2_photos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tracks_2_photos` (
+  `track_id` int NOT NULL,
+  `photo_id` int NOT NULL,
+  `photo_sort` int NOT NULL DEFAULT '0',
+  `is_primary` tinyint(1) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`track_id`,`photo_id`),
+  KEY `photo_id` (`photo_id`),
+  CONSTRAINT `tracks_2_photos_ibfk_1` FOREIGN KEY (`track_id`) REFERENCES `tracks` (`track_id`) ON DELETE CASCADE,
+  CONSTRAINT `tracks_2_photos_ibfk_2` FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `tracks`
 --
 

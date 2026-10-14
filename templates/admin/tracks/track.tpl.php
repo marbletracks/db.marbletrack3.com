@@ -10,6 +10,9 @@
     <?php endif; ?>
 
     <form action="" method="post">
+<?php foreach ($track->photos ?? [] as $photo): ?>
+        <input type="hidden" name="loaded_photo_ids[]" value="<?= (int) $photo->photo_id ?>">
+<?php endforeach; ?>
         <label>
             Alias:<br>
             <input type="text" id="track_alias" name="track_alias"
@@ -230,6 +233,34 @@
                 </div>
             </div>
         <?php endif; ?>
+
+        <label>
+            Image URLs:
+            <?php if ($track): ?>
+                <a href="https://badmint.robnugen.com/mt3/?track=<?= (int) $track->track_id ?>" target="_blank">📷 Upload &amp; crop…</a>
+            <?php endif; ?>
+            <br>
+            <div id="image-url-fields">
+<?php foreach ($track->photos ?? [] as $photo): ?>
+    <a href="<?= htmlspecialchars($photo->getUrl()) ?>"><img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"></a><br>
+                <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
+<?php endforeach; ?>
+                <!-- add empty row so we always have space -->
+                <input type="text" size=130 name="image_urls[]" value=""><br>
+            </div>
+            <button type="button" onclick="addImageUrlField()">Add another</button>
+        </label><br><br>
+
+        <script>
+            function addImageUrlField() {
+                const div = document.getElementById('image-url-fields');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'image_urls[]';
+                div.appendChild(input);
+                div.appendChild(document.createElement('br'));
+            }
+        </script>
 
         <button type="submit"><?= $track ? 'Update Track' : 'Create Track' ?></button>
         <a href="/admin/tracks/" style="margin-left: 20px;">Cancel</a>

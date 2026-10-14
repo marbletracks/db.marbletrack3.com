@@ -43,7 +43,7 @@
                 </div>
 
                 <div style="margin-left: 20px;">
-                    <a href="/admin/parts/images/create.php?part_id=<?= htmlspecialchars($part->part_id) ?>"
+                    <a href="https://badmint.robnugen.com/mt3/?part=<?= (int) $part->part_id ?>" target="_blank"
                        style="padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
                        ⇭
                     </a>
