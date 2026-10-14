@@ -12,7 +12,7 @@ namespace Media;
 class Photo
 {
     private string $cdnPrefix = 'https://d2f8m59m4mubfx.cloudfront.net';
-    public bool $isPrimary = false; // used in HasPhotos trait
+    public bool $isPrimary = false; // the link's is_primary; set by PhotoLinks
     
     public function __construct(
         public readonly int $photo_id,
