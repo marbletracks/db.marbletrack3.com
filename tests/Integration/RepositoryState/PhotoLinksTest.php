@@ -141,6 +141,7 @@ class PhotoLinksTest extends TestCase
         $id = $this->makeRow('notebook');
         $this->db()->executeSQL('INSERT INTO photos (code, url) VALUES (?, ?)', 'ss', [$this->prefix . 'code', $this->url('raw')]);
         $coded = $this->db()->insertId();
+        $this->track('photos', 'photo_id', $coded);
         $this->link('notebooks_2_photos', 'notebook_id', $id, $coded, 1);
         $shown = (new \Database\PhotoRepository($this->db()))->findByIds([$coded])[0]->getUrl();   // the CloudFront URL
         $photosBefore = (int) $this->db()->fetchResults('SELECT COUNT(*) AS n FROM photos')->toArray()[0]['n'];
@@ -149,7 +150,6 @@ class PhotoLinksTest extends TestCase
 
         $this->assertSame([$coded], $this->linked($id));
         $this->assertSame($photosBefore, (int) $this->db()->fetchResults('SELECT COUNT(*) AS n FROM photos')->toArray()[0]['n']);
-        $this->db()->executeSQL('DELETE FROM photos WHERE photo_id = ?', 'i', [$coded]);
     }
 
     public function testDuplicateUrlLinksOnce(): void
@@ -207,5 +207,17 @@ class PhotoLinksTest extends TestCase
     {
         $this->expectException(\Database\EDatabaseException::class);
         $this->links()->saveFromForm(2147483000, [], [$this->makePhoto('p1')]);
+    }
+
+    public function testUnknownRowLeavesNoOrphanPhoto(): void
+    {
+        $url = $this->url('orphan');
+        try {
+            $this->links()->saveFormUrls(2147483000, [], [$url]);
+            $this->fail('Expected EDatabaseException');
+        } catch (\Database\EDatabaseException $e) {
+        }
+        $n = $this->db()->fetchResults('SELECT COUNT(*) AS n FROM photos WHERE url = ?', 's', [$url])->toArray()[0]['n'];
+        $this->assertSame(0, (int) $n);
     }
 }

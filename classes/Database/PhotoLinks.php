@@ -107,7 +107,10 @@ class PhotoLinks
     /** @param string[] $urls */
     public function addUrls(int $id, array $urls): void
     {
-        $this->add($id, (new PhotoRepository($this->db))->findOrCreateByUrls($urls));
+        // photos may be created below, so they must share add()'s transaction
+        $this->atomically(function () use ($id, $urls) {
+            $this->add($id, (new PhotoRepository($this->db))->findOrCreateByUrls($urls));
+        });
     }
 
     /**
@@ -172,7 +175,10 @@ class PhotoLinks
      */
     public function saveFormUrls(int $id, array $loadedIds, array $urls): void
     {
-        $this->saveFromForm($id, $loadedIds, $this->idsForUrls($loadedIds, $urls));
+        // idsForUrls() may create photos, so it must share saveFromForm()'s transaction
+        $this->atomically(function () use ($id, $loadedIds, $urls) {
+            $this->saveFromForm($id, $loadedIds, $this->idsForUrls($loadedIds, $urls));
+        });
     }
 
     /** @return int[] one photo ID per non-blank URL, in order */
