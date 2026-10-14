@@ -34,15 +34,13 @@ class Photo
 
         // convert https://b.robnugen.com/art/marble_track_3/construction/2025/2025_jun_23_this_blue_a5_notebook_has_notes_on_what_everyone_did_1000.jpeg
         // to https://b.robnugen.com/art/marble_track_3/construction/2025/thumbs/2025_jun_23_this_blue_a5_notebook_has_notes_on_what_everyone_did.jpeg
-        if ($this->url) {
-            $parts = explode('/', $this->url);
-            $parts[count($parts) - 1] = 'thumbs/' . $parts[count($parts) - 1];
-            $thumb_url = implode('/', $parts);
+        if (!$this->url) {
+            return '';
         }
+        $parts = explode('/', $this->url);
+        $parts[count($parts) - 1] = 'thumbs/' . $parts[count($parts) - 1];
+        $thumb_url = implode('/', $parts);
         // remove _1000 from just before extension
-        if ($thumb_url) {
-            $thumb_url = preg_replace('/(_1000)(\.\w+)$/', '$2', $thumb_url);
-        }
-        return $thumb_url;
+        return preg_replace('/(_1000)(\.\w+)$/', '$2', $thumb_url);
     }
 }

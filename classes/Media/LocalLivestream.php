@@ -3,17 +3,19 @@ namespace Media;
 
 final class LocalLivestream
 {
+    public string $watch_url;
+
     public function __construct(
         public int $livestream_id,
         public string $external_id,
         public string $platform,
         public string $title,
         public string $description,
-        public ?string $thumbnail_url = null,
-        public ?string $duration = null,
         public ?string $published_at,
         public string $status,
-        public string $created_at
+        public string $created_at,
+        public ?string $thumbnail_url = null,
+        public ?string $duration = null
     ) {
         if(!in_array($this->platform, ['youtube', 'twitch'], true)) {
             throw new \InvalidArgumentException("Invalid platform: $this->platform");

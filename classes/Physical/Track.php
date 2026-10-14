@@ -12,6 +12,8 @@ final class Track
     public array $photos = [];        // Media\Photo[]; filled by findById, findByAlias and findAll
     public array $upstream_tracks = []; // tracks that feed into this track
     public array $downstream_tracks = []; // tracks this track feeds into
+    public ?string $part_role = null;       // set by TrackRepository for a Part's tracks
+    public bool $part_is_exclusive = false; // set by TrackRepository for a Part's tracks
 
     /**
      * Represents a logical track made up of multiple physical parts.

@@ -10,6 +10,11 @@ namespace Physical;
  */
 class Column
 {
+    // Filled by ColumnsRepository::findByPageId() for the page view.
+    public string $worker_alias = '';
+    public string $worker_name = '';
+    public int $token_count = 0;
+
     /**
      * Column constructor.
      *

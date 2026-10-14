@@ -50,7 +50,6 @@ function getAppAccessToken(string $clientId, string $clientSecret): array
         throw new Exception('Token fetch error: ' . curl_error($ch));
     }
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     if ($httpCode !== 200) {
         throw new Exception("Failed to get Twitch token, status $httpCode: $resp");
@@ -99,7 +98,6 @@ function fetchTwitch(string $url, string $clientId, string $accessToken): array
     }
 
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     if ($http_code !== 200) {
         print_rob($response);

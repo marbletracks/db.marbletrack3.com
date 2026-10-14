@@ -5,6 +5,9 @@ namespace Database;
 require_once __DIR__ . "/EDatabaseExceptions.php";
 class Database implements DbInterface {
 
+    // MySQL's ER_DUP_ENTRY
+    private const ERROR_DUPLICATE_KEY = 1062;
+
     private $dbObj;
     private $tz_offset = false;
     private $affected_rows;
@@ -23,7 +26,7 @@ class Database implements DbInterface {
 
     public function connect() {
         //If we're already connected return true;
-        if (!is_object($this->dbObj) || !$this->dbObj->ping()) {
+        if (!$this->isAlive()) {
 
             // A rebuilt connection has no open transaction.
             $this->inTransaction = false;
@@ -39,6 +42,19 @@ class Database implements DbInterface {
         }
         $this->setTimezone();
         return true;
+    }
+
+    // mysqli::ping() is deprecated since PHP 8.4; a trivial query tells us
+    // the same thing: whether the server is still on the other end.
+    private function isAlive(): bool {
+        if (!$this->dbObj instanceof \mysqli) {
+            return false;
+        }
+        try {
+            return $this->dbObj->query("SELECT 1") !== false;
+        } catch (\mysqli_sql_exception $e) {
+            return false;
+        }
     }
 
     public function setTimezone(){
@@ -108,9 +124,18 @@ class Database implements DbInterface {
             throw new \Database\EDatabaseException("Bind parameters failed");
         }
 
-        $stmt->execute();
+        // mysqli throws by default since PHP 8.1; the errno check covers
+        // a connection where reporting has been turned off.
+        try {
+            $stmt->execute();
+        } catch (\mysqli_sql_exception $e) {
+            if ($e->getCode() === self::ERROR_DUPLICATE_KEY) {
+                throw new \Database\EDuplicateKey($e->getMessage(), $e->getCode(), $e);
+            }
+            throw $e;
+        }
         if ($this->dbObj->errno != 0) {
-            if ($this->dbObj->errno == ERROR_DUPLICATE_KEY) {
+            if ($this->dbObj->errno == self::ERROR_DUPLICATE_KEY) {
                 throw new \Database\EDuplicateKey($this->dbObj->error);
             } else {
                 throw new \Database\EDatabaseException($this->dbObj->error);
