@@ -69,7 +69,7 @@ class PHPUnitBridgeTest extends TestCase
         try {
             include __DIR__ . '/../../scripts/test_ajax_endpoints.php';
             $testOutput = ob_get_clean();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $testOutput = ob_get_clean();
             $testOutput .= "\nError: " . $e->getMessage();
         }
