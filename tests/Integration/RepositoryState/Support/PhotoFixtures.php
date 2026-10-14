@@ -42,8 +42,9 @@ trait PhotoFixtures
                 $this->track('notebooks', 'notebook_id', $id);
                 return $id;
             case 'page':
+                // pages.number is varchar(5), so no prefix here.
                 $notebookId = $this->makeRow('notebook');
-                $id = (new PageRepository($db))->insert($notebookId, "{$p}pg{$n}", date('Y-m-d H:i:s'));
+                $id = (new PageRepository($db))->insert($notebookId, "p{$n}", date('Y-m-d H:i:s'));
                 $this->track('pages', 'page_id', $id);
                 return $id;
             case 'episode':
