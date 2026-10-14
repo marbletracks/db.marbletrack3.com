@@ -52,4 +52,21 @@ class FormLoadedIdsTest extends TestCase
 
         $this->assertPostsLoadedIds($html, [$b, $a]);
     }
+
+    public function testPageForm(): void
+    {
+        $id = $this->makeRow('page');
+        [$a, $b] = [$this->makePhoto('a'), $this->makePhoto('b')];
+        $this->link('pages_2_photos', 'page_id', $id, $a, 1);
+        $this->link('pages_2_photos', 'page_id', $id, $b, 2);
+
+        $html = $this->renders('admin/notebooks/pages/page.tpl.php', [
+            'errors' => [],
+            'page' => (new \Database\PageRepository($this->db()))->findById($id),
+            'columns' => [],
+            'page_title' => 'Edit Page',
+        ]);
+
+        $this->assertPostsLoadedIds($html, [$a, $b]);
+    }
 }

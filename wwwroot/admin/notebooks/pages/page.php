@@ -39,12 +39,10 @@ if ($submitted) {
     if (empty($errors)) {
         if ($page) {
             $repo->update($page_id, $notebook_id, $number, $created_at);
-            $repo->setPageId($page_id);
-            $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->savePhotosFromForm($page_id, \Utilities::postedIds('loaded_photo_ids'), $image_urls);
         } else {
             $new_page_id = $repo->insert($notebook_id, $number, $created_at);
-            $repo->setPageId($new_page_id);
-            $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->savePhotosFromForm($new_page_id, [], $image_urls);
         }
 
         header("Location: /admin/notebooks/pages/index.php");
