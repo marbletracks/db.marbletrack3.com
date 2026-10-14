@@ -23,6 +23,10 @@ class Step0ListQueryCountTest extends TestCase
     /** @dataProvider lists */
     public function testListQueryCountDoesNotGrowWithRows(string $kind, callable $findAll): void
     {
+        // One linked row first: an empty list skips the photo queries entirely,
+        // so a zero-row baseline would undercount.
+        $seed = $this->makeRow($kind);
+        $this->link($kind . 's_2_photos', $kind . '_id', $seed, $this->makePhoto("{$kind}0"), 1);
         $before = $this->countQueries($findAll);
         foreach ([1, 2, 3] as $n) {
             $id = $this->makeRow($kind);

@@ -27,9 +27,8 @@ class Step0WrongRowTest extends TestCase
         $this->makePhoto('meant-for-a');            // tracked, so cleanup removes it
         $repo = new \Database\NotebookRepository($this->db());
 
-        $repo->setNotebookId($a);                   // the caller means Notebook A...
-        $repo->findAll();                           // ...renders a list on the way...
-        $repo->savePhotosFromUrls([$this->url('meant-for-a')]);
+        $repo->findAll();                           // a list render on the way...
+        $repo->savePhotosFromForm($a, [], [$this->url('meant-for-a')]);   // ...then a save that names its row
 
         $this->assertCount(1, $this->linkedIds('notebooks_2_photos', 'notebook_id', $a),
             'The photo landed on whichever row findAll() walked last, not on Notebook A');

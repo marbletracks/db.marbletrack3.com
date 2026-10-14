@@ -10,6 +10,9 @@
     <?php endif; ?>
 
     <form action="" method="post">
+<?php foreach ($notebook->photos ?? [] as $photo): ?>
+        <input type="hidden" name="loaded_photo_ids[]" value="<?= (int) $photo->photo_id ?>">
+<?php endforeach; ?>
         <label>
             Title:<br>
             <input type="text" name="title" value="<?= htmlspecialchars($notebook->title ?? '') ?>">

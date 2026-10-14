@@ -32,16 +32,14 @@ if ($submitted) {
                 'ssi',
                 [$title, $created_at, $notebook_id]
             );
-            $repo->setNotebookId(notebook_id: $notebook_id);
-            $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->savePhotosFromForm($notebook_id, \Utilities::postedIds('loaded_photo_ids'), $image_urls);
         } else {
             $mla_database->executeSQL(
                 "INSERT INTO notebooks (title, created_at) VALUES (?, ?)",
                 'ss',
                 [$title, $created_at]
             );
-            $repo->setNotebookId(notebook_id: $mla_database->insertId());
-            $repo->savePhotosFromUrls(urls: $image_urls);
+            $repo->savePhotosFromForm($mla_database->insertId(), [], $image_urls);
         }
 
         header("Location: /admin/notebooks/index.php");
