@@ -25,6 +25,8 @@ class Database implements DbInterface {
         //If we're already connected return true;
         if (!is_object($this->dbObj) || !$this->dbObj->ping()) {
 
+            // A rebuilt connection has no open transaction.
+            $this->inTransaction = false;
             $this->dbObj = new \mysqli($this->host, $this->username, $this->passwd, $this->dbname);
 
             if (!is_object($this->dbObj) || $this->dbObj->connect_error) {
