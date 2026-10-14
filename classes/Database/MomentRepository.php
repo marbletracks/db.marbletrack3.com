@@ -1,47 +1,20 @@
 <?php
 namespace Database;
 
-use Domain\HasPhotos;
 use Media\Moment;
 
 class MomentRepository
 {
-    use HasPhotos;
     private DbInterface $db;
     private string $langCode;
-    private string $photoLinkingTable = 'moments_2_photos';
-    private string $primaryKeyColumn = 'moment_id';
-    private int $moment_id;  // Must be set when the Moment is loaded
+    private PhotoLinks $photoLinks;
 
     public function __construct(DbInterface $db, string $langCode = 'en')
     {
         $this->db = $db;
         $this->langCode = $langCode;
+        $this->photoLinks = new PhotoLinks($db, 'moments', 'moments_2_photos', 'moment_id');
     }
-    public function getId(): int
-    {
-        return $this->moment_id;
-    }
-    // must do this before saving photos
-    // so that HasPhotos knows which moment to save photos for
-    public function setMomentId(int $moment_id): void
-    {
-        $this->moment_id = $moment_id;
-    }
-    public function getDb(): DbInterface
-    {
-        return $this->db;
-    }
-    public function getPhotoLinkingTable(): string
-    {
-        return $this->photoLinkingTable;
-    }
-    public function getPrimaryKeyColumn(): string
-    {
-        return $this->primaryKeyColumn;
-    }
-
-
 
     public function findById(int $moment_id): ?Moment
     {
@@ -54,10 +27,7 @@ class MomentRepository
         if ($results->numRows() === 0) {
             return null;
         }
-        $this->moment_id = $moment_id; // Set the moment_id for HasPhotos
-
-        $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findWithinTakeId(int $take_id): array
@@ -78,14 +48,7 @@ class MomentRepository
             var1: [$take_id]
         );
 
-        $moments = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->moment_id = (int) $results->data['moment_id']; // Set the moment_id for HasPhotos
-            $moments[] = $this->hydrate($results->data);
-        }
-
-        return $moments;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function findAll(): array
@@ -105,14 +68,7 @@ class MomentRepository
                     frame_start ASC"
         );
 
-        $moments = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->moment_id = (int) $results->data['moment_id']; // Set the moment_id for HasPhotos
-            $moments[] = $this->hydrate($results->data);
-        }
-
-        return $moments;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function findByFilter(string $filter, int $take_id = 0): array
@@ -164,14 +120,7 @@ class MomentRepository
             var1: $params
         );
 
-        $moments = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->moment_id = (int) $results->data['moment_id']; // Set the moment_id for HasPhotos
-            $moments[] = $this->hydrate($results->data);
-        }
-
-        return $moments;
+        return $this->hydrateAll($results->toArray());
     }
 
     /**
@@ -271,13 +220,10 @@ class MomentRepository
             $results = $this->db->fetchResults(sql: $sql, paramtypes: $types, var1: $params);
         }
 
-        $moments = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->moment_id = (int) $results->data['moment_id'];
-            $moment = $this->hydrate($results->data);
-            $moment->perspective_count = (int) ($results->data['perspective_count'] ?? 0);
-            $moments[] = $moment;
+        $rows = $results->toArray();
+        $moments = $this->hydrateAll($rows);
+        foreach ($moments as $i => $moment) {
+            $moment->perspective_count = (int) ($rows[$i]['perspective_count'] ?? 0);
         }
 
         // Total count of all moments (denominator for "showing N of M")
@@ -428,14 +374,7 @@ class MomentRepository
             [$part_id]
         );
 
-        $moments = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->moment_id = (int) $results->data['moment_id']; // Set the moment_id for HasPhotos
-            $moments[] = $this->hydrate($results->data);
-        }
-
-        return $moments;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function update(int $moment_id, ?int $frame_start = null, ?int $frame_end = null, ?int $take_id = null, ?string $notes = null, ?string $moment_date = null): void
@@ -507,9 +446,37 @@ class MomentRepository
         }
     }
 
+    /**
+     * @param int[]    $loadedPhotoIds photo IDs the edit form showed when it loaded
+     * @param string[] $urls           the form's photo URLs, in screen order
+     */
+    public function savePhotosFromForm(int $moment_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($moment_id, $loadedPhotoIds, $urls);
+    }
+
+    /** Append photos, keeping any already linked. Used by the API and the realtime editor. */
+    public function addPhotosFromUrls(int $moment_id, array $urls): void
+    {
+        $this->photoLinks->addUrls($moment_id, $urls);
+    }
+
+    /** @return Moment[] */
+    private function hydrateAll(array $rows): array
+    {
+        $photos = $this->photoLinks->forIds(array_column($rows, 'moment_id'));
+        $moments = [];
+        foreach ($rows as $row) {
+            $moment = $this->hydrate($row);
+            $moment->photos = $photos[$moment->moment_id] ?? [];
+            $moments[] = $moment;
+        }
+        return $moments;
+    }
+
     private function hydrate(array $row): Moment
     {
-        $moment = new Moment(
+        return new Moment(
             moment_id: (int) $row['moment_id'],
             frame_start: isset($row['frame_start']) ? (int)$row['frame_start'] : null,
             frame_end: isset($row['frame_end']) ? (int)$row['frame_end'] : null,
@@ -517,9 +484,6 @@ class MomentRepository
             notes: $row['notes'] ?? null,
             moment_date: $row['moment_date'] ?? null
         );
-        $this->loadPhotos();  // defined in HasPhotos trait
-        $moment->photos = $this->getPhotos();  // return an array of photos
-        return $moment;
     }
 
     public function findLatestForWorker(int $worker_id, int $limit = 2): array
@@ -531,7 +495,7 @@ class MomentRepository
                 ORDER BY m.take_id DESC, m.frame_start DESC
                 LIMIT ?";
 
-        $results = $this->getDb()->fetchResults($sql, 'ii', [$worker_id, $limit]);
+        $results = $this->db->fetchResults($sql, 'ii', [$worker_id, $limit]);
 
         $moments = [];
         for ($i = 0; $i < $results->numRows(); $i++) {
@@ -566,13 +530,6 @@ class MomentRepository
             [$worker_id, $frame_end, $frame_buffer, $frame_start, $frame_buffer]
         );
 
-        $moments = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $this->moment_id = (int) $results->data['moment_id'];
-            $moments[] = $this->hydrate($results->data);
-        }
-
-        return $moments;
+        return $this->hydrateAll($results->toArray());
     }
 }
