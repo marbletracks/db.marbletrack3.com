@@ -92,8 +92,7 @@ if ($method === 'PATCH' && $sub !== '') {
     );
 
     if (!empty($input['photo_urls'])) {
-        $repo->setMomentId($moment->moment_id);
-        $repo->addPhotosFromUrls($input['photo_urls']);
+        $repo->addPhotosFromUrls($moment->moment_id, $input['photo_urls']);
     }
 
     $updated = $repo->findById($moment->moment_id);
@@ -144,8 +143,7 @@ if ($method === 'POST' && $sub === '') {
     }
 
     if (!empty($input['photo_urls'])) {
-        $repo->setMomentId($moment_id);
-        $repo->addPhotosFromUrls($input['photo_urls']);
+        $repo->addPhotosFromUrls($moment_id, $input['photo_urls']);
     }
 
     $moment = $repo->findById($moment_id);
