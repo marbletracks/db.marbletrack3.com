@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Stateless follow-ups";
+const SENTIMENTAL_VERSION = "Photos from badmint";
 
 # write errors to screen
 ini_set('display_errors', 1);
