@@ -26,6 +26,25 @@ class Mt3PhotosListenerTest extends TestCase
         $this->assertStringContainsString("startsWith('https://b.robnugen.com/')", $js);
     }
 
+    public function testASecondClickFocusesTheOpenPopupInsteadOfReloadingIt(): void
+    {
+        // Reopening by window name would navigate badmint's window and drop its unsaved queue.
+        $js = file_get_contents("{$this->root}/wwwroot/admin/js/mt3-photos.js");
+        $this->assertNotFalse($js);
+        $this->assertStringContainsString('if (popup && !popup.closed) { popup.focus(); return; }', $js);
+        $this->assertStringContainsString('allow popups', $js, 'a blocked popup is reported, not silent');
+    }
+
+    public function testTheButtonIsNotInsideTheImageUrlsLabel(): void
+    {
+        // A <button> inside the <label> becomes its labeled control, so a click on the
+        // text or a thumbnail would open (or reload) badmint.
+        $tpl = file_get_contents("{$this->root}/templates/admin/moments/moment.tpl.php");
+        $this->assertNotFalse($tpl);
+        $this->assertSame(1, preg_match('#<label>\s*Image URLs:(.*?)</label>#s', $tpl, $m));
+        $this->assertStringNotContainsString('mt3-photos-open', $m[1]);
+    }
+
     public function testTheMomentFormWiresTheButtonAndTheScript(): void
     {
         $tpl = file_get_contents("{$this->root}/templates/admin/moments/moment.tpl.php");

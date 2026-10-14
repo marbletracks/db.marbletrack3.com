@@ -24,8 +24,16 @@
     if (workers.length) q.set('worker', workers.join(','));
     return BADMINT + '/mt3/?' + q.toString();
   }
+  // One badmint window per form. Reopening by name would navigate it and drop the
+  // photos queued there, so a second click brings the open one forward instead.
+  let popup = null;
+  const note = document.getElementById('mt3-photos-note');
   button.addEventListener('click', function () {
-    window.open(uploadUrl(), 'mt3-photos', 'popup,width=560,height=900');
+    if (popup && !popup.closed) { popup.focus(); return; }
+    popup = window.open(uploadUrl(), 'mt3-photos', 'popup,width=560,height=900');
+    if (note) {
+      note.textContent = popup ? '' : 'The browser blocked the window: allow popups for this site and try again.';
+    }
   });
 
   function inputs() {

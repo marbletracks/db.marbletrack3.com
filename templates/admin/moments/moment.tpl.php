@@ -68,10 +68,12 @@ else { $selected = false; }
             <input type="date" name="moment_date" value="<?= htmlspecialchars($moment->moment_date ?? '') ?>">
         </label><br><br>
 
-        <label>
-            Image URLs:
+        <p>
             <button type="button" id="mt3-photos-open" data-moment-id="<?= (int) ($moment->moment_id ?? 0) ?: '' ?>">📷 Upload &amp; crop…</button>
-            <br>
+            <span id="mt3-photos-note"></span>
+        </p>
+        <label>
+            Image URLs:<br>
             <div id="image-url-fields">
 <?php foreach ($moment->photos as $photo): ?>
     <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"><br>
