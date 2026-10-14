@@ -7,6 +7,8 @@ namespace Physical;
  */
 class Notebook
 {
+    public array $photos = []; // Media\Photo[]; filled by NotebookRepository
+
     public function __construct(
         public int $notebook_id,
         public ?string $title,

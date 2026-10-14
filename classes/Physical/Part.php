@@ -8,6 +8,9 @@ final class Part
     public string $slug;
     public array $photos = [];     // added by Repository during hydrate
     public array $moments = [];     // added by Repository during hydrate
+    public ?string $frontend_link = null;       // set by PartsRepository
+    public ?string $role_in_track = null;       // set by TrackRepository for a Track's parts
+    public bool $is_exclusive_to_track = false; // set by TrackRepository for a Track's parts
 
     /**
      * Represents a physical part of the track itself.
