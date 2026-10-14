@@ -36,6 +36,7 @@ class FormHandlerWiringTest extends TestCase
             'moments/moment.php',
             'workers/worker.php',
             'parts/part.php',
+            'tracks/track.php',
             'marbles/marble.php',
         ];
         return array_combine($files, array_map(fn ($f) => [$f], $files));
