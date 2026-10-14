@@ -2,25 +2,22 @@
 namespace Database;
 
 use Database\DbInterface;
-use Domain\HasPhotos;
 use Domain\HasShortcodes;
-use Domain\HasMoments;
 use Physical\Marble;
 
 class MarblesRepository
 {
-    use HasPhotos;
     use HasShortcodes;
-    use HasMoments;
 
     private DbInterface $db;
-    private string $photoLinkingTable = 'marbles_2_photos';
-    private string $primaryKeyColumn = 'marble_id';
-    private int $marble_id;
+    private PhotoLinks $photoLinks;
+    private PerspectiveMoments $perspectiveMoments;
 
     public function __construct(DbInterface $db, string $langCode = 'en')
     {
         $this->db = $db;
+        $this->photoLinks = new PhotoLinks($db, 'marbles', 'marbles_2_photos', 'marble_id');
+        $this->perspectiveMoments = new PerspectiveMoments($db);
     }
 
     // ── HasShortcodes trait methods ───────────────────────────────────────────
@@ -81,31 +78,6 @@ SQL;
         return 'm';
     }
 
-    public function getPrimaryKeyColumn(): string
-    {
-        return $this->primaryKeyColumn;
-    }
-
-    public function getId(): int
-    {
-        return $this->marble_id;
-    }
-
-    public function getPhotoLinkingTable(): string
-    {
-        return $this->photoLinkingTable;
-    }
-
-    public function setMarbleId(int $marble_id): void
-    {
-        $this->marble_id = $marble_id;
-    }
-
-    public function getMomentLinkingTable(): string
-    {
-        return '';
-    }
-
     public function getDb(): DbInterface
     {
         return $this->db;
@@ -121,13 +93,7 @@ SQL;
              ORDER BY size ASC, marble_name ASC"
         );
 
-        $marbles = [];
-        for ($i = 0; $i < $results->numRows(); $i++) {
-            $results->setRow($i);
-            $marbles[] = $this->hydrate($results->data);
-        }
-
-        return $marbles;
+        return $this->hydrateAll($results->toArray());
     }
 
     public function findById(int $marble_id): ?Marble
@@ -143,8 +109,7 @@ SQL;
             return null;
         }
 
-        $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function findByAlias(string $alias): ?Marble
@@ -160,8 +125,7 @@ SQL;
             return null;
         }
 
-        $results->setRow(0);
-        return $this->hydrate($results->data);
+        return $this->hydrateAll($results->toArray())[0];
     }
 
     public function insert(string $alias, string $name, string $size, string $color, int $quantity = 1, ?string $team_name = null, ?string $description = null): int
@@ -195,9 +159,40 @@ SQL;
         );
     }
 
+    /**
+     * @param int[]    $loadedPhotoIds photo IDs the edit form showed when it loaded
+     * @param string[] $urls           the form's photo URLs, in screen order
+     */
+    public function savePhotosFromForm(int $marble_id, array $loadedPhotoIds, array $urls): void
+    {
+        $this->photoLinks->saveFormUrls($marble_id, $loadedPhotoIds, $urls);
+    }
+
+    /** Append photos, keeping any already linked. Used by the API. */
+    public function addPhotosFromUrls(int $marble_id, array $urls): void
+    {
+        $this->photoLinks->addUrls($marble_id, $urls);
+    }
+
+    /** @return Marble[] */
+    private function hydrateAll(array $rows): array
+    {
+        $ids = array_map(fn (array $row) => (int) $row['marble_id'], $rows);
+        $photos = $this->photoLinks->forIds($ids);
+        $moments = $this->perspectiveMoments->forPerspectives('marble', $ids);
+        $marbles = [];
+        foreach ($rows as $row) {
+            $marble = $this->hydrate($row);
+            $marble->moments = $moments[$marble->marble_id] ?? [];
+            $marble->photos = $photos[$marble->marble_id] ?? [];
+            $marbles[] = $marble;
+        }
+        return $marbles;
+    }
+
     private function hydrate(array $row): Marble
     {
-        $marble = new Marble(
+        return new Marble(
             marble_id: (int) $row['marble_id'],
             marble_alias: $row['marble_alias'],
             marble_name: $row['marble_name'],
@@ -207,14 +202,5 @@ SQL;
             quantity: (int) $row['quantity'],
             description: $row['description'] ?? null,
         );
-
-        $this->marble_id = $marble->marble_id;
-        $this->loadMoments($marble);
-        $marble->moments = $this->getMoments();
-
-        $this->loadPhotos();
-        $marble->photos = $this->getPhotos();
-
-        return $marble;
     }
 }

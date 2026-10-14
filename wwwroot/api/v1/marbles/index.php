@@ -80,10 +80,9 @@ if ($method === 'PATCH' && $sub !== '') {
 
     // Handle photo_urls: add photos without removing existing ones
     if (array_key_exists('photo_urls', $input) && is_array($input['photo_urls'])) {
-        $repo->setMarbleId($marble->marble_id);
         $urls = array_filter(array_map('trim', $input['photo_urls']));
         if (!empty($urls)) {
-            $repo->addPhotosFromUrls($urls);
+            $repo->addPhotosFromUrls($marble->marble_id, $urls);
         }
     }
 
