@@ -8,6 +8,9 @@
         </div>
     <?php endif; ?>
     <form action="" method="post">
+<?php foreach ($episode->photos ?? [] as $photo): ?>
+        <input type="hidden" name="loaded_photo_ids[]" value="<?= (int) $photo->photo_id ?>">
+<?php endforeach; ?>
         <label>
             Episode Title: <br>
             <input type="text" name="title" value="<?= htmlspecialchars($defaultTitle) ?>" size="60">

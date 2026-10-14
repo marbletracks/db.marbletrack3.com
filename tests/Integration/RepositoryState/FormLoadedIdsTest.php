@@ -69,4 +69,24 @@ class FormLoadedIdsTest extends TestCase
 
         $this->assertPostsLoadedIds($html, [$a, $b]);
     }
+
+    public function testEpisodeForm(): void
+    {
+        $id = $this->makeRow('episode');
+        [$a, $b] = [$this->makePhoto('a'), $this->makePhoto('b')];
+        $this->link('episodes_2_photos', 'episode_id', $id, $a, 1);
+        $this->link('episodes_2_photos', 'episode_id', $id, $b, 2);
+
+        $html = $this->renders('admin/episodes/episode.tpl.php', [
+            'errors' => [],
+            'episode' => (new \Database\EpisodeRepository($this->db()))->findById($id),
+            'defaultTitle' => '',
+            'defaultDesc' => '',
+            'episode_frames' => '',
+            'defaultLivestreamId' => null,
+            'streamCode' => '',
+        ]);
+
+        $this->assertPostsLoadedIds($html, [$a, $b]);
+    }
 }
