@@ -13,10 +13,11 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 $part_id = intval($_GET['part_id'] ?? 0);
-if ($part_id <= 0) {
+$part = $part_id > 0 ? (new \Database\PartsRepository(db: $mla_database, langCode: 'en'))->findById($part_id) : null;
+if (!$part) {
     header("Location: /admin/parts/images/");
     exit;
 }
 
-header("Location: https://badmint.robnugen.com/mt3/?part=" . $part_id);
+header("Location: https://badmint.robnugen.com/mt3/?part=" . $part->part_id);
 exit;

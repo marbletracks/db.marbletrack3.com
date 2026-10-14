@@ -30,6 +30,7 @@ class NothingPostsToBadminTest extends TestCase
         $create = file_get_contents("{$root}/wwwroot/admin/parts/images/create.php");
         $this->assertStringContainsString('https://badmint.robnugen.com/mt3/?part=', $create);
         $this->assertStringNotContainsString('setTemplate', $create, 'create.php is a redirect, not a page');
+        $this->assertStringContainsString('findById', $create, 'an unknown part_id goes back to the index, never to badmint');
         $index = file_get_contents("{$root}/templates/admin/parts/images/index.tpl.php");
         $this->assertStringContainsString('https://badmint.robnugen.com/mt3/?part=', $index);
         $this->assertFileDoesNotExist("{$root}/wwwroot/admin/parts/images/save_photos.php");
