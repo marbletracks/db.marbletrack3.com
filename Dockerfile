@@ -1,4 +1,4 @@
-FROM php:8.1-cli
+FROM php:8.5-cli
 
 # Install PHP extensions needed for your project
 RUN docker-php-ext-install pdo pdo_mysql mysqli
