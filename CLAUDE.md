@@ -53,6 +53,8 @@ No PHPUnit; custom runners:
 - `php scripts/setup_test_database.php sync` — refresh test DB (`dbmt3_test`, created
   manually via Dreamhost panel) from DBPersistaroo backups
 - `php scripts/run_all_tests.php` — all validation tests
+- `~/work/rob/standards-mcp/run-phpstan.sh .` — PHPStan level 5 in Docker, analysed
+  as PHP 8.3 and 8.5; only errors missing from `phpstan-baseline.neon` fail
 Tests validate: form-field `name` attrs match repository params, SQL placeholder/param
 counts, AJAX input validation, schema/connectivity.
 
