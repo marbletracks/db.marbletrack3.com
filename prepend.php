@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Stateless Moments";
+const SENTIMENTAL_VERSION = "Stateless Workers";
 
 # write errors to screen
 ini_set('display_errors', 1);
