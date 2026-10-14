@@ -5,6 +5,9 @@ namespace Database;
 require_once __DIR__ . "/EDatabaseExceptions.php";
 class Database implements DbInterface {
 
+    // MySQL's ER_DUP_ENTRY
+    private const ERROR_DUPLICATE_KEY = 1062;
+
     private $dbObj;
     private $tz_offset = false;
     private $affected_rows;
@@ -108,9 +111,18 @@ class Database implements DbInterface {
             throw new \Database\EDatabaseException("Bind parameters failed");
         }
 
-        $stmt->execute();
+        // mysqli throws by default since PHP 8.1; the errno check covers
+        // a connection where reporting has been turned off.
+        try {
+            $stmt->execute();
+        } catch (\mysqli_sql_exception $e) {
+            if ($e->getCode() === self::ERROR_DUPLICATE_KEY) {
+                throw new \Database\EDuplicateKey($e->getMessage(), $e->getCode(), $e);
+            }
+            throw $e;
+        }
         if ($this->dbObj->errno != 0) {
-            if ($this->dbObj->errno == ERROR_DUPLICATE_KEY) {
+            if ($this->dbObj->errno == self::ERROR_DUPLICATE_KEY) {
                 throw new \Database\EDuplicateKey($this->dbObj->error);
             } else {
                 throw new \Database\EDatabaseException($this->dbObj->error);
