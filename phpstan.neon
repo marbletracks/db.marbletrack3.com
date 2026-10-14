@@ -6,11 +6,8 @@ includes:
 
 parameters:
     level: 5
-    # DreamHost runs 8.3 today; the code must also hold on 8.5 before
-    # db.marbletrack3.com is switched over.
-    phpVersion:
-        min: 80300
-        max: 80500
+    # What DreamHost runs for db.marbletrack3.com.
+    phpVersion: 80500
     paths:
         - classes
         - wwwroot
