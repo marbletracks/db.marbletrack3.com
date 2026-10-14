@@ -55,8 +55,7 @@ try {
 
     // 4. Save image URL if provided
     if (!empty($image_url)) {
-        $momentRepo->setMomentId($moment_id); // Set ID for HasPhotos trait
-        $momentRepo->savePhotosFromUrls([$image_url]);
+        $momentRepo->addPhotosFromUrls($moment_id, [$image_url]);
     }
 
     $mla_database->commit();

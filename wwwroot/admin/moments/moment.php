@@ -50,13 +50,11 @@ if ($submitted) {
                 'siiisi',
                 [$notes, $frame_start, $frame_end, $take_id, $moment_date, $moment_id]
             );
-            $moment_repo->setMomentId(moment_id: $moment_id);
-            $moment_repo->savePhotosFromUrls(urls: $image_urls);
+            $moment_repo->savePhotosFromForm($moment_id, \Utilities::postedIds('loaded_photo_ids'), $image_urls);
             $moment_repo->saveTranslations(moment_id: $moment_id, perspectives: $perspectives);
         } else {
             $new_moment_id = $moment_repo->insert($frame_start, $frame_end, $take_id, $notes, $moment_date);
-            $moment_repo->setMomentId(moment_id: $new_moment_id);
-            $moment_repo->savePhotosFromUrls(urls: $image_urls);
+            $moment_repo->savePhotosFromForm($new_moment_id, [], $image_urls);
             $moment_repo->saveTranslations(moment_id: $new_moment_id, perspectives: $perspectives);
         }
 
