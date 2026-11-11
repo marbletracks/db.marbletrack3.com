@@ -6,6 +6,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $method = $_SERVER['REQUEST_METHOD'];
 $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $sub = trim(preg_replace('#^/api/v1/rides#', '', $uri_path), '/');

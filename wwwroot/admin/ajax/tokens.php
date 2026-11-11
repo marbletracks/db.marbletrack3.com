@@ -5,6 +5,13 @@ declare(strict_types=1);
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+/**
+ * Set up by prepend.php.
+ *
+ * @var \Database\Database $mla_database
+ * @var \Auth\IsLoggedIn $is_logged_in
+ */
+
 if (!$is_logged_in->isLoggedIn()) {
     http_response_code(401);
     echo json_encode(['success' => false, 'error' => 'Unauthorized']);

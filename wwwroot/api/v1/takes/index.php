@@ -5,6 +5,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $repo = new \Database\TakeRepository($mla_database);
 
 $snippets_only = isset($_GET['snippets']) && $_GET['snippets'] === '1';

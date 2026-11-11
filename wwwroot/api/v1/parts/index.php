@@ -9,6 +9,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $repo = new \Database\PartsRepository($mla_database, 'en');
 $trackRepo = new \Database\TrackRepository($mla_database);
 

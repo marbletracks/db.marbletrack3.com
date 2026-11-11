@@ -7,6 +7,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $repo = new \Database\WorkersRepository($mla_database, 'en');
 $method = $_SERVER['REQUEST_METHOD'];
 
