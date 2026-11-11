@@ -28,7 +28,7 @@ into a movie.
 - **Cannot commit / merge / push on `master`** — a git wrapper blocks it (exit 77,
   "Ask Rob"). Do all work on a feature branch; Rob integrates. BEGIN-commit /
   merge-bubble style lives in global CLAUDE.md.
-- **Dreamhost shared hosting**: no root (SSH shell yes), no system PHPUnit. Pure PHP,
+- **Dreamhost shared hosting**: no root (SSH shell yes), no test tools on the server. Pure PHP,
   no frameworks; custom autoloader at `classes/Mlaphp/Autoloader.php`. Composer
   installs go in the user dir via SSH.
 - `DBPersistaroo` (`classes/Database/DBPersistaroo.php`) auto-backs-up production
@@ -56,12 +56,23 @@ URL `/admin/[entity]/[action].php` maps to that file. Templates:
 `templates/{admin,frontend,layout}/*.tpl.php`. Schemas: `db_schemas/` by feature.
 
 ## Tests & DB
-No PHPUnit; custom runners:
+Codeception 5, in `Tests/` (namespace `Tests`), with dev tools in a gitignored `vendor/`:
+`docker run --rm -e COMPOSER_HOME=/tmp/composer -v "$PWD":/app -w /app composer:2 composer install --no-interaction`
+- `~/work/rob/standards-mcp/run-unit.sh .` — the Unit suite (`Tests/Unit/`), in Docker
+  with no network and no database
+- `docker compose up -d`, then `docker compose exec php vendor/bin/codecept run
+  Integration` — `Tests/Integration/`, against the MySQL of `docker-compose.yml`
+  (schema from `dbmt3.sql`). `Tests/Functional/` is in no suite and does not run.
 - `php scripts/setup_test_database.php sync` — refresh test DB (`dbmt3_test`, created
   manually via Dreamhost panel) from DBPersistaroo backups
-- `php scripts/run_all_tests.php` — all validation tests
+- `php scripts/run_all_tests.php` — the older validation scripts, which need mysqli
 - `~/work/rob/standards-mcp/run-phpstan.sh .` — PHPStan level 5 in Docker, analysed
   as PHP 8.5; only errors missing from `phpstan-baseline.neon` fail
+- `~/work/rob/standards-mcp/run-phpcs.sh .` — PSR-12 (`phpcs.xml`), less the sniffs
+  the code failed on 2026-11-11, listed there as a backlog
+- **Every commit is checked**: `.githooks/pre-commit` runs phpcs on the staged PHP and
+  PHPStan over the staged tree. Enable once per clone: `git config core.hooksPath
+  .githooks`. It does not run the suites; run those yourself.
 Tests validate: form-field `name` attrs match repository params, SQL placeholder/param
 counts, AJAX input validation, schema/connectivity.
 
@@ -81,7 +92,7 @@ with `?part=`, `?track=`, `?worker=`. The Moment form opens it with `?for=moment
 Part and Workers from the Notes; `wwwroot/admin/js/mt3-photos.js` takes each saved photo back
 by `postMessage` (origin `https://badmint.robnugen.com` only) as an Image URL row, and the
 form's own Save links it. Nothing in MT3 posts to badmin's `bullet.php` any more
-(`tests/Unit/NothingPostsToBadminTest.php`).
+(`Tests/Unit/NothingPostsToBadminTest.php`).
 
 ## Reel rendering (video output)
 

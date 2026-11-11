@@ -616,241 +616,241 @@ parameters:
 			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTForShortco…'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: tests/Functional/ShortcodeWorkflowTest.php
+			path: Tests/Functional/ShortcodeWorkflowTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''This test catches…'' will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Functional/ShortcodeWorkflowTest.php
+			path: Tests/Functional/ShortcodeWorkflowTest.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Functional/ShortcodeWorkflowTest.php
+			path: Tests/Functional/ShortcodeWorkflowTest.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Integration/DatabaseSecurityTest.php
+			path: Tests/Integration/DatabaseSecurityTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\{\} and ''Image URLs should…'' will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\{\} and ''Moment IDs should…'' will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Offset ''image_urls'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Offset ''moment_ids'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Offset ''part_alias'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Offset ''part_description'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Offset ''part_name'' on array\{part_alias\: non\-falsy\-string, part_name\: ''Form Test Part'', part_description\: ''This part was…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Parameter \#1 \$array \(array\{\}\) to function array_filter is empty, call has no effect\.$#'
 			identifier: arrayFilter.empty
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Ternary operator condition is always false\.$#'
 			identifier: ternary.alwaysFalse
 			count: 1
-			path: tests/Integration/PartsIntegrationTest.php
+			path: Tests/Integration/PartsIntegrationTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with int will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/RepositoryState/MomentFindersTest.php
+			path: Tests/Integration/RepositoryState/MomentFindersTest.php
 
 		-
 			message: '#^Match expression does not handle remaining value\: string$#'
 			identifier: match.unhandled
 			count: 1
-			path: tests/Integration/RepositoryState/PhotoLoadingCharacterisationTest.php
+			path: Tests/Integration/RepositoryState/PhotoLoadingCharacterisationTest.php
 
 		-
 			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTExactAlias'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/TemplateRegressionTest.php
+			path: Tests/Integration/TemplateRegressionTest.php
 
 		-
 			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTForShortco…'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/TemplateRegressionTest.php
+			path: Tests/Integration/TemplateRegressionTest.php
 
 		-
 			message: '#^Call to function method_exists\(\) with Database\\WorkersRepository and ''getSELECTLikeAlias'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/TemplateRegressionTest.php
+			path: Tests/Integration/TemplateRegressionTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''Template regression…'' will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/TemplateRegressionTest.php
+			path: Tests/Integration/TemplateRegressionTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''This test prevents…'' will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Integration/TemplateRegressionTest.php
+			path: Tests/Integration/TemplateRegressionTest.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Integration/TemplateRegressionTest.php
+			path: Tests/Integration/TemplateRegressionTest.php
 
 		-
 			message: '#^Offset ''description'' on array\{worker_name\: non\-falsy\-string, description\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/WorkersIntegrationTest.php
+			path: Tests/Integration/WorkersIntegrationTest.php
 
 		-
 			message: '#^Offset ''description'' on array\{worker_name\: non\-falsy\-string, description\: ''This worker was…''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/WorkersIntegrationTest.php
+			path: Tests/Integration/WorkersIntegrationTest.php
 
 		-
 			message: '#^Offset ''worker_name'' on array\{worker_name\: non\-falsy\-string, description\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/WorkersIntegrationTest.php
+			path: Tests/Integration/WorkersIntegrationTest.php
 
 		-
 			message: '#^Offset ''worker_name'' on array\{worker_name\: non\-falsy\-string, description\: ''This worker was…''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Integration/WorkersIntegrationTest.php
+			path: Tests/Integration/WorkersIntegrationTest.php
 
 		-
 			message: '#^Parameter \#1 \$string of function substr expects string, int\<1, max\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Integration/WorkersIntegrationTest.php
+			path: Tests/Integration/WorkersIntegrationTest.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
 			count: 2
-			path: tests/Integration/WorkersIntegrationTest.php
+			path: Tests/Integration/WorkersIntegrationTest.php
 
 		-
 			message: '#^Offset ''part_alias'' on array\{part_alias\: ''test_part_fix_57'', part_name\: ''Test Part for Issue…'', part_description\: ''This description…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Unit/Issue57and58Test.php
+			path: Tests/Unit/Issue57and58Test.php
 
 		-
 			message: '#^Offset ''part_description'' on array\{part_alias\: ''test_part_fix_57'', part_name\: ''Test Part for Issue…'', part_description\: ''This description…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Unit/Issue57and58Test.php
+			path: Tests/Unit/Issue57and58Test.php
 
 		-
 			message: '#^Offset ''part_name'' on array\{part_alias\: ''test_part_fix_57'', part_name\: ''Test Part for Issue…'', part_description\: ''This description…'', image_urls\: array\{\}, moment_ids\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Unit/Issue57and58Test.php
+			path: Tests/Unit/Issue57and58Test.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Unit/MomentClassTest.php
+			path: Tests/Unit/MomentClassTest.php
 
 		-
 			message: '#^Offset ''filter'' on array\{filter\: ''  test string  ''\|''test string'', expected\: ''test string''\}\|array\{filter\: '''', expected\: ''''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
-			path: tests/Unit/MomentFilterTest.php
+			path: Tests/Unit/MomentFilterTest.php
 
 		-
 			message: '#^Offset ''notes'' on array\{notes\: ''contains test string'', translated_note\: ''also contains test…''\|null, expected_priority\: 1\}\|array\{notes\: ''no match'', translated_note\: ''contains test string'', expected_priority\: 2\}\|array\{notes\: ''no match'', translated_note\: ''no match'', expected_priority\: 3\} in empty\(\) always exists and is not falsy\.$#'
 			identifier: empty.offset
 			count: 1
-			path: tests/Unit/MomentFilterTest.php
+			path: Tests/Unit/MomentFilterTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\{1, 2, 3\} will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Unit/PHPUnitSimpleTest.php
+			path: Tests/Unit/PHPUnitSimpleTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsString\(\) with ''hello'' will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Unit/PHPUnitSimpleTest.php
+			path: Tests/Unit/PHPUnitSimpleTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''PHPUnit is working\!'' will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Unit/PHPUnitSimpleTest.php
+			path: Tests/Unit/PHPUnitSimpleTest.php
 
 		-
 			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertSame\(\) with array\{\} and array\{\} will always evaluate to true\.$#'
 			identifier: method.alreadyNarrowedType
 			count: 1
-			path: tests/Unit/PostedIdsTest.php
+			path: Tests/Unit/PostedIdsTest.php
 
 		-
 			message: '#^Call to function method_exists\(\) with RobRequest and ''jsonError'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: tests/Unit/RobRequestTest.php
+			path: Tests/Unit/RobRequestTest.php
 
 		-
 			message: '#^Call to function method_exists\(\) with RobRequest and ''jsonSuccess'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: tests/Unit/RobRequestTest.php
+			path: Tests/Unit/RobRequestTest.php
 
 		-
 			message: '#^Variable \$is_logged_in might not be defined\.$#'

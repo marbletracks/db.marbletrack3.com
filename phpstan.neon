@@ -13,12 +13,16 @@ parameters:
         - wwwroot
         - templates
         - scripts
-        - tests
+        - Tests
         - prepend.php
     excludePaths:
         analyseAndScan:
             # Gitignored per-server credentials; ConfigSample declares the same class.
             - classes/Config.php (?)
+            # Codeception output, and the actors built from generated traits
+            # that a fresh clone doesn't have.
+            - Tests/_output/*
+            - Tests/Support/*
     ignoreErrors:
         # Entry scripts include prepend.php by its absolute DreamHost path,
         # which exists on the server and nowhere else.

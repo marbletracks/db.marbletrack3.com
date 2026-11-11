@@ -8,8 +8,11 @@ phpmyadmin-open.sh
 /vendor/
 /composer.phar
 /composer.lock
-/.phpunit.result.cache
-/tests/reports/
+Tests/_output/*
+!Tests/_output/.gitkeep
+Tests/_envs/
+Tests/Support/_generated/*
+!Tests/Support/_generated/.gitkeep
 /coverage/
 /venv/
 

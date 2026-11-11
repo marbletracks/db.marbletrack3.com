@@ -1,0 +1,14 @@
+# Needs the MySQL of docker-compose.yml, so it is not a commit-tier suite:
+#   docker compose exec php vendor/bin/codecept run Integration
+actor: IntegrationTester
+suite_namespace: Tests\Integration
+bootstrap: _bootstrap.php
+modules:
+    enabled:
+        - Asserts
+        - Db:
+            dsn: 'mysql:host=mysql;port=3306;dbname=dbmt3_test'
+            user: 'root'
+            password: 'mt3_test_pass'
+            populate: false
+            cleanup: false

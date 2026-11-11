@@ -37,25 +37,22 @@ These tests verify:
 - ✅ No duplicate `name="notes"` attributes (the bug from #57)
 - ✅ SQL parameter counts match placeholder counts
 
-### 3. Full PHPUnit Tests (Requires Composer)
+### 3. Codeception Suites (Docker)
 
-If you have composer installed:
+The tests live in `Tests/`, laid out for Codeception 5. The dev tools go in a
+gitignored `vendor/`, installed with the stock composer image:
 
 ```bash
-# Install dependencies
-php composer.phar install
+docker run --rm -e COMPOSER_HOME=/tmp/composer -v "$PWD":/app -w /app \
+  composer:2 composer install --no-interaction
 
-# Run all tests
-php composer.phar run test
+# Unit suite: no network, no database
+~/work/rob/standards-mcp/run-unit.sh .
 
-# Run only unit tests
-php composer.phar run test-unit
-
-# Run only integration tests
-php composer.phar run test-integration
+# Integration suite: needs the MySQL of docker-compose.yml
+docker compose up -d
+docker compose exec php vendor/bin/codecept run Integration
 ```
-
-**Note**: If you encounter autoloader conflicts with PHPUnit (like `"You call that a file? Unit.php not found"`), this has been fixed in the `classes/Mlaphp/Autoloader.php` to prevent conflicts with PHPUnit's test suite names and classes.
 
 ### 4. Database Integration Tests (Requires Test Database)
 
@@ -150,13 +147,14 @@ Integration tests verify:
 ## Test Structure
 
 ```
-tests/
-├── bootstrap.php           # Test setup and configuration
-├── Unit/
-│   └── FormFieldMappingTest.php  # Form validation tests
-└── Integration/
-    ├── PartsIntegrationTest.php   # Parts database tests
-    └── WorkersIntegrationTest.php # Workers database tests
+Tests/
+├── bootstrap.php            # Setup for the scripts/ runners (loads prepend.php)
+├── Unit.suite.yml
+├── Unit/                    # No database: templates, forms, request handling
+├── Integration.suite.yml
+├── Integration/             # Repositories against a real MySQL
+├── Functional/              # In no suite; does not run
+└── Support/                 # Codeception actors
 
 scripts/
 ├── setup_test_database.php    # Database sync utility
@@ -166,11 +164,11 @@ scripts/
 ## Files Added
 
 - `composer.json` - PHP dependencies for testing
-- `phpunit.xml` - PHPUnit configuration
-- `tests/bootstrap.php` - Test environment setup
-- `tests/Unit/FormFieldMappingTest.php` - Form field validation tests
-- `tests/Integration/PartsIntegrationTest.php` - Parts database tests
-- `tests/Integration/WorkersIntegrationTest.php` - Workers database tests
+- `codeception.yml` - Codeception configuration
+- `Tests/bootstrap.php` - Test environment setup
+- `Tests/Unit/FormFieldMappingTest.php` - Form field validation tests
+- `Tests/Integration/PartsIntegrationTest.php` - Parts database tests
+- `Tests/Integration/WorkersIntegrationTest.php` - Workers database tests
 - `scripts/setup_test_database.php` - Test database management
 - `scripts/run_simple_tests.php` - Quick validation without PHPUnit
 - `classes/Config.php` - Basic configuration (you need to customize this)
@@ -183,14 +181,14 @@ For external CI/CD (GitHub Actions), see the examples in `TESTING.md`. The tests
 
 ### Unit Tests
 
-Add new unit tests to `tests/Unit/` for:
+Add new unit tests to `Tests/Unit/` for:
 - Form validation
 - Business logic
 - SQL query validation
 
 ### Integration Tests
 
-Add new integration tests to `tests/Integration/` for:
+Add new integration tests to `Tests/Integration/` for:
 - Database operations
 - Complete user workflows
 - API endpoints
