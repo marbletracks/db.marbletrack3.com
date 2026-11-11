@@ -7,7 +7,7 @@ class RideRepository
 {
     private DbInterface $db;
 
-    public function __construct(DbInterface $db, string $langCode = 'en')
+    public function __construct(DbInterface $db)
     {
         $this->db = $db;
     }
