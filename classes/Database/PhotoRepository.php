@@ -21,7 +21,7 @@ class PhotoRepository
         if ($r->numRows() === 0)
             return null;
 
-        $d = $r->data[0];
+        $d = $r->toArray()[0];
         return new Photo((int) $d['photo_id'], $d['code'], $d['url']);
     }
 
