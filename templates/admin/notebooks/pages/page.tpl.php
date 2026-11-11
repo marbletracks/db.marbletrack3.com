@@ -64,7 +64,7 @@
         <label>
             Image URLs:<br>
             <div id="image-url-fields">
-                <?php if(!empty($page->photos)): foreach ($page->photos ?? [] as $index => $photo): ?>
+                <?php if(!empty($page->photos)): foreach ($page->photos as $index => $photo): ?>
                     <div class="photo-item" draggable="true" data-index="<?= $index ?>">
                         <div class="drag-handle">⋮⋮</div>
                         <div class="photo-content">
@@ -383,6 +383,6 @@
 
     <?php if ($page): ?>
         <p><a href="/admin/notebooks/notebook.php?id=<?= $page->notebook_id ?>">Back to Notebook
-                <?= htmlspecialchars($page->notebook_id) ?></a></p>
+                <?= htmlspecialchars((string) $page->notebook_id) ?></a></p>
     <?php endif; ?>
 </div>

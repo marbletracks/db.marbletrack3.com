@@ -118,12 +118,8 @@
 
                     <em>Alias:</em> <a href="<?= $part->frontend_link; ?>"><?= htmlspecialchars($part->part_alias ?? '—') ?></a><br>
 
-                    <?php if (!empty($part->created_at)): ?>
-                        <em>Created:</em> <?= htmlspecialchars($part->created_at) ?><br>
-                    <?php endif; ?>
-
-                    <a href="/admin/parts/part.php?id=<?= htmlspecialchars($part->part_id) ?>">
-                        Edit (id=<?= htmlspecialchars($part->part_id) ?>)
+                    <a href="/admin/parts/part.php?id=<?= htmlspecialchars((string) $part->part_id) ?>">
+                        Edit (id=<?= htmlspecialchars((string) $part->part_id) ?>)
                     </a>
                 </div>
             </li>

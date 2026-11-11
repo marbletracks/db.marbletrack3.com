@@ -20,10 +20,10 @@
                 <div>
                     <strong>Page <?= htmlspecialchars($page->number) ?></strong>
                      of
-                    <a href="/admin/notebooks/notebook.php?id=<?= $page->notebook_id ?>">Notebook <?= htmlspecialchars($page->notebook_id) ?></a><br>
+                    <a href="/admin/notebooks/notebook.php?id=<?= $page->notebook_id ?>">Notebook <?= htmlspecialchars((string) $page->notebook_id) ?></a><br>
                     <em>Created:</em> <?= htmlspecialchars($page->created_at ?? '—') ?><br>
                     <a href="/admin/notebooks/pages/page.php?id=<?= $page->page_id ?>">
-                        Edit (id=<?= htmlspecialchars($page->page_id) ?>)
+                        Edit (id=<?= htmlspecialchars((string) $page->page_id) ?>)
                     </a>
                 </div>
             </li>

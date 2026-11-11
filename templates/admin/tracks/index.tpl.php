@@ -95,8 +95,8 @@
                         <em>Alias:</em> <?= htmlspecialchars($track->track_alias) ?> |
                         <em>Type:</em> <?= htmlspecialchars($track->getTypeDescription()) ?><br>
 
-                        <a href="/admin/tracks/track.php?id=<?= htmlspecialchars($track->track_id) ?>">
-                            Edit (id=<?= htmlspecialchars($track->track_id) ?>)
+                        <a href="/admin/tracks/track.php?id=<?= htmlspecialchars((string) $track->track_id) ?>">
+                            Edit (id=<?= htmlspecialchars((string) $track->track_id) ?>)
                         </a>
                     </div>
                 </li>

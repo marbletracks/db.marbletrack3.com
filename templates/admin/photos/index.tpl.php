@@ -3,7 +3,7 @@
     <ul>
         <?php foreach ($photos as $photo): ?>
             <li>
-                <strong>ID <?= htmlspecialchars($photo->photo_id) ?></strong><br>
+                <strong>ID <?= htmlspecialchars((string) $photo->photo_id) ?></strong><br>
                 <img src="<?= htmlspecialchars($photo->getUrl()) ?>" alt="Photo <?= $photo->photo_id ?>"
                     style="max-height:100px;"><br>
                 <a href="<?= htmlspecialchars($photo->getUrl()) ?>"

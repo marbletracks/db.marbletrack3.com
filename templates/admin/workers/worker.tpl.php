@@ -113,7 +113,7 @@
             <?php endif; ?>
             <br>
             <div id="image-url-fields">
-                <?php if(!empty($worker->photos)):foreach ($worker->photos ?? [''] as $photo): ?>
+                <?php if(!empty($worker->photos)):foreach ($worker->photos as $photo): ?>
                     <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"><br>
                     <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
                 <?php endforeach; ?>
