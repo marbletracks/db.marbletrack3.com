@@ -29,6 +29,9 @@ class NotebookRepository
         return $this->hydrateAll($results->toArray())[0];
     }
 
+    /**
+     * @return Notebook[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -59,7 +62,10 @@ class NotebookRepository
         $this->photoLinks->saveFormUrls($notebook_id, $loadedPhotoIds, $urls);
     }
 
-    /** @return Notebook[] */
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return Notebook[]
+     */
     private function hydrateAll(array $rows): array
     {
         $photos = $this->photoLinks->forIds(array_column($rows, 'notebook_id'));
@@ -72,6 +78,9 @@ class NotebookRepository
         return $notebooks;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Notebook
     {
         return new Notebook(

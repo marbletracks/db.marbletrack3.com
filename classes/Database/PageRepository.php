@@ -15,6 +15,9 @@ class PageRepository
         $this->photoLinks = new PhotoLinks($db, 'pages', 'pages_2_photos', 'page_id');
     }
 
+    /**
+     * @return Page[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults("SELECT * FROM pages ORDER BY created_at DESC");
@@ -63,7 +66,10 @@ class PageRepository
         $this->photoLinks->saveFormUrls($page_id, $loadedPhotoIds, $urls);
     }
 
-    /** @return Page[] */
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return Page[]
+     */
     private function hydrateAll(array $rows): array
     {
         $photos = $this->photoLinks->forIds(array_column($rows, 'page_id'));
@@ -77,6 +83,9 @@ class PageRepository
         return $pages;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Page
     {
         return new Page(

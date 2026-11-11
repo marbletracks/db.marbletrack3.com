@@ -85,6 +85,9 @@ SQL;
 
     // ── CRUD ─────────────────────────────────────────────────────────────────
 
+    /**
+     * @return Marble[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -168,13 +171,19 @@ SQL;
         $this->photoLinks->saveFormUrls($marble_id, $loadedPhotoIds, $urls);
     }
 
-    /** Append photos, keeping any already linked. Used by the API. */
+    /**
+     * Append photos, keeping any already linked. Used by the API.
+     * @param string[] $urls
+     */
     public function addPhotosFromUrls(int $marble_id, array $urls): void
     {
         $this->photoLinks->addUrls($marble_id, $urls);
     }
 
-    /** @return Marble[] */
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return Marble[]
+     */
     private function hydrateAll(array $rows): array
     {
         $ids = array_map(fn (array $row) => (int) $row['marble_id'], $rows);
@@ -190,6 +199,9 @@ SQL;
         return $marbles;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Marble
     {
         return new Marble(

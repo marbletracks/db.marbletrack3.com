@@ -75,6 +75,9 @@ class RideRepository
         $ride->tracks = $tracks;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Ride
     {
         return new Ride(

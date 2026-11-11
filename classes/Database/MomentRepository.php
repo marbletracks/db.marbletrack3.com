@@ -28,6 +28,9 @@ class MomentRepository
         return $this->hydrateAll($results->toArray())[0];
     }
 
+    /**
+     * @return Moment[]
+     */
     public function findWithinTakeId(int $take_id): array
     {
         $results = $this->db->fetchResults(
@@ -49,6 +52,9 @@ class MomentRepository
         return $this->hydrateAll($results->toArray());
     }
 
+    /**
+     * @return Moment[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -69,6 +75,9 @@ class MomentRepository
         return $this->hydrateAll($results->toArray());
     }
 
+    /**
+     * @return Moment[]
+     */
     public function findByFilter(string $filter, int $take_id = 0): array
     {
         $filter = trim($filter);
@@ -232,6 +241,9 @@ class MomentRepository
         return ['moments' => $moments, 'total' => $total];
     }
 
+    /**
+     * @return array{0: Moment[], 1: Moment[]} moments this entity is in, then the rest
+     */
     public function findAllForEntity(string $name, string $alias): array
     {
         $allMoments = $this->findAll();
@@ -253,6 +265,9 @@ class MomentRepository
         return [$prioritized, $other];
     }
 
+    /**
+     * @return array<string, array<int, array{note: ?string, is_significant: bool}>> by entity type, then entity id
+     */
     public function findTranslations(int $moment_id): array
     {
         $results = $this->db->fetchResults(
@@ -360,6 +375,9 @@ class MomentRepository
         return $this->db->getAffectedRows() > 0;
     }
 
+    /**
+     * @return Moment[]
+     */
     public function findByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
@@ -412,6 +430,9 @@ class MomentRepository
         );
     }
 
+    /**
+     * @param array<string, array<int, array{note?: ?string, is_significant?: bool|int|string}>> $perspectives by entity type, then entity id
+     */
     public function saveTranslations(int $moment_id, array $perspectives): void
     {
         // First, delete all existing translations for this moment
@@ -453,13 +474,19 @@ class MomentRepository
         $this->photoLinks->saveFormUrls($moment_id, $loadedPhotoIds, $urls);
     }
 
-    /** Append photos, keeping any already linked. Used by the API and the realtime editor. */
+    /**
+     * Append photos, keeping any already linked. Used by the API and the realtime editor.
+     * @param string[] $urls
+     */
     public function addPhotosFromUrls(int $moment_id, array $urls): void
     {
         $this->photoLinks->addUrls($moment_id, $urls);
     }
 
-    /** @return Moment[] */
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return Moment[]
+     */
     private function hydrateAll(array $rows): array
     {
         $photos = $this->photoLinks->forIds(array_column($rows, 'moment_id'));
@@ -472,6 +499,9 @@ class MomentRepository
         return $moments;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Moment
     {
         return new Moment(
@@ -484,6 +514,9 @@ class MomentRepository
         );
     }
 
+    /**
+     * @return Moment[]
+     */
     public function findLatestForWorker(int $worker_id, int $limit = 2): array
     {
         $sql = "SELECT m.moment_id, m.frame_start, m.frame_end, m.take_id, COALESCE(mt.translated_note, m.notes) AS notes, m.moment_date, mt.is_significant
@@ -511,6 +544,9 @@ class MomentRepository
         return array_reverse($moments);
     }
 
+    /**
+     * @return Moment[]
+     */
     public function findSimilarMoments(int $worker_id, int $frame_start, int $frame_end, int $frame_buffer = 5): array
     {
         $sql = "SELECT m.*

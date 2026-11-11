@@ -5,6 +5,7 @@ namespace Database;
 class DBExistaroo {
     private \mysqli $conn;
 
+    /** @var string[] */
     private $automaticSchemaPrefixes = [
         "00",
         "01",
@@ -25,6 +26,9 @@ class DBExistaroo {
     ){
     }
 
+    /**
+     * @return string[] what is wrong with the database; empty when nothing is
+     */
     public function checkaroo(): array {
         $errors = [];
 
@@ -156,6 +160,9 @@ class DBExistaroo {
         return $result && $result->num_rows > 0;
     }
 
+    /**
+     * @return string[] schema files not applied yet, as version/file
+     */
     public function getPendingMigrations(): array {
         $pending = [];
         $applied = $this->getAppliedVersions();
@@ -192,6 +199,9 @@ class DBExistaroo {
         return $pending;
     }
 
+    /**
+     * @return string[]
+     */
     private function getAppliedVersions(): array {
         $versions = [];
         $result = $this->conn->query("SELECT applied_version FROM applied_DB_versions");

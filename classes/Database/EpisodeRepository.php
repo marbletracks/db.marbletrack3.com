@@ -15,6 +15,9 @@ class EpisodeRepository
         $this->photoLinks = new PhotoLinks($db, 'episodes', 'episodes_2_photos', 'episode_id');
     }
 
+    /**
+     * @return Episode[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -128,7 +131,10 @@ SQL
         $this->photoLinks->saveFormUrls($episode_id, $loadedPhotoIds, $urls);
     }
 
-    /** @return Episode[] */
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return Episode[]
+     */
     private function hydrateAll(array $rows): array
     {
         $photos = $this->photoLinks->forIds(array_column($rows, 'episode_id'));
@@ -141,6 +147,9 @@ SQL
         return $episodes;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Episode
     {
         return new Episode(

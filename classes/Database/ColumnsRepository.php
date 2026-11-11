@@ -29,6 +29,9 @@ class ColumnsRepository
         return $this->hydrate($results->data);
     }
 
+    /**
+     * @return Column[]
+     */
     public function findByPageId(int $page_id): array
     {
         $results = $this->db->fetchResults(
@@ -61,6 +64,9 @@ SQL,
         return $columns;
     }
 
+    /**
+     * @return Column[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults("SELECT * FROM columns ORDER BY created_at DESC");
@@ -100,6 +106,9 @@ SQL,
         );
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Column
     {
         return new Column(

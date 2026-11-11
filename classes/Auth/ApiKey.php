@@ -105,6 +105,7 @@ class ApiKey
     /**
      * Returns all keys for a user: key_id, label, created_at, last_used, is_active.
      * Never returns the raw key value.
+     * @return array<int, array<string, mixed>> one row of api_keys per key
      */
     public function getKeysForUser(int $user_id): array
     {

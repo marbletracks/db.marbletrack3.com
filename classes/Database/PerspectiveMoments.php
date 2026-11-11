@@ -61,7 +61,10 @@ class PerspectiveMoments
         return $byPerspective;
     }
 
-    /** @return array<int, Photo[]> */
+    /**
+     * @param int[] $momentIds
+     * @return array<int, Photo[]>
+     */
     private function photosFor(array $momentIds): array
     {
         $momentIds = array_values(array_unique($momentIds));

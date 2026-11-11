@@ -29,6 +29,9 @@ class TokensRepository
         return $this->hydrate($results->data);
     }
 
+    /**
+     * @return Token[]
+     */
     public function findByColumnId(int $column_id): array
     {
         $results = $this->db->fetchResults(
@@ -174,6 +177,9 @@ class TokensRepository
         );
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Token
     {
         return new Token(

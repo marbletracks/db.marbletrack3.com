@@ -74,6 +74,9 @@ SQL,
         return $this->withPhotos([$this->hydrate($results->data)])[0];
     }
 
+    /**
+     * @return Track[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -116,18 +119,28 @@ SQL
         return $tracks;
     }
 
-    /** The admin form's photo list: removes only what the form loaded and dropped. */
+    /**
+     * The admin form's photo list: removes only what the form loaded and dropped.
+     * @param string[] $urls the form's photo URLs, in screen order
+     * @param int[] $loadedPhotoIds photo IDs the edit form showed when it loaded
+     */
     public function savePhotosFromForm(int $track_id, array $loadedPhotoIds, array $urls): void
     {
         $this->photoLinks->saveFormUrls($track_id, $loadedPhotoIds, $urls);
     }
 
-    /** Append, skipping URLs already linked; what the API and badmint use. */
+    /**
+     * Append, skipping URLs already linked; what the API and badmint use.
+     * @param string[] $urls
+     */
     public function addPhotosFromUrls(int $track_id, array $urls): void
     {
         $this->photoLinks->addUrls($track_id, $urls);
     }
 
+    /**
+     * @return Track[]
+     */
     public function findByFilter(string $filter): array
     {
         $like = '%' . $filter . '%';
@@ -160,6 +173,9 @@ SQL,
         return $tracks;
     }
 
+    /**
+     * @return Track[]
+     */
     public function findLandingZones(): array
     {
         $results = $this->db->fetchResults(
@@ -188,6 +204,9 @@ SQL
         return $tracks;
     }
 
+    /**
+     * @return Track[]
+     */
     public function findByEntityType(string $entity_type): array
     {
         $results = $this->db->fetchResults(
@@ -218,6 +237,9 @@ SQL,
         return $tracks;
     }
 
+    /**
+     * @return Track[]
+     */
     public function findMarbleTracks(): array
     {
         $results = $this->db->fetchResults(
@@ -246,6 +268,9 @@ SQL
         return $tracks;
     }
 
+    /**
+     * @return Track[]
+     */
     public function findWorkerTracks(): array
     {
         $results = $this->db->fetchResults(
@@ -274,6 +299,9 @@ SQL
         return $tracks;
     }
 
+    /**
+     * @return Track[]
+     */
     public function findUpstreamTracks(int $track_id): array
     {
         $results = $this->db->fetchResults(
@@ -308,6 +336,9 @@ SQL,
         return $tracks;
     }
 
+    /**
+     * @return Track[]
+     */
     public function findDownstreamTracks(int $track_id): array
     {
         $results = $this->db->fetchResults(
@@ -342,6 +373,9 @@ SQL,
         return $tracks;
     }
 
+    /**
+     * @return \Physical\Part[]
+     */
     public function findPartsByTrackId(int $track_id, string $langCode = 'en'): array
     {
         $results = $this->db->fetchResults(
@@ -393,6 +427,9 @@ SQL,
         return $parts;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function hydrate(array $data): Track
     {
         // Convert SET field to array
@@ -414,6 +451,9 @@ SQL,
         );
     }
 
+    /**
+     * @param string[] $marble_sizes
+     */
     public function insert(string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone, string $entity_type = 'marble'): int
     {
         $marble_sizes_str = implode(',', $marble_sizes);
@@ -434,6 +474,9 @@ SQL,
         );
     }
 
+    /**
+     * @param string[] $marble_sizes
+     */
     public function update(int $track_id, string $alias, string $name, string $description, array $marble_sizes, bool $is_transport, bool $is_splitter, bool $is_landing_zone, string $entity_type = 'marble'): void
     {
         $marble_sizes_str = implode(',', $marble_sizes);
@@ -459,6 +502,9 @@ SQL,
         );
     }
 
+    /**
+     * @param string[] $marble_sizes
+     */
     public function insertConnection(int $from_track_id, int $to_track_id, array $marble_sizes, string $connection_type = 'direct', string $description = ''): int
     {
         $marble_sizes_str = implode(',', $marble_sizes);
@@ -532,6 +578,9 @@ SQL,
         );
     }
 
+    /**
+     * @return array<int, int|string> part ids as the database returns them
+     */
     public function findExclusivePartIds(): array
     {
         $results = $this->db->fetchResults(
@@ -546,6 +595,9 @@ SQL,
         return $part_ids;
     }
 
+    /**
+     * @return Track[]
+     */
     public function findTracksByPartId(int $part_id): array
     {
         $results = $this->db->fetchResults(
