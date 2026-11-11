@@ -147,10 +147,10 @@ class AjaxEndpointValidator
             echo "  ✅ Input: Uses filter_input for validation\n";
         } else if ($hasPostValidation && $hasValidationChecks) {
             $this->passed++;
-            echo "  ✅ Input: Manual $_POST validation with checks\n";
+            echo "  ✅ Input: Manual \$_POST validation with checks\n";
         } else if ($hasPostValidation) {
-            $this->warnings[] = "{$filename}: Uses $_POST but limited validation";
-            echo "  ⚠️  Input: Uses $_POST with minimal validation\n";
+            $this->warnings[] = "{$filename}: Uses \$_POST but limited validation";
+            echo "  ⚠️  Input: Uses \$_POST with minimal validation\n";
         } else {
             echo "  ℹ️  Input: No obvious input handling found\n";
         }

@@ -132,7 +132,7 @@ class Issue57and58TestRunner
         ];
 
         // Simulate form processing
-        $description = trim($_POST['part_description'] ?? '');
+        $description = trim($_POST['part_description']);
 
         $this->assert(!empty($description), "Form submission: Description should not be empty after fix");
         $this->assert($description === 'This description should be saved correctly',

@@ -62,6 +62,7 @@ try {
 
     // Test basic operations on test database
     echo "\n=== Test Database Operations ===\n";
+    $tableCount = 0;
     try {
         // Check if basic tables exist
         $tablesResult = $testDb->executeSQL("SHOW TABLES");

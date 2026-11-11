@@ -10,13 +10,12 @@ require_once __DIR__ . '/../prepend.php';
 class TestDatabaseSetup
 {
     private \Config $config;
-    private \Database\Database $prodDb;
     private \Database\Database $testDb;
 
     public function __construct()
     {
         $this->config = new \Config();
-        $this->prodDb = \Database\Base::getDB($this->config);
+        \Database\Base::getDB($this->config);
         $this->testDb = \Database\Base::getTestDb($this->config);
     }
 

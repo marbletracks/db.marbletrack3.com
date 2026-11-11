@@ -174,7 +174,7 @@ echo "\nTest 6: List keys\n";
 $keys = $apiKey->getKeysForUser($test_user_id);
 
 assert_test(
-    is_array($keys) && count($keys) >= 2,
+    count($keys) >= 2,
     "getKeysForUser returns at least 2 keys (got " . count($keys) . ")",
     $passed, $failed, $failures
 );
