@@ -15,6 +15,9 @@ class BadmintLinksTest extends TestCase
         $this->assertStringContainsString("https://badmint.robnugen.com/mt3/?{$query}=<?= (int) ", $source);
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public static function pages(): array
     {
         return [

@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 class DatabaseSecurityTest extends TestCase
 {
+    /** @var \Database\Database */
     private $testDb;
     private string $testPrefix;
 

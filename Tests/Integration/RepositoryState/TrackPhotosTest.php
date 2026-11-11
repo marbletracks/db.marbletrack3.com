@@ -31,6 +31,10 @@ class TrackPhotosTest extends TestCase
         return new TrackRepository($this->db());
     }
 
+    /**
+     * @param \Media\Photo[] $photos
+     * @return string[]
+     */
     private function urls(array $photos): array
     {
         return array_map(fn ($photo) => $photo->getUrl(), $photos);

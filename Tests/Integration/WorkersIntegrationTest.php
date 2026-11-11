@@ -38,7 +38,7 @@ class WorkersIntegrationTest extends TestCase
      * Test that Worker creation works with correct form parameters
      * This validates the fix for Workers form field mapping
      */
-    public function testWorkerCreationWithFormData()
+    public function testWorkerCreationWithFormData(): void
     {
         // Simulate form data that would be submitted for a worker
         $formData = [
@@ -75,7 +75,7 @@ class WorkersIntegrationTest extends TestCase
      * Test Workers form field mapping
      * This validates that the Workers form uses the correct field names
      */
-    public function testWorkersFormFieldMapping()
+    public function testWorkersFormFieldMapping(): void
     {
         // Load the Workers form template
         $templatePath = __DIR__ . '/../../templates/admin/workers/worker.tpl.php';
@@ -98,7 +98,7 @@ class WorkersIntegrationTest extends TestCase
     /**
      * Test Workers PHP handler expected parameters
      */
-    public function testWorkersHandlerExpectedParameters()
+    public function testWorkersHandlerExpectedParameters(): void
     {
         $handlerPath = __DIR__ . '/../../wwwroot/admin/workers/worker.php';
         
@@ -116,7 +116,7 @@ class WorkersIntegrationTest extends TestCase
     /**
      * Test complete form submission flow for Workers
      */
-    public function testWorkersFormSubmissionFlow()
+    public function testWorkersFormSubmissionFlow(): void
     {
         // Simulate $_POST data as it would come from the Workers form
         $_POST = [
@@ -143,7 +143,7 @@ class WorkersIntegrationTest extends TestCase
     /**
      * Test that empty descriptions are handled properly for Workers
      */
-    public function testWorkerWithEmptyDescription()
+    public function testWorkerWithEmptyDescription(): void
     {
         // Simulate form data with empty description
         $_POST = [

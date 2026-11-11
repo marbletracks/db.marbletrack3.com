@@ -28,11 +28,14 @@ class PhotoLinksTest extends TestCase
         $this->cleanupFixtures();
     }
 
-    private function links($db = null): PhotoLinks
+    private function links(?\Database\DbInterface $db = null): PhotoLinks
     {
         return new PhotoLinks($db ?? $this->db(), 'notebooks', 'notebooks_2_photos', 'notebook_id');
     }
 
+    /**
+     * @return int[]
+     */
     private function linked(int $id): array
     {
         return $this->linkedIds('notebooks_2_photos', 'notebook_id', $id);

@@ -29,6 +29,9 @@ class FormHandlerWiringTest extends TestCase
         $this->assertStringContainsString('name="loaded_photo_ids[]"', $template, "{$m[1]} must post loaded_photo_ids[]");
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public static function handlers(): array
     {
         $files = [

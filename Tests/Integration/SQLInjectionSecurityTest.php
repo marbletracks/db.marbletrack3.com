@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
  */
 class SQLInjectionSecurityTest extends TestCase
 {
+    /** @var \Database\Database */
     private $testDb;
 
     protected function setUp(): void

@@ -16,7 +16,7 @@ class Issue57and58Test extends TestCase
      * The issue was that Part descriptions were not being saved due to 
      * duplicate name attributes in the textarea element.
      */
-    public function testIssue57PartsDescriptionFormFieldMapping()
+    public function testIssue57PartsDescriptionFormFieldMapping(): void
     {
         $templatePath = __DIR__ . '/../../templates/admin/parts/part.tpl.php';
         $this->assertFileExists($templatePath, "Parts template should exist");
@@ -65,7 +65,7 @@ class Issue57and58Test extends TestCase
      * 
      * Issue #58 also fixed Workers form which had the same duplicate name attribute problem
      */
-    public function testIssue58WorkersDescriptionFormFieldMapping()
+    public function testIssue58WorkersDescriptionFormFieldMapping(): void
     {
         $templatePath = __DIR__ . '/../../templates/admin/workers/worker.tpl.php';
         $this->assertFileExists($templatePath, "Workers template should exist");
@@ -84,7 +84,7 @@ class Issue57and58Test extends TestCase
     /**
      * Test that image saving still works after the fix (as mentioned in #58)
      */
-    public function testImageSavingFieldsUnaffected()
+    public function testImageSavingFieldsUnaffected(): void
     {
         $templatePath = __DIR__ . '/../../templates/admin/parts/part.tpl.php';
         $templateContent = file_get_contents($templatePath);
@@ -98,7 +98,7 @@ class Issue57and58Test extends TestCase
      * Test the Parts PHP handler to ensure it looks for the correct POST parameters
      * This would catch the disconnect between form and handler
      */
-    public function testPartsHandlerExpectsCorrectParameters()
+    public function testPartsHandlerExpectsCorrectParameters(): void
     {
         $handlerPath = __DIR__ . '/../../wwwroot/admin/parts/part.php';
         $this->assertFileExists($handlerPath, "Parts handler should exist");
@@ -126,7 +126,7 @@ class Issue57and58Test extends TestCase
      * Integration test simulating the complete form submission flow
      * This would catch the end-to-end bug from Issue #57
      */
-    public function testCompleteFormSubmissionFlow()
+    public function testCompleteFormSubmissionFlow(): void
     {
         // Simulate the form data as it would be submitted after the fix
         $_POST = [
@@ -155,7 +155,7 @@ class Issue57and58Test extends TestCase
     /**
      * Test for potential SQL parameter mismatches that could be related
      */
-    public function testSQLParameterConsistency()
+    public function testSQLParameterConsistency(): void
     {
         // Test common SQL patterns to catch parameter count mismatches
         $sqlTests = [

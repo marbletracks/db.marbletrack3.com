@@ -85,11 +85,11 @@ if (class_exists('Config')) {
     }
 } else {
     // Minimal functions for unit tests when database is not available
-    function getTestDatabase() {
+    function getTestDatabase(): never {
         throw new Exception("Database testing not available in minimal mode");
     }
 
-    function getTestConfig() {
+    function getTestConfig(): never {
         throw new Exception("Config testing not available in minimal mode");
     }
 }

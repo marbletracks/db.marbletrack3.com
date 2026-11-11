@@ -44,6 +44,9 @@ class Step0ListQueryCountTest extends TestCase
         $this->assertSame($before, $after, "Three more {$kind}s cost " . ($after - $before) . ' more queries');
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public static function lists(): array
     {
         return [

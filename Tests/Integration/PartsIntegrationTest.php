@@ -39,7 +39,7 @@ class PartsIntegrationTest extends TestCase
      * Test that Part creation works with correct form parameters
      * This validates the fix from issue #57
      */
-    public function testPartCreationWithFormData()
+    public function testPartCreationWithFormData(): void
     {
         // Simulate form data that would be submitted
         $formData = [
@@ -72,7 +72,7 @@ class PartsIntegrationTest extends TestCase
      * Test that Part updates work with correct form parameters
      * This validates the fix from issue #57
      */
-    public function testPartUpdateWithFormData()
+    public function testPartUpdateWithFormData(): void
     {
         // Create a test part first
         $originalPartId = $this->partsRepo->insert($this->testPrefix . 'orig', 'Original Name', 'Original description');
@@ -104,7 +104,7 @@ class PartsIntegrationTest extends TestCase
     /**
      * Test that empty/null descriptions are handled properly
      */
-    public function testPartWithEmptyDescription()
+    public function testPartWithEmptyDescription(): void
     {
         // Test with empty string
         $partId1 = $this->partsRepo->insert($this->testPrefix . 'emp', 'Test Empty', '');
@@ -121,7 +121,7 @@ class PartsIntegrationTest extends TestCase
      * Test SQL parameter validation by examining actual database operations
      * This type of test would catch the parameter mismatch bugs
      */
-    public function testSQLParameterValidation()
+    public function testSQLParameterValidation(): void
     {
         // Test that we can perform common database operations without SQL errors
         try {
@@ -150,7 +150,7 @@ class PartsIntegrationTest extends TestCase
      * Test form submission simulation
      * This simulates the complete flow from form submission to database storage
      */
-    public function testCompleteFormSubmissionFlow()
+    public function testCompleteFormSubmissionFlow(): void
     {
         // Simulate $_POST data as it would come from the form
         $_POST = [
