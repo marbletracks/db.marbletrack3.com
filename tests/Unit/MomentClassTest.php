@@ -6,7 +6,7 @@
 use PHPUnit\Framework\TestCase;
 use Media\Moment;
 
-class MomentTest extends TestCase
+class MomentClassTest extends TestCase
 {
     /**
      * Test Moment constructor and slug generation

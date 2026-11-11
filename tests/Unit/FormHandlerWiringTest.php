@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FormHandlerWiringTest extends TestCase
 {
-    /** @dataProvider handlers */
+    #[\PHPUnit\Framework\Attributes\DataProvider('handlers')]
     public function testHandlerAndTemplateAgreeOnLoadedPhotoIds(string $handler): void
     {
         $root = dirname(__DIR__, 2);
@@ -27,7 +27,7 @@ class FormHandlerWiringTest extends TestCase
         $this->assertStringContainsString('name="loaded_photo_ids[]"', $template, "{$m[1]} must post loaded_photo_ids[]");
     }
 
-    public function handlers(): array
+    public static function handlers(): array
     {
         $files = [
             'notebooks/notebook.php',

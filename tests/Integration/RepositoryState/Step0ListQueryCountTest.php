@@ -19,7 +19,7 @@ class Step0ListQueryCountTest extends TestCase
         $this->cleanupFixtures();
     }
 
-    /** @dataProvider lists */
+    #[\PHPUnit\Framework\Attributes\DataProvider('lists')]
     public function testListQueryCountDoesNotGrowWithRows(string $kind, callable $findAll): void
     {
         // One linked row first: an empty list skips the photo queries entirely,
@@ -40,7 +40,7 @@ class Step0ListQueryCountTest extends TestCase
         $this->assertSame($before, $after, "Three more {$kind}s cost " . ($after - $before) . ' more queries');
     }
 
-    public function lists(): array
+    public static function lists(): array
     {
         return [
             'notebooks' => ['notebook', fn ($db) => (new \Database\NotebookRepository($db))->findAll()],

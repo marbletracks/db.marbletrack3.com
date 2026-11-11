@@ -18,7 +18,7 @@ class PerspectiveMomentsCharacterisationTest extends TestCase
         $this->cleanupFixtures();
     }
 
-    public function kinds(): array
+    public static function kinds(): array
     {
         return [
             'worker' => ['worker', fn ($db) => new \Database\WorkersRepository($db, 'en')],
@@ -27,7 +27,7 @@ class PerspectiveMomentsCharacterisationTest extends TestCase
         ];
     }
 
-    /** @dataProvider kinds */
+    #[\PHPUnit\Framework\Attributes\DataProvider('kinds')]
     public function testMomentsComeInTakeFrameOrderWithFlagsAndPhotos(string $kind, callable $repo): void
     {
         $owner = $this->makeRow($kind);

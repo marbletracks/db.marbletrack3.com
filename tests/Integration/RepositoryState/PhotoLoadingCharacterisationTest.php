@@ -18,7 +18,7 @@ class PhotoLoadingCharacterisationTest extends TestCase
         $this->cleanupFixtures();
     }
 
-    public function kinds(): array
+    public static function kinds(): array
     {
         return [
             'notebook' => ['notebook', 'notebooks_2_photos', 'notebook_id'],
@@ -45,7 +45,7 @@ class PhotoLoadingCharacterisationTest extends TestCase
         };
     }
 
-    /** @dataProvider kinds */
+    #[\PHPUnit\Framework\Attributes\DataProvider('kinds')]
     public function testFindByIdReturnsPhotosInSortThenIdOrder(string $kind, string $table, string $key): void
     {
         $id = $this->makeRow($kind);
@@ -65,7 +65,7 @@ class PhotoLoadingCharacterisationTest extends TestCase
         }
     }
 
-    /** @dataProvider kinds */
+    #[\PHPUnit\Framework\Attributes\DataProvider('kinds')]
     public function testFindAllGivesEachRowItsOwnPhotos(string $kind, string $table, string $key): void
     {
         $withPhoto = $this->makeRow($kind);
