@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @param array<string, array<string, mixed>> $partsList part name => its prefix and description
+ */
 function generateInsertSQL(array $partsList): string
 {
     $sqlParts = [];

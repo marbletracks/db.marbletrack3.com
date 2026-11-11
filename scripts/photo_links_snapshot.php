@@ -21,6 +21,9 @@ const LINKS = [
     'marbles_2_photos' => 'marble_id',
 ];
 
+/**
+ * @return array<string, mixed>
+ */
 function snapshot(\Database\DbInterface $db): array
 {
     $out = [];
@@ -36,6 +39,11 @@ function snapshot(\Database\DbInterface $db): array
     return $out;
 }
 
+/**
+ * @param array<string, mixed> $before
+ * @param array<string, mixed> $after
+ * @return string[]
+ */
 function diff(array $before, array $after): array
 {
     $lines = [];

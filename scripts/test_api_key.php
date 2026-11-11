@@ -18,6 +18,9 @@ $passed = 0;
 $failed = 0;
 $failures = [];
 
+/**
+ * @param string[] $failures
+ */
 function assert_test(bool $condition, string $message, int &$passed, int &$failed, array &$failures): void
 {
     if ($condition) {
