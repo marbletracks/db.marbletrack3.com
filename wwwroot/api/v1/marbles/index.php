@@ -136,6 +136,9 @@ function findMarble(\Database\MarblesRepository $repo, string $sub): ?\Physical\
     return $repo->findByAlias($sub);
 }
 
+/**
+ * @return array<string, mixed>
+ */
 function marbleToArray(\Physical\Marble $marble): array
 {
     $photos = array_map(fn($p) => [

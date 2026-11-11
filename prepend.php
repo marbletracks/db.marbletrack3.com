@@ -15,6 +15,11 @@ spl_autoload_register(array($autoloader, 'load'));
 
 $mla_request = new \Mlaphp\Request();
 
+/**
+ * @param mixed $object
+ * @param bool $exit
+ * @return void
+ */
 function print_rob($object, $exit = true)
 {
     echo "<pre>";

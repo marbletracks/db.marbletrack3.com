@@ -249,6 +249,9 @@ echo json_encode(['error' => 'Method not allowed']);
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+/**
+ * @return array<string, mixed>
+ */
 function momentToArray(\Media\Moment $moment): array
 {
     return [
