@@ -68,6 +68,11 @@ Codeception 5, in `Tests/` (namespace `Tests`), with dev tools in a gitignored `
 - `php scripts/run_all_tests.php` — the older validation scripts, which need mysqli
 - `~/work/rob/standards-mcp/run-phpstan.sh .` — PHPStan level 5 in Docker, analysed
   as PHP 8.5; only errors missing from `phpstan-baseline.neon` fail
+- `~/work/rob/standards-mcp/run-phpcs.sh .` — PSR-12 (`phpcs.xml`), less the sniffs
+  the code failed on 2026-11-11, listed there as a backlog
+- **Every commit is checked**: `.githooks/pre-commit` runs phpcs on the staged PHP and
+  PHPStan over the staged tree. Enable once per clone: `git config core.hooksPath
+  .githooks`. It does not run the suites; run those yourself.
 Tests validate: form-field `name` attrs match repository params, SQL placeholder/param
 counts, AJAX input validation, schema/connectivity.
 

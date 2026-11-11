@@ -60,15 +60,16 @@ php scripts/setup_test_database.php check
 ### Full Testing Setup
 
 ```bash
-# Install testing dependencies
-curl -sS https://getcomposer.org/installer | php
-php composer.phar install
+# Install the dev tools into vendor/
+docker run --rm -e COMPOSER_HOME=/tmp/composer -v "$PWD":/app -w /app \
+  composer:2 composer install --no-interaction
 
-# Run all tests
-php composer.phar run test
+# Unit suite (no database)
+~/work/rob/standards-mcp/run-unit.sh .
 
-# Run only unit tests
-php composer.phar run test-unit
+# Integration suite (MySQL from docker-compose.yml)
+docker compose up -d
+docker compose exec php vendor/bin/codecept run Integration
 ```
 
 For complete testing setup instructions, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
