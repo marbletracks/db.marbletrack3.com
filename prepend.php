@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "PHPStan toward PHP 8.5";
+const SENTIMENTAL_VERSION = "Deploys with deploy_to_dh.sh";
 
 # write errors to screen
 ini_set('display_errors', 1);
