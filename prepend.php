@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Deploys with deploy_to_dh.sh";
+const SENTIMENTAL_VERSION = "Checks in place";
 
 # write errors to screen
 ini_set('display_errors', 1);
