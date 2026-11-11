@@ -21,6 +21,7 @@ class PostedIdsTest extends TestCase
     {
         $this->assertSame([], \Utilities::postedIds('loaded_photo_ids'));
         $_POST['loaded_photo_ids'] = '12';
+        // @phpstan-ignore method.alreadyNarrowedType (a scalar field is the case under test)
         $this->assertSame([], \Utilities::postedIds('loaded_photo_ids'));
     }
 }

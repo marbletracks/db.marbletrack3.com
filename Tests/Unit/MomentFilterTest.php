@@ -31,7 +31,7 @@ class MomentFilterTest extends TestCase
 
         foreach ($testCases as $testCase) {
             // Simulate the filtering logic from index.php
-            $filter = isset($testCase['filter']) ? trim($testCase['filter'] ?? '') : trim($_GET['filter'] ?? '');
+            $filter = isset($testCase['filter']) ? trim($testCase['filter']) : trim($_GET['filter'] ?? '');
             
             $this->assertEquals(
                 $testCase['expected'], 
@@ -206,7 +206,7 @@ class MomentFilterTest extends TestCase
             // Simulate the priority logic from the CASE statement
             $priority = 3; // default
             
-            if (!empty($moment['notes']) && stripos($moment['notes'], $searchTerm) !== false) {
+            if (stripos($moment['notes'], $searchTerm) !== false) {
                 $priority = 1;
             } elseif (!empty($moment['translated_note']) && stripos($moment['translated_note'], $searchTerm) !== false) {
                 $priority = 2;

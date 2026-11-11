@@ -23,7 +23,7 @@ class PartsIntegrationTest extends TestCase
         
         // Create unique test prefix using timestamp and random number
         // Use short prefix to fit in 20-char part_alias column
-        $this->testPrefix = 't' . substr(time(), -3) . rand(10, 99) . '_';
+        $this->testPrefix = 't' . substr((string) time(), -3) . rand(10, 99) . '_';
         
         // Clean up any old test data from previous runs
         $this->cleanupTestData();
@@ -162,19 +162,14 @@ class PartsIntegrationTest extends TestCase
         ];
         
         // Simulate the form processing logic from part.php
-        $alias = trim($_POST['part_alias'] ?? '');
-        $name = trim($_POST['part_name'] ?? '');
-        $description = trim($_POST['part_description'] ?? '');
-        $image_urls = array_filter(array_map('trim', $_POST['image_urls'] ?? []));
-        $moment_ids_str = $_POST['moment_ids'] ?? '';
-        $moment_ids = $moment_ids_str ? explode(',', $moment_ids_str) : [];
+        $alias = trim($_POST['part_alias']);
+        $name = trim($_POST['part_name']);
+        $description = trim($_POST['part_description']);
         
         // Validate that the form data was processed correctly
         $this->assertEquals($this->testPrefix . 'form', $alias, "Form alias should be processed correctly");
         $this->assertEquals('Form Test Part', $name, "Form name should be processed correctly");
         $this->assertEquals('This part was created via form submission test', $description, "Form description should be processed correctly");
-        $this->assertIsArray($image_urls, "Image URLs should be processed as array");
-        $this->assertIsArray($moment_ids, "Moment IDs should be processed as array");
         
         // Test database insertion with processed form data
         $newId = $this->partsRepo->insert($alias, $name, $description);

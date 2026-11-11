@@ -18,7 +18,7 @@ class ShortcodeWorkflowTest extends TestCase
     protected function setUp(): void
     {
         $this->testDb = getTestDatabase();
-        $this->testPrefix = 'sc' . substr(time(), -3) . rand(10, 99) . '_';
+        $this->testPrefix = 'sc' . substr((string) time(), -3) . rand(10, 99) . '_';
         
         // Create test data
         $this->createTestWorker();
@@ -74,10 +74,6 @@ class ShortcodeWorkflowTest extends TestCase
     {
         // Test that we can get worker shortcodes
         $workersRepo = new \Database\WorkersRepository($this->testDb, 'en');
-        
-        // Verify the repository has shortcode methods
-        $this->assertTrue(method_exists($workersRepo, 'getSELECTForShortcodeExpansion'), 
-            'WorkersRepository should have shortcode expansion method');
         
         // Test shortcode SQL generation
         $shortcodeSql = $workersRepo->getSELECTForShortcodeExpansion('en');
@@ -185,7 +181,6 @@ class ShortcodeWorkflowTest extends TestCase
         // In a real browser test, we would verify that:
         // - Without the class: shortcode suggestions don't appear
         // - With the class: shortcode suggestions work correctly
-        $this->assertTrue(true, 'This test catches the CSS class regression from commit 10e180b');
     }
 
     private function createTestWorker(): void

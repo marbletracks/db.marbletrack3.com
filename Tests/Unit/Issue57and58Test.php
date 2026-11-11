@@ -138,9 +138,9 @@ class Issue57and58Test extends TestCase
         ];
         
         // Simulate the form processing from part.php
-        $alias = trim($_POST['part_alias'] ?? '');
-        $name = trim($_POST['part_name'] ?? '');
-        $description = trim($_POST['part_description'] ?? '');
+        $alias = trim($_POST['part_alias']);
+        $name = trim($_POST['part_name']);
+        $description = trim($_POST['part_description']);
         
         // Before the fix, $description would be empty because form sent 'notes' but handler expected 'part_description'
         $this->assertNotEmpty($description, 
