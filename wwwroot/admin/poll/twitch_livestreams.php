@@ -20,8 +20,11 @@ if (!$is_logged_in->isLoggedIn()) {
 }
 
 $config = new Config();
+// @phpstan-ignore nullCoalesce.property (an older Config.php may not declare it)
 $twitchClientId = $config->twitch_client_id ?? null;
+// @phpstan-ignore nullCoalesce.property (an older Config.php may not declare it)
 $twitchClientSecret = $config->twitch_client_secret ?? null;
+// @phpstan-ignore nullCoalesce.property (an older Config.php may not declare it)
 $twitchUserName = $config->twitch_user_name ?? null;
 
 if (!$twitchClientId || !$twitchClientSecret || !$twitchUserName) {
@@ -35,6 +38,7 @@ use Database\LivestreamsRepository;
 /**
  * Exchange client credentials for an app access token.
  * Returns ['access_token' => string, 'expires_in' => int]
+ * @return array<string, mixed>
  */
 function getAppAccessToken(string $clientId, string $clientSecret): array
 {
@@ -87,6 +91,9 @@ if (empty($resUser['data'][0]['id'])) {
 }
 $twitchUserID = $resUser['data'][0]['id'];
 
+/**
+ * @return array<string, mixed>
+ */
 function fetchTwitch(string $url, string $clientId, string $accessToken): array
 {
     $ch = curl_init($url);

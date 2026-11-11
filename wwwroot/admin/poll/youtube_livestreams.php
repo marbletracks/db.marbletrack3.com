@@ -50,7 +50,7 @@ if (empty($apiKey)) {
 use Database\LivestreamFactory;
 use Database\EpisodeRepository;
 
-function fetchYouTube($url)
+function fetchYouTube(string $url): string|bool
 {
     $ch = curl_init($url);
     curl_setopt_array($ch, [
