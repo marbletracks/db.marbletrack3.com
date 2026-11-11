@@ -112,7 +112,7 @@ if ($method === 'POST' && preg_match('#^([^/]+)/tracks$#', $sub, $m)) {
                 'track_id'     => $t->track_id,
                 'track_name'   => $t->track_name,
                 'part_role'    => $t->part_role ?? null,
-                'is_exclusive' => (bool) ($t->part_is_exclusive ?? false),
+                'is_exclusive' => $t->part_is_exclusive,
             ];
         }, $tracks),
     ]);
@@ -165,6 +165,10 @@ function findPart(\Database\PartsRepository $repo, string $sub): ?\Physical\Part
     return $repo->findByAlias($sub);
 }
 
+/**
+ * @param \Physical\Track[] $tracks
+ * @return array<string, mixed>
+ */
 function partToArray(\Physical\Part $part, array $tracks, bool $detail = false): array
 {
     $data = [
@@ -180,7 +184,7 @@ function partToArray(\Physical\Part $part, array $tracks, bool $detail = false):
                 'track_id'     => $t->track_id,
                 'track_name'   => $t->track_name,
                 'part_role'    => $t->part_role ?? null,
-                'is_exclusive' => (bool) ($t->part_is_exclusive ?? false),
+                'is_exclusive' => $t->part_is_exclusive,
             ];
         }, $tracks),
     ];
