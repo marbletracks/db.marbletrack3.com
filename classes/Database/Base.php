@@ -4,7 +4,9 @@ namespace Database;
 const CONFIG_DATABASE_OUTPUT_ENCODING = "UTF8";
 
 class Base{
+    /** @var Database|null */
     private static $db;
+    /** @var Database|null */
     private static $testDb;
 
     // One day \Database\Base should be replaced with a dependency injection wrapper, but not today.

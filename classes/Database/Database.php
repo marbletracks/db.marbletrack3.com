@@ -8,8 +8,11 @@ class Database implements DbInterface {
     // MySQL's ER_DUP_ENTRY
     private const ERROR_DUPLICATE_KEY = 1062;
 
+    /** @var \mysqli|null */
     private $dbObj;
+    /** @var string|false */
     private $tz_offset = false;
+    /** @var int|string|null */
     private $affected_rows;
     private bool $inTransaction = false;
 
@@ -24,6 +27,9 @@ class Database implements DbInterface {
 
 // end __construct
 
+    /**
+     * @return true
+     */
     public function connect() {
         //If we're already connected return true;
         if (!$this->isAlive()) {
@@ -57,7 +63,7 @@ class Database implements DbInterface {
         }
     }
 
-    public function setTimezone(){
+    public function setTimezone(): void {
         $now = new \DateTime();
         $mins = $now->getOffset() / 60;
 
@@ -73,11 +79,18 @@ class Database implements DbInterface {
         }
     }
 
-    public function setEncoding($charEncoding) {
+    /**
+     * @param string $charEncoding
+     */
+    public function setEncoding($charEncoding): void {
         $this->charEncoding = $charEncoding;
         $this->dbObj->set_charset($this->charEncoding);
     }
 
+    /**
+     * @param string $sql
+     * @return \mysqli_stmt
+     */
     public function prepare($sql) {
         $this->connect(); //Connect if we aren't already
 
@@ -91,6 +104,10 @@ class Database implements DbInterface {
      * Returns the insert_id or affected_rows, where relevant, or null.
      */
 
+    /**
+     * @param string $sql
+     * @return int|string|null
+     */
     private function executeSimpleSQL($sql) {
         $this->connect(); //Connect if we aren't already
 
@@ -112,6 +129,12 @@ class Database implements DbInterface {
      * Returns the insert_id or affected_rows, where relevant, or null.
      */
 
+    /**
+     * @param string $sql
+     * @param string $paramtypes
+     * @param array<int|string, mixed> $parameters
+     * @return int|string|null
+     */
     private function executePreparedSQL($sql, $paramtypes, $parameters) {
         $bindParam = [];
         //Connect attempt is made in the prepare function.
@@ -152,6 +175,12 @@ class Database implements DbInterface {
         return $result;
     }
 
+    /**
+     * @param string $sql
+     * @param string|null $paramtypes
+     * @param mixed $var1
+     * @return int|string|null
+     */
     public function executeSQL($sql, $paramtypes = null, $var1 = null) {
         $this->affected_rows = NULL;
         if (isset($paramtypes)) {
@@ -174,6 +203,10 @@ class Database implements DbInterface {
         }
     }
 
+    /**
+     * @param string $sql
+     * @return ResultSetObjectResult
+     */
     private function fetchSimpleResults($sql) {
         $this->connect(); //Connect if we aren't already
 
@@ -182,6 +215,12 @@ class Database implements DbInterface {
         return new ResultSetObjectResult($result);
     }
 
+    /**
+     * @param string $sql
+     * @param string $paramtypes
+     * @param array<int|string, mixed> $params
+     * @return ResultSetObjectStmt
+     */
     private function fetchPreparedResults($sql, $paramtypes, $params) {
         $bindParam = [];
         //Connect attempt is made in the prepare function.
@@ -204,6 +243,10 @@ class Database implements DbInterface {
         return new ResultSetObjectStmt($stmt);
     }
 
+    /**
+     * @param array<int|string, mixed> $arr
+     * @return array<int|string, mixed>
+     */
     private function refValues($arr) {
         $refs = [];
         foreach ($arr as $key => $value){
@@ -212,6 +255,12 @@ class Database implements DbInterface {
         return $refs;
     }
 
+    /**
+     * @param string $sql
+     * @param string|null $paramtypes
+     * @param mixed $var1
+     * @return ResultSetObject
+     */
     public function fetchResults($sql, $paramtypes = null, $var1 = null) {
         $this->affected_rows = NULL; // Reset this here because we shouldn't have this set for a result.
         if (isset($paramtypes) && $paramtypes) {
@@ -233,10 +282,14 @@ class Database implements DbInterface {
         }
     }
 
+    /**
+     * @param array<string, mixed> $record column => value
+     * @return int|string|null the insert id, when the table makes one
+     */
     public function insertFromRecord(
         string $tablename,
         string $paramtypes,
-        $record
+        array $record
     ) {
         return $this->insertRecord(
             tablename: $tablename,
@@ -246,12 +299,16 @@ class Database implements DbInterface {
         );
     }
 
-    public function insertRecord($tablename, $ignore_duplicate_keys, $paramtypes, $record) {
+    /**
+     * @param array<string, mixed> $record column => value
+     * @return int|string|null the insert id, when the table makes one
+     */
+    public function insertRecord(string $tablename, bool $ignore_duplicate_keys, string $paramtypes, array $record) {
         $vars = NULL;
         $values = NULL;
 
-        if (strlen($paramtypes) != (is_countable($record) ? count($record) : 0)) {
-            throw new \Database\EDatabaseException(__FUNCTION__ . ": Num elements in paramtype string != num of bind variables in record array. " . strlen($paramtypes) . " != " . (is_countable($record) ? count($record) : 0));
+        if (strlen($paramtypes) != count($record)) {
+            throw new \Database\EDatabaseException(__FUNCTION__ . ": Num elements in paramtype string != num of bind variables in record array. " . strlen($paramtypes) . " != " . count($record));
         }
 
         foreach ($record as $key => $val) {
@@ -268,15 +325,19 @@ class Database implements DbInterface {
         }
     }
 
+    /**
+     * @param array<string, mixed> $record column => value
+     * @return int|string|null
+     */
     public function updateFromRecord(
         string $tablename,
         string $paramtypes,
-        $record,
+        array $record,
         string $where
     ) {
         $vars = NULL;
-        if (strlen($paramtypes) != (is_countable($record) ? count($record) : 0)) {
-            throw new \Database\EDatabaseException(__FUNCTION__ . ": Num elements in paramtype string != num of bind variables in record array. " . strlen($paramtypes) . " != " . (is_countable($record) ? count($record) : 0));
+        if (strlen($paramtypes) != count($record)) {
+            throw new \Database\EDatabaseException(__FUNCTION__ . ": Num elements in paramtype string != num of bind variables in record array. " . strlen($paramtypes) . " != " . count($record));
         }
 
         foreach ($record as $key => $val) {
