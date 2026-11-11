@@ -5,16 +5,16 @@ trait TrackHasTypes
 {
     public function isTransport(): bool
     {
-        return $this->is_transport ?? false;
+        return $this->is_transport;
     }
 
     public function isSplitter(): bool
     {
-        return $this->is_splitter ?? false;
+        return $this->is_splitter;
     }
 
     public function isLandingZone(): bool
     {
-        return $this->is_landing_zone ?? false;
+        return $this->is_landing_zone;
     }
 }

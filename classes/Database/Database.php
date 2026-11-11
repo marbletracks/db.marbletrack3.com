@@ -18,7 +18,7 @@ class Database implements DbInterface {
         private readonly string $username,
         private readonly string $passwd,
         private readonly string $dbname,
-        private readonly string $charEncoding,
+        private string $charEncoding,
     ) {
     }
 
@@ -32,10 +32,10 @@ class Database implements DbInterface {
             $this->inTransaction = false;
             $this->dbObj = new \mysqli($this->host, $this->username, $this->passwd, $this->dbname);
 
-            if (!is_object($this->dbObj) || $this->dbObj->connect_error) {
+            if ($this->dbObj->connect_error) {
                 sleep(1);
                 $this->dbObj = new \mysqli($this->host, $this->username, $this->passwd, $this->dbname);
-                if (!is_object($this->dbObj) || $this->dbObj->connect_error) {
+                if ($this->dbObj->connect_error) {
                     throw new \Database\EDatabaseException("Could not connect to server after trying with 1s sleep (" . $this->dbObj->errno . ") " . $this->dbObj->error);
                 }
             }

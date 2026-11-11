@@ -55,7 +55,7 @@ class Template{
      *
      * This function is used to return the rendered template as a string.
      * It is used to get the inner content of what will be sent to a base template.
-     * @return bool|string
+     * @return string
      */
     public function grabTheGoods(): string {
         return $this->loadTemplate();
@@ -69,9 +69,6 @@ class Template{
      */
     public function saveToFile(string $file_path): bool {
         $content = $this->loadTemplate();
-        if ($content === false) {
-            return false;
-        }
 
         $directory = dirname($file_path);
         if (!is_dir($directory)) {

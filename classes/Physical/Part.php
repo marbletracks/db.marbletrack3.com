@@ -19,7 +19,6 @@ final class Part
      * @param string $part_alias db.parts.part_alias
      * @param string $name db:part_translations.name
      * @param string $description db:part_translations.description
-     * @param string|null $primary_thumbnail from either parts_photos.photo_code or part_image_urls.image_url
      */
     public function __construct(
         public int $part_id,
