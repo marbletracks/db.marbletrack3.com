@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "PHPStan without a baseline";
+const SENTIMENTAL_VERSION = "PHPStan level 6";
 
 # write errors to screen
 ini_set('display_errors', 1);
