@@ -11,7 +11,7 @@
         <?php foreach ($notebooks as $notebook): ?>
             <li>
                 <strong>ID <?= htmlspecialchars((string) $notebook->notebook_id) ?>:</strong>
-<?php if ($notebook->photos[0]): ?>
+<?php if (!empty($notebook->photos)): ?>
                     <img src="<?= htmlspecialchars($notebook->photos[0]->getUrl()) ?>" alt="Notebook photo" style="max-width: 100px; max-height: 100px;"><br>
 <?php endif; ?>
                 <?= htmlspecialchars($notebook->title ?? '(no title)') ?><br>

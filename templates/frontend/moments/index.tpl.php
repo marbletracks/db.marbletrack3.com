@@ -22,7 +22,7 @@
                     <?php endif; ?>
                 </a>
             </h2>
-            <?php if (!empty($moment->photos) && $moment->photos[0]): ?>
+            <?php if (!empty($moment->photos)): ?>
                 <a href="/moments/<?= htmlspecialchars($moment->slug) ?>/">
                     <img src="<?= $moment->photos[0]->getThumbnailUrl() ?>" alt="Moment photo" style="max-width: 100%; height: auto;">
                 </a>

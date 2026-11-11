@@ -102,7 +102,7 @@
                 <tr>
                     <td><a href="/admin/moments/?take_id=<?= $moment->take_id ?>"><?= $moment->take_id ?></a></td>
                     <td>
-                        <?php if ($moment->photos[0]): ?>
+                        <?php if (!empty($moment->photos)): ?>
                             <a href="<?= $moment->photos[0]->getUrl() ?>"><img src="<?= $moment->photos[0]->getThumbnailUrl() ?>" alt="Image preview" style="max-width: 100px;"></a>
                         <?php endif; ?>
                     </td>

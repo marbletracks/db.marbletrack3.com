@@ -15,7 +15,7 @@
                     <?= htmlspecialchars($part->name) ?>
                 </a>
             </h2>
-            <?php if (!empty($part->photos) && $part->photos[0]): ?>
+            <?php if (!empty($part->photos)): ?>
                 <a href="/parts/<?= htmlspecialchars($part->slug) ?>/">
                     <img src="<?= $part->photos[0]->getThumbnailUrl() ?>" alt="<?= htmlspecialchars($part->name) ?>" style="max-width: 100%; height: auto;">
                 </a>
