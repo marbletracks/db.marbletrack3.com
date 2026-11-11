@@ -3,6 +3,7 @@ namespace Media;
 
 final class Episode
 {
+    /** @var Photo[] */
     public array $photos = []; // Media\Photo[]; filled by EpisodeRepository
 
     public function __construct(

@@ -7,6 +7,7 @@ namespace Media;
  */
 class Moment
 {
+    /** @var Photo[] */
     public array $photos = [];
     public string $slug;
     public int $perspective_count = 0;

@@ -8,9 +8,13 @@ final class Track
     use TrackHasTypes;
 
     public string $slug;
+    /** @var Part[] */
     public array $parts = [];         // added by Repository during hydrate
+    /** @var \Media\Photo[] */
     public array $photos = [];        // Media\Photo[]; filled by findById, findByAlias and findAll
+    /** @var Track[] */
     public array $upstream_tracks = []; // tracks that feed into this track
+    /** @var Track[] */
     public array $downstream_tracks = []; // tracks this track feeds into
     public ?string $part_role = null;       // set by TrackRepository for a Part's tracks
     public bool $part_is_exclusive = false; // set by TrackRepository for a Part's tracks
@@ -24,7 +28,7 @@ final class Track
      * @param string $track_name db:tracks.track_name - Human-readable name
      * @param string $technical_description db:tracks.technical_description
      * @param string $visitor_description db:tracks.visitor_description
-     * @param array $marble_sizes_accepted db:tracks.marble_sizes_accepted as array
+     * @param string[] $marble_sizes_accepted db:tracks.marble_sizes_accepted as array
      * @param bool $is_transport Track transports entities along its length
      * @param bool $is_splitter Track splits entity flow by size or direction
      * @param bool $is_landing_zone Track is a terminal destination

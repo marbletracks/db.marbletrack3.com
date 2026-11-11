@@ -3,21 +3,32 @@ namespace Media;
 
 class RemoteLivestream
 {
+    /** @var int|string|null */
     protected $livestream_id;
+    /** @var string|null */
     protected $external_id;
+    /** @var string|null */
     protected $platform; // e.g., 'youtube', 'twitch'
+    /** @var string|null */
     protected $watch_url;
+    /** @var string|null */
     protected $title;
+    /** @var string|null */
     protected $description;
+    /** @var string|null */
     protected $thumbnail_url;
+    /** @var string|null */
     protected $duration; // Duration can be null for livestreams
+    /** @var string|null */
     protected $published_at;
+    /** @var string */
     protected $status = 'not';
 
+    /** @var string[] */
     public $errors = [];
 
     public function __construct(
-        private $di_dbase,
+        private \Database\DbInterface $di_dbase,
     ) {
     }
 
@@ -81,16 +92,17 @@ class RemoteLivestream
     }
 
     // Setters
-    public function setExternalId($val)
+    /** @param string|null $val as the platform's API gave it */
+    public function setExternalId($val): void
     {
         $this->external_id = $val;
         $this->determineWatchUrl();  // Set watch_url based on platform and external_id
     }
-    public function setPlatform(string $platform)
+    public function setPlatform(string $platform): void
     {
         $this->platform = $platform;
     }
-    private function determineWatchUrl()
+    private function determineWatchUrl(): void
     {
         if ($this->platform === 'youtube') {
             $this->watch_url = "https://www.youtube.com/watch?v={$this->external_id}";
@@ -100,36 +112,48 @@ class RemoteLivestream
             throw new \InvalidArgumentException("Unknown platform: {$this->platform}");
         }
     }
-    public function setTitle($val)
+    /** @param string|null $val as the platform's API gave it */
+    public function setTitle($val): void
     {
         $this->title = $val;
     }
-    public function setDescription($val)
+    /** @param string|null $val as the platform's API gave it */
+    public function setDescription($val): void
     {
         $this->description = $val;
     }
-    public function setThumbnailUrl($val)
+    /** @param string|null $val as the platform's API gave it */
+    public function setThumbnailUrl($val): void
     {
         $this->thumbnail_url = $val;
     }
-    public function setDuration($val)
+    /** @param string|null $val as the platform's API gave it */
+    public function setDuration($val): void
     {
         $this->duration = $val;
     }
-    public function setPublishedAt($val)
+    /** @param string|null $val as the platform's API gave it */
+    public function setPublishedAt($val): void
     {
         $this->published_at = $val;
     }
-    public function setStatus($val)
+    /** @param string|null $val as the platform's API gave it */
+    public function setStatus($val): void
     {
         $this->status = $val;
     }
 
     // Getters
+    /**
+     * @return string|null
+     */
     public function getExternalId()
     {
         return $this->external_id;
     }
+    /**
+     * @return int|string|null
+     */
     public function getLivestreamId()
     {
         return $this->livestream_id;
