@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Media\Photo[] $photos
+ */
+?>
 <div class="PagePanel">
     <h1>All Photos in Database</h1>
     <ul>

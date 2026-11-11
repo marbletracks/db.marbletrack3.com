@@ -1,4 +1,11 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\Worker[] $workers
+ */
+?>
+<?php
 // File: /templates/admin/workers/index.tpl.php
 ?>
 <div class="PagePanel">

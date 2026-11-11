@@ -1,3 +1,15 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Media\Episode $episode
+ * @var string $defaultTitle
+ * @var string $defaultDesc
+ * @var int|string|null $defaultLivestreamId
+ * @var string $episode_frames
+ * @var string $streamCode
+ */
+?>
 <div class="PagePanel">
     <h1><?= $episode ? 'Edit Episode' : 'Create Episode' ?></h1>
     <?php if (!empty($errors)): ?>

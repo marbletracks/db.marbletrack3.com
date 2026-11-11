@@ -1,4 +1,11 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\Page $page
+ */
+?>
+<?php
 // File: /templates/admin/notebooks/pages/page.tpl.php
 ?>
 <div class="PagePanel">

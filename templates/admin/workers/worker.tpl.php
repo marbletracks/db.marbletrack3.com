@@ -1,3 +1,12 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\Worker $worker
+ * @var \Media\Moment[] $prioritized_moments
+ * @var \Media\Moment[] $other_moments
+ */
+?>
 <div class="PagePanel">
     <h1><?= $worker ? 'Edit Worker' : 'Create Worker' ?></h1>
 

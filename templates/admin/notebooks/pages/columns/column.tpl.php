@@ -1,4 +1,13 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\Column $column
+ * @var ?\Physical\Page $page
+ * @var \Physical\Token[] $tokens
+ */
+?>
+<?php
 // File: /templates/admin/notebooks/pages/columns/column.tpl.php
 ?>
 <div class="PagePanel">

@@ -1,3 +1,12 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\Part $part
+ * @var \Media\Moment[] $prioritized_moments
+ * @var \Media\Moment[] $other_moments
+ */
+?>
 <div class="PagePanel">
     <h1><?= $part ? 'Edit ' . htmlspecialchars($part->name) : 'Create Part' ?></h1>
 

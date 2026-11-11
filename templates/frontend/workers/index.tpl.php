@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Physical\Worker[] $workers
+ */
+?>
 <h1>Our Crew</h1>
 <p>The team that built your rides.</p>
 

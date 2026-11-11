@@ -1,3 +1,12 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\PartsOSSStatus $status
+ * @var \Physical\Part[] $possParts
+ * @var string $prefill_ssop_mm
+ */
+?>
 <div class="PagePanel">
     <h1><?= $status ? 'Edit Spiral Support Outer Placement' : 'Create Spiral Support Outer Placement' ?></h1>
 

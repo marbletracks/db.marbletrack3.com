@@ -1,4 +1,12 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\Part[] $parts
+ * @var string $status
+ */
+?>
+<?php
 // File: /templates/admin/parts/index.tpl.php
 ?>
 <div class="PagePanel">

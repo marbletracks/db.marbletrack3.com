@@ -1,3 +1,11 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var bool $has_pending_migrations
+ * @var string[] $pending_migrations
+ */
+?>
 <h1>MarbleTrack3 Table Migration Dashboard</h1>
 
 <a href="https://west1-phpmyadmin.dreamhost.com/signon.php?pma_servername=eich.robnugen.com" _target="_blank">Eich</a>

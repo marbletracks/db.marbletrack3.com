@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\Notebook $notebook
+ */
+?>
 <div class="PagePanel">
     <h1><?= $notebook ? 'Edit Notebook' : 'Create Notebook' ?></h1>
 

@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Media\Moment[] $moments
+ */
+?>
 <h1>Moments in Marble Track 3</h1>
 
 <div class="moment-grid">

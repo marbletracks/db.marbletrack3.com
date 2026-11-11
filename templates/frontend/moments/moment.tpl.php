@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Media\Moment $moment
+ */
+?>
 <div class="PagePanel">
     <h1>Moment Details</h1>
 

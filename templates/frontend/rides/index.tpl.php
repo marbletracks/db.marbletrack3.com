@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Physical\Ride[] $rides
+ */
+?>
 <h1>Rides</h1>
 <p>Choose your size, pick your ride, and roll!</p>
 

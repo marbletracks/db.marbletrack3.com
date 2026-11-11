@@ -1,3 +1,11 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Media\Take[] $takes
+ * @var \Physical\Worker[] $workers
+ */
+?>
 <style>
     .tokens-container {
         border: 1px solid #ddd;

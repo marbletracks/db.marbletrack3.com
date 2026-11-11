@@ -1,4 +1,11 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\PartsOSSStatus[] $ossParts
+ */
+?>
+<?php
 // File: templates/admin/parts/oss/index.tpl.php
 ?>
 <div class="PagePanel">

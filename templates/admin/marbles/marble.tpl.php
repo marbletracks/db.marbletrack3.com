@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\Marble $marble
+ */
+?>
 <div class="PagePanel">
     <h1><?= $marble ? 'Edit Marble' : 'Add Marble' ?></h1>
 

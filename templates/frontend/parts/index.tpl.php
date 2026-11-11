@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Physical\Part[] $parts
+ */
+?>
 <h1>Parts Catalog for Marble Track 3</h1>
 
 <div class="part-grid">

@@ -1,3 +1,13 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Media\Moment $moment
+ * @var \Media\Take[] $takes
+ * @var string $default_take_id
+ * @var string $default_frame_start
+ */
+?>
 <div class="PagePanel">
     <h1><?= $moment ? 'Edit Moment' : 'Create Moment' ?></h1>
 

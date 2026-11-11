@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\Notebook[] $notebooks
+ */
+?>
 <div class="PagePanel">
     <h1>All Notebooks</h1>
     <ul>
