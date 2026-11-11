@@ -1,6 +1,6 @@
 <?php
 
-const SENTIMENTAL_VERSION = "Checks in place";
+const SENTIMENTAL_VERSION = "PHPStan without a baseline";
 
 # write errors to screen
 ini_set('display_errors', 1);
