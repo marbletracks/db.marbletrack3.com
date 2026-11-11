@@ -34,6 +34,13 @@ into a movie.
 - `DBPersistaroo` (`classes/Database/DBPersistaroo.php`) auto-backs-up production
   hourly and syncs prod → test DB.
 
+## Deploy
+`./deploy_to_dh.sh` deploys the current branch: `git push`, then `git pull origin
+<branch>` over ssh in `db.mt3:db.marbletrack3.com`. It runs `git restore .` on the
+server first, so an edit made there is thrown away; `classes/Config.php`, `.env`, the
+DB backups and the generated static pages are gitignored and survive. Bubble branches
+are deployed straight from the branch, not from `master`.
+
 ## Domain glossary
 Physical (`classes/Physical/`): **Worker** = pipe-cleaner figure that builds the track;
 **Part** = track component; plus Marble, Track, Ride, and Notebook/Page/Column (docs).
