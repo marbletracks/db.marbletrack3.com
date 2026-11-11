@@ -66,7 +66,7 @@ Codeception 5, in `Tests/` (namespace `Tests`), with dev tools in a gitignored `
 - `php scripts/setup_test_database.php sync` — refresh test DB (`dbmt3_test`, created
   manually via Dreamhost panel) from DBPersistaroo backups
 - `php scripts/run_all_tests.php` — the older validation scripts, which need mysqli
-- `~/work/rob/standards-mcp/run-phpstan.sh .` — PHPStan level 5 in Docker, analysed
+- `~/work/rob/standards-mcp/run-phpstan.sh .` — PHPStan level 6 in Docker, analysed
   as PHP 8.5, with no baseline: fix a finding, or `// @phpstan-ignore <identifier>
   (reason)` on its line. A new entry script names what it takes from `prepend.php` in
   a `@var` block under the include; a new template opens with a `@var` block for what
