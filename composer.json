@@ -14,12 +14,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "Tests/"
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "test-unit": "phpunit tests/Unit",
-        "test-integration": "phpunit tests/Integration"
+        "test": "codecept run",
+        "test-unit": "codecept run Unit",
+        "test-integration": "codecept run Integration"
     }
 }

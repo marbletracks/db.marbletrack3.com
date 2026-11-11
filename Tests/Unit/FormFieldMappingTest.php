@@ -1,4 +1,6 @@
 <?php
+
+namespace Tests\Unit;
 /**
  * Unit tests for form field mapping and validation
  * These tests would have caught the duplicate name attribute bug from issue #57
@@ -92,7 +94,7 @@ class FormFieldMappingTest extends TestCase
     private function assertFormFieldHasNoDuplicateNames(string $html, string $elementType, string $expectedName)
     {
         // Use DOM parser to find the element
-        $dom = new DOMDocument();
+        $dom = new \DOMDocument();
         // Suppress warnings for malformed HTML
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);

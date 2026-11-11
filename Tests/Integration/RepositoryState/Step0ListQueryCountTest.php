@@ -1,5 +1,9 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
+use Tests\Integration\RepositoryState\Support\CountingDb;
+use Tests\Integration\RepositoryState\Support\PhotoFixtures;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Support/PhotoFixtures.php';
@@ -19,7 +23,7 @@ class Step0ListQueryCountTest extends TestCase
         $this->cleanupFixtures();
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('lists')]
+    #[\Codeception\Attribute\DataProvider('lists')]
     public function testListQueryCountDoesNotGrowWithRows(string $kind, callable $findAll): void
     {
         // One linked row first: an empty list skips the photo queries entirely,

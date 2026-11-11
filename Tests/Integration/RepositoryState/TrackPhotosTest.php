@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
+use Tests\Integration\RepositoryState\Support\PhotoFixtures;
 use Database\TrackRepository;
 use PHPUnit\Framework\TestCase;
 

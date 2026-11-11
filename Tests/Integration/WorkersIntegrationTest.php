@@ -1,4 +1,6 @@
 <?php
+
+namespace Tests\Integration;
 /**
  * Integration tests for Workers functionality
  * These tests validate the Workers form field mapping and database operations

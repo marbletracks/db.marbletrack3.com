@@ -37,11 +37,11 @@ jobs:
         php composer.phar install --prefer-dist --no-progress --no-interaction
       continue-on-error: true
     
-    - name: Run PHPUnit tests (if available)
+    - name: Run the Unit suite (if available)
       run: |
-        if [ -f "vendor/bin/phpunit" ]; then
-          vendor/bin/phpunit tests/Unit
+        if [ -f "vendor/bin/codecept" ]; then
+          vendor/bin/codecept run Unit
         else
-          echo "PHPUnit not available, skipping"
+          echo "Codeception not available, skipping"
         fi
       continue-on-error: true

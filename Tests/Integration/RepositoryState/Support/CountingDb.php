@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Integration\RepositoryState\Support;
+
 use Database\DbInterface;
 
 /** Passes everything to a real connection and counts the statements sent. */

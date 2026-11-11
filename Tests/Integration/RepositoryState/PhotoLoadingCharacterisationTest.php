@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
+use Tests\Integration\RepositoryState\Support\PhotoFixtures;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Support/PhotoFixtures.php';
@@ -45,7 +48,7 @@ class PhotoLoadingCharacterisationTest extends TestCase
         };
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('kinds')]
+    #[\Codeception\Attribute\DataProvider('kinds')]
     public function testFindByIdReturnsPhotosInSortThenIdOrder(string $kind, string $table, string $key): void
     {
         $id = $this->makeRow($kind);
@@ -65,7 +68,7 @@ class PhotoLoadingCharacterisationTest extends TestCase
         }
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('kinds')]
+    #[\Codeception\Attribute\DataProvider('kinds')]
     public function testFindAllGivesEachRowItsOwnPhotos(string $kind, string $table, string $key): void
     {
         $withPhoto = $this->makeRow($kind);

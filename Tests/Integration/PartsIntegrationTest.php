@@ -1,4 +1,6 @@
 <?php
+
+namespace Tests\Integration;
 /**
  * Integration tests for Parts functionality
  * These tests validate database operations and would catch SQL parameter mismatches

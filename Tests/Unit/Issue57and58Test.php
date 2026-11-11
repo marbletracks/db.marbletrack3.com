@@ -1,4 +1,6 @@
 <?php
+
+namespace Tests\Unit;
 /**
  * Specific tests for issues #57 and #58
  * These tests demonstrate exactly what would have caught those bugs
@@ -33,7 +35,7 @@ class Issue57and58Test extends TestCase
             "Issue #57: Parts form must not have duplicate name='notes' attribute");
         
         // Test the specific DOM structure to catch future regressions
-        $dom = new DOMDocument();
+        $dom = new \DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML($templateContent);
         libxml_clear_errors();

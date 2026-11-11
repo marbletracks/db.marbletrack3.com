@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
 use PHPUnit\Framework\TestCase;
 
 class SnapshotScriptTest extends TestCase

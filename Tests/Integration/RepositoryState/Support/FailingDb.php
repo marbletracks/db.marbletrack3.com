@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Integration\RepositoryState\Support;
+
 require_once __DIR__ . '/CountingDb.php';
 
 use Database\DbInterface;

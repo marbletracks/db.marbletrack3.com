@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
+use Tests\Integration\RepositoryState\Support\PhotoFixtures;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Support/PhotoFixtures.php';

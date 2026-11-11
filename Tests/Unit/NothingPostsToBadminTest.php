@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit;
+
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +15,7 @@ class NothingPostsToBadminTest extends TestCase
         $root = dirname(__DIR__, 2);
         $hits = [];
         foreach (['templates', 'wwwroot'] as $dir) {
-            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator("{$root}/{$dir}"));
+            $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator("{$root}/{$dir}"));
             foreach ($it as $file) {
                 if ($file->isFile() && preg_match('/\.(php|js|html)$/', $file->getFilename())
                     && strpos((string) file_get_contents($file->getPathname()), 'bullet.php') !== false) {

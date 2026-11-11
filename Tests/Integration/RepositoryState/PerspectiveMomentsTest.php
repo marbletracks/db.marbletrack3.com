@@ -1,5 +1,9 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
+use Tests\Integration\RepositoryState\Support\CountingDb;
+use Tests\Integration\RepositoryState\Support\PhotoFixtures;
 use Database\PerspectiveMoments;
 use PHPUnit\Framework\TestCase;
 

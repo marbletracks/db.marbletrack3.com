@@ -5,7 +5,7 @@
  */
 
 // Load only what's needed for testing
-require_once __DIR__ . '/../classes/Mlaphp/Autoloader.php';
+require_once dirname(__DIR__, 2) . '/classes/Mlaphp/Autoloader.php';
 $autoloader = new \Mlaphp\Autoloader();
 spl_autoload_register(array($autoloader, 'load'));
 

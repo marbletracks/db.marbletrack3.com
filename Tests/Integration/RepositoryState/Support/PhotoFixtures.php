@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Integration\RepositoryState\Support;
+
 use Database\EpisodeRepository;
 use Database\MarblesRepository;
 use Database\MomentRepository;

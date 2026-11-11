@@ -1,4 +1,6 @@
 <?php
+
+namespace Tests\Unit;
 /**
  * Unit tests for Moment filtering functionality
  * Tests the filtering logic without requiring database connectivity

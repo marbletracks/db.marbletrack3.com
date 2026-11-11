@@ -26,7 +26,7 @@ try {
     echo "  User: '" . $prodConfig->dbUser . "'\n\n";
 
     // Test test database connection using Base::getTestDB()
-    require_once __DIR__ . '/../tests/bootstrap.php';
+    require_once __DIR__ . '/../Tests/bootstrap.php';
     $testConfig = getTestConfig();
     $testDb = \Database\Base::getTestDB($testConfig);
 

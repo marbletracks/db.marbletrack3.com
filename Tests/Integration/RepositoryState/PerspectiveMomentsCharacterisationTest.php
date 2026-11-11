@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
+use Tests\Integration\RepositoryState\Support\PhotoFixtures;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/Support/PhotoFixtures.php';
@@ -27,7 +30,7 @@ class PerspectiveMomentsCharacterisationTest extends TestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('kinds')]
+    #[\Codeception\Attribute\DataProvider('kinds')]
     public function testMomentsComeInTakeFrameOrderWithFlagsAndPhotos(string $kind, callable $repo): void
     {
         $owner = $this->makeRow($kind);

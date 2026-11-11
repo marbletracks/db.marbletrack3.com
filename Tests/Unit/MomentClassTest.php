@@ -1,4 +1,6 @@
 <?php
+
+namespace Tests\Unit;
 /**
  * Unit tests for Moment class functionality
  */

@@ -35,7 +35,7 @@ try {
     }
 
     // Demonstrate test database connection
-    require_once __DIR__ . '/../tests/bootstrap.php';
+    require_once __DIR__ . '/../Tests/bootstrap.php';
     $testConfig = getTestConfig();
     $testDb = \Database\Base::getTestDB($testConfig);
 

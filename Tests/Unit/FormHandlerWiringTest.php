@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit;
+
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -8,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FormHandlerWiringTest extends TestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('handlers')]
+    #[\Codeception\Attribute\DataProvider('handlers')]
     public function testHandlerAndTemplateAgreeOnLoadedPhotoIds(string $handler): void
     {
         $root = dirname(__DIR__, 2);

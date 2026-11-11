@@ -1,5 +1,10 @@
 <?php
 
+namespace Tests\Integration\RepositoryState;
+
+use Tests\Integration\RepositoryState\Support\CountingDb;
+use Tests\Integration\RepositoryState\Support\FailingDb;
+use Tests\Integration\RepositoryState\Support\PhotoFixtures;
 use Database\PhotoLinks;
 use PHPUnit\Framework\TestCase;
 
