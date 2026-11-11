@@ -30,6 +30,16 @@ G Choppy: cut triple splitter: 1080 - 1308
 
 ---
 
+## 🚀 Deploy
+
+```bash
+./deploy_to_dh.sh
+```
+
+Pushes the current branch to GitHub, then pulls it on DreamHost over ssh
+(`db.mt3`, in `~/db.marbletrack3.com`). The server is a git checkout, so the
+commit it runs can always be read back.
+
 ## 🧪 Testing
 
 This project includes comprehensive testing infrastructure to prevent bugs like the form field mapping issues found in [Issue #57](https://github.com/marbletracks/db.marbletrack3.com/issues/57) and [Issue #58](https://github.com/marbletracks/db.marbletrack3.com/pull/58).

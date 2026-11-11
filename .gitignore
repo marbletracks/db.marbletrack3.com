@@ -25,3 +25,10 @@ wwwroot/.dh-diag
 wwwroot/favicon.gif
 wwwroot/favicon.ico
 scripts/__pycache__/
+
+# Static pages written on the server by wwwroot/admin/scripts/generate_static_site.php
+/wwwroot/marbles/
+/wwwroot/moments/
+/wwwroot/parts/
+/wwwroot/rides/
+/wwwroot/workers/
