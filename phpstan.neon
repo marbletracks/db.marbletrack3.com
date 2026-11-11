@@ -5,6 +5,9 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
+    # While the baseline is being cleared: an entry whose finding is fixed is
+    # not itself an error. Goes with the baseline.
+    reportUnmatchedIgnoredErrors: false
     level: 5
     # What DreamHost runs for db.marbletrack3.com.
     phpVersion: 80500
