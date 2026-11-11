@@ -41,7 +41,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/rides/{id or alias} — single ride with track sequence ───────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     if (ctype_digit($sub)) {
         $results = $mla_database->fetchResults(
             "SELECT * FROM rides WHERE ride_id = ?", 'i', [(int) $sub]

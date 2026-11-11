@@ -8,7 +8,7 @@ if (!$is_logged_in->isLoggedIn()) {
     exit;
 }
 
-$take_id = intval(value: $mla_request->get['take_id']) ?? 0;
+$take_id = intval(value: $mla_request->get['take_id'] ?? 0);
 $filter = trim($_GET['filter'] ?? '');
 
 // Missing-data checkboxes (multi-select); whitelist enforced in repo

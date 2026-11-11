@@ -133,7 +133,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/parts/{id or alias} — single part ───────────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     $part = findPart($repo, $sub);
     if (!$part) {
         http_response_code(404);

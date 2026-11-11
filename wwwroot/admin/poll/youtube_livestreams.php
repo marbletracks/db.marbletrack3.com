@@ -184,6 +184,7 @@ do {
 
     $pageToken = $data['nextPageToken'] ?? null;
 
+// @phpstan-ignore booleanAnd.leftAlwaysFalse ($requirePagination is a switch flipped by hand, above)
 } while ($requirePagination && $pageToken);
 
 // print_rob(object: $results, exit: false);

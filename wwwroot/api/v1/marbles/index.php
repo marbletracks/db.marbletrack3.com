@@ -105,7 +105,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/marbles/{id or alias} — single ─────────────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     $marble = findMarble($repo, $sub);
     if (!$marble) {
         http_response_code(404);

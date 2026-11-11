@@ -16,6 +16,7 @@ header('Content-Type: application/json');
 
 $langCode = "en";
 $res = [];
+$unique_results = [];
 
 if ($q !== '') {
     $q = trim($q);

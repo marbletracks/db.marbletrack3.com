@@ -71,7 +71,7 @@ if ($submitted) {
                 livestreamId: $postLivestreamId ?: null
             );
             $epRepo->savePhotosFromForm($newId, [], $image_urls);
-            if ($newId === false) {
+            if ($newId <= 0) {
                 $errors[] = 'Failed to create episode. Please try again.';
             } else {
                 // If created from a livestream, update its status

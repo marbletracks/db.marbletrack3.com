@@ -29,12 +29,7 @@ function print_rob($object, $exit = true)
     }
 }
 
-try {
-    $config = new \Config();
-} catch (\Exception $e) {
-    echo "Couldn't create Config cause " . $e->getMessage();
-    exit;
-}
+$config = new \Config();
 
 $mla_database = \Database\Base::getDB($config);
 // Check if the database exists and is accessible

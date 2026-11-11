@@ -68,7 +68,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/workers/{id or alias} — single worker ───────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     if (ctype_digit($sub)) {
         $worker = $repo->findById((int) $sub);
     } else {

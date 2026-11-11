@@ -8,10 +8,8 @@ if ($is_logged_in->isLoggedIn()) {
     header(header: "Location: /admin/");
     exit;
 } else {
-    if(!$is_logged_in->isLoggedIn()){
-        $page = new \Template(config: $config);
-        $page->setTemplate("login/index.tpl.php");
-        $page->echoToScreen();
-        exit;
-    }
+    $page = new \Template(config: $config);
+    $page->setTemplate("login/index.tpl.php");
+    $page->echoToScreen();
+    exit;
 }

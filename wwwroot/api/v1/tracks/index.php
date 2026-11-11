@@ -82,7 +82,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/tracks/{id} — single track ──────────────────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     if (!ctype_digit($sub)) {
         http_response_code(400);
         echo json_encode(['error' => 'Track ID must be numeric']);
