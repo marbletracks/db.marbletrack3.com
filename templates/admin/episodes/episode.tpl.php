@@ -1,3 +1,15 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Media\Episode $episode
+ * @var string $defaultTitle
+ * @var string $defaultDesc
+ * @var int|string|null $defaultLivestreamId
+ * @var string $episode_frames
+ * @var string $streamCode
+ */
+?>
 <div class="PagePanel">
     <h1><?= $episode ? 'Edit Episode' : 'Create Episode' ?></h1>
     <?php if (!empty($errors)): ?>
@@ -38,7 +50,7 @@
         <label>
             Image URLs:<br>
             <div id="image-url-fields">
-                <?php if(!empty($episode->photos)):foreach ($episode->photos ?? [''] as $photo): ?>
+                <?php if(!empty($episode->photos)):foreach ($episode->photos as $photo): ?>
                     <img src="<?= htmlspecialchars($photo->getThumbnailUrl()) ?>" alt="Image preview"><br>
                     <input type="text" size=130 name="image_urls[]" value="<?= htmlspecialchars($photo->getUrl()) ?>"><br>
                 <?php endforeach; ?>

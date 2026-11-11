@@ -22,7 +22,7 @@ class WorkersIntegrationTest extends TestCase
         $this->workersRepo = new WorkersRepository($this->testDb, 'en');
         
         // Create unique test prefix using timestamp and random number - short for 10-char worker_alias limit
-        $this->testPrefix = 'w' . substr(time(), -2) . rand(1, 9) . '_';
+        $this->testPrefix = 'w' . substr((string) time(), -2) . rand(1, 9) . '_';
         
         // Clean up any old test data from previous runs
         $this->cleanupTestData();
@@ -82,7 +82,6 @@ class WorkersIntegrationTest extends TestCase
         
         if (!file_exists($templatePath)) {
             $this->markTestSkipped("Workers template not found at: {$templatePath}");
-            return;
         }
         
         $templateContent = file_get_contents($templatePath);
@@ -105,7 +104,6 @@ class WorkersIntegrationTest extends TestCase
         
         if (!file_exists($handlerPath)) {
             $this->markTestSkipped("Workers handler not found at: {$handlerPath}");
-            return;
         }
         
         $handlerContent = file_get_contents($handlerPath);
@@ -127,8 +125,8 @@ class WorkersIntegrationTest extends TestCase
         ];
         
         // Simulate the form processing logic
-        $name = trim($_POST['worker_name'] ?? '');
-        $description = trim($_POST['description'] ?? '');
+        $name = trim($_POST['worker_name']);
+        $description = trim($_POST['description']);
         
         // Validate that the form data was processed correctly
         $this->assertEquals($this->testPrefix . 'Form_Test_Worker', $name, "Form worker name should be processed correctly");
@@ -153,8 +151,8 @@ class WorkersIntegrationTest extends TestCase
             'description' => ''
         ];
         
-        $name = trim($_POST['worker_name'] ?? '');
-        $description = trim($_POST['description'] ?? '');
+        $name = trim($_POST['worker_name']);
+        $description = trim($_POST['description']);
         
         $this->assertEquals($this->testPrefix . 'Worker_With_Empty_Description', $name, "Worker name should be processed");
         $this->assertEquals('', $description, "Empty description should be processed as empty string");

@@ -1,4 +1,12 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\Part[] $parts
+ * @var string $filter
+ */
+?>
+<?php
 // File: /templates/admin/parts/images/index.tpl.php
 ?>
 <div class="PagePanel">

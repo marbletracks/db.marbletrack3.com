@@ -1,3 +1,14 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var string $username
+ * @var string $site_version
+ * @var bool $has_pending_migrations
+ * @var int $backup_count
+ * @var int $latest_backup_time
+ */
+?>
 <div class="PagePanel">
     What's up <?= $username ?>? <br />
 </div>

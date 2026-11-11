@@ -32,7 +32,6 @@ class MomentClassTest extends TestCase
         $this->assertEquals(5, $moment1->take_id);
         $this->assertEquals('Test moment', $moment1->notes);
         $this->assertEquals('2023-01-01', $moment1->moment_date);
-        $this->assertIsArray($moment1->photos);
         $this->assertEmpty($moment1->photos);
 
         // Test with only take_id

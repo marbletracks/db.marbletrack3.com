@@ -15,7 +15,7 @@ class DatabaseSecurityTest extends TestCase
     protected function setUp(): void
     {
         $this->testDb = getTestDatabase();
-        $this->testPrefix = 'sec' . substr(time(), -3) . rand(10, 99) . '_';
+        $this->testPrefix = 'sec' . substr((string) time(), -3) . rand(10, 99) . '_';
     }
 
     public function testSQLInjectionProtection(): void

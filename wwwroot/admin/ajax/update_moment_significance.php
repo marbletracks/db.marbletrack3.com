@@ -5,6 +5,13 @@ declare(strict_types=1);
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+/**
+ * Set up by prepend.php.
+ *
+ * @var \Database\Database $mla_database
+ * @var \Auth\IsLoggedIn $is_logged_in
+ */
+
 if (!$is_logged_in->isLoggedIn()) {
     header('HTTP/1.1 401 Unauthorized');
     echo json_encode(['status' => 'error', 'message' => 'Authentication required.']);

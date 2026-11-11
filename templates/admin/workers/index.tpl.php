@@ -1,4 +1,11 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\Worker[] $workers
+ */
+?>
+<?php
 // File: /templates/admin/workers/index.tpl.php
 ?>
 <div class="PagePanel">
@@ -28,8 +35,8 @@
                         <em>Created:</em> <?= htmlspecialchars($worker->created_at) ?><br>
                     <?php endif; ?>
 
-                    <a href="/admin/workers/worker.php?id=<?= htmlspecialchars($worker->worker_id) ?>">
-                        Edit (id=<?= htmlspecialchars($worker->worker_id) ?>)
+                    <a href="/admin/workers/worker.php?id=<?= htmlspecialchars((string) $worker->worker_id) ?>">
+                        Edit (id=<?= htmlspecialchars((string) $worker->worker_id) ?>)
                     </a>
                 </div>
             </li>

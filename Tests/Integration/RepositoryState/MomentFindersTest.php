@@ -45,7 +45,7 @@ class MomentFindersTest extends TestCase
         $this->assertSame([$photo], $this->photoIds($repo->findById($withPhoto)->photos));
         $filtered = $repo->findFiltered($this->prefix . 'finder');
         foreach ($filtered['moments'] as $m) {
-            $this->assertIsInt($m->perspective_count);
+            $this->assertGreaterThanOrEqual(0, $m->perspective_count);
         }
     }
 

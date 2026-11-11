@@ -1,3 +1,12 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Media\Moment[] $moments
+ * @var int $take_id
+ * @var string $filter
+ */
+?>
 <div class="PagePanel">
     <h1>All Moments</h1>
     <p><a href="/admin/moments/moment.php">Create New Moment</a></p>

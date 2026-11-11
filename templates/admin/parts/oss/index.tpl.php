@@ -1,4 +1,11 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\PartsOSSStatus[] $ossParts
+ */
+?>
+<?php
 // File: templates/admin/parts/oss/index.tpl.php
 ?>
 <div class="PagePanel">
@@ -56,14 +63,14 @@ document.getElementById('height_input').addEventListener('input', function () {
         </tr>
         <?php foreach ($ossParts as $oss): ?>
             <tr>
-                <td><?= htmlspecialchars($oss->parts_oss_status_id) ?></td>
+                <td><?= htmlspecialchars((string) $oss->parts_oss_status_id) ?></td>
                 <td><?= htmlspecialchars($oss->ssop_label) ?></td>
-                <td><?= htmlspecialchars($oss->ssop_mm) ?></td>
-                <td><?= htmlspecialchars($oss->height_orig) ?></td>
-                <td><?= htmlspecialchars($oss->height_best) ?></td>
+                <td><?= htmlspecialchars((string) $oss->ssop_mm) ?></td>
+                <td><?= htmlspecialchars((string) $oss->height_orig) ?></td>
+                <td><?= htmlspecialchars((string) $oss->height_best) ?></td>
                 <td><?= htmlspecialchars($oss->height_now ?? '') ?></td>
                 <td><?= htmlspecialchars($oss->last_updated) ?></td>
-                <td><a href="/admin/parts/oss/oss.php?id=<?= htmlspecialchars($oss->parts_oss_status_id) ?>">Edit</a></td>
+                <td><a href="/admin/parts/oss/oss.php?id=<?= htmlspecialchars((string) $oss->parts_oss_status_id) ?>">Edit</a></td>
             </tr>
         <?php endforeach; ?>
     </table>

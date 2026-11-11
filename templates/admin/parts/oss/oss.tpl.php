@@ -1,3 +1,12 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\PartsOSSStatus $status
+ * @var \Physical\Part[] $possParts
+ * @var string $prefill_ssop_mm
+ */
+?>
 <div class="PagePanel">
     <h1><?= $status ? 'Edit Spiral Support Outer Placement' : 'Create Spiral Support Outer Placement' ?></h1>
 
@@ -14,7 +23,7 @@
 <?php if (isset($status)): ?>
     <label>
         OSS Status ID: <?= $readonly_if_edit ?><br>
-        <input type="text" name="parts_oss_status_id" value="<?= htmlspecialchars($status->parts_oss_status_id) ?>" readonly>
+        <input type="text" name="parts_oss_status_id" value="<?= htmlspecialchars((string) $status->parts_oss_status_id) ?>" readonly>
     </label><br><br>
 <?php endif; ?>
 

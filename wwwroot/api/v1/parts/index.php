@@ -9,6 +9,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $repo = new \Database\PartsRepository($mla_database, 'en');
 $trackRepo = new \Database\TrackRepository($mla_database);
 
@@ -133,7 +139,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/parts/{id or alias} — single part ───────────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     $part = findPart($repo, $sub);
     if (!$part) {
         http_response_code(404);

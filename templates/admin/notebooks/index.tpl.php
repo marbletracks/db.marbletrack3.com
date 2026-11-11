@@ -1,9 +1,16 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Physical\Notebook[] $notebooks
+ */
+?>
 <div class="PagePanel">
     <h1>All Notebooks</h1>
     <ul>
         <?php foreach ($notebooks as $notebook): ?>
             <li>
-                <strong>ID <?= htmlspecialchars($notebook->notebook_id) ?>:</strong>
+                <strong>ID <?= htmlspecialchars((string) $notebook->notebook_id) ?>:</strong>
 <?php if ($notebook->photos[0]): ?>
                     <img src="<?= htmlspecialchars($notebook->photos[0]->getUrl()) ?>" alt="Notebook photo" style="max-width: 100px; max-height: 100px;"><br>
 <?php endif; ?>

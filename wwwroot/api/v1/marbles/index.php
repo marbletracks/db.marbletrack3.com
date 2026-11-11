@@ -8,6 +8,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $repo = new \Database\MarblesRepository($mla_database);
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -105,7 +111,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/marbles/{id or alias} — single ─────────────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     $marble = findMarble($repo, $sub);
     if (!$marble) {
         http_response_code(404);

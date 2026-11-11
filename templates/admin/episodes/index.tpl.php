@@ -1,4 +1,11 @@
 <?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Media\Episode[] $episodes
+ */
+?>
+<?php
 // File: /templates/admin/episodes/index.tpl.php
 ?>
 <div class="PagePanel">
@@ -25,13 +32,13 @@
                     <em>Created:</em> <?= htmlspecialchars($episode->created_at) ?><br>
 
                     <?php if (!empty($episode->livestream_id)): ?>
-                        <em>Linked to livestream ID:</em> <?= htmlspecialchars($episode->livestream_id) ?><br>
+                        <em>Linked to livestream ID:</em> <?= htmlspecialchars((string) $episode->livestream_id) ?><br>
                     <?php else: ?>
                         <em>No livestream linked</em><br>
                     <?php endif; ?>
 
-                    <a href="/admin/episodes/episode.php?episode_id=<?= htmlspecialchars($episode->episode_id) ?>">
-                        Edit (id=<?= htmlspecialchars($episode->episode_id) ?>)
+                    <a href="/admin/episodes/episode.php?episode_id=<?= htmlspecialchars((string) $episode->episode_id) ?>">
+                        Edit (id=<?= htmlspecialchars((string) $episode->episode_id) ?>)
                     </a>
                 </div>
             </li>

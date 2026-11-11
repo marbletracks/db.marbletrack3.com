@@ -211,18 +211,6 @@ class RepositorySQLParameterValidator
             }
         }
     }
-
-    private function assert(bool $condition, string $message): void
-    {
-        if ($condition) {
-            $this->passed++;
-            echo "✅ {$message}\n";
-        } else {
-            $this->failed++;
-            $this->failures[] = $message;
-            echo "❌ {$message}\n";
-        }
-    }
 }
 
 // Advanced SQL Pattern Detection

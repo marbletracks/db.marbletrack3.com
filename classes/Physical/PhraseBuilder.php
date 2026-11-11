@@ -18,25 +18,23 @@ class PhraseBuilder
         }
 
         $phrases = [];
-        if (count($tokens) > 0) {
-            $currentPhrase = new Phrase();
-            $currentPhrase->addToken($tokens[0]);
-            $phrases[] = $currentPhrase;
-            $last_y = $tokens[0]->token_y_pos;
+        $currentPhrase = new Phrase();
+        $currentPhrase->addToken($tokens[0]);
+        $phrases[] = $currentPhrase;
+        $last_y = $tokens[0]->token_y_pos;
 
-            for ($i = 1; $i < count($tokens); $i++) {
-                $currentToken = $tokens[$i];
+        for ($i = 1; $i < count($tokens); $i++) {
+            $currentToken = $tokens[$i];
 
-                if (abs($currentToken->token_y_pos - $last_y) <= $y_tolerance) {
-                    // Same phrase
-                    $currentPhrase->addToken($currentToken);
-                } else {
-                    // New phrase
-                    $currentPhrase = new Phrase();
-                    $currentPhrase->addToken($currentToken);
-                    $phrases[] = $currentPhrase;
-                    $last_y = $currentToken->token_y_pos;
-                }
+            if (abs($currentToken->token_y_pos - $last_y) <= $y_tolerance) {
+                // Same phrase
+                $currentPhrase->addToken($currentToken);
+            } else {
+                // New phrase
+                $currentPhrase = new Phrase();
+                $currentPhrase->addToken($currentToken);
+                $phrases[] = $currentPhrase;
+                $last_y = $currentToken->token_y_pos;
             }
         }
 

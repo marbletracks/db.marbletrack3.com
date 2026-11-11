@@ -55,17 +55,6 @@ class RobRequestTest extends TestCase
         $this->assertEquals("'; DROP TABLE users; --", $this->request->getString('sql_injection'));
     }
 
-    public function testJsonResponseExists(): void
-    {
-        // Test that the JSON methods exist and are callable
-        $this->assertTrue(method_exists($this->request, 'jsonSuccess'), 'jsonSuccess method should exist');
-        $this->assertTrue(method_exists($this->request, 'jsonError'), 'jsonError method should exist');
-        
-        // Note: We can't easily test these methods because they call exit()
-        // In a real application, these would be tested with integration tests
-        // or by refactoring to return responses instead of calling exit()
-    }
-
     public function testJsonDataEncoding(): void
     {
         // Test JSON encoding behavior manually (without calling the actual methods)

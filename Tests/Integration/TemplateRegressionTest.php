@@ -49,31 +49,6 @@ class TemplateRegressionTest extends TestCase
     }
 
     /**
-     * Test that workers have shortcode-related functionality enabled
-     */
-    public function testWorkerShortcodeRepositoryMethods(): void
-    {
-        $testDb = getTestDatabase();
-        $workersRepo = new \Database\WorkersRepository($testDb, 'en');
-
-        // Test that shortcode-related methods exist
-        $this->assertTrue(
-            method_exists($workersRepo, 'getSELECTForShortcodeExpansion'),
-            'WorkersRepository should have shortcode expansion method'
-        );
-
-        $this->assertTrue(
-            method_exists($workersRepo, 'getSELECTExactAlias'),
-            'WorkersRepository should have exact alias lookup method for shortcodes'
-        );
-
-        $this->assertTrue(
-            method_exists($workersRepo, 'getSELECTLikeAlias'),
-            'WorkersRepository should have fuzzy alias lookup method for shortcode suggestions'
-        );
-    }
-
-    /**
      * Test that shortcode functionality is properly integrated
      * This creates a worker and tests that it can be found for shortcode purposes
      */
@@ -82,7 +57,7 @@ class TemplateRegressionTest extends TestCase
         $testDb = getTestDatabase();
         $workersRepo = new \Database\WorkersRepository($testDb, 'en');
 
-        $testPrefix = 't' . substr(time(), -2) . rand(1, 9) . '_'; // Short prefix for 10-char limit
+        $testPrefix = 't' . substr((string) time(), -2) . rand(1, 9) . '_'; // Short prefix for 10-char limit
 
         try {
             // Create a test worker
@@ -133,7 +108,6 @@ class TemplateRegressionTest extends TestCase
         }
 
         // Could add tests for other critical templates here
-        $this->assertTrue(true, 'Template regression tests completed');
     }
 
     /**
@@ -161,9 +135,6 @@ class TemplateRegressionTest extends TestCase
             $content,
             'Shortcode functionality requires shortcodey-textarea CSS class (regression from commit 10e180b)'
         );
-
-        // Document what this test prevents
-        $this->assertTrue(true, 'This test prevents regressions where shortcode CSS class gets removed');
     }
 
     /**

@@ -7,6 +7,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $repo = new \Database\WorkersRepository($mla_database, 'en');
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -68,7 +74,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/workers/{id or alias} — single worker ───────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     if (ctype_digit($sub)) {
         $worker = $repo->findById((int) $sub);
     } else {

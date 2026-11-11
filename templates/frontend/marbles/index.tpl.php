@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Physical\Marble[] $marbles
+ */
+?>
 <h1>Residents</h1>
 <p>The marbles who call this track home.</p>
 

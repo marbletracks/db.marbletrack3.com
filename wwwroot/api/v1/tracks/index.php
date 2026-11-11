@@ -6,6 +6,12 @@
  */
 require_once __DIR__ . '/../_auth.php';
 
+/**
+ * Set up by _auth.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $repo = new \Database\TrackRepository($mla_database);
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -82,7 +88,7 @@ if ($method === 'GET' && $sub === '') {
 }
 
 // ── GET /api/v1/tracks/{id} — single track ──────────────────────────────────
-if ($method === 'GET' && $sub !== '') {
+if ($method === 'GET') {
     if (!ctype_digit($sub)) {
         http_response_code(400);
         echo json_encode(['error' => 'Track ID must be numeric']);

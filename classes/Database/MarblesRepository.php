@@ -13,7 +13,7 @@ class MarblesRepository
     private PhotoLinks $photoLinks;
     private PerspectiveMoments $perspectiveMoments;
 
-    public function __construct(DbInterface $db, string $langCode = 'en')
+    public function __construct(DbInterface $db)
     {
         $this->db = $db;
         $this->photoLinks = new PhotoLinks($db, 'marbles', 'marbles_2_photos', 'marble_id');

@@ -45,6 +45,7 @@ class PhotoLoadingCharacterisationTest extends TestCase
             'worker' => new \Database\WorkersRepository($db, 'en'),
             'part' => new \Database\PartsRepository($db, 'en'),
             'marble' => new \Database\MarblesRepository($db),
+            default => throw new \InvalidArgumentException("No repository for {$kind}"),
         };
     }
 

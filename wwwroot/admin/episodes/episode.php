@@ -2,6 +2,14 @@
 declare(strict_types=1);
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+/**
+ * Set up by prepend.php.
+ *
+ * @var \Config $config
+ * @var \Database\Database $mla_database
+ * @var \Auth\IsLoggedIn $is_logged_in
+ */
+
 if (!$is_logged_in->isLoggedIn()) {
     header("Location: /login/");
     exit;
@@ -71,7 +79,7 @@ if ($submitted) {
                 livestreamId: $postLivestreamId ?: null
             );
             $epRepo->savePhotosFromForm($newId, [], $image_urls);
-            if ($newId === false) {
+            if ($newId <= 0) {
                 $errors[] = 'Failed to create episode. Please try again.';
             } else {
                 // If created from a livestream, update its status

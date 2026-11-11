@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Media\Photo $photo
+ */
+?>
 <div class="PagePanel">
     <h1><?= $photo ? 'Edit Photo' : 'Create Photo' ?></h1>
 

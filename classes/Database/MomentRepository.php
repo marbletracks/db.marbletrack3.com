@@ -6,13 +6,11 @@ use Media\Moment;
 class MomentRepository
 {
     private DbInterface $db;
-    private string $langCode;
     private PhotoLinks $photoLinks;
 
-    public function __construct(DbInterface $db, string $langCode = 'en')
+    public function __construct(DbInterface $db)
     {
         $this->db = $db;
-        $this->langCode = $langCode;
         $this->photoLinks = new PhotoLinks($db, 'moments', 'moments_2_photos', 'moment_id');
     }
 

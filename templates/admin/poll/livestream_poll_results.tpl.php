@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var string $platform
+ */
+?>
 <div class="PagePanel">
     <h1><?= $platform ?> Livestream Poll Results</h1>
     <?php if (empty($results)): ?>

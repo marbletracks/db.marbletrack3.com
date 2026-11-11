@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var \Media\LocalLivestream[] $livestreams
+ */
+?>
 <div class="PagePanel">
     <h1>Livestreams polled from YouTube</h1>
     <ul>

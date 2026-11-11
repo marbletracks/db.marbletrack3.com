@@ -62,8 +62,9 @@ class BugDemonstration
         echo "  \$_POST['part_description'] = (not set)\n\n";
 
         // Simulate what the PHP handler does
-        $alias = trim($_POST['part_alias'] ?? '');
-        $name = trim($_POST['part_name'] ?? '');
+        $alias = trim($_POST['part_alias']);
+        $name = trim($_POST['part_name']);
+        // @phpstan-ignore nullCoalesce.offset (the missing key is the bug being demonstrated)
         $description = trim($_POST['part_description'] ?? '');  // This would be empty!
 
         echo "PHP handler processing:\n";
@@ -138,7 +139,7 @@ class BugDemonstration
             'image_urls' => []
         ];
 
-        $description = trim($_POST['part_description'] ?? '');
+        $description = trim($_POST['part_description']);
         echo "  \$_POST['part_description'] = '{$description}' ✅ WORKS!\n";
         echo "  \$description = '{$description}' ✅ NOT EMPTY!\n\n";
 

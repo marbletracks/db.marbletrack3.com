@@ -5,16 +5,16 @@ trait PartHasRoles
 {
     public function isRail(): bool
     {
-        return $this->is_rail ?? false;
+        return $this->is_rail;
     }
 
     public function isSupport(): bool
     {
-        return $this->is_support ?? false;
+        return $this->is_support;
     }
 
     public function isTrack(): bool
     {
-        return $this->is_track ?? false;
+        return $this->is_track;
     }
 }

@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Physical\Ride $ride
+ */
+?>
 <h1><?= htmlspecialchars($ride->name) ?></h1>
 
 <div class="ride-hero">

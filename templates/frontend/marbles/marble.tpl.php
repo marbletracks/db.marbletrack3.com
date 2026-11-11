@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Physical\Marble $marble
+ */
+?>
 <div class="PagePanel">
     <h1><?= htmlspecialchars($marble->marble_name ?? '') ?></h1>
 

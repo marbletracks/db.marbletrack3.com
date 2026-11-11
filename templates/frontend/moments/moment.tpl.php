@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by generate_static_site.php.
+ *
+ * @var \Media\Moment $moment
+ */
+?>
 <div class="PagePanel">
     <h1>Moment Details</h1>
 
@@ -9,7 +16,7 @@
     <?php if ($moment->take_id): ?>
         <p>
             <strong>Take:</strong><br>
-            <?= htmlspecialchars($moment->take_id) ?>
+            <?= htmlspecialchars((string) $moment->take_id) ?>
         </p>
     <?php endif; ?>
 
@@ -17,12 +24,12 @@
         <p>
             <strong>Frame Range:</strong><br>
             <?php if ($moment->frame_start): ?>
-                <?= htmlspecialchars($moment->frame_start) ?>
+                <?= htmlspecialchars((string) $moment->frame_start) ?>
                 <?php if ($moment->frame_end && $moment->frame_end != $moment->frame_start): ?>
-                    - <?= htmlspecialchars($moment->frame_end) ?>
+                    - <?= htmlspecialchars((string) $moment->frame_end) ?>
                 <?php endif; ?>
             <?php elseif ($moment->frame_end): ?>
-                End: <?= htmlspecialchars($moment->frame_end) ?>
+                End: <?= htmlspecialchars((string) $moment->frame_end) ?>
             <?php endif; ?>
         </p>
     <?php endif; ?>

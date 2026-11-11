@@ -1,3 +1,12 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var ?\Physical\Track $track
+ * @var \Physical\Track[] $available_tracks
+ * @var \Physical\Part[] $available_parts
+ */
+?>
 <div class="PagePanel">
     <h1><?= $track ? 'Edit ' . htmlspecialchars($track->track_name) : 'Create Track' ?></h1>
 

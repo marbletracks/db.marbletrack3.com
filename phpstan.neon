@@ -1,9 +1,6 @@
 # Static analysis, run in Docker by ~/work/rob/standards-mcp/run-phpstan.sh.
-# Starts at level 5 with today's errors in the baseline, so only new errors
-# fail; raise the level a rung at a time and shrink the baseline as it goes.
-includes:
-    - phpstan-baseline.neon
-
+# No baseline: a finding is fixed, or ignored on its own line with a reason.
+# Raise the level a rung at a time.
 parameters:
     level: 5
     # What DreamHost runs for db.marbletrack3.com.
@@ -23,6 +20,10 @@ parameters:
             # that a fresh clone doesn't have.
             - Tests/_output/*
             - Tests/Support/*
+        analyse:
+            # Vendored from Modernizing Legacy Applications in PHP
+            # (https://leanpub.com/mlaphp): read for its types, not checked.
+            - classes/Mlaphp/*
     ignoreErrors:
         # Entry scripts include prepend.php by its absolute DreamHost path,
         # which exists on the server and nowhere else.

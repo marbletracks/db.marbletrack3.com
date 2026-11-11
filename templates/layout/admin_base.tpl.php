@@ -1,3 +1,10 @@
+<?php
+/**
+ * Set on this template by the page script.
+ *
+ * @var string $page_content
+ */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

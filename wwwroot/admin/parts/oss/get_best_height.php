@@ -4,6 +4,12 @@ header('Content-Type: application/json');
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+/**
+ * Set up by prepend.php.
+ *
+ * @var \Auth\IsLoggedIn $is_logged_in
+ */
+
 if (!$is_logged_in->isLoggedIn()) {
     header("Location: /login/");
     exit;

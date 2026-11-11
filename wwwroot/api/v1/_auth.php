@@ -15,6 +15,12 @@ header('Content-Type: application/json');
 
 include_once "/home/dh_fbrdk3/db.marbletrack3.com/prepend.php";
 
+/**
+ * Set up by prepend.php.
+ *
+ * @var \Database\Database $mla_database
+ */
+
 $raw_key = $_SERVER['HTTP_X_API_KEY'] ?? null;
 if (empty($raw_key)) {
     http_response_code(401);
