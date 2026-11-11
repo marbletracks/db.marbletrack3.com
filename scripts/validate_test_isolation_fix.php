@@ -7,7 +7,7 @@
 
 echo "Validating test isolation improvements...\n\n";
 
-function generateTestPrefix() {
+function generateTestPrefix(): string {
     return 'test_' . time() . '_' . rand(1000, 9999) . '_';
 }
 

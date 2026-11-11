@@ -13,7 +13,7 @@ class MomentFilterTest extends TestCase
     /**
      * Test filter parameter handling logic from moments index.php
      */
-    public function testFilterParameterHandling()
+    public function testFilterParameterHandling(): void
     {
         // Simulate $_GET parameters as they would be received
         $testCases = [
@@ -45,7 +45,7 @@ class MomentFilterTest extends TestCase
      * Test SQL query structure for moment filtering
      * This validates the SQL structure without executing it
      */
-    public function testSQLQueryStructure()
+    public function testSQLQueryStructure(): void
     {
         $filter = 'test_search';
         $expectedFilter = '%' . $filter . '%';
@@ -109,7 +109,7 @@ class MomentFilterTest extends TestCase
     /**
      * Test filter form URL construction logic
      */
-    public function testFilterFormUrls()
+    public function testFilterFormUrls(): void
     {
         $testCases = [
             // Regular filtering without take_id
@@ -135,7 +135,7 @@ class MomentFilterTest extends TestCase
     /**
      * Test the logic for determining which repository method to call
      */
-    public function testRepositoryMethodSelection()
+    public function testRepositoryMethodSelection(): void
     {
         $testCases = [
             // Both take_id and filter provided
@@ -174,7 +174,7 @@ class MomentFilterTest extends TestCase
     /**
      * Test empty filter handling logic
      */
-    public function testEmptyFilterHandling()
+    public function testEmptyFilterHandling(): void
     {
         // Test that empty filters are handled correctly
         $filters = ['', '   ', null, 0, false];
@@ -190,7 +190,7 @@ class MomentFilterTest extends TestCase
     /**
      * Test filter priority logic
      */
-    public function testFilterPriorityLogic()
+    public function testFilterPriorityLogic(): void
     {
         // Test the priority scoring used in the SQL CASE statement
         $testMoments = [

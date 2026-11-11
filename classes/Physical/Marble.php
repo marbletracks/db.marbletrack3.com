@@ -5,7 +5,9 @@ class Marble
 {
     public string $slug;
     public string $name; // alias for generator compatibility
+    /** @var \Media\Moment[] */
     public array $moments = [];
+    /** @var \Media\Photo[] */
     public array $photos = [];
 
     public function __construct(

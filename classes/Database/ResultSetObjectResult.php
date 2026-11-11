@@ -4,10 +4,14 @@ namespace Database;
 class ResultSetObjectResult extends ResultSetObject {
     /* PHP result resource */
 
+    /** @var \mysqli_result|bool */
     private $result;
 
     /* Create a resultset */
 
+    /**
+     * @param \mysqli_result|bool $result
+     */
     public function __construct($result) {
         $this->result = $result;
     }
@@ -26,13 +30,18 @@ class ResultSetObjectResult extends ResultSetObject {
 
     /* returns the number of rows in this ResultSet */
 
+    /**
+     * @return int|string|null
+     */
     public function numRows() {
         if (is_object($this->result)) {
             return $this->result->num_rows;
         }
+        return null;
     }
 
-    public function setRow($rowNum) {
+    /** @param int $rowNum */
+    public function setRow($rowNum): void {
         if (is_object($this->result) && $this->numRows() > $rowNum) {
             $this->result->data_seek($rowNum);
             $this->currentRowNum = $rowNum;
@@ -43,11 +52,15 @@ class ResultSetObjectResult extends ResultSetObject {
         }
     }
 
+    /**
+     * @param mixed $var unused
+     * @return array<int, object>|false
+     */
     public function fieldList($var) {
         return $this->result->fetch_fields();
     }
 
-    public function close() {
+    public function close(): void {
         if (is_object($this->result)) {
             $this->result->close();
         }

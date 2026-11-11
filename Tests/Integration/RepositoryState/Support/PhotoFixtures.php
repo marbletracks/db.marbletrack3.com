@@ -16,6 +16,7 @@ use Database\WorkersRepository;
 trait PhotoFixtures
 {
     private string $prefix;
+    /** @var array<int, array{string, string, int}> each row made, as [table, key column, id] */
     private array $tracked = [];
     private int $seq = 0;
 
@@ -122,7 +123,10 @@ trait PhotoFixtures
         return array_map(fn (array $row) => (int) $row['photo_id'], $results->toArray());
     }
 
-    /** @return int[] */
+    /**
+     * @param \Media\Photo[] $photos
+     * @return int[]
+     */
     protected function photoIds(array $photos): array
     {
         return array_map(fn ($photo) => $photo->photo_id, $photos);

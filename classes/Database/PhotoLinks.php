@@ -66,7 +66,10 @@ class PhotoLinks
         return $this->forIds([$id])[$id] ?? [];
     }
 
-    /** The last photo flagged primary, else the first: what HasPhotos::getPrimaryPhoto() returned. */
+    /**
+     * The last photo flagged primary, else the first: what HasPhotos::getPrimaryPhoto() returned.
+     * @param Photo[] $photos
+     */
     public static function primaryOf(array $photos): ?Photo
     {
         $primary = null;
@@ -181,7 +184,11 @@ class PhotoLinks
         });
     }
 
-    /** @return int[] one photo ID per non-blank URL, in order */
+    /**
+     * @param int[] $loadedIds
+     * @param string[] $urls
+     * @return int[] one photo ID per non-blank URL, in order
+     */
     private function idsForUrls(array $loadedIds, array $urls): array
     {
         $urls = array_values(array_filter(array_map('trim', $urls), fn (string $url) => $url !== ''));

@@ -16,7 +16,7 @@
                     <?= htmlspecialchars($worker->name) ?>
                 </a>
             </h2>
-            <?php if (!empty($worker->photos) && $worker->photos[0]): ?>
+            <?php if (!empty($worker->photos)): ?>
                 <a href="/workers/<?= htmlspecialchars($worker->slug) ?>/">
                     <img src="<?= $worker->photos[0]->getThumbnailUrl() ?>" alt="<?= htmlspecialchars($worker->name) ?>" style="max-width: 100%; height: auto;">
                 </a>

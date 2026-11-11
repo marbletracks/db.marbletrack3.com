@@ -6,6 +6,7 @@ use Media\Photo;
 
 class Page
 {
+    /** @var \Media\Photo[] */
     public array $photos = [];
     public ?Photo $primaryPhoto = null;
 

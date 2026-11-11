@@ -21,11 +21,14 @@ class PhotoRepository
         if ($r->numRows() === 0)
             return null;
 
-        $d = $r->data[0];
+        $d = $r->toArray()[0];
         return new Photo((int) $d['photo_id'], $d['code'], $d['url']);
     }
 
-    /** @param int[] $photoIds */
+    /**
+     * @param int[] $photoIds
+     * @return Photo[]
+     */
     public function findByIds(array $photoIds): array
     {
         if (empty($photoIds))
@@ -116,6 +119,9 @@ class PhotoRepository
     }
 
 
+    /**
+     * @return Photo[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults("SELECT photo_id, code, url FROM photos ORDER BY photo_id DESC");
@@ -127,6 +133,9 @@ class PhotoRepository
         }
         return $photos;
     }
+    /**
+     * @param array<string, mixed> $data
+     */
     private function hydrate(array $data): Photo
     {
         return new Photo(

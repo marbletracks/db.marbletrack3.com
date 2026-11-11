@@ -11,6 +11,9 @@ class PhrasesRepository
         $this->db = $db;
     }
 
+    /**
+     * @param int[] $token_ids
+     */
     public function create(string $phrase, array $token_ids, int $moment_id): int
     {
         return $this->db->insertFromRecord(

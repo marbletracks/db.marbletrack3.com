@@ -13,13 +13,13 @@ class CountingDb implements DbInterface
     {
     }
 
-    public function insertFromRecord(string $tablename, string $paramtypes, $record)
+    public function insertFromRecord(string $tablename, string $paramtypes, array $record)
     {
         $this->queries++;
         return $this->inner->insertFromRecord($tablename, $paramtypes, $record);
     }
 
-    public function updateFromRecord(string $tablename, string $paramtypes, $record, string $where)
+    public function updateFromRecord(string $tablename, string $paramtypes, array $record, string $where)
     {
         $this->queries++;
         return $this->inner->updateFromRecord($tablename, $paramtypes, $record, $where);

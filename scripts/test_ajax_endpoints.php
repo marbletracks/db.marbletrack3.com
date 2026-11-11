@@ -22,8 +22,11 @@ class AjaxEndpointValidator
 {
     private int $passed = 0;
     private int $failed = 0;
+    /** @var string[] */
     private array $failures = [];
+    /** @var string[] */
     private array $warnings = [];
+    /** @var string[] */
     private array $ajaxFiles = [];
     private bool $verbose;
 

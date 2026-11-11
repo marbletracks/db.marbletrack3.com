@@ -112,6 +112,9 @@ echo json_encode(['error' => 'Method not allowed']);
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+/**
+ * @return array<string, mixed>
+ */
 function trackToArray(\Physical\Track $track): array
 {
     $data = get_object_vars($track);

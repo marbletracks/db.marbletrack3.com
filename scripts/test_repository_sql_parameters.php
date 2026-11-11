@@ -16,7 +16,9 @@ class RepositorySQLParameterValidator
 {
     private int $passed = 0;
     private int $failed = 0;
+    /** @var string[] */
     private array $failures = [];
+    /** @var string[] */
     private array $repositoryFiles = [];
     private bool $verbose;
 
@@ -216,6 +218,9 @@ class RepositorySQLParameterValidator
 // Advanced SQL Pattern Detection
 class AdvancedSQLValidator
 {
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public static function findComplexSQLPatterns(string $content): array
     {
         $patterns = [];

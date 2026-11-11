@@ -27,11 +27,17 @@ class RobRequest extends Request
         exit;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function jsonSuccess(array $data = []): void
     {
         echo json_encode(['success' => true] + $data);
     }
 
+    /**
+     * @param array<string, bool> $fields field name => whether the request gave it
+     */
     public function requireFields(array $fields): void
     {
         foreach ($fields as $field => $condition) {

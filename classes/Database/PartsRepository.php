@@ -96,7 +96,7 @@ SQL;
      * Used by wwwroot/admin/parts/part.php to save Moments with Parts.
      * Created by Gemini, based on Workers (created by Gemini)
      * @param int $part_id
-     * @param array $submitted_moment_ids
+     * @param array<int|string> $submitted_moment_ids as the form posted them
      * @return void
      */
     public function syncMomentsFromTranslations(int $part_id, array $submitted_moment_ids): void
@@ -203,6 +203,9 @@ SQL,
         return $this->hydrateAll($results->toArray())[0];
     }
 
+    /**
+     * @return Part[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -227,6 +230,9 @@ SQL,
         return $this->hydrateAll($results->toArray());
     }
 
+    /**
+     * @return Part[]
+     */
     public function findByFilter(string $filter): array
     {
         $filter = trim($filter);
@@ -282,6 +288,9 @@ SQL,
         return $this->hydrateAll($results->toArray());
     }
 
+    /**
+     * @return Part[]
+     */
     public function findPossParts(): array
     {
         $results = $this->db->fetchResults(
@@ -393,7 +402,10 @@ SQL,
         $this->photoLinks->saveFormUrls($part_id, $loadedPhotoIds, $urls);
     }
 
-    /** Append photos, keeping any already linked. Used by the API. */
+    /**
+     * Append photos, keeping any already linked. Used by the API.
+     * @param string[] $urls
+     */
     public function addPhotosFromUrls(int $part_id, array $urls): void
     {
         $this->photoLinks->addUrls($part_id, $urls);
@@ -405,7 +417,10 @@ SQL,
         $this->photoLinks->add($part_id, $photos);
     }
 
-    /** @return Part[] */
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return Part[]
+     */
     private function hydrateAll(array $rows): array
     {
         $ids = array_map(fn (array $row) => (int) $row['part_id'], $rows);
@@ -421,6 +436,9 @@ SQL,
         return $parts;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Part
     {
         $part = new Part(

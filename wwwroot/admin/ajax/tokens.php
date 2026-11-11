@@ -183,6 +183,9 @@ function findOrCreateRealtimeColumn(ColumnsRepository $columnsRepo, int $worker_
     return $columnsRepo->insert($realtime_page_id, $worker_id, $column_name, 0);
 }
 
+/**
+ * @param \Database\DbInterface $db
+ */
 function findOrCreateRealtimeNotebook($db): int {
     $sql = "SELECT notebook_id FROM notebooks WHERE title = 'Realtime Tokens' LIMIT 1";
     $results = $db->fetchResults($sql);
@@ -199,6 +202,9 @@ function findOrCreateRealtimeNotebook($db): int {
     return $db->insertId();
 }
 
+/**
+ * @param \Database\DbInterface $db
+ */
 function findOrCreateRealtimePage($db, int $notebook_id): int {
     $sql = "SELECT page_id FROM pages WHERE notebook_id = ? AND number = 'RT' LIMIT 1";
     $results = $db->fetchResults($sql, 'i', [$notebook_id]);

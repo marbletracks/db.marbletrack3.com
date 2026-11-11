@@ -92,6 +92,9 @@ SQL;
     {
         return $this->db;
     }
+    /**
+     * @param array<int|string> $submitted_moment_ids as the form posted them
+     */
     public function syncMomentsFromTranslations(int $worker_id, array $submitted_moment_ids): void
     {
         $moment_repo = new MomentRepository($this->getDb());
@@ -154,6 +157,9 @@ SQL,
         return $this->hydrateAll($results->toArray())[0];
     }
 
+    /**
+     * @return Worker[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -302,7 +308,10 @@ SQL,
         $this->photoLinks->saveFormUrls($worker_id, $loadedPhotoIds, $urls);
     }
 
-    /** Append photos, keeping any already linked. Used by the API. */
+    /**
+     * Append photos, keeping any already linked. Used by the API.
+     * @param string[] $urls
+     */
     public function addPhotosFromUrls(int $worker_id, array $urls): void
     {
         $this->photoLinks->addUrls($worker_id, $urls);
@@ -314,7 +323,10 @@ SQL,
         $this->photoLinks->add($worker_id, $photos);
     }
 
-    /** @return Worker[] */
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return Worker[]
+     */
     private function hydrateAll(array $rows): array
     {
         $ids = array_map(fn (array $row) => (int) $row['worker_id'], $rows);
@@ -330,6 +342,9 @@ SQL,
         return $workers;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Worker
     {
         return new Worker(

@@ -13,7 +13,7 @@ class MomentClassTest extends TestCase
     /**
      * Test Moment constructor and slug generation
      */
-    public function testMomentConstructorAndSlugGeneration()
+    public function testMomentConstructorAndSlugGeneration(): void
     {
         // Test with take_id and frame_start
         $moment1 = new Moment(
@@ -74,7 +74,7 @@ class MomentClassTest extends TestCase
     /**
      * Test edge cases for slug generation
      */
-    public function testSlugGenerationEdgeCases()
+    public function testSlugGenerationEdgeCases(): void
     {
         // Test with frame_start but no take_id
         $moment1 = new Moment(

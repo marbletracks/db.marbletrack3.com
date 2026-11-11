@@ -14,7 +14,7 @@ class FormFieldMappingTest extends TestCase
      * Test that Parts form fields match what the PHP handler expects
      * This test would have caught the duplicate name="notes" name="part_description" bug
      */
-    public function testPartsFormFieldMapping()
+    public function testPartsFormFieldMapping(): void
     {
         // Load the Parts form template
         $templatePath = __DIR__ . '/../../templates/admin/parts/part.tpl.php';
@@ -47,7 +47,7 @@ class FormFieldMappingTest extends TestCase
     /**
      * Test that Workers form fields match what the PHP handler expects
      */
-    public function testWorkersFormFieldMapping()
+    public function testWorkersFormFieldMapping(): void
     {
         // Load the Workers form template
         $templatePath = __DIR__ . '/../../templates/admin/workers/worker.tpl.php';
@@ -66,7 +66,7 @@ class FormFieldMappingTest extends TestCase
     /**
      * Test Parts PHP handler expects the correct POST parameters
      */
-    public function testPartsHandlerExpectedParameters()
+    public function testPartsHandlerExpectedParameters(): void
     {
         $handlerPath = __DIR__ . '/../../wwwroot/admin/parts/part.php';
         $this->assertFileExists($handlerPath, "Parts handler should exist");
@@ -91,7 +91,7 @@ class FormFieldMappingTest extends TestCase
     /**
      * Helper method to check for duplicate name attributes in form elements
      */
-    private function assertFormFieldHasNoDuplicateNames(string $html, string $elementType, string $expectedName)
+    private function assertFormFieldHasNoDuplicateNames(string $html, string $elementType, string $expectedName): void
     {
         // Use DOM parser to find the element
         $dom = new \DOMDocument();
@@ -123,7 +123,7 @@ class FormFieldMappingTest extends TestCase
      * Test SQL parameter count validation
      * This type of test would catch parameter count mismatches
      */
-    public function testSQLParameterCounting()
+    public function testSQLParameterCounting(): void
     {
         // Test cases for common SQL patterns
         $testCases = [

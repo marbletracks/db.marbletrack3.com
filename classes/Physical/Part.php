@@ -6,7 +6,9 @@ final class Part
 {
     use PartHasRoles;
     public string $slug;
+    /** @var \Media\Photo[] */
     public array $photos = [];     // added by Repository during hydrate
+    /** @var \Media\Moment[] */
     public array $moments = [];     // added by Repository during hydrate
     public ?string $frontend_link = null;       // set by PartsRepository
     public ?string $role_in_track = null;       // set by TrackRepository for a Track's parts

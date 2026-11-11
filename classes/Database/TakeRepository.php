@@ -12,6 +12,9 @@ class TakeRepository
         $this->db = $db;
     }
 
+    /**
+     * @return Take[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -27,6 +30,9 @@ class TakeRepository
         return $takes;
     }
 
+    /**
+     * @return Take[]
+     */
     public function findSnippets(): array
     {
         $results = $this->db->fetchResults(
@@ -42,6 +48,9 @@ class TakeRepository
         return $takes;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): Take
     {
         return new Take(

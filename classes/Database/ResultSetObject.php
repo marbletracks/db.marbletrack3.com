@@ -1,18 +1,31 @@
 <?php
 namespace Database;
 
+/**
+ * @implements \Iterator<int, array<string, mixed>>
+ */
 abstract class ResultSetObject implements \Iterator {
     /* Number of rows */
+    /** @var int|null */
     protected $numRows;
 
-    /* The current row */
-    protected $data;
+    /**
+     * The current row; false or null once there are no more.
+     * @var array<string, mixed>|false|null
+     */
+    public $data;
 
     /* Current row number */
+    /** @var int */
     protected $currentRowNum = -1;
 
+    /** @var array<int, array<string, mixed>>|null */
     protected $array_of_data;
 
+    /**
+     * @param string $var
+     * @return null every property but $data, which is public
+     */
     public function __get($var) {
         //variable $this->data is read only
         if($var == "data") {
@@ -46,6 +59,9 @@ abstract class ResultSetObject implements \Iterator {
         $this->setRow(0);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function toArray() {
         if(!is_array($this->array_of_data)) {
             $this->array_of_data = array();
@@ -58,16 +74,16 @@ abstract class ResultSetObject implements \Iterator {
                     $this->next();
                 }
 
-                if($tmpRowNum !== false) {
-                    $this->setRow($tmpRowNum);
-                }
+                $this->setRow($tmpRowNum);
             }
         }
         return $this->array_of_data;
     }
 
 	/* returns the number of rows in this ResultSet*/
+    /** @return int|string|null */
     abstract public function numRows();
-    abstract public function setRow($rowNum);
-    abstract public function close();
+    /** @param int $rowNum */
+    abstract public function setRow($rowNum): void;
+    abstract public function close(): void;
 }

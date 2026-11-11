@@ -2,7 +2,7 @@
 # No baseline: a finding is fixed, or ignored on its own line with a reason.
 # Raise the level a rung at a time.
 parameters:
-    level: 5
+    level: 6
     # What DreamHost runs for db.marbletrack3.com.
     phpVersion: 80500
     paths:

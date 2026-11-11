@@ -28,6 +28,9 @@ if (!file_exists($configFile)) {
 }
 
 // Use a simple regex-based parser if PECL yaml is not installed
+/**
+ * @return array<string, mixed>
+ */
 function simple_yaml_parse(string $yaml_content): array {
     $map = [];
     $lines = explode("\n", $yaml_content);

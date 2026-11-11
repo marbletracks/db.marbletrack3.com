@@ -22,6 +22,9 @@ class FormLoadedIdsTest extends TestCase
         $this->cleanupFixtures();
     }
 
+    /**
+     * @param array<string, mixed> $vars
+     */
     private function renders(string $template, array $vars): string
     {
         $page = new \Template(getTestConfig());
@@ -32,6 +35,9 @@ class FormLoadedIdsTest extends TestCase
         return $page->grabTheGoods();
     }
 
+    /**
+     * @param int[] $photoIds
+     */
     private function assertPostsLoadedIds(string $html, array $photoIds): void
     {
         preg_match_all('/<input type="hidden" name="loaded_photo_ids\[\]" value="(\d+)">/', $html, $m);

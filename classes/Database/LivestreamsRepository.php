@@ -13,6 +13,9 @@ class LivestreamsRepository
         $this->db = $db;
     }
 
+    /**
+     * @return \Media\LocalLivestream[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(

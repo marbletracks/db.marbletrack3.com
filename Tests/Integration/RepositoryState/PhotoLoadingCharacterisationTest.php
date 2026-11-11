@@ -21,6 +21,9 @@ class PhotoLoadingCharacterisationTest extends TestCase
         $this->cleanupFixtures();
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public static function kinds(): array
     {
         return [

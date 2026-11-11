@@ -1,11 +1,15 @@
 <?php
 
 class Template{
+    /** @var string */
     protected $template_location;
 
+    /** @var array<string, mixed> */
     protected $vars;
 
+    /** @var \Mlaphp\Request|null */
     protected $mla_request;      // Encapsulates superglobals e.g. $SESSION, $REQUEST, etc (misspelled in this comment to keep searches clean)
+    /** @var \Database\DbInterface|null */
     protected $di_dbase;
 
     public function __construct(\Config $config) {
@@ -14,7 +18,8 @@ class Template{
         $this->vars = [];
     }
 
-    public function setTemplate($template_file) {
+    /** @param string $template_file path under templates/ */
+    public function setTemplate($template_file): void {
         $this->template_location = $this->template_location."/".$template_file;
     }
 
@@ -32,6 +37,10 @@ class Template{
         $this->vars[$name] = $value;
     }
 
+    /**
+     * @param mixed $value a string, or an array of them at any depth
+     * @return mixed the same shape, with every string escaped
+     */
     public function specialchars(&$value)
     {
         if (is_array($value)) {
@@ -88,10 +97,6 @@ class Template{
         extract($this->vars);          	// Extract the vars to local namespace
 
         ob_start();                    	// Start output buffering
-
-        if(!isset($this->template_location)) {
-            echo "No template file provided";
-        }
 
         include($this->template_location);	// Include the file
 

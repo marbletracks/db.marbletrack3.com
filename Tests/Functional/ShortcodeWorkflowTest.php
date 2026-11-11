@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ShortcodeWorkflowTest extends TestCase
 {
+    /** @var \Database\Database */
     private $testDb;
     private string $testPrefix;
     private int $testWorkerId;

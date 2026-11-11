@@ -36,6 +36,9 @@ $testsPassed = 0;
 $testsFailed = 0;
 $totalStartTime = microtime(true);
 
+/**
+ * @return array{passed: bool, duration: float}
+ */
 function runTest(string $testName, string $command, bool $verbose = false): array
 {
     echo "🔄 Running {$testName}...\n";

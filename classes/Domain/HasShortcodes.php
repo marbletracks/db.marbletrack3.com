@@ -11,6 +11,9 @@ trait HasShortcodes
     abstract protected function getAliasType(): string;     // e.g., "part" or "worker"
     abstract protected function getDb(): \Database\DbInterface;
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function searchByShortcodeOrName(
         string $like,
         string $lang,
@@ -166,6 +169,9 @@ trait HasShortcodes
         return strtr($text, $replacements);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function extractShortcodes(string $text, string $type, string $langCode): array
     {
         preg_match_all("/\\[{$type}:([\\w-]+)(?:\\|[^\\]]+)?\\]/", $text, $matches);

@@ -14,6 +14,9 @@ class PartsOSSStatusRepository
         $this->db = $db;
     }
 
+    /**
+     * @return PartsOSSStatus[]
+     */
     public function findAll(): array
     {
         $results = $this->db->fetchResults(
@@ -83,6 +86,9 @@ SQL,
     }
 
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function hydrate(array $row): PartsOSSStatus
     {
         return new PartsOSSStatus(

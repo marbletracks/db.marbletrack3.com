@@ -12,6 +12,7 @@ class Issue57and58TestRunner
 {
     private int $passed = 0;
     private int $failed = 0;
+    /** @var string[] */
     private array $failures = [];
 
     public function run(): void

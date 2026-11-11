@@ -21,6 +21,7 @@ class TestDatabaseSetup
 
     /**
      * Check if test database exists and is accessible
+     * @return string[] what went wrong; empty when nothing did
      */
     public function checkTestDatabaseAccess(): array
     {
@@ -28,12 +29,8 @@ class TestDatabaseSetup
 
         try {
             // Try a simple query to test connectivity by checking if we can get table list
-            $result = $this->testDb->fetchResults("SHOW TABLES");
-            if ($result) {
-                echo "✓ Test database connection successful\n";
-            } else {
-                $errors[] = "Could not execute test query on test database";
-            }
+            $this->testDb->fetchResults("SHOW TABLES");
+            echo "✓ Test database connection successful\n";
 
         } catch (\Exception $e) {
             $errors[] = "Test database connection failed: " . $e->getMessage();
@@ -208,7 +205,7 @@ class TestDatabaseSetup
             // Test if our test marker exists
             $markerResult = $this->testDb->fetchResults("SELECT * FROM parts WHERE part_alias = 'test_marker'");
             $markerResult->rewind();
-            if ($markerResult && $markerResult->current()) {
+            if ($markerResult->current()) {
                 echo "✓ Test data marker found\n";
                 return true;
             } else {

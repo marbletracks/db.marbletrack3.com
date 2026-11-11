@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 class SnapshotScriptTest extends TestCase
 {
+    /**
+     * @return array{string, int} the output, then the exit code
+     */
     private function runScript(string $args): array
     {
         exec('php /app/scripts/photo_links_snapshot.php ' . $args . ' 2>&1', $out, $code);

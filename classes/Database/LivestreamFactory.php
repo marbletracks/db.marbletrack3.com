@@ -6,7 +6,7 @@ use Database\Database;
 class LivestreamFactory
 {
     /**
-     * @param array $apiItem Raw API response item from YouTube or Twitch
+     * @param array<string, mixed> $apiItem one item of the platform's API response
      * @param Database $db Database instance
      * @param string $platform Either 'youtube' or 'twitch'
      * @return \Media\RemoteLivestream
